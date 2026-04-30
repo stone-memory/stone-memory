@@ -184,7 +184,7 @@ export const seedBusinessProfile = {
   displayName: "Stone Memory",
   email: "sttonememory@gmail.com",
   phone: "+380 (67) 808 02 22",
-  address: "вул. Гранітна, 12",
+  address: "",
   city: "Костопіль",
   region: "Рівненська область",
   postalCode: "35000",
