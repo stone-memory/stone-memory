@@ -66,15 +66,15 @@ export function Footer() {
               {t.footer.tagline}
             </p>
             <div className="mt-6 flex items-center gap-3">
-              <a href="https://instagram.com/stonememory" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
+              <a href="https://www.instagram.com/sttonememory" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
                 <Instagram className="h-4 w-4" strokeWidth={1.75} />
               </a>
-              <a href="https://facebook.com/stonememory" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
+              <a href="https://www.facebook.com/profile.php?id=61588950935616" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
                 <Facebook className="h-4 w-4" strokeWidth={1.75} />
               </a>
-              <a href="https://youtube.com/@stonememory" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
+              {/* <a href="https://youtube.com/@stonememory" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
                 <Youtube className="h-4 w-4" strokeWidth={1.75} />
-              </a>
+              </a> */}
             </div>
           </div>
 
