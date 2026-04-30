@@ -1,0 +1,52 @@
+{
+  "header": {
+    "brand": "Stone Memory",
+    "memorial": "Gedenkarchitektur",
+    "home": "Stein für Zuhause",
+    "selection": "Auswahl"
+  },
+  "hero": {
+    "badge": "5 Jahre Garantie",
+    "title": "Ewigkeit in Stein",
+    "subtitle": "Architektonische Denkmäler und Dekorstein, gefertigt für Generationen."
+  },
+  "catalog": {
+    "label": "Kollektion",
+    "title": "Der Katalog",
+    "pieces": "{count} Stück",
+    "idLabel": "ID",
+    "priceFrom": "ab {price}"
+  },
+  "selection": {
+    "title": "Auswahl",
+    "itemsCount": "{count} {count, plural, one {Artikel} other {Artikel}} zur Anfrage",
+    "emptyTitle": "Noch keine Artikel ausgewählt",
+    "emptyHint": "Durchstöbern Sie den Katalog und tippen Sie +, um hinzuzufügen",
+    "addToSelection": "Zur Auswahl hinzufügen",
+    "alreadySelected": "Bereits in der Auswahl",
+    "removeItem": "Artikel entfernen"
+  },
+  "form": {
+    "namePlaceholder": "Ihr Name",
+    "phonePlaceholder": "Telefonnummer",
+    "submit": "Angebot anfordern",
+    "submitting": "Wird gesendet...",
+    "privacyNotice": "Mit dem Absenden stimmen Sie unserer Datenschutzrichtlinie zu."
+  },
+  "success": {
+    "title": "Anfrage erhalten",
+    "message": "Ein Berater wird Sie innerhalb von 2 Geschäftsstunden kontaktieren, um Ihre Auswahl zu besprechen und ein detailliertes Angebot zu unterbreiten.",
+    "referenceLabel": "Ref:",
+    "continue": "Weiter stöbern"
+  },
+  "footer": {
+    "poland": "Polen",
+    "germany": "Deutschland",
+    "lithuania": "Litauen",
+    "ukraine": "Ukraine",
+    "copyright": "© 2026 Stone Memory. Alle Rechte vorbehalten.",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "contact": "Kontakt"
+  }
+}

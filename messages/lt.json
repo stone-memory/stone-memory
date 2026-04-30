@@ -1,0 +1,52 @@
+{
+  "header": {
+    "brand": "Stone Memory",
+    "memorial": "Memorialinė architektūra",
+    "home": "Akmuo namams",
+    "selection": "Pasirinkimas"
+  },
+  "hero": {
+    "badge": "5 metų garantija",
+    "title": "Amžinybė akmenyje",
+    "subtitle": "Architektūriniai paminklai ir dekoratyvinis akmuo, sukurti išlikti kartoms."
+  },
+  "catalog": {
+    "label": "Kolekcija",
+    "title": "Katalogas",
+    "pieces": "{count} vnt.",
+    "idLabel": "ID",
+    "priceFrom": "nuo {price}"
+  },
+  "selection": {
+    "title": "Pasirinkimas",
+    "itemsCount": "{count} {count, plural, one {prekė} few {prekės} other {prekių}} užklausai",
+    "emptyTitle": "Dar nieko nepasirinkta",
+    "emptyHint": "Naršykite katalogą ir bakstelėkite +, kad pridėtumėte",
+    "addToSelection": "Pridėti prie pasirinkimo",
+    "alreadySelected": "Jau pasirinkime",
+    "removeItem": "Pašalinti prekę"
+  },
+  "form": {
+    "namePlaceholder": "Jūsų vardas",
+    "phonePlaceholder": "Telefono numeris",
+    "submit": "Prašyti kainos pasiūlymo",
+    "submitting": "Siunčiama...",
+    "privacyNotice": "Pateikdami sutinkate su mūsų Privatumo politika."
+  },
+  "success": {
+    "title": "Užklausa gauta",
+    "message": "Vadybininkas su jumis susisieks per 2 darbo valandas, kad aptartų jūsų pasirinkimą ir pateiktų išsamų pasiūlymą.",
+    "referenceLabel": "Ref:",
+    "continue": "Tęsti naršymą"
+  },
+  "footer": {
+    "poland": "Lenkija",
+    "germany": "Vokietija",
+    "lithuania": "Lietuva",
+    "ukraine": "Ukraina",
+    "copyright": "© 2026 Stone Memory. Visos teisės saugomos.",
+    "privacy": "Privatumas",
+    "terms": "Sąlygos",
+    "contact": "Kontaktai"
+  }
+}

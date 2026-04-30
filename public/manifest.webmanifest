@@ -1,0 +1,34 @@
+{
+  "name": "Stone Memory — natural stone studio",
+  "short_name": "Stone Memory",
+  "description": "Monuments, countertops, window sills, stairs, fireplaces and paving. Natural granite and marble — Ukrainian and imported. 5-year warranty.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F7",
+  "theme_color": "#1D1D1F",
+  "orientation": "portrait-primary",
+  "categories": ["business", "shopping", "home-and-garden"],
+  "lang": "uk",
+  "dir": "ltr",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/apple-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Catalog",
+      "short_name": "Catalog",
+      "url": "/catalog",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Projects",
+      "short_name": "Projects",
+      "url": "/projects",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

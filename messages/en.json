@@ -1,0 +1,52 @@
+{
+  "header": {
+    "brand": "Stone Memory",
+    "memorial": "Memorial Architecture",
+    "home": "Stone for Home",
+    "selection": "Selection"
+  },
+  "hero": {
+    "badge": "5-Year Guarantee",
+    "title": "Eternity in Stone",
+    "subtitle": "Architectural monuments and decorative stone, crafted to outlast generations."
+  },
+  "catalog": {
+    "label": "Collection",
+    "title": "The Catalog",
+    "pieces": "{count} pieces",
+    "idLabel": "ID",
+    "priceFrom": "from {price}"
+  },
+  "selection": {
+    "title": "Selection",
+    "itemsCount": "{count} {count, plural, one {item} other {items}} for quotation",
+    "emptyTitle": "No items selected yet",
+    "emptyHint": "Browse the catalog and tap + to add",
+    "addToSelection": "Add to selection",
+    "alreadySelected": "Already in selection",
+    "removeItem": "Remove item"
+  },
+  "form": {
+    "namePlaceholder": "Your name",
+    "phonePlaceholder": "Phone number",
+    "submit": "Request Calculation",
+    "submitting": "Submitting...",
+    "privacyNotice": "By submitting you agree to our Privacy Policy."
+  },
+  "success": {
+    "title": "Request received",
+    "message": "A manager will contact you within 2 business hours to discuss your selection and provide a detailed quote.",
+    "referenceLabel": "Ref:",
+    "continue": "Continue browsing"
+  },
+  "footer": {
+    "poland": "Poland",
+    "germany": "Germany",
+    "lithuania": "Lithuania",
+    "ukraine": "Ukraine",
+    "copyright": "© 2026 Stone Memory. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact"
+  }
+}

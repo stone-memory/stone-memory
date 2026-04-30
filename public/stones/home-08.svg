@@ -1,0 +1,18 @@
+<svg viewBox="0 0 800 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="home-bg-8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0ece0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0dccc;stop-opacity:1" />
+    </linearGradient>
+    <filter id="grain-h8">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+      <feColorMatrix in="noise" type="saturate" values="0.3" />
+    </filter>
+  </defs>
+  <rect width="800" height="1000" fill="url(#home-bg-8)"/>
+  <rect width="800" height="1000" fill="url(#home-bg-8)" opacity="0.08" filter="url(#grain-h8)"/>
+  <rect x="320" y="100" width="160" height="700" fill="#b8b4a8" opacity="0.66"/>
+  <rect x="330" y="110" width="140" height="680" fill="none" stroke="#f0ece0" stroke-width="2" opacity="0.4"/>
+  <circle cx="400" cy="250" r="30" fill="#f0ece0" opacity="0.5"/>
+  <text x="400" y="920" text-anchor="middle" font-size="12" fill="#b8b4a8" opacity="0.3" font-family="serif">SM</text>
+</svg>

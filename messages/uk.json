@@ -1,0 +1,52 @@
+{
+  "header": {
+    "brand": "Stone Memory",
+    "memorial": "Меморіальна архітектура",
+    "home": "Камінь для дому",
+    "selection": "Вибрані"
+  },
+  "hero": {
+    "badge": "5-річна гарантія",
+    "title": "Вічність у камені",
+    "subtitle": "Архітектурні пам'ятники та декоративний камінь, створені на віки."
+  },
+  "catalog": {
+    "label": "Колекція",
+    "title": "Каталог",
+    "pieces": "{count} виробів",
+    "idLabel": "ID",
+    "priceFrom": "від {price}"
+  },
+  "selection": {
+    "title": "Вибрані",
+    "itemsCount": "{count} {count, plural, one {виріб} few {вироби} other {виробів}} для розрахунку",
+    "emptyTitle": "Ще нічого не вибрано",
+    "emptyHint": "Перегляньте каталог і натисніть +, щоб додати",
+    "addToSelection": "Додати до вибраних",
+    "alreadySelected": "Вже у вибраних",
+    "removeItem": "Видалити виріб"
+  },
+  "form": {
+    "namePlaceholder": "Ваше ім'я",
+    "phonePlaceholder": "Номер телефону",
+    "submit": "Запит розрахунку",
+    "submitting": "Відправляємо...",
+    "privacyNotice": "Надсилаючи, ви погоджуєтесь з нашою Політикою конфіденційності."
+  },
+  "success": {
+    "title": "Запит отримано",
+    "message": "Менеджер зв'яжеться з вами протягом 2 робочих годин, щоб обговорити ваш вибір та надати детальну пропозицію.",
+    "referenceLabel": "Номер:",
+    "continue": "Продовжити перегляд"
+  },
+  "footer": {
+    "poland": "Польща",
+    "germany": "Німеччина",
+    "lithuania": "Литва",
+    "ukraine": "Україна",
+    "copyright": "© 2026 Stone Memory. Усі права захищені.",
+    "privacy": "Конфіденційність",
+    "terms": "Умови",
+    "contact": "Контакти"
+  }
+}
