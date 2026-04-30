@@ -161,7 +161,11 @@ export function useArticles(): Article[] {
     hydrate()
   }, [hydrate])
   if (!hasHydrated) return baseArticles
-  return articles.filter((r) => !r.hidden).map((r) => r.data)
+  // Articles in DB take precedence; static articles not yet published to DB still show.
+  const dbSlugs = new Set(articles.map((r) => r.slug))
+  const dbVisible = articles.filter((r) => !r.hidden).map((r) => r.data)
+  const staticFallback = baseArticles.filter((a) => !dbSlugs.has(a.slug))
+  return [...dbVisible, ...staticFallback]
 }
 
 export function useBlogHeroSlug(defaultSlug: string): string {

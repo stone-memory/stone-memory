@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { StoneCard } from "@/components/stone-card"
 import { SegmentedControl } from "@/components/segmented-control"
@@ -18,6 +18,7 @@ export function CatalogGrid() {
   const setCategory = useSelectionStore((state) => state.setCategory)
   const searchParams = useSearchParams()
   const [mounted, setMounted] = useState(false)
+  const urlParamApplied = useRef(false)
 
   useEffect(() => {
     setMounted(true)
@@ -26,13 +27,16 @@ export function CatalogGrid() {
   // Use a stable "memorial" on SSR to prevent hydration mismatch from persisted category
   const category: Category = mounted ? storedCategory : "memorial"
 
+  // Apply ?cat= URL param only once on initial mount — subsequent button clicks
+  // must not be overridden by the stale URL param still sitting in searchParams.
   useEffect(() => {
-    if (!mounted) return
+    if (!mounted || urlParamApplied.current) return
     const cat = searchParams.get("cat")
     if (cat === "memorial" || cat === "home") {
-      if (cat !== storedCategory) setCategory(cat)
+      setCategory(cat)
     }
-  }, [searchParams, storedCategory, setCategory, mounted])
+    urlParamApplied.current = true
+  }, [mounted, searchParams, setCategory])
   const { t, locale } = useTranslation()
   const L = filterLabels[locale]
   const stones = useStones()
