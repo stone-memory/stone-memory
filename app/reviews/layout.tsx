@@ -3,7 +3,7 @@ import { fetchReviews } from "@/lib/data-source"
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
 
-export const revalidate = 60
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: "Reviews — what clients say about Stone Memory",

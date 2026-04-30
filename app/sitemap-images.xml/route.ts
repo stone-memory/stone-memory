@@ -1,6 +1,6 @@
 import { fetchStones, fetchProjects } from "@/lib/data-source"
 
-export const revalidate = 60
+export const revalidate = 0
 export const dynamic = "force-static"
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"

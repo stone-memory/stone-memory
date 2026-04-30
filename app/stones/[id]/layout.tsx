@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { fetchStones, fetchStoneById } from "@/lib/data-source"
 
-export const revalidate = 60
+export const revalidate = 0
 export const dynamicParams = true
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
