@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SelectionSidebar } from "@/components/selection-sidebar"
@@ -10,7 +11,9 @@ export default function CatalogPage() {
     <>
       <Header />
       <main id="main-content">
-        <CatalogGrid />
+        <Suspense fallback={null}>
+          <CatalogGrid />
+        </Suspense>
       </main>
       <Footer />
       <SelectionSidebar />
