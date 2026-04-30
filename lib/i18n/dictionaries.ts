@@ -431,7 +431,7 @@ const de: Dictionary = {
     hours: "Öffnungszeiten",
     hoursValue: "Mo–Fr 9:00–19:00 · Sa 10:00–16:00",
     address: "Studio & Werkstatt",
-    addressValue: "Kostopil, Riwne, Ukraine",
+    addressValue: "Kostopil, Rivne, Ukraine",
   },
 }
 

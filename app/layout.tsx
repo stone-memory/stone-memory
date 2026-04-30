@@ -209,8 +209,8 @@ const organizationJsonLd = {
   logo: `${SITE_URL}/logo-512.png`,
   description: DESCRIPTION,
   sameAs: [
-    "https://instagram.com/stonememory",
-    "https://facebook.com/stonememory",
+    "https://www.instagram.com/sttonememory/",
+    "https://www.facebook.com/profile.php?id=61588950935616",
     "https://youtube.com/@stonememory",
   ],
   contactPoint: [
