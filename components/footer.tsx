@@ -44,14 +44,31 @@ export function Footer() {
   const phone = profile.phone
   const EMAIL = profile.email
   const addressLine = [profile.address, profile.city].filter(Boolean).join(", ")
-  // Build hours string like "Пн–Пт 9:00–19:00 · Сб 10:00–16:00"
+  // Build hours string grouping consecutive days with identical times: "Пн–Пт 9:00–19:00 · Сб 10:00–16:00"
   const dayLabels: Record<string, string> = locale === "uk"
     ? { mon: "Пн", tue: "Вт", wed: "Ср", thu: "Чт", fri: "Пт", sat: "Сб", sun: "Нд" }
     : { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun" }
-  const hoursLine = (["mon","tue","wed","thu","fri","sat","sun"] as const)
-    .filter((d) => !profile.hours[d]?.closed)
-    .map((d) => `${dayLabels[d]} ${profile.hours[d].open}–${profile.hours[d].close}`)
-    .join(" · ")
+  const fmt = (t: string) => t.replace(/^0/, "")
+  const hoursLine = (() => {
+    const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const
+    const groups: { first: string; last: string; open: string; close: string }[] = []
+    for (const day of days) {
+      const h = profile.hours[day]
+      if (!h || h.closed) continue
+      const prev = groups[groups.length - 1]
+      if (prev && prev.open === h.open && prev.close === h.close) {
+        prev.last = day
+      } else {
+        groups.push({ first: day, last: day, open: h.open, close: h.close })
+      }
+    }
+    return groups
+      .map((g) => {
+        const dayPart = g.first === g.last ? dayLabels[g.first] : `${dayLabels[g.first]}–${dayLabels[g.last]}`
+        return `${dayPart} ${fmt(g.open)}–${fmt(g.close)}`
+      })
+      .join(" · ")
+  })()
 
   return (
     <footer id="contact" className="border-t border-foreground/5 bg-card pt-20 pb-10 md:pt-28">
