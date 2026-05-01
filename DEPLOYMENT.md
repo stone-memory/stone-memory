@@ -35,7 +35,7 @@ npm run build && npm start     # продакшн-білд локально
 
 | Змінна | Призначення | Де взяти |
 |--------|-------------|----------|
-| `NEXT_PUBLIC_SITE_URL` | Публічний URL (використовується для sitemap, canonical, metadata, JSON-LD) | Напр. `https://stonememory.com.ua.ua` |
+| `NEXT_PUBLIC_SITE_URL` | Публічний URL (використовується для sitemap, canonical, metadata, JSON-LD) | Напр. `https://stonememory.com.ua` |
 
 Сайт запуститься і без інших ключів — просто chat/reviews/translate будуть у mock-режимі.
 
@@ -132,9 +132,9 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://stonememory.com
 - [ ] Admin пароль у `password-gate.tsx` змінено на складний (або замінено на NextAuth)
 - [ ] Telegram bot налаштовано + webhook зареєстровано
 - [ ] Google Verification токен доданий → Search Console підтверджено
-- [ ] Sitemap `stonememory.com/sitemap.xml` відправлено в Search Console
+- [ ] Sitemap `stonememory.com.ua/sitemap.xml` відправлено в Search Console
 - [ ] DeepL/Google Translate ключ активовано (або mock — OK для старту)
-- [ ] Favicon і OG image `stonememory.com/opengraph-image` перевірено (в [Metatags.io](https://metatags.io/))
+- [ ] Favicon і OG image `stonememory.com.ua/opengraph-image` перевірено (в [Metatags.io](https://metatags.io/))
 - [ ] Тест 5-спроб lockout: ввести неправильний пароль 5 раз → має заблокувати на 15 хв
 - [ ] Тест cookie banner: очистити localStorage → перезавантажити → має з'явитися
 - [ ] Тест reduced-motion: увімкнути в системі → анімації на сайті мають зникнути

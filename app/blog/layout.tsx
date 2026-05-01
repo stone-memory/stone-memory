@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua.ua"
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 export const metadata: Metadata = {
   title: "Journal — stone, memorials, design & care",
