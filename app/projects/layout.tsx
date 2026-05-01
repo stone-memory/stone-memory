@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { fetchProjects } from "@/lib/data-source"
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 export const revalidate = 60
 

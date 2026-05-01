@@ -3,7 +3,7 @@ import { fetchArticles, fetchServices, fetchStones } from "@/lib/data-source"
 
 export const revalidate = 60
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 const withAlternates = (path: string) => ({
   languages: {

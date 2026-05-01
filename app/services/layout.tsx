@@ -3,7 +3,7 @@ import { fetchServices } from "@/lib/data-source"
 
 export const revalidate = 60
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 export const metadata: Metadata = {
   title: "Services — design, production, installation & care",

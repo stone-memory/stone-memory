@@ -4,7 +4,7 @@ import { fetchStones, fetchStoneById } from "@/lib/data-source"
 export const revalidate = 60
 export const dynamicParams = true
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 export async function generateStaticParams() {
   const stones = await fetchStones()

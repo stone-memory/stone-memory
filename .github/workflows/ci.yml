@@ -27,7 +27,7 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SITE_URL: https://stonememory.com
+          NEXT_PUBLIC_SITE_URL: https://stonememory.com.ua
         run: npm run build
 
       - name: Check bundle size

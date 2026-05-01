@@ -33,7 +33,7 @@ export default function AdminBroadcastPage() {
   const [headline, setHeadline] = useState("")
   const [intro, setIntro] = useState("")
   const [ctaLabel, setCtaLabel] = useState("Переглянути каталог")
-  const [ctaUrl, setCtaUrl] = useState("https://stonememory.com/catalog")
+  const [ctaUrl, setCtaUrl] = useState("https://stonememory.com.ua/catalog")
   const [outro, setOutro] = useState("")
   const [highlights, setHighlights] = useState<Highlight[]>([])
 
@@ -303,7 +303,7 @@ export default function AdminBroadcastPage() {
                 <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
                   URL кнопки
                 </label>
-                <Input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} placeholder="https://stonememory.com/catalog" />
+                <Input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} placeholder="https://stonememory.com.ua/catalog" />
               </div>
             </div>
 

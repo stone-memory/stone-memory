@@ -71,7 +71,7 @@ export default function StoneDetailPage() {
     stone.weightKg ? ["Weight", `${stone.weightKg} kg`] : null,
   ].filter(Boolean) as [string, string][]
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
   const canonicalUrl = `${SITE_URL}/stones/${stone.id}`
 
   const productJsonLd = {

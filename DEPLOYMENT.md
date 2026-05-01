@@ -21,7 +21,7 @@ npm run build && npm start     # продакшн-білд локально
 4. Build command: `npm run build` (за замовчуванням)
 5. Add Environment Variables (див. список нижче) — спочатку додай лише **обов'язкові**, решту — коли буде готово
 6. Deploy
-7. Підключи кастомний домен (`stonememory.com`) → Vercel налаштує HTTPS + HSTS автоматично
+7. Підключи кастомний домен (`stonememory.com.ua`) → Vercel налаштує HTTPS + HSTS автоматично
 
 Альтернативи: **Netlify**, **Railway**, **Fly.io**, **DigitalOcean App Platform** — всі підтримують Next.js 16.
 
@@ -35,7 +35,7 @@ npm run build && npm start     # продакшн-білд локально
 
 | Змінна | Призначення | Де взяти |
 |--------|-------------|----------|
-| `NEXT_PUBLIC_SITE_URL` | Публічний URL (використовується для sitemap, canonical, metadata, JSON-LD) | Напр. `https://stonememory.com` |
+| `NEXT_PUBLIC_SITE_URL` | Публічний URL (використовується для sitemap, canonical, metadata, JSON-LD) | Напр. `https://stonememory.com.ua.ua` |
 
 Сайт запуститься і без інших ключів — просто chat/reviews/translate будуть у mock-режимі.
 
@@ -49,7 +49,7 @@ npm run build && npm start     # продакшн-білд локально
 
 Після додавання всіх 3 змінних — зареєструй webhook один раз:
 ```bash
-curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://stonememory.com/api/telegram&secret_token=<WEBHOOK_SECRET>"
+curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://stonememory.com.ua/api/telegram&secret_token=<WEBHOOK_SECRET>"
 ```
 
 ### Google Reviews (автопідтяг відгуків з Google Maps)

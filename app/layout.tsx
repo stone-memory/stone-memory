@@ -16,7 +16,7 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com"
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 const SITE_NAME = "Stone Memory"
 const TITLE_DEFAULT = "Stone Memory — monuments, countertops, window sills, stairs and paving in natural stone"
 const DESCRIPTION =
