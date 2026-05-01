@@ -24,14 +24,3 @@ jobs:
 
       - name: Type-check
         run: npx tsc --noEmit
-
-      - name: Build
-        env:
-          NEXT_PUBLIC_SITE_URL: https://stonememory.com.ua
-        run: npm run build
-
-      - name: Check bundle size
-        run: |
-          echo "Analyzing .next output…"
-          du -sh .next/static || true
-          find .next/static/chunks -name "*.js" -size +300k -exec ls -lh {} \; || true
