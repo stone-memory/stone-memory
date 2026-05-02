@@ -51,6 +51,7 @@ export type Dictionary = {
     namePlaceholder: string
     phonePlaceholder: string
     submit: string
+    submitting: string
     privacy: string
     remove: string
   }
@@ -138,6 +139,7 @@ const uk: Dictionary = {
     namePlaceholder: "Ваше ім'я",
     phonePlaceholder: "Номер телефону",
     submit: "Отримати розрахунок",
+    submitting: "Відправлення…",
     privacy: "Натискаючи кнопку, ви погоджуєтесь з Політикою конфіденційності.",
     remove: "Видалити",
   },
@@ -225,6 +227,7 @@ const pl: Dictionary = {
     namePlaceholder: "Twoje imię",
     phonePlaceholder: "Numer telefonu",
     submit: "Poproś o wycenę",
+    submitting: "Wysyłanie…",
     privacy: "Przesyłając zgadzasz się z Polityką prywatności.",
     remove: "Usuń",
   },
@@ -312,6 +315,7 @@ const en: Dictionary = {
     namePlaceholder: "Your name",
     phonePlaceholder: "Phone number",
     submit: "Request Calculation",
+    submitting: "Submitting…",
     privacy: "By submitting you agree to our Privacy Policy.",
     remove: "Remove",
   },
@@ -399,6 +403,7 @@ const de: Dictionary = {
     namePlaceholder: "Ihr Name",
     phonePlaceholder: "Telefonnummer",
     submit: "Angebot anfordern",
+    submitting: "Wird gesendet…",
     privacy: "Mit dem Absenden stimmen Sie unserer Datenschutzerklärung zu.",
     remove: "Entfernen",
   },
@@ -486,6 +491,7 @@ const lt: Dictionary = {
     namePlaceholder: "Jūsų vardas",
     phonePlaceholder: "Telefono numeris",
     submit: "Prašyti skaičiavimo",
+    submitting: "Siunčiama…",
     privacy: "Pateikdami sutinkate su Privatumo politika.",
     remove: "Pašalinti",
   },

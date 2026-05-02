@@ -16,7 +16,7 @@ async function allowed(req: Request): Promise<boolean> {
   const token = header.startsWith("Bearer ") ? header.slice(7).trim() : ""
 
   const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && token === cronSecret) return true
+  if (cronSecret) return token === cronSecret
 
   if (token) {
     const { data } = await supabaseAdmin.auth.getUser(token)

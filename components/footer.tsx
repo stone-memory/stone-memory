@@ -187,12 +187,8 @@ export function Footer() {
           <p>{t.footer.copyright}</p>
           <div className="flex flex-wrap items-center gap-5">
             <Link href="/about" prefetch className="transition-colors hover:text-foreground">{t.footer.about}</Link>
-            <Link href="/privacy" prefetch className="transition-colors hover:text-foreground">
-              {locale === "uk" ? "Конфіденційність" : locale === "pl" ? "Prywatność" : locale === "de" ? "Datenschutz" : locale === "lt" ? "Privatumas" : "Privacy"}
-            </Link>
-            <Link href="/terms" prefetch className="transition-colors hover:text-foreground">
-              {locale === "uk" ? "Умови" : locale === "pl" ? "Warunki" : locale === "de" ? "AGB" : locale === "lt" ? "Sąlygos" : "Terms"}
-            </Link>
+            <Link href="/privacy" prefetch className="transition-colors hover:text-foreground">{t.footer.privacy}</Link>
+            <Link href="/terms" prefetch className="transition-colors hover:text-foreground">{t.footer.terms}</Link>
             <a href="#contact" className="transition-colors hover:text-foreground">{t.footer.contact}</a>
           </div>
         </div>

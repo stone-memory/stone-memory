@@ -168,7 +168,7 @@ export function SelectionForm() {
         {isSubmitting ? (
           <span className="flex items-center justify-center gap-2">
             <Spinner className="h-5 w-5" />
-            Submitting...
+            {t.selection.submitting}
           </span>
         ) : (
           t.selection.submit
