@@ -193,7 +193,7 @@ export function Footer() {
             <Link href="/terms" prefetch className="transition-colors hover:text-foreground">
               {locale === "uk" ? "Умови" : locale === "pl" ? "Warunki" : locale === "de" ? "AGB" : locale === "lt" ? "Sąlygos" : "Terms"}
             </Link>
-            <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-foreground">{t.footer.contact}</a>
+            <a href="#contact" className="transition-colors hover:text-foreground">{t.footer.contact}</a>
           </div>
         </div>
       </div>
