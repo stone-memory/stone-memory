@@ -164,7 +164,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   category: "home-and-garden",
   verification: {
-    google: process.env.GOOGLE_VERIFICATION,
+    google: process.env.GOOGLE_VERIFICATION || "CgpIMtWUMYYh5IQ-WxPu-FygMeyt_syD4dtU2w06Oms",
     yandex: process.env.YANDEX_VERIFICATION,
     other: {
       "msvalidate.01": process.env.BING_VERIFICATION || "",
