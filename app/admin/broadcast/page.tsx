@@ -280,10 +280,14 @@ export default function AdminBroadcastPage() {
                     <div className="flex gap-2">
                       <Input placeholder="Опис (необов'язково)" value={h.description || ""} onChange={(e) => updateHighlight(i, { description: e.target.value })} />
                       <Input
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
                         placeholder="Ціна від €"
                         value={h.priceFrom ?? ""}
-                        onChange={(e) => updateHighlight(i, { priceFrom: e.target.value ? Number(e.target.value) : undefined })}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^0-9]/g, "")
+                          updateHighlight(i, { priceFrom: raw ? Number(raw) : undefined })
+                        }}
                         className="w-32"
                       />
                     </div>

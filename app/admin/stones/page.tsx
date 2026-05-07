@@ -312,9 +312,13 @@ function StoneEditor({
           </Field>
           <Field label="Ціна від (€)">
             <Input
-              type="number"
-              value={draft.priceFrom}
-              onChange={(e) => setDraft({ ...draft, priceFrom: Number(e.target.value) })}
+              type="text"
+              inputMode="numeric"
+              value={draft.priceFrom || ""}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, "")
+                setDraft({ ...draft, priceFrom: Number(raw) })
+              }}
             />
           </Field>
           <Field label="Матеріал">
@@ -365,9 +369,13 @@ function StoneEditor({
           </Field>
           <Field label="Вага (кг)">
             <Input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={draft.weightKg ?? ""}
-              onChange={(e) => setDraft({ ...draft, weightKg: e.target.value ? Number(e.target.value) : undefined })}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9.]/g, "")
+                setDraft({ ...draft, weightKg: raw ? Number(raw) : undefined })
+              }}
             />
           </Field>
           <label className="inline-flex items-center gap-2 text-sm">

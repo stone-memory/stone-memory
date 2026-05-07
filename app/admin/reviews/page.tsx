@@ -260,11 +260,13 @@ function ReviewCard({
           <div className="ml-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
             <span>Порядок:</span>
             <input
-              type="number"
-              min={1}
-              max={5}
-              value={r.order ?? 99}
-              onChange={(e) => onOrderChange(Number(e.target.value) || 99)}
+              type="text"
+              inputMode="numeric"
+              value={r.order ?? ""}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, "")
+                onOrderChange(raw ? Math.min(Math.max(Number(raw), 1), 99) : 99)
+              }}
               className="w-14 rounded border border-foreground/10 bg-background px-2 py-0.5 text-xs tabular-nums"
             />
           </div>

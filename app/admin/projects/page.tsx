@@ -256,7 +256,15 @@ function ProjectEditor({
             <Input value={draft.city} onChange={(e) => setDraft({ ...draft, city: e.target.value })} />
           </Field>
           <Field label="Рік">
-            <Input type="number" value={draft.year} onChange={(e) => setDraft({ ...draft, year: Number(e.target.value) || new Date().getFullYear() })} />
+            <Input
+              type="text"
+              inputMode="numeric"
+              value={draft.year || ""}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, "")
+                setDraft({ ...draft, year: raw ? Number(raw) : new Date().getFullYear() })
+              }}
+            />
           </Field>
           <div className="md:col-span-2">
             <Field label="Фото проекту">
