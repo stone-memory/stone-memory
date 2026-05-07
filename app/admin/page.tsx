@@ -48,10 +48,10 @@ export default function AdminPage() {
       {/* Header */}
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl font-semibold tracking-tight">Orders</h1>
+          <h1 className="text-4xl font-semibold tracking-tight">Замовлення</h1>
           <Button variant="outline" className="gap-2 rounded-xl">
             <Download size={16} />
-            Export CSV
+            Експорт CSV
           </Button>
         </div>
 
@@ -60,7 +60,7 @@ export default function AdminPage() {
           <div className="relative flex-1 max-w-md">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search by ID, client, phone…"
+              placeholder="Пошук за ID, клієнтом, телефоном…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="h-10 rounded-xl pl-10 border-black/10"
@@ -71,10 +71,10 @@ export default function AdminPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="new">New</SelectItem>
-              <SelectItem value="in_progress">In Progress</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="all">Усі статуси</SelectItem>
+              <SelectItem value="new">Нові</SelectItem>
+              <SelectItem value="in_progress">В роботі</SelectItem>
+              <SelectItem value="completed">Завершені</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -83,25 +83,25 @@ export default function AdminPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
-          label="New Orders"
+          label="Нові замовлення"
           value={newOrders}
           trend={{ value: 12, isPositive: true }}
           sparkline={[3, 5, 2, 8, 6, 9, 7]}
         />
         <KPICard
-          label="In Progress"
+          label="В роботі"
           value={inProgressOrders}
           trend={{ value: 5, isPositive: false }}
           sparkline={[9, 7, 8, 5, 6, 4, 7]}
         />
         <KPICard
-          label="Completed This Month"
+          label="Завершено цього місяця"
           value={completedThisMonth}
           trend={{ value: 23, isPositive: true }}
           sparkline={[2, 4, 3, 7, 5, 9, 8]}
         />
         <KPICard
-          label="Total Pipeline Value"
+          label="Загальна сума pipeline"
           value={`€${(totalPipeline / 1000).toFixed(1)}K`}
           trend={{ value: 8, isPositive: true }}
           sparkline={[5, 6, 4, 8, 7, 9, 6]}

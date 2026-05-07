@@ -12,25 +12,25 @@ import { cn } from "@/lib/utils"
 type NavItem = { href: string; icon: typeof Inbox; label: string; perm: PermissionKey }
 
 const navItems: NavItem[] = [
-  { href: "/admin", icon: Inbox, label: "Orders", perm: "orders" },
-  { href: "/admin/messages", icon: InboxIcon, label: "Messages", perm: "messages" },
-  { href: "/admin/broadcast", icon: Send, label: "Broadcast", perm: "messages" },
-  { href: "/admin/chat", icon: MessageCircle, label: "Live chat", perm: "chat" },
-  { href: "/admin/chat-settings", icon: Sparkles, label: "Chat settings", perm: "chatSettings" },
-  { href: "/admin/finances", icon: Wallet, label: "Finances", perm: "finances" },
-  { href: "/admin/stones", icon: Package, label: "Products", perm: "products" },
-  { href: "/admin/services", icon: Wrench, label: "Services", perm: "services" },
-  { href: "/admin/projects", icon: Briefcase, label: "Projects", perm: "projects" },
-  { href: "/admin/reviews", icon: MessageSquare, label: "Reviews", perm: "reviews" },
-  { href: "/admin/featured", icon: Star, label: "Popular", perm: "featured" },
-  { href: "/admin/blog", icon: BookOpen, label: "Blog", perm: "blog" },
+  { href: "/admin", icon: Inbox, label: "Замовлення", perm: "orders" },
+  { href: "/admin/messages", icon: InboxIcon, label: "Повідомлення", perm: "messages" },
+  { href: "/admin/broadcast", icon: Send, label: "Розсилка", perm: "messages" },
+  { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат", perm: "chat" },
+  { href: "/admin/chat-settings", icon: Sparkles, label: "Налаштування чату", perm: "chatSettings" },
+  { href: "/admin/finances", icon: Wallet, label: "Фінанси", perm: "finances" },
+  { href: "/admin/stones", icon: Package, label: "Товари", perm: "products" },
+  { href: "/admin/services", icon: Wrench, label: "Послуги", perm: "services" },
+  { href: "/admin/projects", icon: Briefcase, label: "Проєкти", perm: "projects" },
+  { href: "/admin/reviews", icon: MessageSquare, label: "Відгуки", perm: "reviews" },
+  { href: "/admin/featured", icon: Star, label: "Популярні", perm: "featured" },
+  { href: "/admin/blog", icon: BookOpen, label: "Блог", perm: "blog" },
   { href: "/admin/faq", icon: HelpCircle, label: "FAQ", perm: "faq" },
-  { href: "/admin/about", icon: Info, label: "About page", perm: "about" },
-  { href: "/admin/tasks", icon: CheckSquare, label: "Tasks", perm: "tasks" },
-  { href: "/admin/analytics", icon: LineChart, label: "Analytics", perm: "analytics" },
-  { href: "/admin/business", icon: Building2, label: "Business profile", perm: "business" },
-  { href: "/admin/roles", icon: ShieldCheck, label: "Roles & access", perm: "settings" },
-  { href: "/admin/account", icon: UserCircle, label: "Account", perm: "settings" },
+  { href: "/admin/about", icon: Info, label: "Про нас", perm: "about" },
+  { href: "/admin/tasks", icon: CheckSquare, label: "Завдання", perm: "tasks" },
+  { href: "/admin/analytics", icon: LineChart, label: "Аналітика", perm: "analytics" },
+  { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", perm: "business" },
+  { href: "/admin/roles", icon: ShieldCheck, label: "Ролі та доступ", perm: "settings" },
+  { href: "/admin/account", icon: UserCircle, label: "Акаунт", perm: "settings" },
 ]
 
 export function AdminSidebar() {
@@ -76,12 +76,12 @@ export function AdminSidebar() {
       <header className="lg:hidden fixed top-0 inset-x-0 z-40 flex items-center justify-between bg-white border-b border-black/5 px-4 h-14">
         <button
           onClick={() => setMobileOpen(true)}
-          aria-label="Open menu"
+          aria-label="Відкрити меню"
           className="p-2 -ml-2 rounded-lg hover:bg-black/5"
         >
           <Menu size={20} />
         </button>
-        <div className="text-sm font-medium">Stone Memory · Admin</div>
+        <div className="text-sm font-medium">Stone Memory · Адмін</div>
         <div className="w-9" />
       </header>
 
@@ -107,7 +107,7 @@ export function AdminSidebar() {
           <div className="text-sm font-medium">Stone Memory</div>
           <button
             onClick={() => setMobileOpen(false)}
-            aria-label="Close menu"
+            aria-label="Закрити меню"
             className="lg:hidden p-1 rounded-lg hover:bg-black/5"
           >
             <X size={18} />
@@ -115,7 +115,7 @@ export function AdminSidebar() {
         </div>
         <div className="flex items-center justify-between gap-2">
           <div className="inline-block text-xs uppercase tracking-widest bg-black/5 px-2 py-0.5 rounded text-muted-foreground">
-            Admin
+            Адмін
           </div>
           <kbd className="rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground" title="Відкрити пошук">
             ⌘K
@@ -157,7 +157,7 @@ export function AdminSidebar() {
             SM
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate capitalize">{role}</p>
+            <p className="text-sm font-medium truncate">{role === "admin" ? "Адмін" : "Менеджер"}</p>
             <p className="text-[11px] text-muted-foreground truncate">
               {role === "admin" ? "Повний доступ" : `${managerPerms.length} дозволів`}
             </p>
@@ -170,7 +170,7 @@ export function AdminSidebar() {
           className="w-full justify-start gap-2"
         >
           <LogOut size={16} />
-          <span>Sign out</span>
+          <span>Вийти</span>
         </Button>
       </div>
     </aside>

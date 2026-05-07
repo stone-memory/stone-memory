@@ -127,7 +127,7 @@ export default function AdminAccountPage() {
         </form>
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Після зміни пароля ваші активні сесії лишаються живими. Якщо забули пароль — використайте пароль-reset через email у формі входу (кнопка "Forgot password" у Supabase hosted UI), або оновіть його через Supabase Dashboard.
+          Після зміни пароля ваші активні сесії лишаються живими. Якщо забули пароль — використайте пароль-reset через email у формі входу (кнопка "Забули пароль" у Supabase hosted UI), або оновіть його через Supabase Dashboard.
         </p>
       </section>
     </div>

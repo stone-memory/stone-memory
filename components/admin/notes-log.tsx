@@ -12,19 +12,19 @@ function formatDate(date: Date): string {
   const hours = Math.floor(diff / 3600000)
   const days = Math.floor(diff / 86400000)
 
-  if (minutes < 1) return "just now"
-  if (minutes < 60) return `${minutes}m ago`
-  if (hours < 24) return `${hours}h ago`
-  if (days < 7) return `${days}d ago`
+  if (minutes < 1) return "щойно"
+  if (minutes < 60) return `${minutes} хв тому`
+  if (hours < 24) return `${hours} год тому`
+  if (days < 7) return `${days} дн тому`
 
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+  return d.toLocaleDateString("uk-UA", { month: "short", day: "numeric", year: "numeric" })
 }
 
 export function NotesLog({ notes }: NotesLogProps) {
   if (!notes || notes.length === 0) {
     return (
       <div className="py-6 text-center">
-        <p className="text-sm text-muted-foreground">No notes yet</p>
+        <p className="text-sm text-muted-foreground">Поки немає нотаток</p>
       </div>
     )
   }

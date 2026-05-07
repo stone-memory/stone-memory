@@ -100,7 +100,7 @@ export default function AdminFeaturedPage() {
                     onClick={() => moveUp(stone.id)}
                     disabled={i === 0}
                     className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
-                    aria-label="Up"
+                    aria-label="Вгору"
                   >
                     ▲
                   </button>
@@ -108,7 +108,7 @@ export default function AdminFeaturedPage() {
                     onClick={() => moveDown(stone.id)}
                     disabled={i === selectedStones.length - 1}
                     className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
-                    aria-label="Down"
+                    aria-label="Вниз"
                   >
                     ▼
                   </button>
@@ -116,7 +116,7 @@ export default function AdminFeaturedPage() {
                 <button
                   onClick={() => toggle(stone.id)}
                   className="rounded-lg p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                  aria-label="Remove"
+                  aria-label="Видалити"
                 >
                   ✕
                 </button>

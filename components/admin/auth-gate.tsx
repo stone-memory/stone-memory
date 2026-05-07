@@ -52,7 +52,7 @@ export function AuthGate({ children }: AuthGateProps) {
         <div className="w-full max-w-md flex flex-col items-center gap-8 px-6">
           <div className="text-center">
             <div className="text-2xl font-semibold tracking-tight mb-2">Stone Memory</div>
-            <h1 className="text-4xl font-semibold tracking-tight">Admin Access</h1>
+            <h1 className="text-4xl font-semibold tracking-tight">Доступ до адмінки</h1>
           </div>
           <form onSubmit={handleSubmit} className="w-full space-y-3">
             <Input
@@ -67,7 +67,7 @@ export function AuthGate({ children }: AuthGateProps) {
             />
             <Input
               type="password"
-              placeholder="Password"
+              placeholder="Пароль"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="h-12 text-base rounded-2xl"
@@ -80,7 +80,7 @@ export function AuthGate({ children }: AuthGateProps) {
               disabled={submitting}
               className="w-full h-12 rounded-2xl text-base"
             >
-              {submitting ? "Signing in…" : "Sign In"}
+              {submitting ? "Вхід…" : "Увійти"}
             </Button>
           </form>
         </div>
@@ -102,7 +102,7 @@ export function SignOutButton() {
       onClick={handle}
       className="text-xs text-muted-foreground hover:text-foreground"
     >
-      Sign out
+      Вийти
     </button>
   )
 }

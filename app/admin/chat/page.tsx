@@ -205,7 +205,7 @@ export default function AdminChatPage() {
                     </a>
                   )}
                   <span>· {active.locale}</span>
-                  <span>· Session <code className="bg-foreground/5 px-1.5 py-0.5 rounded">{active.sessionId}</code></span>
+                  <span>· Сесія <code className="bg-foreground/5 px-1.5 py-0.5 rounded">{active.sessionId}</code></span>
                 </div>
               </div>
               <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">

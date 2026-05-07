@@ -21,9 +21,9 @@ export function StatusChanger({ currentStatus, onChange }: StatusChangerProps) {
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="new">New</SelectItem>
-        <SelectItem value="in_progress">In Progress</SelectItem>
-        <SelectItem value="completed">Completed</SelectItem>
+        <SelectItem value="new">Нове</SelectItem>
+        <SelectItem value="in_progress">В роботі</SelectItem>
+        <SelectItem value="completed">Завершено</SelectItem>
       </SelectContent>
     </Select>
   )

@@ -34,12 +34,12 @@ function formatDate(date: Date): string {
   const hours = Math.floor(diff / 3600000)
   const days = Math.floor(diff / 86400000)
 
-  if (minutes < 1) return "just now"
-  if (minutes < 60) return `${minutes}m ago`
-  if (hours < 24) return `${hours}h ago`
-  if (days < 7) return `${days}d ago`
+  if (minutes < 1) return "щойно"
+  if (minutes < 60) return `${minutes} хв тому`
+  if (hours < 24) return `${hours} год тому`
+  if (days < 7) return `${days} дн тому`
 
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+  return d.toLocaleDateString("uk-UA", { month: "short", day: "numeric" })
 }
 
 function formatPrice(price: number): string {
@@ -64,12 +64,12 @@ export function OrdersTable({ orders }: OrdersTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-32">Order ID</TableHead>
-              <TableHead className="w-28">Date</TableHead>
-              <TableHead className="flex-1">Client</TableHead>
-              <TableHead className="flex-1">Models</TableHead>
-              <TableHead className="w-32">Status</TableHead>
-              <TableHead className="w-12">Actions</TableHead>
+              <TableHead className="w-32">ID замовлення</TableHead>
+              <TableHead className="w-28">Дата</TableHead>
+              <TableHead className="flex-1">Клієнт</TableHead>
+              <TableHead className="flex-1">Моделі</TableHead>
+              <TableHead className="w-32">Статус</TableHead>
+              <TableHead className="w-12">Дії</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -113,7 +113,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                       ))}
                       {moreCount > 0 && (
                         <span className="bg-black/5 rounded px-2 py-1 text-xs font-mono">
-                          +{moreCount} more
+                          +{moreCount} ще
                         </span>
                       )}
                     </div>
@@ -130,14 +130,14 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => setSelectedOrderId(order.id)}>
-                          View
+                          Переглянути
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDelete(order.id)}
                           className="text-destructive focus:text-destructive"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
+                          Видалити
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

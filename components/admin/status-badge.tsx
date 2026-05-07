@@ -14,9 +14,9 @@ export function StatusBadge({ status }: StatusBadgeProps) {
 
   const { bg, text, border } = styles[status]
   const labels: Record<OrderStatus, string> = {
-    new: "New",
-    in_progress: "In Progress",
-    completed: "Completed",
+    new: "Нове",
+    in_progress: "В роботі",
+    completed: "Завершено",
   }
 
   return (

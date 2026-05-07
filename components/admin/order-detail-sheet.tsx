@@ -21,7 +21,7 @@ function formatPrice(price: number): string {
 }
 
 function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
+  return new Date(date).toLocaleDateString("uk-UA", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -41,7 +41,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
   const handleAddNote = () => {
     if (noteText.trim()) {
       addNote(order.id, {
-        author: "You",
+        author: "Ви",
         text: noteText,
         createdAt: new Date(),
       })
@@ -77,7 +77,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
             {/* Client Section */}
             <section>
               <h3 className="text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-4">
-                Client
+                Клієнт
               </h3>
               <p className="font-medium mb-2">{order.name}</p>
               <a
@@ -87,13 +87,13 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                 <Phone size={16} />
                 {order.phone}
               </a>
-              <Button className="w-full rounded-xl h-11">Call Client</Button>
+              <Button className="w-full rounded-xl h-11">Зателефонувати клієнту</Button>
             </section>
 
             {/* Selected Items Section */}
             <section>
               <h3 className="text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-4">
-                Selected Items
+                Обрані позиції
               </h3>
               <div className="space-y-3">
                 {order.items.map((item) => (
@@ -113,14 +113,14 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                     <div className="flex-1 min-w-0">
                       <p className="font-mono text-sm font-medium">№ {item.id}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        from {formatPrice(item.priceFrom)}
+                        від {formatPrice(item.priceFrom)}
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="flex justify-between items-center pt-4 font-medium">
-                <span>Estimated Total</span>
+                <span>Орієнтовна сума</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
             </section>
@@ -128,7 +128,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
             {/* Status Section */}
             <section>
               <h3 className="text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-4">
-                Status
+                Статус
               </h3>
               <StatusChanger currentStatus={order.status} onChange={handleStatusChange} />
             </section>
@@ -136,10 +136,10 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
             {/* Internal Notes Section */}
             <section>
               <h3 className="text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-4">
-                Internal Notes
+                Внутрішні нотатки
               </h3>
               <Textarea
-                placeholder="Add a note (visible only to team)…"
+                placeholder="Додати нотатку (видно лише команді)…"
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
                 className="rounded-xl bg-black/[0.04] border-0 min-h-[100px] mb-2"
@@ -151,7 +151,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                 disabled={!noteText.trim()}
                 className="ml-auto"
               >
-                Add Note
+                Додати нотатку
               </Button>
               <div className="mt-6">
                 <NotesLog notes={order.notes} />
@@ -168,10 +168,10 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
             onClick={handleMarkContacted}
             disabled={order.contacted}
           >
-            {order.contacted ? "Contacted" : "Mark as Contacted"}
+            {order.contacted ? "Сконтактовано" : "Позначити як сконтактовано"}
           </Button>
           <Button className="flex-1 rounded-xl" onClick={onClose}>
-            Done
+            Готово
           </Button>
         </div>
       </SheetContent>

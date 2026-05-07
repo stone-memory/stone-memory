@@ -125,12 +125,12 @@ export function MultilingualField({
                   ? "bg-foreground text-background shadow-soft"
                   : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
               )}
-              aria-label={`Edit in ${LOCALE_LABELS[l]}`}
+              aria-label={`Редагувати ${LOCALE_LABELS[l]}`}
             >
               <span aria-hidden>{LOCALE_FLAGS[l]}</span>
               <span>{l.toUpperCase()}</span>
               {missing && !isActive && (
-                <AlertCircle size={10} className="text-destructive" aria-label="Missing translation" />
+                <AlertCircle size={10} className="text-destructive" aria-label="Переклад відсутній" />
               )}
               {!missing && !isActive && l !== sourceLocale && (
                 <Check size={10} className={isActive ? "opacity-0" : "text-accent"} aria-hidden />
