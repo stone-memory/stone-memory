@@ -4,6 +4,7 @@ import { Phone, MessageCircle } from "lucide-react"
 import { useChatStore } from "@/lib/store/chat"
 import { useTranslation } from "@/lib/i18n/context"
 import { useBusinessProfile } from "@/lib/store/business-profile"
+import { PhoneLink } from "@/components/phone-link"
 import type { Locale } from "@/lib/types"
 
 const labels: Record<Locale, { call: string; chat: string }> = {
@@ -24,13 +25,14 @@ export function StickyMobileCTA() {
     <div className="fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none">
       <div className="mx-3 mb-3 pointer-events-auto">
         <div className="grid grid-cols-2 gap-2 rounded-2xl border border-foreground/10 bg-background/95 p-2 shadow-hover backdrop-blur-md">
-          <a
-            href={`tel:${phone.replace(/\s+/g, "")}`}
+          <PhoneLink
+            number={phone}
+            source="mobile_sticky"
             className="flex flex-col items-center gap-0.5 rounded-xl bg-foreground/[0.04] py-2 text-[11px] font-medium text-foreground active:scale-[0.97] transition-transform"
           >
             <Phone className="h-4 w-4" strokeWidth={1.75} />
             {L.call}
-          </a>
+          </PhoneLink>
           <button
             type="button"
             onClick={() => openChat()}

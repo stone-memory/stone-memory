@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { MapPin, Phone, Mail, Clock, Award, Shield, Users, Truck } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
 import { useAbout } from "@/lib/store/about"
+import { trackEvent } from "@/components/analytics-pixels"
 
 const PHONE_DISPLAY = "+380 (67) 808 02 22"
 const EMAIL = "sttonememory@gmail.com"
@@ -83,6 +84,7 @@ export function AboutSection() {
                 term={C.phone}
                 desc={PHONE_DISPLAY}
                 href={`tel:${PHONE_DISPLAY.replace(/\s+/g, "")}`}
+                onClick={() => trackEvent("phone_click", { source: "about_section" })}
               />
               <ContactRow
                 icon={Mail}
@@ -151,11 +153,13 @@ function ContactRow({
   term,
   desc,
   href,
+  onClick,
 }: {
   icon: typeof MapPin
   term: string
   desc: string
   href?: string
+  onClick?: () => void
 }) {
   return (
     <div className="flex gap-4">
@@ -167,6 +171,7 @@ function ContactRow({
         {href ? (
           <a
             href={href}
+            onClick={onClick}
             className="mt-1 block break-words text-[15px] text-accent transition-colors hover:brightness-110"
           >
             {desc}

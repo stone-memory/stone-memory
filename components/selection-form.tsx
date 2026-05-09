@@ -5,6 +5,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { generateOrderRef } from "@/lib/data/stones"
+import { trackEvent } from "@/components/analytics-pixels"
 import { cn } from "@/lib/utils"
 
 const LOCALE_TO_CC: Record<string, string> = {
@@ -73,6 +74,11 @@ export function SelectionForm() {
         const data = await res.json().catch(() => ({}))
         throw new Error(data?.error || "Failed to submit order")
       }
+      trackEvent("generate_lead", {
+        form: "selection",
+        items: items.length,
+        locale,
+      })
       submitOrder(reference)
     } catch (err) {
       console.error("order submit failed", err)

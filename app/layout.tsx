@@ -6,6 +6,7 @@ import { LanguageProvider } from "@/lib/i18n/context"
 import { PublicChrome } from "@/components/public-chrome"
 import { NavProgress } from "@/components/nav-progress"
 import { AnalyticsPixels } from "@/components/analytics-pixels"
+import { WebVitalsReporter } from "@/components/web-vitals"
 import { CookieConsent } from "@/components/cookie-consent"
 import { SkipLink } from "@/components/skip-link"
 import "./globals.css"
@@ -295,6 +296,7 @@ export default function RootLayout({
           <CookieConsent />
         </LanguageProvider>
         <AnalyticsPixels />
+        <WebVitalsReporter />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>

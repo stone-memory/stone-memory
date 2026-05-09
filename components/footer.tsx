@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Phone, Mail, MapPin, Clock, Instagram, Facebook, Youtube, ArrowRight } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
 import { useBusinessProfile } from "@/lib/store/business-profile"
+import { PhoneLink } from "@/components/phone-link"
 import { useState } from "react"
 
 export function Footer() {
@@ -159,7 +160,7 @@ export function Footer() {
             <ul className="space-y-3 text-[15px]">
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
-                <a href={`tel:${phone.replace(/\s+/g, "")}`} className="font-medium text-foreground hover:text-accent">{phone}</a>
+                <PhoneLink number={phone} source="footer" className="font-medium text-foreground hover:text-accent">{phone}</PhoneLink>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />

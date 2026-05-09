@@ -5,6 +5,7 @@ import { X, Calculator as CalcIcon, Phone, Send } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from "@/lib/i18n/context"
 import { useChatStore } from "@/lib/store/chat"
+import { PhoneLink } from "@/components/phone-link"
 import type { Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { create } from "zustand"
@@ -407,13 +408,14 @@ export function PriceCalculator() {
               </div>
               <div className="mt-1 text-xs opacity-70">{U.priceNote}. {U.resultHint}</div>
               <div className="mt-5 flex flex-wrap gap-2">
-                <a
-                  href={`tel:${PHONE}`}
+                <PhoneLink
+                  number={PHONE}
+                  source="calculator"
                   className="inline-flex items-center gap-2 rounded-full bg-background/10 px-4 py-2 text-sm font-medium text-background ring-1 ring-background/20 transition-colors hover:bg-background/20"
                 >
                   <Phone className="h-3.5 w-3.5" strokeWidth={2} />
                   {U.callUs} · {PHONE_DISPLAY}
-                </a>
+                </PhoneLink>
                 <button
                   onClick={() => {
                     close()
