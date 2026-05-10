@@ -57,6 +57,11 @@ type PatchPayload = Partial<{
   install_address: string | null
   install_city: string | null
   category: "memorial" | "home" | null
+  /** Categorical reason for closing as cancelled/lost. See lib/crm/types.ts
+   *  → LOST_REASON_OPTIONS for the canonical list (just text values, no
+   *  enum constraint at the DB level so taxonomy can evolve freely). */
+  lost_reason: string | null
+  lost_reason_note: string | null
 }>
 
 // PATCH /api/crm/deals/[id] — змінити поля. При зміні status — валідація переходу.

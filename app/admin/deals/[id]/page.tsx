@@ -16,11 +16,14 @@ import {
   REMINDER_KIND_LABELS_UK,
   COMM_CHANNEL_LABELS,
   availableTransitions,
+  lostReasonLabel,
   type DealStatus,
+  type LostReason,
   type PaymentKind,
   type PaymentMethod,
   type DocumentKind,
 } from "@/lib/crm/types"
+import { LostReasonModal } from "@/components/admin/lost-reason-modal"
 
 type Overview = NonNullable<Awaited<ReturnType<typeof fetchDealOverview>>>
 
@@ -40,19 +43,50 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
     refresh()
   }, [id])
 
-  const changeStatus = async (next: DealStatus) => {
+  // When the user clicks "Скасовано" or "Втрачено" we open a modal first to
+  // capture the reason. All other status transitions go through immediately.
+  const [lostModal, setLostModal] = useState<null | "cancelled" | "lost">(null)
+  const [savingClose, setSavingClose] = useState(false)
+
+  const patchDeal = async (body: Record<string, unknown>): Promise<boolean> => {
     setError(null)
     const r = await authedFetch(`/api/crm/deals/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next }),
+      body: JSON.stringify(body),
     })
     const j = await r.json()
     if (!r.ok) {
       setError(j.error || "помилка")
+      return false
+    }
+    return true
+  }
+
+  const changeStatus = async (next: DealStatus) => {
+    if (next === "cancelled" || next === "lost") {
+      setLostModal(next)
       return
     }
-    refresh()
+    if (await patchDeal({ status: next })) refresh()
+  }
+
+  const confirmClose = async (payload: { lost_reason: LostReason; lost_reason_note: string | null }) => {
+    if (!lostModal) return
+    setSavingClose(true)
+    try {
+      const ok = await patchDeal({
+        status: lostModal,
+        lost_reason: payload.lost_reason,
+        lost_reason_note: payload.lost_reason_note,
+      })
+      if (ok) {
+        setLostModal(null)
+        refresh()
+      }
+    } finally {
+      setSavingClose(false)
+    }
   }
 
   if (loading) return <div className="text-sm text-muted-foreground">Завантаження…</div>
@@ -120,8 +154,31 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
           <div className="mt-3 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>
         )}
 
+        {/* Closed-reason badge — shows up once a deal has been moved to
+           cancelled/lost. Gives at-a-glance context on why the deal didn't go
+           through, plus any free-text elaboration the user added. */}
+        {(d.status === "cancelled" || d.status === "lost") && d.lost_reason && (
+          <div className="mt-4 rounded-xl border border-foreground/10 bg-foreground/[0.02] px-4 py-3">
+            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Причина {d.status === "lost" ? "втрати" : "скасування"}
+            </div>
+            <div className="mt-1 text-sm font-medium">{lostReasonLabel(d.lost_reason)}</div>
+            {d.lost_reason_note && (
+              <p className="mt-1 text-sm text-muted-foreground whitespace-pre-wrap">{d.lost_reason_note}</p>
+            )}
+          </div>
+        )}
+
         {d.description && <p className="mt-4 text-sm text-foreground/85">{d.description}</p>}
       </div>
+
+      <LostReasonModal
+        open={lostModal !== null}
+        targetStatus={lostModal ?? "cancelled"}
+        busy={savingClose}
+        onCancel={() => setLostModal(null)}
+        onConfirm={confirmClose}
+      />
 
       {/* Items */}
       <Section title="Позиції угоди" icon={<FileText size={16} />} count={data.items.length}>

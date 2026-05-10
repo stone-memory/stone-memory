@@ -192,9 +192,20 @@ export type Deal = {
   utm: Record<string, string> | null
   notes: string | null
   internal_notes: string | null
+  /** Captured when the deal moves to status='cancelled' or 'lost'.
+   *  Categorical (price | timing | competitor | …) — see LOST_REASON_OPTIONS
+   *  for the UI taxonomy. Free text by design at the DB level. */
+  lost_reason: string | null
+  lost_reason_note: string | null
   created_by: string | null
   created_at: string
   updated_at: string
+  /** Optional SLA enrichment populated by GET /api/crm/deals — most recent
+   *  inbound/outbound communication timestamps. Used to render
+   *  "X without reply" badges in the kanban. Absent on bare deal records
+   *  (e.g. POST/PATCH responses), so always treat as optional. */
+  last_inbound_at?: string | null
+  last_outbound_at?: string | null
 }
 
 export type DealItem = {
@@ -498,4 +509,105 @@ export function canTransition(from: DealStatus, to: DealStatus): boolean {
 /** Які стани зараз доступні для переходу з поточного. */
 export function availableTransitions(from: DealStatus): DealStatus[] {
   return DEAL_TRANSITIONS[from] ?? []
+}
+
+// =====================================================
+// LOST / CANCELLED reasons — for post-mortem analytics.
+// Stored as plain text in deals.lost_reason; the canonical UI taxonomy
+// lives here. Adding/removing options does not require a migration —
+// the DB column accepts any string, and analytics queries group on
+// whatever values are present.
+// =====================================================
+export type LostReason =
+  | "price"
+  | "timing"
+  | "competitor"
+  | "ghosted"
+  | "scope_mismatch"
+  | "geography"
+  | "duplicate_lead"
+  | "not_interested"
+  | "other"
+
+export const LOST_REASON_OPTIONS: { value: LostReason; label: string; appliesTo: ("cancelled" | "lost")[] }[] = [
+  { value: "price",            label: "Не підійшла ціна",                 appliesTo: ["cancelled", "lost"] },
+  { value: "timing",           label: "Не вистачило часу / строки",        appliesTo: ["cancelled", "lost"] },
+  { value: "competitor",       label: "Пішли до конкурента",               appliesTo: ["lost"] },
+  { value: "ghosted",          label: "Перестали відповідати",             appliesTo: ["lost"] },
+  { value: "scope_mismatch",   label: "Не наша спеціалізація",             appliesTo: ["cancelled", "lost"] },
+  { value: "geography",        label: "Географія / логістика",             appliesTo: ["cancelled", "lost"] },
+  { value: "duplicate_lead",   label: "Дублікат заявки",                   appliesTo: ["cancelled"] },
+  { value: "not_interested",   label: "Передумали",                        appliesTo: ["cancelled", "lost"] },
+  { value: "other",            label: "Інше (опишіть нижче)",              appliesTo: ["cancelled", "lost"] },
+]
+
+export function lostReasonLabel(value: string | null | undefined): string | null {
+  if (!value) return null
+  const found = LOST_REASON_OPTIONS.find((o) => o.value === value)
+  return found?.label ?? value
+}
+
+// =====================================================
+// SLA — "Х hours/days without reply" indicator for active deals.
+// Computed purely from the last_inbound_at / last_outbound_at fields the
+// deals listing API enriches each row with. Pure function, no I/O.
+// =====================================================
+
+/** Buckets used by the kanban badge to color responsiveness:
+ *  ok → ball is in customer's court (no badge)
+ *  fresh → owe a reply, < 4 hours
+ *  warning → owe a reply, 4–24 hours
+ *  overdue → owe a reply, ≥ 24 hours */
+export type SLAStatus = "ok" | "fresh" | "warning" | "overdue"
+
+export type SLAInfo = {
+  status: SLAStatus
+  /** Hours since the unanswered inbound message (0 when status='ok'). */
+  hoursSinceInbound: number
+}
+
+/** Snapshot a deal's SLA based on the timestamps the API enriches.
+ *  Returns null for deals that have no inbound history — we have nothing
+ *  to compute against. */
+export function computeDealSLA(
+  deal: Pick<Deal, "last_inbound_at" | "last_outbound_at" | "status">
+): SLAInfo | null {
+  // Closed deals don't accrue SLA debt.
+  if (
+    deal.status === "completed" ||
+    deal.status === "cancelled" ||
+    deal.status === "lost"
+  ) {
+    return null
+  }
+
+  if (!deal.last_inbound_at) return null
+
+  const inboundMs = new Date(deal.last_inbound_at).getTime()
+  const outboundMs = deal.last_outbound_at
+    ? new Date(deal.last_outbound_at).getTime()
+    : 0
+
+  // Customer wrote, we replied after — ball is in their court, no debt.
+  if (outboundMs > inboundMs) {
+    return { status: "ok", hoursSinceInbound: 0 }
+  }
+
+  const hours = Math.max(0, (Date.now() - inboundMs) / (1000 * 60 * 60))
+
+  if (hours < 4) return { status: "fresh", hoursSinceInbound: hours }
+  if (hours < 24) return { status: "warning", hoursSinceInbound: hours }
+  return { status: "overdue", hoursSinceInbound: hours }
+}
+
+/** Short human-readable label like "2 год без відповіді" or "3 дні без відповіді". */
+export function formatSLABadge(info: SLAInfo): string {
+  const h = info.hoursSinceInbound
+  if (h < 1) return "<1 год без відповіді"
+  if (h < 24) {
+    const rounded = Math.floor(h)
+    return `${rounded} год без відповіді`
+  }
+  const days = Math.floor(h / 24)
+  return `${days} дн без відповіді`
 }
