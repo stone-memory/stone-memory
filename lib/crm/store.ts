@@ -254,6 +254,9 @@ export async function fetchCustomerOverview(id: string) {
     communications: Communication[]
     documents: Document[]
     payments: Payment[]
+    /** Status changes / notes / events across all of this customer's deals.
+     *  Powers the unified activity timeline on the customer detail page. */
+    dealEvents: DealEvent[]
     totalLifetimeValue: number
     openDealsCount: number
   }>

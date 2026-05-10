@@ -40,6 +40,19 @@ export async function GET(req: Request, ctx: Ctx) {
     return NextResponse.json({ error: customerR.error.message }, { status: 404 })
   }
 
+  // Fetch deal_events for all of this customer's deals — used by the
+  // unified activity timeline. Done as a separate query (not a Supabase
+  // foreign-table embed) so deterministic ordering is easy.
+  const dealIds = (dealsR.data || []).map((d) => d.id as string)
+  const dealEventsR = dealIds.length
+    ? await supabaseAdmin
+        .from("deal_events")
+        .select("*")
+        .in("deal_id", dealIds)
+        .order("created_at", { ascending: false })
+        .limit(200)
+    : { data: [], error: null as null | { message: string } }
+
   const totalLifetimeValue = Number(customerR.data.ltv_eur) || 0
   const openDealsCount =
     dealsR.data?.filter(
@@ -53,6 +66,7 @@ export async function GET(req: Request, ctx: Ctx) {
     communications: commsR.data || [],
     documents: docsR.data || [],
     payments: paymentsR.data || [],
+    dealEvents: dealEventsR.data || [],
     totalLifetimeValue,
     openDealsCount,
   })

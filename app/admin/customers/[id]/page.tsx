@@ -2,9 +2,8 @@
 
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Phone, Mail, MapPin, Plus, MessageSquare, FileText, CreditCard, Bell } from "lucide-react"
+import { ArrowLeft, Phone, Mail, MapPin, MessageSquare, FileText, CreditCard, Bell, Activity } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { fetchCustomerOverview } from "@/lib/crm/store"
 import { formatUAH, formatDateTime, formatRelative } from "@/lib/admin-format"
 import {
@@ -15,7 +14,16 @@ import {
   PAYMENT_METHOD_LABELS_UK,
   REMINDER_KIND_LABELS_UK,
 } from "@/lib/crm/types"
-import type { Customer, Deal, Reminder, Communication, Document, Payment } from "@/lib/crm/types"
+import type {
+  Customer,
+  Deal,
+  DealEvent,
+  Reminder,
+  Communication,
+  Document,
+  Payment,
+} from "@/lib/crm/types"
+import { ActivityTimeline } from "@/components/admin/activity-timeline"
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -26,6 +34,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
     communications: Communication[]
     documents: Document[]
     payments: Payment[]
+    dealEvents: DealEvent[]
     totalLifetimeValue: number
     openDealsCount: number
   } | null>(null)
@@ -101,6 +110,33 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Notes inline editing */}
       <NotesEditor customer={c} onSaved={refresh} />
+
+      {/* Unified activity timeline — chronological feed of every interaction
+         (incoming/outgoing messages across all channels, status changes,
+         payments, document creations, fired reminders, deal milestones). */}
+      <Section
+        title="Стрічка активності"
+        icon={<Activity size={16} />}
+        count={
+          data.communications.length +
+          data.payments.length +
+          data.documents.length +
+          data.dealEvents.length
+        }
+      >
+        <ActivityTimeline
+          sources={{
+            communications: data.communications,
+            payments: data.payments,
+            documents: data.documents,
+            dealEvents: data.dealEvents,
+            reminders: data.reminders,
+            deals: data.deals,
+          }}
+          limit={40}
+          emptyText="Поки немає активності. Як тільки клієнт напише або з'явиться угода — все з'явиться тут."
+        />
+      </Section>
 
       {/* Deals */}
       <Section title="Угоди" icon={<FileText size={16} />} count={data.deals.length}>
