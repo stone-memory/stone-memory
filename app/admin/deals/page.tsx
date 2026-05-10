@@ -11,6 +11,8 @@ import {
   DEAL_LANE_LABELS_UK,
   DEAL_STATUS_LABELS_UK,
   availableTransitions,
+  computeDealSLA,
+  formatSLABadge,
   type DealLane,
   type DealStatus,
 } from "@/lib/crm/types"
@@ -144,6 +146,9 @@ type DealRow = {
   created_at: string
   description?: string | null
   customers?: { id: string; name: string; phone: string } | null
+  /** Populated by GET /api/crm/deals — used to compute SLA badge. */
+  last_inbound_at?: string | null
+  last_outbound_at?: string | null
 }
 
 function DealCard({
@@ -155,6 +160,7 @@ function DealCard({
 }) {
   const [showTransitions, setShowTransitions] = useState(false)
   const transitions = availableTransitions(deal.status)
+  const sla = computeDealSLA(deal)
   return (
     <div className="rounded-xl border border-foreground/10 bg-background p-3 text-sm shadow-soft hover:shadow-hover transition-shadow">
       <div className="flex items-start justify-between gap-2">
@@ -170,6 +176,25 @@ function DealCard({
         >
           {deal.customers.name}
         </Link>
+      )}
+      {sla && sla.status !== "ok" && (
+        <span
+          className={cn(
+            "mt-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+            sla.status === "overdue"
+              ? "bg-destructive/10 text-destructive"
+              : sla.status === "warning"
+                ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                : "bg-blue-500/10 text-blue-700 dark:text-blue-300"
+          )}
+          title={
+            deal.last_inbound_at
+              ? `Останнє вхідне: ${new Date(deal.last_inbound_at).toLocaleString("uk-UA")}`
+              : undefined
+          }
+        >
+          ⏱ {formatSLABadge(sla)}
+        </span>
       )}
       {deal.description && (
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{deal.description}</p>

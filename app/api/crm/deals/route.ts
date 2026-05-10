@@ -32,7 +32,39 @@ export async function GET(req: Request) {
 
   const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ deals: data ?? [] })
+
+  // Enrich each deal with last_inbound_at / last_outbound_at so the kanban
+  // can render an SLA badge ("Х днів без відповіді"). One extra round-trip
+  // total — acceptable up to ~500 deals. If the page ever needs to render
+  // 1000+ deals, replace with a Postgres view that pre-aggregates.
+  const deals = data ?? []
+  const dealIds = deals.map((d) => d.id as string)
+  if (dealIds.length) {
+    const { data: comms } = await supabaseAdmin
+      .from("communications")
+      .select("deal_id, direction, created_at")
+      .in("deal_id", dealIds)
+      .order("created_at", { ascending: false })
+
+    const lastInbound = new Map<string, string>()
+    const lastOutbound = new Map<string, string>()
+    for (const c of comms ?? []) {
+      const dealId = c.deal_id as string | null
+      if (!dealId) continue
+      if (c.direction === "inbound" && !lastInbound.has(dealId)) {
+        lastInbound.set(dealId, c.created_at as string)
+      } else if (c.direction === "outbound" && !lastOutbound.has(dealId)) {
+        lastOutbound.set(dealId, c.created_at as string)
+      }
+    }
+    for (const deal of deals) {
+      const d = deal as Record<string, unknown>
+      d.last_inbound_at = lastInbound.get(deal.id as string) || null
+      d.last_outbound_at = lastOutbound.get(deal.id as string) || null
+    }
+  }
+
+  return NextResponse.json({ deals })
 }
 
 type CreatePayload = {
