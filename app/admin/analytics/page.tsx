@@ -17,9 +17,20 @@ import {
 } from "lucide-react"
 import { useOrdersStore } from "@/lib/store/orders"
 import { authedFetch } from "@/lib/authed-fetch"
-import { formatUAH, formatRelative, ADMIN_LOCALE } from "@/lib/admin-format"
+import { formatUAH, formatRelative, ADMIN_LOCALE, pluralUk } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 import { RevenueByDays } from "@/components/admin/revenue-by-days"
+
+// Sample-size thresholds for chart confidence captions. Picked to roughly
+// match a "noise vs signal" gut check — under 10 orders a peak-hour spike
+// is almost certainly random; 20+ starts to be a real pattern.
+const LOW_DATA_THRESHOLD = 10
+const TARGET_DATA_THRESHOLD = 20
+
+function requestsLabel(n: number): string {
+  // Genitive context ("На основі N ..."): 1 → заявки, 2+ → заявок
+  return `${n} ${pluralUk(n, "заявки", "заявок", "заявок")}`
+}
 
 type Period = "today" | "7d" | "30d" | "90d" | "ytd" | "all"
 
@@ -444,27 +455,50 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* ===== Time patterns ===== */}
+      {/* ===== Time patterns =====
+         Sample-size aware: when filtered.length < LOW_DATA_THRESHOLD we
+         tell the user explicitly that one stray order is going to look
+         like a "peak". Without this, a single 03:00 lead made the chart
+         look broken. Bars on zero-count buckets render a 1px hairline at
+         the baseline so the chart is visibly responsive to all 24 hours
+         / 7 days, not just the ones with data. */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="rounded-2xl border border-foreground/10 bg-card p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Розподіл за годинами доби
-          </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Коли клієнти найчастіше залишають заявки — корисно для розкладу менеджерів.
-          </p>
-          <div className="mt-5 flex h-32 items-end gap-0.5">
-            {hourlyPattern.map((c, h) => (
-              <div
-                key={h}
-                className={cn(
-                  "group relative flex-1 rounded-t-sm transition-colors",
-                  h === peakHour ? "bg-accent" : "bg-foreground/30 hover:bg-foreground/50"
-                )}
-                style={{ height: `${Math.max(2, (c / maxHourly) * 100)}%` }}
-                title={`${h}:00 — ${c} замовлень`}
-              />
-            ))}
+          <header>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Розподіл за годинами доби
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Коли клієнти найчастіше залишають заявки — корисно для розкладу менеджерів.
+            </p>
+            <SampleSizeCaption count={filtered.length} periodLabel={PERIODS.find((p) => p.key === period)?.label || ""} />
+          </header>
+
+          <div className="mt-4 flex h-32 items-end gap-0.5 border-b border-foreground/10">
+            {hourlyPattern.map((c, h) => {
+              const hasData = c > 0
+              return (
+                <div
+                  key={h}
+                  className={cn(
+                    "group relative flex-1 rounded-t-sm transition-colors",
+                    !hasData
+                      ? "bg-foreground/10"
+                      : h === peakHour
+                        ? "bg-accent"
+                        : "bg-foreground/30 hover:bg-foreground/50"
+                  )}
+                  style={{
+                    // Zero-count → 1px hairline. Non-zero → proportional
+                    // with a 6px minimum so single-order buckets are visible.
+                    height: hasData
+                      ? `${Math.max(6, (c / maxHourly) * 100)}%`
+                      : "1px",
+                  }}
+                  title={`${h}:00 — ${c === 0 ? "0 замовлень" : `${c} ${pluralUk(c, "замовлення", "замовлення", "замовлень")}`}`}
+                />
+              )
+            })}
           </div>
           <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
             <span>00:00</span>
@@ -476,26 +510,43 @@ export default function AnalyticsPage() {
         </section>
 
         <section className="rounded-2xl border border-foreground/10 bg-card p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Розподіл за днями тижня
-          </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            На які дні припадає більшість запитів.
-          </p>
-          <div className="mt-5 flex h-32 items-end gap-1.5">
-            {weekdayPattern.map((c, i) => (
-              <div key={i} className="flex flex-1 flex-col items-center gap-1">
-                <div
-                  className={cn(
-                    "w-full rounded-t-md transition-colors",
-                    i >= 5 ? "bg-foreground/40" : "bg-foreground/70"
-                  )}
-                  style={{ height: `${Math.max(2, (c / maxWeekday) * 100)}%` }}
-                  title={`${weekdayLabels[i]}: ${c}`}
-                />
-                <span className="text-[10px] text-muted-foreground">{weekdayLabels[i]}</span>
-              </div>
-            ))}
+          <header>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Розподіл за днями тижня
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              На які дні припадає більшість запитів.
+            </p>
+            <SampleSizeCaption count={filtered.length} periodLabel={PERIODS.find((p) => p.key === period)?.label || ""} />
+          </header>
+
+          <div className="mt-4 flex h-32 items-end gap-1.5">
+            {weekdayPattern.map((c, i) => {
+              const hasData = c > 0
+              return (
+                <div key={i} className="flex flex-1 flex-col justify-end gap-1">
+                  <div className="relative w-full" style={{ height: "100%" }}>
+                    {/* Baseline hairline so empty days are visibly part of the chart */}
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-foreground/15" />
+                    <div
+                      className={cn(
+                        "absolute bottom-0 left-0 right-0 rounded-t-md transition-colors",
+                        !hasData
+                          ? "bg-transparent"
+                          : i >= 5
+                            ? "bg-foreground/40"
+                            : "bg-foreground/70"
+                      )}
+                      style={{
+                        height: hasData ? `${Math.max(8, (c / maxWeekday) * 100)}%` : "0",
+                      }}
+                      title={`${weekdayLabels[i]}: ${c} ${pluralUk(c, "замовлення", "замовлення", "замовлень")}`}
+                    />
+                  </div>
+                  <span className="text-[10px] text-muted-foreground text-center">{weekdayLabels[i]}</span>
+                </div>
+              )
+            })}
           </div>
         </section>
       </div>
@@ -713,6 +764,45 @@ function FunnelStep({
         <div className={cn("h-full transition-all", color)} style={{ width: `${pct}%` }} />
       </div>
     </div>
+  )
+}
+
+/**
+ * Sample-size caption shown under chart titles. Honest about what
+ * the user is looking at: < LOW_DATA_THRESHOLD orders gets an amber
+ * "potrebno more" badge plus an explanatory info card hint; sufficient
+ * data gets a neutral "based on N requests за період" caption.
+ *
+ * Single source of truth so both the hourly and weekday charts read
+ * the same way and the user doesn't have to mentally reconcile two
+ * different framings on the same row.
+ */
+function SampleSizeCaption({ count, periodLabel }: { count: number; periodLabel: string }) {
+  const period = periodLabel.toLowerCase()
+  if (count === 0) {
+    return (
+      <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-foreground/[0.04] px-2.5 py-0.5 text-[11px] text-muted-foreground">
+        <AlertCircle size={11} /> Поки немає заявок за «{period}» — графік оживе як тільки прийде перша.
+      </p>
+    )
+  }
+  if (count < LOW_DATA_THRESHOLD) {
+    return (
+      <p className="mt-2 inline-flex items-start gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-[11px] leading-snug text-amber-700 dark:text-amber-300">
+        <AlertCircle size={11} className="mt-0.5 shrink-0" />
+        <span>
+          На основі <span className="font-medium">{requestsLabel(count)}</span> — потрібно більше даних
+          {count < TARGET_DATA_THRESHOLD && (
+            <> (графік стає інформативним після {TARGET_DATA_THRESHOLD}+).</>
+          )}
+        </span>
+      </p>
+    )
+  }
+  return (
+    <p className="mt-2 text-[11px] text-muted-foreground">
+      Аналіз на основі <span className="font-medium text-foreground">{requestsLabel(count)}</span> за «{period}».
+    </p>
   )
 }
 
