@@ -1,34 +1,82 @@
 import type { Locale } from "./config"
 
 /**
- * Canonical → localized URL segment mapping.
+ * Canonical → localized URL segment mapping. (Option A — localized slugs.)
  *
- * Pending user decision (Option A vs B) — currently configured as Option B
- * (canonical English paths preserved across all locales). To switch to
- * Option A (localized slugs), replace string values with per-locale objects:
+ * Keys are the canonical English paths used everywhere in code (route
+ * groups, internal helpers, sitemap generators). Values are either:
+ *   - a string: same segment in every locale (e.g. "/blog", "/")
+ *   - a Partial<Record<Locale, string>>: per-locale slug
  *
- *   "/services": {
- *     uk: "/poslugy",
- *     pl: "/uslugi",
- *     en: "/services",
- *     de: "/dienstleistungen",
- *     lt: "/paslaugos",
- *   },
+ * Romanization notes:
+ *   - Ukrainian: BGN/PCGN-ish — г→h, й→i, ц→ts, ь dropped.
+ *   - Polish: diacritics stripped (ł→l, ć→c, ż→z).
+ *   - German: umlauts expanded (ü→ue, ö→oe, ä→ae, ß→ss).
+ *   - Lithuanian: diacritics stripped (ą→a, č→c, ė→e, etc.).
  *
- * The helpers below already handle both shapes — switching is a data change.
+ * Helpers below already handle both shapes, so flipping a single entry
+ * back to a plain string (canonical English) is a one-line change.
  */
 export const pathnames = {
   "/": "/",
-  "/catalog": "/catalog",
-  "/services": "/services",
-  "/about": "/about",
-  "/projects": "/projects",
-  "/reviews": "/reviews",
+  "/catalog": {
+    uk: "/kataloh",
+    pl: "/katalog",
+    en: "/catalog",
+    de: "/katalog",
+    lt: "/katalogas",
+  },
+  "/services": {
+    uk: "/posluhy",
+    pl: "/uslugi",
+    en: "/services",
+    de: "/leistungen",
+    lt: "/paslaugos",
+  },
+  "/about": {
+    uk: "/pro-nas",
+    pl: "/o-nas",
+    en: "/about",
+    de: "/ueber-uns",
+    lt: "/apie-mus",
+  },
+  "/projects": {
+    uk: "/proekty",
+    pl: "/projekty",
+    en: "/projects",
+    de: "/projekte",
+    lt: "/projektai",
+  },
+  "/reviews": {
+    uk: "/vidhuky",
+    pl: "/opinie",
+    en: "/reviews",
+    de: "/bewertungen",
+    lt: "/atsiliepimai",
+  },
   "/blog": "/blog",
   "/blog/[slug]": "/blog/[slug]",
-  "/stones/[id]": "/stones/[id]",
-  "/privacy": "/privacy",
-  "/terms": "/terms",
+  "/stones/[id]": {
+    uk: "/kameni/[id]",
+    pl: "/kamienie/[id]",
+    en: "/stones/[id]",
+    de: "/steine/[id]",
+    lt: "/akmenys/[id]",
+  },
+  "/privacy": {
+    uk: "/konfidentsiinist",
+    pl: "/prywatnosc",
+    en: "/privacy",
+    de: "/datenschutz",
+    lt: "/privatumas",
+  },
+  "/terms": {
+    uk: "/umovy",
+    pl: "/regulamin",
+    en: "/terms",
+    de: "/agb",
+    lt: "/salygos",
+  },
   "/unsubscribe": "/unsubscribe",
 } as const
 
@@ -41,10 +89,10 @@ type PathMapping =
 /**
  * Build a localized URL given canonical path and locale.
  *
- *   getLocalizedPath("/", "uk")          // "/uk"
- *   getLocalizedPath("/services", "pl")  // "/pl/services"  (Option B)
- *                                         // "/pl/uslugi"   (Option A)
- *   getLocalizedPath("/stones/[id]", "uk")  // "/uk/stones/[id]"  — caller substitutes [id]
+ *   getLocalizedPath("/", "uk")             // "/uk"
+ *   getLocalizedPath("/services", "pl")     // "/pl/uslugi"
+ *   getLocalizedPath("/services", "en")     // "/en/services"
+ *   getLocalizedPath("/stones/[id]", "uk")  // "/uk/kameni/[id]"  — caller substitutes [id]
  */
 export function getLocalizedPath(canonical: CanonicalPath, locale: Locale): string {
   const mapping = pathnames[canonical] as PathMapping
@@ -66,9 +114,9 @@ export function getLocalizedPath(canonical: CanonicalPath, locale: Locale): stri
  * return the canonical key. Useful for middleware that wants to rewrite
  * localized slugs to canonical folder names.
  *
- *   getCanonicalPath("/pl/uslugi", "pl") // "/services" (Option A)
- *   getCanonicalPath("/uk", "uk")        // "/"
- *   getCanonicalPath("/de/unknown", "de")// null
+ *   getCanonicalPath("/pl/uslugi", "pl")     // "/services"
+ *   getCanonicalPath("/uk", "uk")            // "/"
+ *   getCanonicalPath("/de/unknown", "de")    // null
  */
 export function getCanonicalPath(
   localizedPath: string,
