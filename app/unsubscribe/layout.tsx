@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
+import { absoluteUrl } from "@/lib/site-config"
 
 export const metadata: Metadata = {
   title: "Unsubscribe",
   description: "Unsubscribe from Stone Memory email updates.",
-  alternates: { canonical: `${SITE}/unsubscribe` },
+  alternates: { canonical: absoluteUrl("/unsubscribe") },
   // Token-based link, shouldn't be indexed.
   robots: { index: false, follow: false },
 }

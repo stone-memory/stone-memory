@@ -9,6 +9,7 @@ import { AnalyticsPixels } from "@/components/analytics-pixels"
 import { CookieConsent } from "@/components/cookie-consent"
 import { SkipLink } from "@/components/skip-link"
 import { ErrorBoundaryClient } from "@/components/error-boundary-client"
+import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 import "./globals.css"
 
 const inter = Inter({
@@ -17,7 +18,6 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 const SITE_NAME = "Stone Memory"
 const TITLE_DEFAULT = "Stone Memory — monuments, countertops, window sills, stairs and paving in natural stone"
 const DESCRIPTION =

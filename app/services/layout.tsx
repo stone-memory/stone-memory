@@ -1,20 +1,21 @@
 import type { Metadata } from "next"
 import { fetchServices } from "@/lib/data-source"
+import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
 export const revalidate = 60
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
+const PATH = "/services"
 
 export const metadata: Metadata = {
   title: "Services — design, production, installation & care",
   description:
     "Full-cycle stone services: custom design and 3D visualisation, engraving and portraits, production in our Kostopil workshop, delivery, installation, restoration. Ukrainian granite and marble plus imports from Italy, India, China, Brazil. 5-year warranty across Ukraine.",
-  alternates: { canonical: `${SITE}/services` },
+  alternates: { canonical: absoluteUrl(PATH) },
   openGraph: {
     title: "Stone Memory — Services",
     description:
       "From sketch to installation: design, engraving, production, delivery, care. Ukrainian stone, 5-year warranty.",
-    url: `${SITE}/services`,
+    url: absoluteUrl(PATH),
     type: "website",
   },
 }
@@ -81,8 +82,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Services", item: `${SITE}/services` },
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Services", item: absoluteUrl(PATH) },
     ],
   }
 
@@ -94,12 +95,12 @@ export default async function Layout({ children }: { children: React.ReactNode }
     serviceType: s.title.en || s.title.uk,
     name: s.title.en || s.title.uk,
     description: s.shortDesc.en || s.shortDesc.uk,
-    provider: { "@type": "Organization", name: "Stone Memory", url: SITE },
+    provider: { "@type": "Organization", name: "Stone Memory", url: SITE_URL },
     areaServed: [
       { "@type": "Country", name: "Ukraine" },
       { "@type": "AdministrativeArea", name: "European Union" },
     ],
-    url: `${SITE}/services#${s.slug}`,
+    url: `${absoluteUrl(PATH)}#${s.slug}`,
   }))
 
   return (

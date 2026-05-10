@@ -14,6 +14,7 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones, useStonesAdminStore } from "@/lib/store/stones"
 import { filterLabels, colorLabels, shapeLabels, finishLabels } from "@/lib/i18n/filters"
+import { absoluteUrl } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
 export default function StoneDetailPage() {
@@ -101,8 +102,7 @@ export default function StoneDetailPage() {
     stone.weightKg ? ["Weight", `${stone.weightKg} kg`] : null,
   ].filter(Boolean) as [string, string][]
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
-  const canonicalUrl = `${SITE_URL}/stones/${stone.id}`
+  const canonicalUrl = absoluteUrl(`/stones/${stone.id}`)
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -125,8 +125,8 @@ export default function StoneDetailPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
-      { "@type": "ListItem", position: 2, name: "Catalog", item: `${SITE_URL}/catalog` },
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Catalog", item: absoluteUrl("/catalog") },
       { "@type": "ListItem", position: 3, name: `№ ${stone.id}`, item: canonicalUrl },
     ],
   }
