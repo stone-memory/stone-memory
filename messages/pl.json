@@ -1,0 +1,52 @@
+{
+  "header": {
+    "brand": "Stone Memory",
+    "memorial": "Architektura nagrobkowa",
+    "home": "Kamień do domu",
+    "selection": "Wybrane"
+  },
+  "hero": {
+    "badge": "5-letnia gwarancja",
+    "title": "Wieczność w kamieniu",
+    "subtitle": "Pomniki architektoniczne i kamień dekoracyjny, wykonane by przetrwać pokolenia."
+  },
+  "catalog": {
+    "label": "Kolekcja",
+    "title": "Katalog",
+    "pieces": "{count} sztuk",
+    "idLabel": "ID",
+    "priceFrom": "od {price}"
+  },
+  "selection": {
+    "title": "Wybrane",
+    "itemsCount": "{count} {count, plural, one {element} few {elementy} other {elementów}} do wyceny",
+    "emptyTitle": "Jeszcze nic nie wybrano",
+    "emptyHint": "Przeglądaj katalog i dotknij +, aby dodać",
+    "addToSelection": "Dodaj do wybranych",
+    "alreadySelected": "Już w wybranych",
+    "removeItem": "Usuń element"
+  },
+  "form": {
+    "namePlaceholder": "Twoje imię",
+    "phonePlaceholder": "Numer telefonu",
+    "submit": "Poproś o wycenę",
+    "submitting": "Wysyłanie...",
+    "privacyNotice": "Wysyłając, zgadzasz się z naszą Polityką Prywatności."
+  },
+  "success": {
+    "title": "Zapytanie otrzymane",
+    "message": "Menedżer skontaktuje się z Tobą w ciągu 2 godzin roboczych, aby omówić Twój wybór i przedstawić szczegółową wycenę.",
+    "referenceLabel": "Ref:",
+    "continue": "Kontynuuj przeglądanie"
+  },
+  "footer": {
+    "poland": "Polska",
+    "germany": "Niemcy",
+    "lithuania": "Litwa",
+    "ukraine": "Ukraina",
+    "copyright": "© 2026 Stone Memory. Wszelkie prawa zastrzeżone.",
+    "privacy": "Prywatność",
+    "terms": "Warunki",
+    "contact": "Kontakt"
+  }
+}

@@ -1,0 +1,27 @@
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="granite-hero" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#2a2a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0a0c;stop-opacity:1" />
+    </radialGradient>
+    <filter id="hero-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" seed="1"/>
+      <feColorMatrix in="noise" type="saturate" values="0.2" />
+    </filter>
+  </defs>
+  <!-- Base gradient -->
+  <rect width="1920" height="1080" fill="url(#granite-hero)"/>
+  <!-- Grain texture overlay -->
+  <rect width="1920" height="1080" fill="url(#granite-hero)" opacity="0.12" filter="url(#hero-grain)"/>
+  <!-- Subtle highlight streak -->
+  <ellipse cx="960" cy="200" rx="600" ry="200" fill="white" opacity="0.06" transform="rotate(-15 960 540)"/>
+  <!-- Mineral specks -->
+  <circle cx="400" cy="300" r="3" fill="white" opacity="0.08"/>
+  <circle cx="800" cy="600" r="4" fill="white" opacity="0.07"/>
+  <circle cx="1200" cy="400" r="2" fill="white" opacity="0.09"/>
+  <circle cx="1600" cy="800" r="3.5" fill="white" opacity="0.06"/>
+  <circle cx="300" cy="900" r="2.5" fill="white" opacity="0.08"/>
+  <circle cx="1700" cy="200" r="4" fill="white" opacity="0.05"/>
+  <!-- Vignette overlay -->
+  <rect width="1920" height="1080" fill="black" opacity="0.15"/>
+</svg>

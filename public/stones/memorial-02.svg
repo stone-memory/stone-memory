@@ -1,0 +1,20 @@
+<svg viewBox="0 0 800 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mem-bg-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a4a52;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6a6a72;stop-opacity:1" />
+    </linearGradient>
+    <filter id="grain-2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+      <feColorMatrix in="noise" type="saturate" values="0.3" />
+    </filter>
+  </defs>
+  <rect width="800" height="1000" fill="url(#mem-bg-2)"/>
+  <rect width="800" height="1000" fill="url(#mem-bg-2)" opacity="0.08" filter="url(#grain-2)"/>
+  <g opacity="0.85">
+    <path d="M 200 200 L 600 200 L 600 800 L 200 800 Z" fill="#2a2a32"/>
+    <path d="M 380 200 L 420 200 L 420 280 L 380 280 Z" fill="#4a4a52"/>
+    <circle cx="400" cy="350" r="25" fill="#2a2a32" opacity="0.6"/>
+  </g>
+  <text x="400" y="920" text-anchor="middle" font-size="12" fill="#2a2a32" opacity="0.3" font-family="serif">SM</text>
+</svg>
