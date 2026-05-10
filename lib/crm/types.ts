@@ -3,7 +3,25 @@
  * Використовуються у всіх stores і API routes.
  */
 
-export type TeamRole = "admin" | "manager" | "master" | "sales"
+/**
+ * Team roles. `super_admin` is a single-owner role above `admin`:
+ * it's the only role allowed to change auth credentials (password/email)
+ * and toggle channel integrations. Enforced by Postgres trigger
+ * `block_sensitive_auth_updates` and `is_super_admin()` RLS helper —
+ * see supabase/crm-super-admin-{1,2}-*.sql.
+ */
+export type TeamRole = "super_admin" | "admin" | "manager" | "master" | "sales"
+
+/** Returns true when the role can do everything `admin` does, or more. */
+export function roleCanAdminister(role: TeamRole | null | undefined): boolean {
+  return role === "admin" || role === "super_admin"
+}
+
+/** Returns true ONLY for super_admin. Use as the single gate for
+ *  credential changes and channel-integration writes. */
+export function roleIsSuperAdmin(role: TeamRole | null | undefined): boolean {
+  return role === "super_admin"
+}
 
 export type TeamMember = {
   id: string

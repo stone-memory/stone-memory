@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2 } from "lucide-react"
+import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -10,6 +10,7 @@ import type { TeamMember, TeamRole } from "@/lib/crm/types"
 import { formatRelative } from "@/lib/admin-format"
 
 const ROLE_LABEL_UK: Record<TeamRole, string> = {
+  super_admin: "Головний адмін",
   admin: "Адмін",
   manager: "Менеджер",
   master: "Майстер",
@@ -17,6 +18,7 @@ const ROLE_LABEL_UK: Record<TeamRole, string> = {
 }
 
 const ROLE_ICON: Record<TeamRole, React.ComponentType<{ size?: number }>> = {
+  super_admin: Crown,
   admin: Shield,
   manager: UserCog,
   master: HardHat,
@@ -24,11 +26,18 @@ const ROLE_ICON: Record<TeamRole, React.ComponentType<{ size?: number }>> = {
 }
 
 const ROLE_DESC: Record<TeamRole, string> = {
+  super_admin: "Власник бізнесу. Повний контроль + інтеграції каналів",
   admin: "Повний доступ до CRM, ролей, фінансів",
   manager: "Управління угодами, клієнтами, платежами",
   master: "Виробничі задачі — лише свої угоди",
   sales: "Продажі — лише свої ліди",
 }
+
+/** Roles assignable through the UI. super_admin is intentionally absent —
+ *  it's a single-owner role, granted only by the database migration
+ *  (supabase/crm-super-admin-2-policies.sql). Promotion via UI would
+ *  let any admin grant themselves owner-level privileges. */
+const ASSIGNABLE_ROLES: TeamRole[] = ["admin", "manager", "master", "sales"]
 
 export default function TeamPage() {
   const members = useTeamStore((s) => s.members)
@@ -89,22 +98,33 @@ export default function TeamPage() {
         </Button>
       </header>
 
-      {/* Roles legend */}
+      {/* Roles legend — super_admin card only renders when at least one
+         member holds that role (single-owner, populated via SQL). */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {(Object.keys(ROLE_LABEL_UK) as TeamRole[]).map((role) => {
-          const Icon = ROLE_ICON[role]
-          const count = members.filter((m) => m.role === role).length
-          return (
-            <div key={role} className="rounded-2xl border border-foreground/10 bg-card p-4">
-              <div className="flex items-center gap-2">
-                <Icon size={16} />
-                <span className="font-medium">{ROLE_LABEL_UK[role]}</span>
-                <span className="ml-auto text-xs text-muted-foreground tabular-nums">{count}</span>
+        {(Object.keys(ROLE_LABEL_UK) as TeamRole[])
+          .filter((role) => role !== "super_admin" || members.some((m) => m.role === "super_admin"))
+          .map((role) => {
+            const Icon = ROLE_ICON[role]
+            const count = members.filter((m) => m.role === role).length
+            const isSuper = role === "super_admin"
+            return (
+              <div
+                key={role}
+                className={
+                  isSuper
+                    ? "rounded-2xl border border-amber-300/40 bg-amber-50/40 p-4 dark:bg-amber-900/10"
+                    : "rounded-2xl border border-foreground/10 bg-card p-4"
+                }
+              >
+                <div className="flex items-center gap-2">
+                  <Icon size={16} />
+                  <span className="font-medium">{ROLE_LABEL_UK[role]}</span>
+                  <span className="ml-auto text-xs text-muted-foreground tabular-nums">{count}</span>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">{ROLE_DESC[role]}</p>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">{ROLE_DESC[role]}</p>
-            </div>
-          )
-        })}
+            )
+          })}
       </div>
 
       {/* List */}
@@ -147,15 +167,23 @@ export default function TeamPage() {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <select
-                      value={m.role}
-                      onChange={(e) => updateMember(m.id, { role: e.target.value as TeamRole })}
-                      className="h-8 rounded-md border border-foreground/10 bg-background px-2 text-xs"
-                    >
-                      {(Object.keys(ROLE_LABEL_UK) as TeamRole[]).map((r) => (
-                        <option key={r} value={r}>{ROLE_LABEL_UK[r]}</option>
-                      ))}
-                    </select>
+                    {m.role === "super_admin" ? (
+                      // super_admin can't be demoted via UI — owner role is
+                      // pinned. Demotion requires a SQL update by definition.
+                      <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                        👑 Головний адмін
+                      </span>
+                    ) : (
+                      <select
+                        value={m.role}
+                        onChange={(e) => updateMember(m.id, { role: e.target.value as TeamRole })}
+                        className="h-8 rounded-md border border-foreground/10 bg-background px-2 text-xs"
+                      >
+                        {ASSIGNABLE_ROLES.map((r) => (
+                          <option key={r} value={r}>{ROLE_LABEL_UK[r]}</option>
+                        ))}
+                      </select>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <button
@@ -200,7 +228,7 @@ export default function TeamPage() {
               <div>
                 <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Роль *</label>
                 <div className="grid grid-cols-2 gap-2">
-                  {(Object.keys(ROLE_LABEL_UK) as TeamRole[]).map((r) => {
+                  {ASSIGNABLE_ROLES.map((r) => {
                     const Icon = ROLE_ICON[r]
                     return (
                       <button
