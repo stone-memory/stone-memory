@@ -44,6 +44,56 @@ export default function AdminPage() {
     return sum + o.items.reduce((itemSum, item) => itemSum + item.priceFrom, 0)
   }, 0)
 
+  // ----- Real trends computed from createdAt history -----
+  // We only render a trend chip when both periods have at least one order;
+  // otherwise the % is meaningless. Same for sparkline — if every day is
+  // zero we hide it rather than draw a flat line that looks decorative.
+  const now = Date.now()
+  const dayMs = 24 * 60 * 60 * 1000
+  const startOfMonth = (offset: number) => {
+    const d = new Date()
+    d.setMonth(d.getMonth() - offset, 1)
+    d.setHours(0, 0, 0, 0)
+    return d.getTime()
+  }
+
+  const inWindow = (o: Order, fromMs: number, toMs: number) => {
+    const t = new Date(o.createdAt).getTime()
+    return t >= fromMs && t < toMs
+  }
+
+  const computePctTrend = (
+    current: number,
+    prior: number
+  ): { value: number; isPositive: boolean } | undefined => {
+    // Need a non-zero baseline to compute %, otherwise hide the chip.
+    if (prior === 0 || current === prior) return undefined
+    const pct = Math.round(((current - prior) / prior) * 100)
+    return { value: Math.abs(pct), isPositive: pct >= 0 }
+  }
+
+  // "Нові замовлення" sparkline + trend — orders created per day, last 7d
+  const createdPerDay7dRaw: number[] = []
+  for (let i = 6; i >= 0; i--) {
+    const dayStart = now - (i + 1) * dayMs
+    const dayEnd = now - i * dayMs
+    createdPerDay7dRaw.push(orders.filter((o) => inWindow(o, dayStart, dayEnd)).length)
+  }
+  const createdLast7d = createdPerDay7dRaw.reduce((a, b) => a + b, 0)
+  const createdPrior7d = orders.filter((o) =>
+    inWindow(o, now - 14 * dayMs, now - 7 * dayMs)
+  ).length
+  const createdPerDay7d = createdLast7d > 0 ? createdPerDay7dRaw : undefined
+  const newOrdersTrend = computePctTrend(createdLast7d, createdPrior7d)
+
+  // "Завершено цього місяця" trend — current month vs previous full month
+  const monthStart = startOfMonth(0)
+  const lastMonthStart = startOfMonth(1)
+  const completedLastMonth = orders.filter(
+    (o) => o.status === "completed" && inWindow(o, lastMonthStart, monthStart)
+  ).length
+  const completedTrend = computePctTrend(completedThisMonth, completedLastMonth)
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -81,32 +131,27 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards
+         The previous version showed hardcoded trend chips (+12%, -5%, etc.)
+         and decorative sparklines that were the same numbers regardless of
+         actual data — misleading when the database is sparse. Trends now
+         compute from real createdAt history and only render when there's
+         enough data to be honest. Period comparisons / time-series charts
+         live on /admin/analytics where they belong. */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           label="Нові замовлення"
           value={newOrders}
-          trend={{ value: 12, isPositive: true }}
-          sparkline={[3, 5, 2, 8, 6, 9, 7]}
+          trend={newOrdersTrend}
+          sparkline={createdPerDay7d}
         />
-        <KPICard
-          label="В роботі"
-          value={inProgressOrders}
-          trend={{ value: 5, isPositive: false }}
-          sparkline={[9, 7, 8, 5, 6, 4, 7]}
-        />
+        <KPICard label="В роботі" value={inProgressOrders} />
         <KPICard
           label="Завершено цього місяця"
           value={completedThisMonth}
-          trend={{ value: 23, isPositive: true }}
-          sparkline={[2, 4, 3, 7, 5, 9, 8]}
+          trend={completedTrend}
         />
-        <KPICard
-          label="Загальна сума pipeline"
-          value={formatUAH(totalPipeline)}
-          trend={{ value: 8, isPositive: true }}
-          sparkline={[5, 6, 4, 8, 7, 9, 6]}
-        />
+        <KPICard label="Загальна сума pipeline" value={formatUAH(totalPipeline)} />
       </div>
 
       {/* Orders Table */}
