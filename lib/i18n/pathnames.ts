@@ -171,3 +171,54 @@ function templatesMatch(template: string, actual: string): boolean {
   }
   return true
 }
+
+/**
+ * Get the localized URL segment (no locale prefix) for a canonical key.
+ * Returns the canonical itself if no per-locale mapping exists for `locale`.
+ *
+ *   getLocalizedSegment("/services", "uk")  // "/posluhy"
+ *   getLocalizedSegment("/blog", "pl")      // "/blog"  (universal entry)
+ */
+export function getLocalizedSegment(canonical: CanonicalPath, locale: Locale): string {
+  const mapping = pathnames[canonical] as PathMapping
+  if (typeof mapping === "string") return mapping
+  return mapping[locale] ?? canonical
+}
+
+/**
+ * Given a path that has already had its `/<locale>` prefix stripped, find
+ * the canonical key whose canonical-English template matches it. Distinct
+ * from `getCanonicalPath`, which matches the *localized* form. Used by the
+ * middleware to detect when a user types the canonical English path under
+ * a non-en locale (e.g. `/uk/services`) so we can 301 to the localized
+ * version (`/uk/posluhy`).
+ *
+ *   findCanonicalKeyByCanonicalSegment("/services")     // "/services"
+ *   findCanonicalKeyByCanonicalSegment("/stones/abc")   // "/stones/[id]"
+ *   findCanonicalKeyByCanonicalSegment("/posluhy")      // null
+ */
+export function findCanonicalKeyByCanonicalSegment(stripped: string): CanonicalPath | null {
+  for (const key of Object.keys(pathnames) as CanonicalPath[]) {
+    if (key === stripped) return key
+    if (key.includes("[") && templatesMatch(key, stripped)) return key
+  }
+  return null
+}
+
+/**
+ * Substitute dynamic `[param]` placeholders in `template` with the
+ * corresponding segment from `concrete`. Used to translate one shape
+ * of a path (e.g. localized) into another (canonical) while preserving
+ * the actual id/slug values the user typed.
+ *
+ *   substituteParams("/stones/[id]", "/kameni/abc")  // "/stones/abc"
+ *   substituteParams("/blog/[slug]", "/blog/foo")    // "/blog/foo"
+ */
+export function substituteParams(template: string, concrete: string): string {
+  const t = template.split("/")
+  const c = concrete.split("/")
+  if (t.length !== c.length) return template
+  return t
+    .map((seg, i) => (seg.startsWith("[") && seg.endsWith("]") ? c[i] : seg))
+    .join("/")
+}
