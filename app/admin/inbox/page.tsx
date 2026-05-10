@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import {
   Inbox as InboxIcon,
@@ -48,10 +49,28 @@ const CHANNEL_COLOR: Record<CommChannel, string> = {
 }
 
 export default function InboxPage() {
+  const searchParams = useSearchParams()
+  // Inbox accepts ?thread=<thread_key> query param so other admin pages
+  // can deep-link to a specific conversation. Used by the analytics
+  // "Останні чат-сесії" cards: they pass thread=site_chat:<session_id>
+  // and we open that thread on mount.
+  const initialThread = searchParams?.get("thread") || null
+
   const [items, setItems] = useState<Comm[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<"all" | "unread" | CommChannel>("all")
-  const [activeThread, setActiveThread] = useState<string | null>(null)
+  const [activeThread, setActiveThread] = useState<string | null>(initialThread)
+
+  // If the URL changes while the page is mounted (e.g. user clicks a
+  // chat card, navigates back, clicks another), keep activeThread in
+  // sync. Without this useEffect activeThread would be locked to the
+  // first param read.
+  useEffect(() => {
+    if (initialThread && initialThread !== activeThread) {
+      setActiveThread(initialThread)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialThread])
 
   const load = async () => {
     setLoading(true)

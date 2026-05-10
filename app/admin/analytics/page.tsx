@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 import {
   TrendingUp,
   Package,
@@ -632,48 +633,70 @@ export default function AnalyticsPage() {
         </section>
       </div>
 
-      {/* ===== Активні чат-сесії (real-time) ===== */}
+      {/* ===== Активні чат-сесії (real-time) =====
+         Each row is now a Link to /admin/inbox?thread=site_chat:<id>
+         so the whole card is clickable, not just the phone number.
+         The phone tel: link inside is wrapped in a stopPropagation
+         button so tapping the number still dials, but tapping anywhere
+         else opens the conversation in the unified inbox. */}
       {chatSessions.length > 0 && (
         <section className="rounded-2xl border border-foreground/10 bg-card p-6">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
               <Activity size={14} /> Останні чат-сесії
             </h2>
-            <a href="/admin/chat" className="text-xs text-accent hover:underline">
+            <Link href="/admin/inbox" className="text-xs text-accent hover:underline">
               Відкрити всі →
-            </a>
+            </Link>
           </div>
-          <div className="divide-y divide-foreground/5">
+          <ul className="divide-y divide-foreground/5">
             {chatSessions.slice(0, 5).map((s) => {
               const isUnreplied = unrepliedSessions.some((u) => u.sessionId === s.sessionId)
+              const threadKey = `site_chat:${s.sessionId}`
               return (
-                <div key={s.sessionId} className="flex items-center gap-3 py-3">
-                  <span className="text-xl" aria-hidden>{localeFlag[s.locale] || "🌐"}</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">{s.name || "Гість"}</span>
-                      {isUnreplied && (
-                        <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-700">
-                          чекає відповіді
-                        </span>
+                <li key={s.sessionId}>
+                  <Link
+                    href={`/admin/inbox?thread=${encodeURIComponent(threadKey)}`}
+                    className="flex items-center gap-3 py-3 px-2 -mx-2 rounded-xl transition-colors hover:bg-foreground/[0.03]"
+                  >
+                    <span className="text-xl" aria-hidden>{localeFlag[s.locale] || "🌐"}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">{s.name || "Гість"}</span>
+                        {isUnreplied && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-75" />
+                              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-600" />
+                            </span>
+                            чекає відповіді
+                          </span>
+                        )}
+                      </div>
+                      {s.phone && (
+                        // Nested click target — stopPropagation so tapping
+                        // the phone number triggers tel: instead of nav.
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            window.location.href = `tel:${s.phone!.replace(/\s+/g, "")}`
+                          }}
+                          className="text-xs text-accent hover:underline flex items-center gap-1 mt-0.5"
+                        >
+                          <Phone size={10} /> {s.phone}
+                        </button>
                       )}
                     </div>
-                    {s.phone && (
-                      <a
-                        href={`tel:${s.phone.replace(/\s+/g, "")}`}
-                        className="text-xs text-accent hover:underline flex items-center gap-1 mt-0.5"
-                      >
-                        <Phone size={10} /> {s.phone}
-                      </a>
-                    )}
-                  </div>
-                  <div className="text-xs text-muted-foreground tabular-nums">
-                    {formatRelative(s.lastUserAt)}
-                  </div>
-                </div>
+                    <div className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                      {formatRelative(s.lastUserAt)}
+                    </div>
+                  </Link>
+                </li>
               )
             })}
-          </div>
+          </ul>
         </section>
       )}
     </div>
