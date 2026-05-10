@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, ShieldCheck, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug } from "lucide-react"
+import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid } from "lucide-react"
 import { useAdminRoleStore, type PermissionKey } from "@/lib/store/admin-role"
 import { useOpenTasksCount } from "@/lib/store/tasks"
 import { useNotificationCounts } from "@/lib/crm/notifications-store"
@@ -27,6 +27,7 @@ const navItems: NavItem[] = [
   { href: "/admin/analytics", icon: LineChart, label: "Аналітика", perm: "analytics", section: "CRM" },
 
   // === Контент сайту ===
+  { href: "/admin/homepage", icon: LayoutGrid, label: "Головна сторінка", perm: "about", section: "Контент" },
   { href: "/admin/stones", icon: Package, label: "Товари (камінь)", perm: "products", section: "Контент" },
   { href: "/admin/services", icon: Wrench, label: "Послуги", perm: "services", section: "Контент" },
   { href: "/admin/projects", icon: Briefcase, label: "Проєкти", perm: "projects", section: "Контент" },
@@ -41,7 +42,8 @@ const navItems: NavItem[] = [
   { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", perm: "settings", section: "Налаштування" },
   { href: "/admin/team", icon: Users, label: "Команда і ролі", perm: "settings", section: "Налаштування" },
   { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", perm: "business", section: "Налаштування" },
-  { href: "/admin/roles", icon: ShieldCheck, label: "Дозволи (legacy)", perm: "settings", section: "Налаштування" },
+  // /admin/roles — legacy local-only permission toggle, replaced by /admin/team.
+  // Page still exists for backward compat but hidden from sidebar.
   { href: "/admin/account", icon: UserCircle, label: "Акаунт", perm: "settings", section: "Налаштування" },
 ]
 
