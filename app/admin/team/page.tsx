@@ -1,13 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown } from "lucide-react"
+import Link from "next/link"
+import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
 import { useTeamStore } from "@/lib/crm/store"
 import type { TeamMember, TeamRole } from "@/lib/crm/types"
 import { formatRelative } from "@/lib/admin-format"
+import { RolePermissionCard } from "@/components/admin/role-permission-card"
 
 const ROLE_LABEL_UK: Record<TeamRole, string> = {
   super_admin: "Головний адмін",
@@ -93,9 +95,16 @@ export default function TeamPage() {
             Учасники команди мають реальні Supabase-ролі. RLS обмежує що видно кожній ролі.
           </p>
         </div>
-        <Button onClick={() => setShowAdd(true)} className="rounded-xl gap-2">
-          <Plus size={16} /> Додати учасника
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" className="rounded-xl gap-2">
+            <Link href="/admin/team/permissions">
+              <Table2 size={16} /> Порівняти права ролей
+            </Link>
+          </Button>
+          <Button onClick={() => setShowAdd(true)} className="rounded-xl gap-2">
+            <Plus size={16} /> Додати учасника
+          </Button>
+        </div>
       </header>
 
       {/* Roles legend — super_admin card only renders when at least one
@@ -227,26 +236,25 @@ export default function TeamPage() {
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Роль *</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {ASSIGNABLE_ROLES.map((r) => {
-                    const Icon = ROLE_ICON[r]
-                    return (
-                      <button
-                        key={r}
-                        type="button"
-                        onClick={() => setDraft({ ...draft, role: r })}
-                        className={`rounded-xl border px-3 py-2 text-left text-xs ${
-                          draft.role === r ? "border-foreground bg-foreground/5" : "border-foreground/15"
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 font-medium">
-                          <Icon size={12} /> {ROLE_LABEL_UK[r]}
-                        </div>
-                        <p className="mt-0.5 text-muted-foreground">{ROLE_DESC[r]}</p>
-                      </button>
-                    )
-                  })}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {ASSIGNABLE_ROLES.map((r) => (
+                    <RolePermissionCard
+                      key={r}
+                      role={r}
+                      active={draft.role === r}
+                      onSelect={(role) => setDraft({ ...draft, role })}
+                    />
+                  ))}
                 </div>
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  Наведіть курсор (або натисніть «i») щоб подивитись повний список того, що дозволено та заборонено.
+                  <Link
+                    href="/admin/team/permissions"
+                    className="ml-1 underline underline-offset-2 hover:text-foreground"
+                  >
+                    Порівняти всі ролі →
+                  </Link>
+                </p>
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Телефон</label>
