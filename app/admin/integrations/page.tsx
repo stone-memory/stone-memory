@@ -13,9 +13,12 @@ import {
   Mail,
   Phone,
   AlertCircle,
+  Lock,
+  Crown,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { authedFetch } from "@/lib/authed-fetch"
+import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
 
 type Integration = {
   id: string
@@ -108,6 +111,9 @@ const SETUP_GUIDES: Record<string, { steps: string[]; docsUrl: string }> = {
 }
 
 export default function IntegrationsPage() {
+  const { role, loading: roleLoading } = useCurrentRole()
+  const allowed = isSuperAdmin(role)
+
   const [items, setItems] = useState<Integration[]>([])
   const [loading, setLoading] = useState(true)
   const [origin, setOrigin] = useState("")
@@ -116,13 +122,67 @@ export default function IntegrationsPage() {
 
   useEffect(() => {
     setOrigin(window.location.origin)
+    if (!allowed) {
+      setLoading(false)
+      return
+    }
     authedFetch("/api/crm/integrations/status", { cache: "no-store" })
       .then((r) => r.json())
       .then((j) => {
         setItems(j.integrations || [])
         setLoading(false)
       })
-  }, [])
+  }, [allowed])
+
+  // Defense in depth: even if a non-super-admin somehow lands here
+  // (direct URL, sidebar bypass), the API guard returns 403 and we
+  // render an explicit access-denied panel rather than a blank page.
+  if (roleLoading) {
+    return (
+      <div className="rounded-2xl border border-foreground/10 bg-card p-6 text-sm text-muted-foreground">
+        Завантаження…
+      </div>
+    )
+  }
+  if (!allowed) {
+    return (
+      <div className="space-y-6 max-w-2xl">
+        <header>
+          <h1 className="text-3xl font-semibold tracking-tight-custom">Інтеграції каналів</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Підключення Telegram, WhatsApp, Instagram, Email, SMS до CRM.
+          </p>
+        </header>
+        <div className="rounded-2xl border border-amber-300/40 bg-amber-50/60 p-6 dark:bg-amber-900/10">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-700 mb-2">
+            <Lock size={14} /> Доступ обмежено
+          </div>
+          <h2 className="text-lg font-semibold tracking-tight-custom">
+            Цей розділ — лише для головного адміна
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Канальні інтеграції — критична частина воронки. Якщо хтось випадково відключить
+            канал, всі клієнти перестануть писати. Тому налаштовує тільки власник.
+            Ви, як <span className="font-medium text-foreground">{role || "учасник"}</span>,
+            бачите вхідні повідомлення з усіх каналів у unified inbox автоматично — нічого
+            налаштовувати не потрібно.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button asChild variant="outline" className="rounded-xl gap-2">
+              <a href="/admin/inbox">
+                <Crown size={14} /> Перейти у Inbox
+              </a>
+            </Button>
+            <Button asChild className="rounded-xl gap-2">
+              <a href="mailto:sttonememory@gmail.com?subject=%5BCRM%5D%20Запит%20на%20налаштування%20інтеграції">
+                Зв'язатись з адміном
+              </a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const copy = (text: string, key: string) => {
     navigator.clipboard.writeText(text)

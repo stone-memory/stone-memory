@@ -4,13 +4,23 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid } from "lucide-react"
+import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock } from "lucide-react"
 import { useAdminRoleStore, type PermissionKey } from "@/lib/store/admin-role"
 import { useOpenTasksCount } from "@/lib/store/tasks"
 import { useNotificationCounts } from "@/lib/crm/notifications-store"
+import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
 import { cn } from "@/lib/utils"
 
-type NavItem = { href: string; icon: typeof Inbox; label: string; perm: PermissionKey; section?: string }
+type NavItem = {
+  href: string
+  icon: typeof Inbox
+  label: string
+  perm: PermissionKey
+  section?: string
+  /** When true, only super_admin sees the link as a real link. Other
+   *  roles see it disabled with a Lock icon and a "owner-only" tooltip. */
+  superAdminOnly?: boolean
+}
 
 const navItems: NavItem[] = [
   // === CRM-розділи (нові) ===
@@ -39,7 +49,7 @@ const navItems: NavItem[] = [
   { href: "/admin/chat-settings", icon: Sparkles, label: "Налаштування чату", perm: "chatSettings", section: "Контент" },
 
   // === Налаштування ===
-  { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", perm: "settings", section: "Налаштування" },
+  { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", perm: "settings", section: "Налаштування", superAdminOnly: true },
   { href: "/admin/team", icon: Users, label: "Команда і ролі", perm: "settings", section: "Налаштування" },
   { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", perm: "business", section: "Налаштування" },
   // /admin/roles — legacy local-only permission toggle, replaced by /admin/team.
@@ -52,6 +62,8 @@ export function AdminSidebar() {
   const role = useAdminRoleStore((s) => s.role)
   const managerPerms = useAdminRoleStore((s) => s.managerPermissions)
   const hasHydrated = useAdminRoleStore((s) => s.hasHydrated)
+  const { role: realRole } = useCurrentRole()
+  const currentlySuperAdmin = isSuperAdmin(realRole)
   const openTasks = useOpenTasksCount()
   // Real-time лічильники сповіщень для бейджів. Хук сам поллить /api/crm/notifications/counts
   // кожні 30 с і авто-зануляє лічильник коли admin відвідав відповідний розділ.
@@ -183,6 +195,26 @@ export function AdminSidebar() {
                 else if (item.href === "/admin/deals") { badge = counts.deals; badgeColor = "bg-accent text-accent-foreground" }
                 else if (item.href === "/admin/chat") { badge = counts.chat; badgeColor = "bg-accent text-accent-foreground" }
 
+                // super_admin-only items render as a disabled row with a
+                // Lock icon for non-super-admins. Tooltip explains why.
+                // The page itself ALSO guards (defense in depth) — hiding
+                // the link is just a UX cue.
+                const lockedForUser = item.superAdminOnly === true && !currentlySuperAdmin
+                if (lockedForUser) {
+                  return (
+                    <button
+                      key={item.href}
+                      type="button"
+                      disabled
+                      title="Доступ лише для головного адміністратора"
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium text-muted-foreground/60 cursor-not-allowed"
+                    >
+                      <Icon size={16} />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      <Lock size={12} className="opacity-70" />
+                    </button>
+                  )
+                }
                 return (
                   <Link key={item.href} href={item.href}>
                     <button

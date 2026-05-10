@@ -1,15 +1,20 @@
 import { NextResponse } from "next/server"
-import { requireAdmin } from "@/lib/api-auth"
+import { requireSuperAdmin } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
 /**
  * Повертає статус кожної інтеграції — на основі ENV змінних що задані.
  * Це read-only ендпоінт, не зберігає секрети у відповіді — лише boolean чи задано.
+ *
+ * Доступ — лише super_admin (Fix 6). Канальні інтеграції — критична
+ * частина воронки: якщо менеджер випадково побачить токени або зможе
+ * відключити канал, вся комунікація з клієнтами зупиниться. Тому
+ * налаштовує тільки власник.
  */
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
-  if (unauth) return unauth
+  const unauth = await requireSuperAdmin(req)
+  if (unauth instanceof NextResponse) return unauth
 
   const e = process.env
 
