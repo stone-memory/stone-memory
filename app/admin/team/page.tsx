@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2 } from "lucide-react"
+import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -10,6 +10,7 @@ import { useTeamStore } from "@/lib/crm/store"
 import type { TeamMember, TeamRole } from "@/lib/crm/types"
 import { formatRelative } from "@/lib/admin-format"
 import { RolePermissionCard } from "@/components/admin/role-permission-card"
+import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
 
 const ROLE_LABEL_UK: Record<TeamRole, string> = {
   super_admin: "Головний адмін",
@@ -45,7 +46,11 @@ export default function TeamPage() {
   const members = useTeamStore((s) => s.members)
   const loaded = useTeamStore((s) => s.loaded)
   const load = useTeamStore((s) => s.load)
+  const { role: currentRole } = useCurrentRole()
+  const canResetPasswords = isSuperAdmin(currentRole)
   const [showAdd, setShowAdd] = useState(false)
+  // When set, opens the "reset password for this teammate" modal.
+  const [resetTarget, setResetTarget] = useState<TeamMember | null>(null)
   const [draft, setDraft] = useState<{ email: string; display_name: string; role: TeamRole; phone: string }>({
     email: "",
     display_name: "",
@@ -203,13 +208,27 @@ export default function TeamPage() {
                     </button>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => removeMember(m.id)}
-                      className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
-                      title="Деактивувати"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    <div className="inline-flex items-center gap-1">
+                      {canResetPasswords && m.user_id && (
+                        // Visible only to super_admin AND only when the
+                        // teammate has actually registered in Supabase Auth
+                        // (without user_id we can't target their auth row).
+                        <button
+                          onClick={() => setResetTarget(m)}
+                          className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                          title="Скинути пароль"
+                        >
+                          <Key size={14} />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => removeMember(m.id)}
+                        className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
+                        title="Деактивувати"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               )
@@ -217,6 +236,13 @@ export default function TeamPage() {
           </tbody>
         </table>
       </div>
+
+      {resetTarget && (
+        <ResetPasswordDialog
+          target={resetTarget}
+          onClose={() => setResetTarget(null)}
+        />
+      )}
 
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setShowAdd(false)}>
@@ -268,6 +294,153 @@ export default function TeamPage() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+/**
+ * super_admin-only dialog: set a new password for any team member.
+ * Calls /api/auth/update-password with targetUserId. The endpoint
+ * gates by requireSuperAdmin so even if a non-super-admin somehow
+ * lands here, the API rejects.
+ *
+ * After reset, the teammate's existing sessions are NOT killed by
+ * Supabase admin.updateUserById — they stay logged in until the token
+ * expires. This is consistent with how supabase.auth.updateUser({password})
+ * normally behaves and matches user expectations ("changing password
+ * doesn't sign me out").
+ */
+function ResetPasswordDialog({
+  target,
+  onClose,
+}: {
+  target: TeamMember
+  onClose: () => void
+}) {
+  const [pw1, setPw1] = useState("")
+  const [pw2, setPw2] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [status, setStatus] = useState<"idle" | "ok" | "error">("idle")
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus("idle")
+    setErrorMsg(null)
+
+    if (pw1.length < 8) {
+      setStatus("error")
+      setErrorMsg("Мінімум 8 символів")
+      return
+    }
+    if (pw1 !== pw2) {
+      setStatus("error")
+      setErrorMsg("Паролі не збігаються")
+      return
+    }
+    if (!target.user_id) {
+      setStatus("error")
+      setErrorMsg("У цього учасника ще немає auth-користувача")
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const r = await authedFetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newPassword: pw1, targetUserId: target.user_id }),
+      })
+      const j = await r.json()
+      if (!r.ok) {
+        setStatus("error")
+        setErrorMsg(j.error || "Помилка")
+        return
+      }
+      setStatus("ok")
+      setPw1("")
+      setPw2("")
+      // Auto-close after a short pause so the user sees the success state.
+      setTimeout(onClose, 1500)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const displayName = target.display_name || target.email.split("@")[0]
+
+  return (
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div
+        className="w-full max-w-md rounded-2xl border border-foreground/10 bg-card p-6 shadow-hover"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3 mb-1">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight-custom">Скинути пароль</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground break-all">
+              Для <span className="font-medium text-foreground">{displayName}</span> ({target.email})
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-full p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <p className="mt-3 rounded-lg bg-amber-50/60 px-3 py-2 text-xs text-amber-900 dark:bg-amber-900/10 dark:text-amber-200">
+          Учасник зможе ввійти з новим паролем одразу. Поточні активні сесії не закриваються —
+          якщо потрібно вилогінити, попроси учасника натиснути «Вийти» або зроби це через Supabase Dashboard.
+        </p>
+
+        <form onSubmit={submit} className="mt-4 space-y-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Новий пароль</label>
+            <Input
+              type="password"
+              value={pw1}
+              onChange={(e) => setPw1(e.target.value)}
+              placeholder="Мінімум 8 символів"
+              autoComplete="new-password"
+              className="h-11 rounded-xl"
+              required
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Підтвердіть</label>
+            <Input
+              type="password"
+              value={pw2}
+              onChange={(e) => setPw2(e.target.value)}
+              autoComplete="new-password"
+              className="h-11 rounded-xl"
+              required
+            />
+          </div>
+          {status === "error" && errorMsg && (
+            <p className="inline-flex items-center gap-1.5 text-sm text-destructive">
+              <AlertCircle size={14} /> {errorMsg}
+            </p>
+          )}
+          {status === "ok" && (
+            <p className="inline-flex items-center gap-1.5 text-sm text-success">
+              <Check size={14} /> Пароль оновлено
+            </p>
+          )}
+          <div className="flex justify-end gap-2 pt-1">
+            <Button type="button" variant="outline" onClick={onClose} className="rounded-xl">
+              Скасувати
+            </Button>
+            <Button type="submit" disabled={submitting} className="rounded-xl gap-2">
+              <Key size={14} />
+              {submitting ? "Зберігаю…" : "Скинути пароль"}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

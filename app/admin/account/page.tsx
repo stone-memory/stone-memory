@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Lock, Check, AlertCircle, Mail, Crown, ShieldOff, Send, User } from "lucide-react"
+import { Lock, Check, AlertCircle, Mail, Crown, ShieldOff, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -48,7 +48,6 @@ export default function AdminAccountPage() {
       ) : (
         <>
           <ReadOnlyEmailSection email={email || ""} />
-          <ContactOwnerSection />
           <ProfileBasicsSection />
         </>
       )}
@@ -268,43 +267,15 @@ function SuperAdminPasswordSection() {
 // NON-SUPER_ADMIN flows
 // ================================================================
 function ReadOnlyEmailSection({ email }: { email: string }) {
+  // Read-only email card. We deliberately don't say "ask the owner to
+  // change it" — the user explicitly didn't want that noise. If a non-
+  // super-admin needs a change, they'll figure out who to ask offline.
   return (
     <section className="rounded-2xl border border-foreground/10 bg-card p-6">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
         <Mail size={14} /> Email
       </div>
       <div className="font-mono text-sm break-all">{email || "—"}</div>
-      <p className="mt-3 text-xs text-muted-foreground">
-        Email і пароль може змінити лише головний адміністратор. Зверніться нижче ↓
-      </p>
-    </section>
-  )
-}
-
-function ContactOwnerSection() {
-  const ownerEmail = "sttonememory@gmail.com"
-  const subject = encodeURIComponent("[CRM] Запит на зміну даних акаунта")
-  return (
-    <section className="rounded-2xl border border-amber-300/40 bg-amber-50/60 p-6 dark:bg-amber-900/10">
-      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-700 mb-2">
-        <Crown size={14} /> Зміна email або пароля
-      </div>
-      <h2 className="text-lg font-semibold tracking-tight-custom">
-        Дані акаунта змінює лише головний адмін
-      </h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Це запобіжник: щоб ніхто не зміг випадково чи навмисно перехопити доступ. Якщо потрібно змінити email або пароль — напишіть власнику.
-      </p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button asChild className="rounded-xl gap-2">
-          <a href={`mailto:${ownerEmail}?subject=${subject}`}>
-            <Send size={14} /> Зв'язатись з адміном
-          </a>
-        </Button>
-        <span className="inline-flex items-center text-xs text-muted-foreground">
-          або напишіть на <code className="ml-1 font-mono">{ownerEmail}</code>
-        </span>
-      </div>
     </section>
   )
 }
