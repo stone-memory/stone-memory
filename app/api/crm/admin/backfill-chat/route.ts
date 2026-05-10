@@ -24,6 +24,25 @@ export async function POST(req: Request) {
   let customersCreated = 0
   const errors: string[] = []
 
+  // Helper: stringify a Supabase/Postgres error completely.
+  // Default `error.message` often hides the column name / constraint / hint.
+  const formatDbError = (
+    e: { message?: string; details?: string; hint?: string; code?: string } | unknown,
+    prefix: string
+  ): string => {
+    if (e && typeof e === "object") {
+      const err = e as { message?: string; details?: string; hint?: string; code?: string }
+      const parts = [
+        err.code ? `[${err.code}]` : null,
+        err.message,
+        err.details ? `details=${err.details}` : null,
+        err.hint ? `hint=${err.hint}` : null,
+      ].filter(Boolean)
+      return `${prefix}: ${parts.join(" | ")}`
+    }
+    return `${prefix}: ${e instanceof Error ? e.message : String(e)}`
+  }
+
   // Витягуємо ВСІ chat_messages (порціями)
   const PAGE = 200
   let offset = 0
@@ -37,7 +56,9 @@ export async function POST(req: Request) {
       .range(offset, offset + PAGE - 1)
 
     if (error) {
-      errors.push(`fetch chat_messages: ${error.message}`)
+      const msg = formatDbError(error, "fetch chat_messages")
+      console.error("[backfill-chat]", msg)
+      errors.push(msg)
       break
     }
     if (!messages || messages.length === 0) break
@@ -103,12 +124,16 @@ export async function POST(req: Request) {
         })
 
         if (insertErr) {
-          errors.push(`insert ${externalId}: ${insertErr.message}`)
+          const msg = formatDbError(insertErr, `insert comm for chat_messages.id=${externalId}`)
+          console.error("[backfill-chat]", msg)
+          errors.push(msg)
         } else {
           processed++
         }
       } catch (e) {
-        errors.push(`process ${externalId}: ${e instanceof Error ? e.message : "unknown"}`)
+        const msg = formatDbError(e, `process chat_messages.id=${externalId}`)
+        console.error("[backfill-chat]", msg)
+        errors.push(msg)
       }
     }
 

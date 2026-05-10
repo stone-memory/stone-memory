@@ -286,13 +286,16 @@ function BackfillChatBlock() {
     skipped: number
     customersCreated: number
     errorCount: number
+    errors: string[]
   } | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [showErrors, setShowErrors] = useState(false)
 
   const run = async () => {
     setRunning(true)
     setError(null)
     setResult(null)
+    setShowErrors(false)
     try {
       const r = await authedFetch("/api/crm/admin/backfill-chat", { method: "POST" })
       const j = await r.json()
@@ -305,6 +308,7 @@ function BackfillChatBlock() {
         skipped: j.skipped,
         customersCreated: j.customersCreated,
         errorCount: j.errorCount || 0,
+        errors: Array.isArray(j.errors) ? j.errors : [],
       })
     } catch (e) {
       setError(e instanceof Error ? e.message : "Помилка мережі")
@@ -330,7 +334,28 @@ function BackfillChatBlock() {
           <strong>{result.skipped}</strong> пропущено (вже були),{" "}
           <strong>{result.customersCreated}</strong> нових клієнтів створено.
           {result.errorCount > 0 && (
-            <div className="mt-1 text-amber-600">⚠ {result.errorCount} помилок (див. console)</div>
+            <div className="mt-2 text-amber-700">
+              <button
+                onClick={() => setShowErrors((v) => !v)}
+                className="inline-flex items-center gap-1 underline underline-offset-2 hover:text-amber-900"
+              >
+                ⚠ {result.errorCount} помилок — {showErrors ? "сховати" : "показати"}
+              </button>
+              {showErrors && result.errors.length > 0 && (
+                <ul className="mt-2 max-h-64 overflow-auto rounded-lg bg-amber-50/60 p-3 font-mono text-xs leading-relaxed text-amber-900">
+                  {result.errors.map((msg, i) => (
+                    <li key={i} className="border-b border-amber-200/60 py-1 last:border-b-0">
+                      {msg}
+                    </li>
+                  ))}
+                  {result.errorCount > result.errors.length && (
+                    <li className="pt-2 text-amber-800/70">
+                      …та ще {result.errorCount - result.errors.length} (показано перші {result.errors.length})
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
           )}
         </div>
       )}
