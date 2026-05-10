@@ -4,8 +4,15 @@ import { useFaqItems } from "@/lib/store/faq"
 import { useTranslation } from "@/lib/i18n/context"
 
 /**
- * Emits FAQPage JSON-LD for the store-backed FAQ on the main page.
- * Mounted via the home page layout so Google picks up rich FAQ snippets.
+ * @deprecated Use server-side `faqPageSchema()` from `@/lib/seo/schemas/faqPage` instead.
+ *
+ * Why: client-rendered structured data is unreliable — Googlebot may crawl
+ * the HTML before this script runs, missing the FAQ schema entirely.
+ * The home page (`app/page.tsx`) now emits the schema server-side from
+ * `fetchFaqItems()`.
+ *
+ * Kept for backward compatibility. Safe to delete after verifying server-side
+ * schema is present in production HTML (search for `"@type":"FAQPage"`).
  */
 export function FaqJsonLd() {
   const { locale } = useTranslation()
