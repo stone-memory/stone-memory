@@ -68,3 +68,30 @@ export function formatRelative(d: Date | string | number): string {
 export function eurHint(eur: number): string {
   return `≈ €${eur.toLocaleString(ADMIN_LOCALE)}`
 }
+
+/**
+ * Ukrainian noun pluralization. Slavic languages have three plural forms:
+ *   - one  (1, 21, 31, …)        → "день"
+ *   - few  (2-4, 22-24, …)       → "дні"
+ *   - many (0, 5-20, 25-30, …)   → "днів"
+ *
+ * Single source of truth — don't sprinkle this rule across components.
+ *
+ *   pluralUk(1, "день", "дні", "днів")    // "день"
+ *   pluralUk(2, "день", "дні", "днів")    // "дні"
+ *   pluralUk(5, "день", "дні", "днів")    // "днів"
+ *   pluralUk(21, "день", "дні", "днів")   // "день"
+ */
+export function pluralUk(n: number, one: string, few: string, many: string): string {
+  const abs = Math.abs(Math.round(n))
+  const mod10 = abs % 10
+  const mod100 = abs % 100
+  if (mod10 === 1 && mod100 !== 11) return one
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few
+  return many
+}
+
+/** Convenience: returns "1 день" / "3 дні" / "7 днів". */
+export function pluralizeDays(n: number): string {
+  return `${n} ${pluralUk(n, "день", "дні", "днів")}`
+}

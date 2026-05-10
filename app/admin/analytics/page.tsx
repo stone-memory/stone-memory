@@ -19,6 +19,7 @@ import { useOrdersStore } from "@/lib/store/orders"
 import { authedFetch } from "@/lib/authed-fetch"
 import { formatUAH, formatRelative, ADMIN_LOCALE } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
+import { RevenueByDays } from "@/components/admin/revenue-by-days"
 
 type Period = "today" | "7d" | "30d" | "90d" | "ytd" | "all"
 
@@ -81,6 +82,7 @@ type Subscriber = {
 
 export default function AnalyticsPage() {
   const orders = useOrdersStore((s) => s.orders)
+  const ordersLoading = useOrdersStore((s) => s.loading)
   const [period, setPeriod] = useState<Period>("30d")
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([])
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
@@ -191,25 +193,9 @@ export default function AnalyticsPage() {
       .slice(0, 10)
   }, [filtered])
 
-  // ===== Daily timeline =====
-  const timeline = useMemo(() => {
-    const days = Math.max(
-      1,
-      from ? Math.ceil((Date.now() - from.getTime()) / 86400000) : 90
-    )
-    const buckets: Record<string, { count: number; revenue: number }> = {}
-    for (const o of filtered) {
-      const d = new Date(o.createdAt)
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
-      if (!buckets[key]) buckets[key] = { count: 0, revenue: 0 }
-      buckets[key].count++
-      buckets[key].revenue += o.items.reduce((a, i) => a + i.priceFrom, 0)
-    }
-    return Object.entries(buckets)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .slice(-Math.min(days, 30))
-  }, [filtered, from])
-  const maxRev = Math.max(1, ...timeline.map(([, v]) => v.revenue))
+  // Daily timeline aggregation lives inside <RevenueByDays /> now —
+  // it owns its own period state independent from this page-level
+  // `period` filter.
 
   // ===== Time-of-day pattern (коли клієнти найчастіше залишають заявки?) =====
   const hourlyPattern = useMemo(() => {
@@ -420,36 +406,13 @@ export default function AnalyticsPage() {
         </div>
       </section>
 
-      {/* ===== Revenue timeline + Status ===== */}
+      {/* ===== Revenue timeline + Status =====
+         RevenueByDays is self-contained: owns its own period selector,
+         skeleton/empty/data states, and proper Recharts BarChart with
+         axes + tooltip. The old inline grey-block bar chart was the
+         source of the "broken" look in the screenshot. */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-foreground/10 bg-card p-6 lg:col-span-2">
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Дохід за днями
-            </h2>
-            <span className="text-xs text-muted-foreground">{timeline.length} днів</span>
-          </div>
-          {timeline.length === 0 ? (
-            <div className="py-12 text-center text-sm text-muted-foreground">
-              Немає даних за вибраний період
-            </div>
-          ) : (
-            <div className="flex h-48 items-end gap-1">
-              {timeline.map(([key, v]) => (
-                <div
-                  key={key}
-                  className="group relative flex-1 rounded-t-sm bg-foreground/70 transition-colors hover:bg-foreground"
-                  style={{ height: `${Math.max(2, (v.revenue / maxRev) * 100)}%` }}
-                  title={`${key}: ${formatUAH(v.revenue)} (${v.count})`}
-                >
-                  <span className="absolute -top-6 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] font-medium text-background group-hover:block">
-                    {formatUAH(v.revenue)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <RevenueByDays orders={orders} loading={ordersLoading} />
 
         <div className="rounded-2xl border border-foreground/10 bg-card p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
