@@ -17,10 +17,11 @@ export async function GET(req: Request) {
 
   // Resolve effective config for every channel once — cheap (in-process
   // 5s cache + tiny DB queries).
-  const [tg, wa, ig, em, sm] = await Promise.all([
+  const [tg, wa, ig, vb, em, sm] = await Promise.all([
     getIntegrationConfig("telegram"),
     getIntegrationConfig("whatsapp"),
     getIntegrationConfig("instagram"),
+    getIntegrationConfig("viber"),
     getIntegrationConfig("email_inbound"),
     getIntegrationConfig("twilio_sms"),
   ])
@@ -33,6 +34,7 @@ export async function GET(req: Request) {
       telegram: ["bot_token", "admin_chat_id", "webhook_secret"],
       whatsapp: ["token", "phone_number_id", "verify_token"],
       instagram: ["page_access_token", "page_id", "verify_token"],
+      viber: ["auth_token", "sender_name"],
       email_inbound: ["resend_api_key", "email_from", "inbound_secret"],
       twilio_sms: ["account_sid", "auth_token", "from_number"],
     }
@@ -76,6 +78,17 @@ export async function GET(req: Request) {
         envVars: envVarsFor("instagram", ig),
         canSend: setFlag(ig, "page_access_token") && setFlag(ig, "page_id"),
         canReceive: setFlag(ig, "verify_token"),
+      },
+      {
+        id: "viber",
+        name: "Viber",
+        configured: setFlag(vb, "auth_token"),
+        webhookUrl: "/api/viber/webhook",
+        envVars: envVarsFor("viber", vb),
+        canSend: setFlag(vb, "auth_token"),
+        // Viber webhook is the same auth_token — once it's set + we
+        // called /pa/set_webhook once, both directions work.
+        canReceive: setFlag(vb, "auth_token"),
       },
       {
         id: "email",

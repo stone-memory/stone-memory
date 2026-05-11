@@ -24,6 +24,8 @@ export type ChannelIdentifier = {
   instagramPsid?: string
   /** Facebook PSID */
   facebookPsid?: string
+  /** Viber user_id (стабільний 16-символьний ідентифікатор від платформи Viber) */
+  viberUserId?: string
   /** Site chat session_id — щоб гостьові розмови без телефону теж потрапляли в Inbox */
   siteSessionId?: string
 }
@@ -92,6 +94,7 @@ export async function findOrCreateCustomer(
     ["telegram_user_id", id.telegramUserId],
     ["instagram_psid", id.instagramPsid],
     ["facebook_psid", id.facebookPsid],
+    ["viber_user_id", id.viberUserId],
     ["site_chat_session_id", id.siteSessionId],
   ] as const
 
@@ -110,6 +113,7 @@ export async function findOrCreateCustomer(
   if (id.telegramUserId) channels.telegram_user_id = id.telegramUserId
   if (id.instagramPsid) channels.instagram_psid = id.instagramPsid
   if (id.facebookPsid) channels.facebook_psid = id.facebookPsid
+  if (id.viberUserId) channels.viber_user_id = id.viberUserId
   if (id.siteSessionId) channels.site_chat_session_id = id.siteSessionId
 
   // Унікальний phone для тих хто без реального — щоб обійти UNIQUE index по phone_norm.
@@ -164,6 +168,7 @@ export async function updateCustomerChannelIds(
   const channels = (current.channels || {}) as Record<string, string>
   if (patch.telegramUserId) channels.telegram_user_id = patch.telegramUserId
   if (patch.instagramPsid) channels.instagram_psid = patch.instagramPsid
+  if (patch.viberUserId) channels.viber_user_id = patch.viberUserId
   if (patch.facebookPsid) channels.facebook_psid = patch.facebookPsid
   if (patch.siteSessionId) channels.site_chat_session_id = patch.siteSessionId
 
@@ -288,11 +293,13 @@ export async function getCustomerChannels(customerId: string): Promise<{
   hasTelegram: boolean
   hasInstagram: boolean
   hasFacebook: boolean
+  hasViber: boolean
   phone?: string
   email?: string
   telegramUserId?: string
   instagramPsid?: string
   facebookPsid?: string
+  viberUserId?: string
 }> {
   const { data } = await supabaseAdmin
     .from("customers")
@@ -301,7 +308,7 @@ export async function getCustomerChannels(customerId: string): Promise<{
     .single()
 
   if (!data) {
-    return { hasPhone: false, hasEmail: false, hasTelegram: false, hasInstagram: false, hasFacebook: false }
+    return { hasPhone: false, hasEmail: false, hasTelegram: false, hasInstagram: false, hasFacebook: false, hasViber: false }
   }
 
   const channels = (data.channels || {}) as Record<string, string>
@@ -311,10 +318,12 @@ export async function getCustomerChannels(customerId: string): Promise<{
     hasTelegram: Boolean(channels.telegram_user_id),
     hasInstagram: Boolean(channels.instagram_psid),
     hasFacebook: Boolean(channels.facebook_psid),
+    hasViber: Boolean(channels.viber_user_id),
     phone: data.phone || undefined,
     email: data.email || undefined,
     telegramUserId: channels.telegram_user_id,
     instagramPsid: channels.instagram_psid,
     facebookPsid: channels.facebook_psid,
+    viberUserId: channels.viber_user_id,
   }
 }

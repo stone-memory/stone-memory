@@ -52,6 +52,8 @@ export async function sendToChannel(args: SendArgs): Promise<SendResult> {
       return sendWhatsApp(args, channels.phone)
     case "instagram":
       return sendInstagram(args, channels.instagramPsid)
+    case "viber":
+      return sendViber(args, channels.viberUserId)
     case "sms":
       return sendSms(args, channels.phone)
     case "site_chat":
@@ -257,6 +259,61 @@ async function sendSms(args: SendArgs, phone?: string): Promise<SendResult> {
     return { ok: true, channel: "sms", messageId: data.sid, communicationId: commId }
   } catch (e) {
     return { ok: false, channel: "sms", error: e instanceof Error ? e.message : "network error" }
+  }
+}
+
+// ====================================================
+// Viber (REST Bot API)
+// Документація: https://developers.viber.com/docs/api/rest-bot-api/
+// ====================================================
+async function sendViber(args: SendArgs, viberUserId?: string): Promise<SendResult> {
+  const cfg = await getIntegrationConfig("viber")
+  const token = cfg.auth_token
+  if (!token) {
+    return { ok: false, channel: "viber", error: "Viber не налаштовано (VIBER_AUTH_TOKEN)" }
+  }
+  if (!viberUserId) {
+    return { ok: false, channel: "viber", error: "У клієнта немає Viber user_id" }
+  }
+  const senderName = cfg.sender_name || "Stone Memory"
+  const senderAvatar = cfg.sender_avatar || undefined
+
+  try {
+    const r = await fetch("https://chatapi.viber.com/pa/send_message", {
+      method: "POST",
+      headers: {
+        "X-Viber-Auth-Token": token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        receiver: viberUserId,
+        min_api_version: 1,
+        sender: senderAvatar ? { name: senderName, avatar: senderAvatar } : { name: senderName },
+        type: "text",
+        text: args.body,
+      }),
+    })
+    const data = (await r.json()) as { status: number; status_message?: string; message_token?: string | number }
+    // Viber returns status:0 on success regardless of HTTP code
+    if (!r.ok || data.status !== 0) {
+      return {
+        ok: false,
+        channel: "viber",
+        error: data.status_message || `HTTP ${r.status}`,
+      }
+    }
+    const commId = await recordOutgoing({
+      customerId: args.customerId,
+      dealId: args.dealId,
+      channel: "viber",
+      body: args.body,
+      actorId: args.actorId,
+      externalId: data.message_token ? String(data.message_token) : undefined,
+      threadKey: `viber:${viberUserId}`,
+    })
+    return { ok: true, channel: "viber", messageId: data.message_token ? String(data.message_token) : undefined, communicationId: commId }
+  } catch (e) {
+    return { ok: false, channel: "viber", error: e instanceof Error ? e.message : "network error" }
   }
 }
 

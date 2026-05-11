@@ -336,6 +336,7 @@ export type CommChannel =
   | "whatsapp"
   | "instagram"
   | "facebook"
+  | "viber"
   | "email"
   | "sms"
   | "phone"
@@ -349,6 +350,7 @@ export const COMM_CHANNEL_LABELS: Record<CommChannel, string> = {
   whatsapp: "WhatsApp",
   instagram: "Instagram",
   facebook: "Facebook",
+  viber: "Viber",
   email: "Email",
   sms: "SMS",
   phone: "Дзвінок",

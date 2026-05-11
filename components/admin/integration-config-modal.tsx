@@ -70,6 +70,18 @@ const SCHEMAS: Record<string, ChannelSchema> = {
       { key: "verify_token", label: "Verify token", kind: "secret", placeholder: "будь-який рядок" },
     ],
   },
+  viber: {
+    id: "viber",
+    name: "Viber",
+    helpUrl: "https://partners.viber.com/account/create-bot-account",
+    intro:
+      "Створи Public Account на partners.viber.com → отримай Auth Token. Після збереження натисни «Підключити webhook» нижче — це зареєструє цей URL у Viber.",
+    fields: [
+      { key: "auth_token", label: "Auth token", kind: "secret", placeholder: "із Viber account-info" },
+      { key: "sender_name", label: "Імʼя відправника", kind: "text", placeholder: "Stone Memory" },
+      { key: "sender_avatar", label: "URL аватара", kind: "text", placeholder: "https://… (необовʼязково)" },
+    ],
+  },
   email_inbound: {
     id: "email_inbound",
     name: "Email",
@@ -103,6 +115,7 @@ const ID_MAP: Record<string, string> = {
   telegram: "telegram",
   whatsapp: "whatsapp",
   instagram: "instagram",
+  viber: "viber",
   email: "email_inbound",
   sms: "twilio_sms",
 }

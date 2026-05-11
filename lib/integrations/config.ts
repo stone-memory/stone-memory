@@ -23,6 +23,7 @@ export type IntegrationId =
   | "telegram"
   | "whatsapp"
   | "instagram"
+  | "viber"
   | "email_inbound"
   | "twilio_sms"
 
@@ -42,6 +43,11 @@ const ENV_MAP: Record<IntegrationId, Record<string, string>> = {
     page_access_token: "INSTAGRAM_PAGE_ACCESS_TOKEN",
     page_id: "INSTAGRAM_PAGE_ID",
     verify_token: "INSTAGRAM_VERIFY_TOKEN",
+  },
+  viber: {
+    auth_token: "VIBER_AUTH_TOKEN",
+    sender_name: "VIBER_SENDER_NAME",
+    sender_avatar: "VIBER_SENDER_AVATAR",
   },
   email_inbound: {
     resend_api_key: "RESEND_API_KEY",

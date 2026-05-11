@@ -36,6 +36,7 @@ const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   telegram: Send,
   whatsapp: MessageCircle,
   instagram: MessageCircle,
+  viber: MessageCircle,
   email: Mail,
   sms: Phone,
 }
@@ -45,6 +46,7 @@ const COLORS: Record<string, string> = {
   telegram: "bg-[#229ED9]/10 text-[#229ED9]",
   whatsapp: "bg-[#25D366]/10 text-[#25D366]",
   instagram: "bg-gradient-to-br from-[#E1306C]/20 to-[#F77737]/20 text-[#E1306C]",
+  viber: "bg-[#7360F2]/10 text-[#7360F2]",
   email: "bg-amber-500/10 text-amber-700",
   sms: "bg-purple-500/10 text-purple-700",
 }
@@ -103,6 +105,16 @@ const SETUP_GUIDES: Record<string, { steps: string[]; docsUrl: string }> = {
       "У налаштуваннях номера: Messaging Configuration → 'A message comes in' → POST → https://stonememory.com.ua/api/sms/inbound.",
       "Account SID + Auth Token знайдеш на Console Dashboard.",
       "Додай ENV: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER (формат +380...).",
+    ],
+  },
+  viber: {
+    docsUrl: "https://developers.viber.com/docs/api/rest-bot-api/",
+    steps: [
+      "Зайди на https://partners.viber.com/account/create-bot-account → створи Public Account для бізнесу.",
+      "Скопіюй Auth Token з налаштувань акаунта.",
+      "Введи токен у модалі «Підключити» — це збереже його в Supabase.",
+      "Натисни «Підключити webhook» у модалі — це викличе /pa/set_webhook у Viber API і зареєструє наш URL.",
+      "Готово — будь-яке повідомлення в Viber бот → /api/viber/webhook → communications.",
     ],
   },
   site_chat: {

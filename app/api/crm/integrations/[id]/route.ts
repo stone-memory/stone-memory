@@ -5,7 +5,7 @@ import { getKeysFor, invalidateIntegrationConfig, type IntegrationId } from "@/l
 
 export const dynamic = "force-dynamic"
 
-const VALID_IDS: IntegrationId[] = ["telegram", "whatsapp", "instagram", "email_inbound", "twilio_sms"]
+const VALID_IDS: IntegrationId[] = ["telegram", "whatsapp", "instagram", "viber", "email_inbound", "twilio_sms"]
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -129,6 +129,7 @@ function getEnvKeyFor(id: IntegrationId, key: string): string | null {
     telegram: { bot_token: "TELEGRAM_BOT_TOKEN", admin_chat_id: "TELEGRAM_ADMIN_CHAT_ID", webhook_secret: "TELEGRAM_WEBHOOK_SECRET" },
     whatsapp: { token: "WHATSAPP_TOKEN", phone_number_id: "WHATSAPP_PHONE_NUMBER_ID", verify_token: "WHATSAPP_VERIFY_TOKEN" },
     instagram: { page_access_token: "INSTAGRAM_PAGE_ACCESS_TOKEN", page_id: "INSTAGRAM_PAGE_ID", verify_token: "INSTAGRAM_VERIFY_TOKEN" },
+    viber: { auth_token: "VIBER_AUTH_TOKEN", sender_name: "VIBER_SENDER_NAME", sender_avatar: "VIBER_SENDER_AVATAR" },
     email_inbound: { resend_api_key: "RESEND_API_KEY", email_from: "EMAIL_FROM", email_from_name: "EMAIL_FROM_NAME", email_reply_to: "EMAIL_REPLY_TO", inbound_secret: "INBOUND_EMAIL_SECRET" },
     twilio_sms: { account_sid: "TWILIO_ACCOUNT_SID", auth_token: "TWILIO_AUTH_TOKEN", from_number: "TWILIO_FROM_NUMBER" },
   }
