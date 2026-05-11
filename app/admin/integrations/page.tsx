@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { authedFetch } from "@/lib/authed-fetch"
 import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
+import { IntegrationConfigModal } from "@/components/admin/integration-config-modal"
 
 type Integration = {
   id: string
@@ -119,6 +120,17 @@ export default function IntegrationsPage() {
   const [origin, setOrigin] = useState("")
   const [expanded, setExpanded] = useState<string | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  /** When set, opens the IntegrationConfigModal for that channel id. */
+  const [configFor, setConfigFor] = useState<string | null>(null)
+
+  const reload = () => {
+    authedFetch("/api/crm/integrations/status", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => {
+        setItems(j.integrations || [])
+        setLoading(false)
+      })
+  }
 
   useEffect(() => {
     setOrigin(window.location.origin)
@@ -243,14 +255,25 @@ export default function IntegrationsPage() {
                     </span>
                   </div>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setExpanded(isExpanded ? null : it.id)}
-                  className="rounded-full text-xs"
-                >
-                  {isExpanded ? "Приховати" : "Налаштувати"}
-                </Button>
+                <div className="flex items-center gap-2">
+                  {it.id !== "site_chat" && (
+                    <Button
+                      size="sm"
+                      onClick={() => setConfigFor(it.id)}
+                      className="rounded-full text-xs gap-1.5"
+                    >
+                      {it.configured ? "Перенастроїти" : "Підключити"}
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setExpanded(isExpanded ? null : it.id)}
+                    className="rounded-full text-xs"
+                  >
+                    {isExpanded ? "Сховати webhook" : "Webhook"}
+                  </Button>
+                </div>
               </header>
 
               {isExpanded && guide && (
@@ -320,6 +343,14 @@ export default function IntegrationsPage() {
       </div>
 
       <BackfillChatBlock />
+
+      {configFor && (
+        <IntegrationConfigModal
+          cardId={configFor}
+          onClose={() => setConfigFor(null)}
+          onSaved={reload}
+        />
+      )}
 
       <div className="rounded-2xl border border-foreground/10 bg-card p-5 text-sm text-muted-foreground">
         <h3 className="font-semibold text-foreground mb-2">Як це працює</h3>

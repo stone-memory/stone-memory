@@ -1,29 +1,50 @@
 import { NextResponse } from "next/server"
 import { requireSuperAdmin } from "@/lib/auth/permissions"
+import { getIntegrationConfig, type IntegrationId } from "@/lib/integrations/config"
 
 export const dynamic = "force-dynamic"
 
 /**
- * Повертає статус кожної інтеграції — на основі ENV змінних що задані.
- * Це read-only ендпоінт, не зберігає секрети у відповіді — лише boolean чи задано.
+ * Returns per-channel status — `configured` reflects the effective
+ * config (DB-stored values take precedence over env). Secrets are
+ * never returned in plaintext, only set/unset booleans.
  *
- * Доступ — лише super_admin (Fix 6). Канальні інтеграції — критична
- * частина воронки: якщо менеджер випадково побачить токени або зможе
- * відключити канал, вся комунікація з клієнтами зупиниться. Тому
- * налаштовує тільки власник.
+ * Access: super_admin only (Fix 6 + integrations storage migration).
  */
 export async function GET(req: Request) {
   const unauth = await requireSuperAdmin(req)
   if (unauth instanceof NextResponse) return unauth
 
-  const e = process.env
+  // Resolve effective config for every channel once — cheap (in-process
+  // 5s cache + tiny DB queries).
+  const [tg, wa, ig, em, sm] = await Promise.all([
+    getIntegrationConfig("telegram"),
+    getIntegrationConfig("whatsapp"),
+    getIntegrationConfig("instagram"),
+    getIntegrationConfig("email_inbound"),
+    getIntegrationConfig("twilio_sms"),
+  ])
+
+  const setFlag = (cfg: Record<string, string>, key: string) =>
+    typeof cfg[key] === "string" && cfg[key].length > 0
+
+  const envVarsFor = (id: IntegrationId, cfg: Record<string, string>): { key: string; set: boolean }[] => {
+    const map: Record<IntegrationId, string[]> = {
+      telegram: ["bot_token", "admin_chat_id", "webhook_secret"],
+      whatsapp: ["token", "phone_number_id", "verify_token"],
+      instagram: ["page_access_token", "page_id", "verify_token"],
+      email_inbound: ["resend_api_key", "email_from", "inbound_secret"],
+      twilio_sms: ["account_sid", "auth_token", "from_number"],
+    }
+    return map[id].map((k) => ({ key: k, set: setFlag(cfg, k) }))
+  }
 
   return NextResponse.json({
     integrations: [
       {
         id: "site_chat",
         name: "Сайт-чат",
-        configured: true, // завжди працює
+        configured: true,
         webhookUrl: null,
         envVars: [],
         canSend: true,
@@ -32,67 +53,48 @@ export async function GET(req: Request) {
       {
         id: "telegram",
         name: "Telegram",
-        configured: Boolean(e.TELEGRAM_BOT_TOKEN && e.TELEGRAM_ADMIN_CHAT_ID),
+        configured: setFlag(tg, "bot_token") && setFlag(tg, "admin_chat_id"),
         webhookUrl: "/api/telegram",
-        envVars: [
-          { key: "TELEGRAM_BOT_TOKEN", set: Boolean(e.TELEGRAM_BOT_TOKEN) },
-          { key: "TELEGRAM_ADMIN_CHAT_ID", set: Boolean(e.TELEGRAM_ADMIN_CHAT_ID) },
-          { key: "TELEGRAM_WEBHOOK_SECRET", set: Boolean(e.TELEGRAM_WEBHOOK_SECRET) },
-        ],
-        canSend: Boolean(e.TELEGRAM_BOT_TOKEN),
-        canReceive: Boolean(e.TELEGRAM_BOT_TOKEN && e.TELEGRAM_WEBHOOK_SECRET),
+        envVars: envVarsFor("telegram", tg),
+        canSend: setFlag(tg, "bot_token"),
+        canReceive: setFlag(tg, "bot_token") && setFlag(tg, "webhook_secret"),
       },
       {
         id: "whatsapp",
         name: "WhatsApp",
-        configured: Boolean(e.WHATSAPP_TOKEN && e.WHATSAPP_PHONE_NUMBER_ID),
+        configured: setFlag(wa, "token") && setFlag(wa, "phone_number_id"),
         webhookUrl: "/api/whatsapp/webhook",
-        envVars: [
-          { key: "WHATSAPP_TOKEN", set: Boolean(e.WHATSAPP_TOKEN) },
-          { key: "WHATSAPP_PHONE_NUMBER_ID", set: Boolean(e.WHATSAPP_PHONE_NUMBER_ID) },
-          { key: "WHATSAPP_VERIFY_TOKEN", set: Boolean(e.WHATSAPP_VERIFY_TOKEN) },
-        ],
-        canSend: Boolean(e.WHATSAPP_TOKEN && e.WHATSAPP_PHONE_NUMBER_ID),
-        canReceive: Boolean(e.WHATSAPP_VERIFY_TOKEN),
+        envVars: envVarsFor("whatsapp", wa),
+        canSend: setFlag(wa, "token") && setFlag(wa, "phone_number_id"),
+        canReceive: setFlag(wa, "verify_token"),
       },
       {
         id: "instagram",
         name: "Instagram",
-        configured: Boolean(e.INSTAGRAM_PAGE_ACCESS_TOKEN && e.INSTAGRAM_PAGE_ID),
+        configured: setFlag(ig, "page_access_token") && setFlag(ig, "page_id"),
         webhookUrl: "/api/instagram/webhook",
-        envVars: [
-          { key: "INSTAGRAM_PAGE_ACCESS_TOKEN", set: Boolean(e.INSTAGRAM_PAGE_ACCESS_TOKEN) },
-          { key: "INSTAGRAM_PAGE_ID", set: Boolean(e.INSTAGRAM_PAGE_ID) },
-          { key: "INSTAGRAM_VERIFY_TOKEN", set: Boolean(e.INSTAGRAM_VERIFY_TOKEN) },
-        ],
-        canSend: Boolean(e.INSTAGRAM_PAGE_ACCESS_TOKEN && e.INSTAGRAM_PAGE_ID),
-        canReceive: Boolean(e.INSTAGRAM_VERIFY_TOKEN),
+        envVars: envVarsFor("instagram", ig),
+        canSend: setFlag(ig, "page_access_token") && setFlag(ig, "page_id"),
+        canReceive: setFlag(ig, "verify_token"),
       },
       {
         id: "email",
         name: "Email",
-        configured: Boolean(e.RESEND_API_KEY),
+        configured: setFlag(em, "resend_api_key"),
         webhookUrl: "/api/email/inbound",
-        envVars: [
-          { key: "RESEND_API_KEY", set: Boolean(e.RESEND_API_KEY) },
-          { key: "EMAIL_FROM", set: Boolean(e.EMAIL_FROM) },
-          { key: "INBOUND_EMAIL_SECRET", set: Boolean(e.INBOUND_EMAIL_SECRET) },
-        ],
-        canSend: Boolean(e.RESEND_API_KEY),
-        canReceive: true, // webhook працює завжди — Mailgun/Postmark постять у нього
+        envVars: envVarsFor("email_inbound", em),
+        canSend: setFlag(em, "resend_api_key"),
+        // Inbound webhook itself always works — Mailgun/Postmark posts in
+        canReceive: true,
       },
       {
         id: "sms",
         name: "SMS (Twilio)",
-        configured: Boolean(e.TWILIO_ACCOUNT_SID && e.TWILIO_AUTH_TOKEN && e.TWILIO_FROM_NUMBER),
+        configured: setFlag(sm, "account_sid") && setFlag(sm, "auth_token") && setFlag(sm, "from_number"),
         webhookUrl: "/api/sms/inbound",
-        envVars: [
-          { key: "TWILIO_ACCOUNT_SID", set: Boolean(e.TWILIO_ACCOUNT_SID) },
-          { key: "TWILIO_AUTH_TOKEN", set: Boolean(e.TWILIO_AUTH_TOKEN) },
-          { key: "TWILIO_FROM_NUMBER", set: Boolean(e.TWILIO_FROM_NUMBER) },
-        ],
-        canSend: Boolean(e.TWILIO_ACCOUNT_SID && e.TWILIO_AUTH_TOKEN && e.TWILIO_FROM_NUMBER),
-        canReceive: Boolean(e.TWILIO_ACCOUNT_SID),
+        envVars: envVarsFor("twilio_sms", sm),
+        canSend: setFlag(sm, "account_sid") && setFlag(sm, "auth_token") && setFlag(sm, "from_number"),
+        canReceive: setFlag(sm, "account_sid"),
       },
     ],
   })

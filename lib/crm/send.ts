@@ -2,6 +2,7 @@ import "server-only"
 import { sendOne } from "@/lib/email"
 import { sendTelegram } from "@/lib/telegram"
 import { recordOutgoing, getCustomerChannels } from "@/lib/crm/comms"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 import type { CommChannel } from "@/lib/crm/types"
 
 /**
@@ -128,8 +129,9 @@ async function sendTg(args: SendArgs, telegramUserId?: string): Promise<SendResu
 // Документація: https://developers.facebook.com/docs/whatsapp/cloud-api/
 // ====================================================
 async function sendWhatsApp(args: SendArgs, phone?: string): Promise<SendResult> {
-  const token = process.env.WHATSAPP_TOKEN
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID
+  const cfg = await getIntegrationConfig("whatsapp")
+  const token = cfg.token
+  const phoneNumberId = cfg.phone_number_id
   if (!token || !phoneNumberId) {
     return { ok: false, channel: "whatsapp", error: "WhatsApp не налаштовано (WHATSAPP_TOKEN, WHATSAPP_PHONE_NUMBER_ID)" }
   }
@@ -178,8 +180,9 @@ async function sendWhatsApp(args: SendArgs, phone?: string): Promise<SendResult>
 // Документація: https://developers.facebook.com/docs/messenger-platform/instagram/
 // ====================================================
 async function sendInstagram(args: SendArgs, psid?: string): Promise<SendResult> {
-  const token = process.env.INSTAGRAM_PAGE_ACCESS_TOKEN
-  const pageId = process.env.INSTAGRAM_PAGE_ID
+  const cfg = await getIntegrationConfig("instagram")
+  const token = cfg.page_access_token
+  const pageId = cfg.page_id
   if (!token || !pageId) {
     return { ok: false, channel: "instagram", error: "Instagram не налаштовано (INSTAGRAM_PAGE_ACCESS_TOKEN, INSTAGRAM_PAGE_ID)" }
   }
@@ -219,9 +222,10 @@ async function sendInstagram(args: SendArgs, psid?: string): Promise<SendResult>
 // Документація: https://www.twilio.com/docs/sms/send-messages
 // ====================================================
 async function sendSms(args: SendArgs, phone?: string): Promise<SendResult> {
-  const sid = process.env.TWILIO_ACCOUNT_SID
-  const token = process.env.TWILIO_AUTH_TOKEN
-  const from = process.env.TWILIO_FROM_NUMBER
+  const cfg = await getIntegrationConfig("twilio_sms")
+  const sid = cfg.account_sid
+  const token = cfg.auth_token
+  const from = cfg.from_number
   if (!sid || !token || !from) {
     return { ok: false, channel: "sms", error: "Twilio не налаштовано (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER)" }
   }
