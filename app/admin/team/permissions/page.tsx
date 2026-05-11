@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Check, X, Minus, LayoutGrid, Table2 } from "lucide-react"
+import { ArrowLeft, Check, X, Minus, LayoutGrid, Table2, Sparkles, Plus, Pencil, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import {
@@ -12,7 +12,11 @@ import {
   type PermissionCell,
 } from "@/lib/permissions/role-definitions"
 import { RolePermissionCard } from "@/components/admin/role-permission-card"
-import type { TeamRole } from "@/lib/crm/types"
+import { CustomRoleEditor } from "@/components/admin/custom-role-editor"
+import { useCustomRoles, useCustomRolesStore } from "@/lib/store/custom-roles"
+import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
+import { CAPABILITY_LABELS, type Capability } from "@/lib/permissions/capabilities"
+import type { CustomRole, TeamRole } from "@/lib/crm/types"
 import { cn } from "@/lib/utils"
 
 /**
@@ -28,8 +32,10 @@ import { cn } from "@/lib/utils"
  * Mobile: cards stack to one column; table becomes horizontally
  * scrollable (overflow-x-auto wrapper).
  */
+type ViewMode = "cards" | "table" | "custom"
+
 export default function PermissionsPage() {
-  const [view, setView] = useState<"cards" | "table">("cards")
+  const [view, setView] = useState<ViewMode>("cards")
 
   return (
     <div className="space-y-6">
@@ -46,10 +52,11 @@ export default function PermissionsPage() {
           <p className="mt-1 text-sm text-muted-foreground max-w-prose">
             Що може кожна роль, а що ні. Відкривайте перед тим, як додавати нову людину в команду —
             щоб не переживати, чи не даєте забагато доступу. Дані тут описують реальні обмеження
-            у Postgres RLS — UI-блокування дзеркалить серверні правила.
+            у Postgres RLS — UI-блокування дзеркалить серверні правила. Створюй <span className="italic">кастомні ролі</span>
+            у вкладці нижче — наприклад «Гравер» з базою «Майстер» і додатковим доступом до каталогу.
           </p>
         </div>
-        <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-auto">
+        <Tabs value={view} onValueChange={(v) => setView(v as ViewMode)} className="w-auto">
           <TabsList>
             <TabsTrigger value="cards" className="gap-1.5">
               <LayoutGrid size={14} /> Картки
@@ -57,16 +64,22 @@ export default function PermissionsPage() {
             <TabsTrigger value="table" className="gap-1.5">
               <Table2 size={14} /> Таблиця
             </TabsTrigger>
+            <TabsTrigger value="custom" className="gap-1.5">
+              <Sparkles size={14} /> Кастомні
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </header>
 
-      <Tabs value={view} onValueChange={(v) => setView(v as typeof view)}>
+      <Tabs value={view} onValueChange={(v) => setView(v as ViewMode)}>
         <TabsContent value="cards">
           <CardsView />
         </TabsContent>
         <TabsContent value="table">
           <TableView />
+        </TabsContent>
+        <TabsContent value="custom">
+          <CustomRolesView />
         </TabsContent>
       </Tabs>
     </div>
@@ -238,5 +251,199 @@ function CellMark({ cell, note }: { cell: PermissionCell; note?: string }) {
       <Minus size={14} />
       {note && <span className="ml-1 text-[10px] font-medium">{note}</span>}
     </span>
+  )
+}
+
+// ----------------------------------------------------------------
+// Custom roles view — list all roles (system + user-defined), let
+// super_admin create new ones, edit existing, delete non-system ones.
+// ----------------------------------------------------------------
+function CustomRolesView() {
+  const roles = useCustomRoles()
+  const create = useCustomRolesStore((s) => s.create)
+  const update = useCustomRolesStore((s) => s.update)
+  const remove = useCustomRolesStore((s) => s.remove)
+  const { role: currentRole } = useCurrentRole()
+  const canEdit = isSuperAdmin(currentRole)
+
+  const [creating, setCreating] = useState(false)
+  const [editing, setEditing] = useState<CustomRole | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="text-sm text-muted-foreground">
+          {canEdit
+            ? "Кастомні ролі — твій інструмент тонкого налаштування. Кожна роль базується на одній з системних і додає точкові дозволи зверху."
+            : "Кастомні ролі створює лише головний адмін. Тут лише перегляд."}
+        </div>
+        {canEdit && (
+          <Button onClick={() => setCreating(true)} className="rounded-xl gap-2">
+            <Plus size={14} /> Нова роль
+          </Button>
+        )}
+      </div>
+
+      {roles.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
+          Запусти SQL-міграцію <code className="font-mono text-xs">crm-custom-roles-migration.sql</code>{" "}
+          у Supabase, щоб з'явились системні ролі та можливість створювати свої.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          {roles.map((r) => (
+            <CustomRoleRow
+              key={r.id}
+              role={r}
+              canEdit={canEdit}
+              onEdit={() => setEditing(r)}
+            />
+          ))}
+        </div>
+      )}
+
+      {creating && canEdit && (
+        <CustomRoleEditor
+          onCancel={() => setCreating(false)}
+          busy={busy}
+          onSave={async (payload) => {
+            setBusy(true)
+            try {
+              const res = await create(payload)
+              if (res.ok) setCreating(false)
+              return res
+            } finally {
+              setBusy(false)
+            }
+          }}
+        />
+      )}
+      {editing && canEdit && (
+        <CustomRoleEditor
+          initial={editing}
+          busy={busy}
+          onCancel={() => setEditing(null)}
+          onSave={async (payload) => {
+            setBusy(true)
+            try {
+              // For edit we send only the editable fields. The server
+              // ignores name + locks label/base_role for system rows.
+              const res = await update(editing.id, {
+                label: payload.label,
+                description: payload.description,
+                base_role: payload.base_role,
+                capabilities: payload.capabilities,
+              })
+              if (res.ok) setEditing(null)
+              return res
+            } finally {
+              setBusy(false)
+            }
+          }}
+          onDelete={
+            editing.is_system
+              ? undefined
+              : async () => {
+                  setBusy(true)
+                  try {
+                    const res = await remove(editing.id)
+                    if (res.ok) setEditing(null)
+                    return res
+                  } finally {
+                    setBusy(false)
+                  }
+                }
+          }
+        />
+      )}
+    </div>
+  )
+}
+
+function CustomRoleRow({
+  role,
+  canEdit,
+  onEdit,
+}: {
+  role: CustomRole
+  canEdit: boolean
+  onEdit: () => void
+}) {
+  const baseLabel = ROLE_PERMISSIONS[role.base_role]?.label || role.base_role
+  // Filter extras the user added beyond base — those are what makes
+  // this role distinct. Display up to 4 then "+N more".
+  const extras = role.capabilities.filter((c) => c in CAPABILITY_LABELS) as Capability[]
+  return (
+    <article
+      className={cn(
+        "rounded-2xl border bg-card p-4",
+        role.is_system
+          ? "border-foreground/10"
+          : "border-accent/30 bg-accent/[0.03]"
+      )}
+    >
+      <header className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h3 className="font-semibold tracking-tight-custom">{role.label}</h3>
+            {role.is_system && (
+              <span
+                className="inline-flex items-center gap-0.5 rounded-full bg-foreground/5 px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                title="Системна — назву і базову роль змінювати не можна"
+              >
+                <Lock size={9} /> системна
+              </span>
+            )}
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+            {role.description || "Без опису"}
+          </p>
+        </div>
+        {canEdit && (
+          <button
+            onClick={onEdit}
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+            title="Редагувати"
+          >
+            <Pencil size={14} />
+          </button>
+        )}
+      </header>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px]">
+        <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-muted-foreground">
+          Базова: <span className="font-medium text-foreground">{baseLabel}</span>
+        </span>
+        {extras.length > 0 ? (
+          <span className="rounded-full bg-accent/10 px-2 py-0.5 text-accent">
+            +{extras.length} додатк. дозвол.
+          </span>
+        ) : (
+          <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-muted-foreground">
+            Без додаткових
+          </span>
+        )}
+        <span className="rounded-full bg-foreground/5 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+          {role.name}
+        </span>
+      </div>
+
+      {extras.length > 0 && (
+        <ul className="mt-3 grid grid-cols-1 gap-1 text-[12px] text-foreground/80 md:grid-cols-2">
+          {extras.slice(0, 6).map((cap) => (
+            <li key={cap} className="flex items-start gap-1.5">
+              <Check size={12} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span className="leading-snug">{CAPABILITY_LABELS[cap]}</span>
+            </li>
+          ))}
+          {extras.length > 6 && (
+            <li className="text-muted-foreground text-[11px]">
+              …та ще {extras.length - 6}
+            </li>
+          )}
+        </ul>
+      )}
+    </article>
   )
 }

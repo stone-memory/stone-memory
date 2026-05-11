@@ -1,16 +1,20 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle } from "lucide-react"
+import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle, Sparkles, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
 import { useTeamStore } from "@/lib/crm/store"
-import type { TeamMember, TeamRole } from "@/lib/crm/types"
+import type { CustomRole, TeamMember, TeamRole } from "@/lib/crm/types"
 import { formatRelative } from "@/lib/admin-format"
-import { RolePermissionCard } from "@/components/admin/role-permission-card"
+import { useCustomRoles } from "@/lib/store/custom-roles"
 import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { CAPABILITY_LABELS, BASE_ROLE_CAPABILITIES, type Capability } from "@/lib/permissions/capabilities"
+import { cn } from "@/lib/utils"
 
 const ROLE_LABEL_UK: Record<TeamRole, string> = {
   super_admin: "Головний адмін",
@@ -36,11 +40,10 @@ const ROLE_DESC: Record<TeamRole, string> = {
   sales: "Продажі — лише свої ліди",
 }
 
-/** Roles assignable through the UI. super_admin is intentionally absent —
- *  it's a single-owner role, granted only by the database migration
- *  (supabase/crm-super-admin-2-policies.sql). Promotion via UI would
- *  let any admin grant themselves owner-level privileges. */
-const ASSIGNABLE_ROLES: TeamRole[] = ["admin", "manager", "master", "sales"]
+// Note: assignable-role logic moved to the custom_roles list at runtime.
+// We filter `customRoles.filter(r => r.base_role !== "super_admin")` in
+// the picker — that's the new source of truth for "what can a UI user
+// pick when adding a teammate".
 
 export default function TeamPage() {
   const members = useTeamStore((s) => s.members)
@@ -51,24 +54,53 @@ export default function TeamPage() {
   const [showAdd, setShowAdd] = useState(false)
   // When set, opens the "reset password for this teammate" modal.
   const [resetTarget, setResetTarget] = useState<TeamMember | null>(null)
-  const [draft, setDraft] = useState<{ email: string; display_name: string; role: TeamRole; phone: string }>({
+  // Custom roles drive the picker — we send custom_role_id, the DB
+  // trigger derives base role automatically. role string in draft
+  // is only used as fallback if the user picks a system role we
+  // haven't loaded yet (network race).
+  const customRoles = useCustomRoles()
+  const [draft, setDraft] = useState<{
+    email: string
+    display_name: string
+    custom_role_id: string | null
+    role: TeamRole
+    phone: string
+  }>({
     email: "",
     display_name: "",
+    custom_role_id: null,
     role: "manager",
     phone: "",
   })
 
   useEffect(() => { load() }, [load])
 
+  // When the role list hydrates and no role is selected yet, default
+  // to system_manager (matches the previous behavior where new members
+  // defaulted to 'manager' enum). User can change before submitting.
+  useEffect(() => {
+    if (!draft.custom_role_id && customRoles.length > 0) {
+      const def = customRoles.find((r) => r.name === "system_manager") ?? customRoles[0]
+      setDraft((d) => ({ ...d, custom_role_id: def.id, role: def.base_role }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customRoles])
+
   const submit = async () => {
     if (!draft.email) return
     await authedFetch("/api/crm/team", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(draft),
+      body: JSON.stringify({
+        email: draft.email,
+        display_name: draft.display_name,
+        role: draft.role,
+        custom_role_id: draft.custom_role_id,
+        phone: draft.phone,
+      }),
     })
     setShowAdd(false)
-    setDraft({ email: "", display_name: "", role: "manager", phone: "" })
+    setDraft({ email: "", display_name: "", custom_role_id: null, role: "manager", phone: "" })
     // Force reload
     useTeamStore.setState({ loaded: false })
     load()
@@ -161,7 +193,6 @@ export default function TeamPage() {
           </thead>
           <tbody className="divide-y divide-foreground/5">
             {members.map((m) => {
-              const Icon = ROLE_ICON[m.role]
               return (
                 <tr key={m.id}>
                   <td className="px-4 py-3">
@@ -188,15 +219,42 @@ export default function TeamPage() {
                         👑 Головний адмін
                       </span>
                     ) : (
-                      <select
-                        value={m.role}
-                        onChange={(e) => updateMember(m.id, { role: e.target.value as TeamRole })}
-                        className="h-8 rounded-md border border-foreground/10 bg-background px-2 text-xs"
-                      >
-                        {ASSIGNABLE_ROLES.map((r) => (
-                          <option key={r} value={r}>{ROLE_LABEL_UK[r]}</option>
-                        ))}
-                      </select>
+                      // Role picker driven by custom_roles. For legacy
+                      // members without custom_role_id, fall back to the
+                      // matching system_* row so the dropdown shows a
+                      // sensible selection instead of empty.
+                      (() => {
+                        const fallbackSystem = customRoles.find(
+                          (cr) => cr.is_system && cr.base_role === m.role
+                        )
+                        const selectedId = m.custom_role_id || fallbackSystem?.id || ""
+                        return (
+                          <select
+                            value={selectedId}
+                            onChange={(e) => {
+                              const id = e.target.value || null
+                              const picked = customRoles.find((cr) => cr.id === id)
+                              updateMember(m.id, {
+                                custom_role_id: id,
+                                ...(picked ? { role: picked.base_role } : {}),
+                              })
+                            }}
+                            className="h-8 rounded-md border border-foreground/10 bg-background px-2 text-xs max-w-[180px]"
+                          >
+                            {customRoles.length === 0 && (
+                              <option value="">…</option>
+                            )}
+                            {customRoles
+                              .filter((cr) => cr.base_role !== "super_admin")
+                              .map((cr) => (
+                                <option key={cr.id} value={cr.id}>
+                                  {cr.label}
+                                  {!cr.is_system ? " ★" : ""}
+                                </option>
+                              ))}
+                          </select>
+                        )
+                      })()
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -262,23 +320,20 @@ export default function TeamPage() {
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Роль *</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {ASSIGNABLE_ROLES.map((r) => (
-                    <RolePermissionCard
-                      key={r}
-                      role={r}
-                      active={draft.role === r}
-                      onSelect={(role) => setDraft({ ...draft, role })}
-                    />
-                  ))}
-                </div>
+                <RolePicker
+                  roles={customRoles}
+                  selectedId={draft.custom_role_id}
+                  onSelect={(role) =>
+                    setDraft({ ...draft, custom_role_id: role.id, role: role.base_role })
+                  }
+                />
                 <p className="mt-2 text-[11px] text-muted-foreground">
                   Наведіть курсор (або натисніть «i») щоб подивитись повний список того, що дозволено та заборонено.
                   <Link
                     href="/admin/team/permissions"
                     className="ml-1 underline underline-offset-2 hover:text-foreground"
                   >
-                    Порівняти всі ролі →
+                    Створити нову роль →
                   </Link>
                 </p>
               </div>
@@ -443,4 +498,179 @@ function ResetPasswordDialog({
       </div>
     </div>
   )
+}
+
+// ----------------------------------------------------------------
+// Role picker for the new-member modal. Lists every assignable
+// custom_role (system + user-defined), excluding super_admin (single-
+// owner role). Each card has an "i" trigger that opens a HoverCard
+// on desktop / Popover on mobile listing the role's effective
+// capabilities.
+// ----------------------------------------------------------------
+function RolePicker({
+  roles,
+  selectedId,
+  onSelect,
+}: {
+  roles: CustomRole[]
+  selectedId: string | null
+  onSelect: (role: CustomRole) => void
+}) {
+  const assignable = useMemo(
+    () => roles.filter((r) => r.base_role !== "super_admin"),
+    [roles]
+  )
+
+  if (assignable.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-foreground/15 px-3 py-4 text-xs text-muted-foreground">
+        Завантажую ролі…
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {assignable.map((r) => {
+        const active = selectedId === r.id
+        return (
+          <div
+            key={r.id}
+            className={cn(
+              "relative rounded-xl border px-3 py-2 text-left text-xs transition-colors cursor-pointer",
+              active
+                ? "border-foreground bg-foreground/5"
+                : "border-foreground/15 hover:border-foreground/30 hover:bg-foreground/[0.02]"
+            )}
+            onClick={() => onSelect(r)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                onSelect(r)
+              }
+            }}
+          >
+            <div className="flex items-start gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 font-medium">
+                  {r.label}
+                  {!r.is_system && (
+                    <span
+                      className="inline-flex items-center gap-0.5 rounded-full bg-accent/10 px-1 py-0 text-[9px] font-medium text-accent"
+                      title="Кастомна роль"
+                    >
+                      <Sparkles size={8} /> custom
+                    </span>
+                  )}
+                  <RoleInfoTrigger role={r} />
+                </div>
+                <p className="mt-0.5 line-clamp-2 text-muted-foreground">
+                  {r.description || `Базується на: ${baseRoleNameUk(r.base_role)}`}
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function RoleInfoTrigger({ role }: { role: CustomRole }) {
+  return (
+    <>
+      <HoverCard openDelay={150}>
+        <HoverCardTrigger asChild>
+          <button
+            type="button"
+            aria-label={`Деталі ролі ${role.label}`}
+            onClick={(e) => e.stopPropagation()}
+            className="hidden md:inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+          >
+            <Info size={11} />
+          </button>
+        </HoverCardTrigger>
+        <HoverCardContent align="start" side="right" className="w-80 p-0" sideOffset={8}>
+          <RolePermissionsBody role={role} />
+        </HoverCardContent>
+      </HoverCard>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label={`Деталі ролі ${role.label}`}
+            onClick={(e) => e.stopPropagation()}
+            className="md:hidden inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+          >
+            <Info size={11} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" side="bottom" className="w-72 p-0" sideOffset={6} onClick={(e) => e.stopPropagation()}>
+          <RolePermissionsBody role={role} />
+        </PopoverContent>
+      </Popover>
+    </>
+  )
+}
+
+function RolePermissionsBody({ role }: { role: CustomRole }) {
+  // Effective caps = base capabilities ∪ role.capabilities. Render
+  // those that the role grants, with a small "base"/"extra" tag.
+  const baseCaps = BASE_ROLE_CAPABILITIES[role.base_role] || []
+  const extras = role.capabilities.filter(
+    (c): c is Capability => c in CAPABILITY_LABELS && !baseCaps.includes(c as Capability)
+  )
+  return (
+    <div className="space-y-3 p-4 text-sm">
+      <header>
+        <h4 className="font-semibold leading-tight">{role.label}</h4>
+        <p className="text-xs text-muted-foreground leading-snug">
+          {role.description || `На основі: ${baseRoleNameUk(role.base_role)}`}
+        </p>
+      </header>
+      <div>
+        <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+          Базові дозволи ({baseRoleNameUk(role.base_role)})
+        </div>
+        <ul className="space-y-1 text-xs leading-snug">
+          {baseCaps.map((cap) => (
+            <li key={cap} className="flex items-start gap-1.5">
+              <Check size={11} className="mt-1 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>{CAPABILITY_LABELS[cap]}</span>
+            </li>
+          ))}
+          {baseCaps.length === 0 && (
+            <li className="text-muted-foreground text-xs">— (базова роль не дає прав)</li>
+          )}
+        </ul>
+      </div>
+      {extras.length > 0 && (
+        <div>
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-accent">
+            Додатково в цій ролі
+          </div>
+          <ul className="space-y-1 text-xs leading-snug">
+            {extras.map((cap) => (
+              <li key={cap} className="flex items-start gap-1.5">
+                <Sparkles size={11} className="mt-1 shrink-0 text-accent" />
+                <span>{CAPABILITY_LABELS[cap]}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function baseRoleNameUk(r: TeamRole): string {
+  switch (r) {
+    case "super_admin": return "Головний адмін"
+    case "admin": return "Адмін"
+    case "manager": return "Менеджер"
+    case "master": return "Майстер"
+    case "sales": return "Продажі"
+  }
 }
