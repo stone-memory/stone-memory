@@ -80,6 +80,61 @@ export default function AdminChatSettingsPage() {
     setDraftReplies(next.map((q, idx) => ({ ...q, order: idx + 1 })))
   }
 
+  /**
+   * Fan a freshly-added trigger out to the other 4 locales by
+   * translating it and appending to each locale's matching Q&A.
+   *
+   * Source-locale UI already shows the new chip via local state —
+   * this runs in the background and persists translations into the
+   * store overrides directly. Switching to another locale tab will
+   * show the auto-added trigger; if translation failed for some
+   * locale, that one is silently skipped (admin can fix manually).
+   *
+   * Dedup is case-insensitive per locale: we don't add a translation
+   * if the same word is already present.
+   */
+  const fanOutTriggers = async (qaId: string, sourceLocale: Locale, added: string[]) => {
+    if (added.length === 0) return
+    const targets: Locale[] = LOCALES.map((l) => l.code).filter((l) => l !== sourceLocale)
+    // Resolve each target locale's CURRENT quickReplies list (override
+    // first, default second). We mutate per-target to avoid clobbering
+    // concurrent edits on those locales' drafts.
+    const currentFor = (loc: Locale): QuickReply[] =>
+      (useChatSettingsStore.getState().overrides[loc]?.quickReplies ?? defaultQuickReplies[loc]).map((q) => ({ ...q }))
+
+    for (const phrase of added) {
+      let result: Partial<Record<Locale, string>> = {}
+      try {
+        const r = await fetch("/api/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: phrase, source: sourceLocale, targets }),
+        })
+        if (r.ok) {
+          const j = (await r.json()) as { ok?: boolean; result?: Partial<Record<Locale, string>> }
+          if (j.ok && j.result) result = j.result
+        }
+      } catch {
+        // network down — silent skip; user keeps the source-locale value
+      }
+
+      for (const target of targets) {
+        const translation = result[target]?.trim()
+        if (!translation) continue
+        const replies = currentFor(target)
+        const qa = replies.find((q) => q.id === qaId)
+        if (!qa) continue
+        const current = qa.triggers ?? []
+        const lower = new Set(current.map((s) => s.toLowerCase()))
+        if (lower.has(translation.toLowerCase())) continue
+        qa.triggers = [...current, translation]
+        // Persist (await — order matters between sequential phrases
+        // so concurrent writes don't lose to each other).
+        await useChatSettingsStore.getState().setQuickReplies(target, replies)
+      }
+    }
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
@@ -166,6 +221,7 @@ export default function AdminChatSettingsPage() {
                 value={q.triggers ?? []}
                 onChange={(triggers) => update(i, { triggers })}
                 placeholderLabel={q.label}
+                onAdded={(added) => fanOutTriggers(q.id, locale, added)}
               />
             </div>
           ))}
@@ -212,10 +268,14 @@ function TriggersField({
   value,
   onChange,
   placeholderLabel,
+  onAdded,
 }: {
   value: string[]
   onChange: (v: string[]) => void
   placeholderLabel?: string
+  /** Called with the array of NEW triggers committed (after dedup).
+   *  Used by the parent to fan-out auto-translations to other locales. */
+  onAdded?: (added: string[]) => void
 }) {
   const [draft, setDraft] = useState("")
 
@@ -227,13 +287,18 @@ function TriggersField({
     if (tokens.length === 0) return
     const lower = new Set(value.map((v) => v.toLowerCase()))
     const next = [...value]
+    const added: string[] = []
     for (const t of tokens) {
       const k = t.toLowerCase()
       if (lower.has(k)) continue
       lower.add(k)
       next.push(t)
+      added.push(t)
     }
-    onChange(next)
+    if (added.length > 0) {
+      onChange(next)
+      onAdded?.(added)
+    }
     setDraft("")
   }
 
@@ -312,7 +377,7 @@ function TriggersField({
       <p className="mt-1 text-[11px] text-muted-foreground">
         Бот вже терпить друкарські помилки і відмінки автоматично —
         додавайте лише принципово інші формулювання («почому» для «скільки коштує»,
-        «коли буде готово» для «термін» тощо).
+        «коли буде готово» для «термін» тощо). Кожен новий тригер автоматично перекладається на 4 інші мови.
       </p>
     </div>
   )
