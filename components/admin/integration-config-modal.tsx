@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { X, Check, Eye, EyeOff, AlertCircle, ExternalLink, Loader2 } from "lucide-react"
+import { X, Check, Eye, EyeOff, AlertCircle, ExternalLink, Loader2, Plug, Wifi } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -139,6 +139,10 @@ export function IntegrationConfigModal({
   const [enabled, setEnabled] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+  const [testing, setTesting] = useState(false)
+  const [testResult, setTestResult] = useState<{ ok: boolean; message: string; info?: Record<string, unknown> } | null>(null)
+  const [registeringWebhook, setRegisteringWebhook] = useState(false)
+  const [webhookResult, setWebhookResult] = useState<{ ok: boolean; message: string } | null>(null)
 
   useEffect(() => {
     if (!schema) {
@@ -190,10 +194,70 @@ export function IntegrationConfigModal({
       }
       setSaved(true)
       onSaved()
-      // Close after a beat so the user sees the confirmation tick
-      setTimeout(onClose, 800)
+      // Don't auto-close — leave open so admin can hit "Test connection"
+      // and "Setup webhook" right after saving without re-opening the
+      // modal. They can close manually when satisfied.
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleTest = async () => {
+    setTesting(true)
+    setTestResult(null)
+    try {
+      // Auto-save current values first so the test uses what's on screen
+      await authedFetch(`/api/crm/integrations/${schemaId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled, config: values }),
+      })
+      const r = await authedFetch(`/api/crm/integrations/${schemaId}/test`, { method: "POST" })
+      const j = (await r.json()) as { ok: boolean; error?: string; info?: Record<string, unknown> }
+      if (j.ok) {
+        const summary = j.info
+          ? Object.entries(j.info)
+              .map(([k, v]) => `${k}: ${String(v)}`)
+              .join(" · ")
+          : "Підключено успішно"
+        setTestResult({ ok: true, message: summary, info: j.info })
+      } else {
+        setTestResult({ ok: false, message: j.error || "Тест провалився" })
+      }
+    } catch (e) {
+      setTestResult({ ok: false, message: e instanceof Error ? e.message : "Network error" })
+    } finally {
+      setTesting(false)
+    }
+  }
+
+  // Only Telegram and Viber can self-register their webhook via API.
+  // For others we show a "manual" hint with the URL to paste into the
+  // vendor's dashboard.
+  const canAutoRegisterWebhook = schemaId === "telegram" || schemaId === "viber"
+
+  const handleWebhookSetup = async () => {
+    setRegisteringWebhook(true)
+    setWebhookResult(null)
+    try {
+      const r = await authedFetch(`/api/crm/integrations/${schemaId}/setup-webhook`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // We send {} — server uses request origin. Admin running locally
+        // would need to manually call with a public URL; we cover that
+        // in the helper text below.
+        body: "{}",
+      })
+      const j = (await r.json()) as { ok: boolean; error?: string; webhook?: string; manual?: boolean }
+      if (j.ok) {
+        setWebhookResult({ ok: true, message: `Webhook зареєстровано: ${j.webhook}` })
+      } else {
+        setWebhookResult({ ok: false, message: j.error || "Не вдалось зареєструвати webhook" })
+      }
+    } catch (e) {
+      setWebhookResult({ ok: false, message: e instanceof Error ? e.message : "Network error" })
+    } finally {
+      setRegisteringWebhook(false)
     }
   }
 
@@ -280,6 +344,39 @@ export function IntegrationConfigModal({
               </p>
             </div>
 
+            {/* Test result and webhook result render inside the body so
+                long messages don't overflow the footer */}
+            {(testResult || webhookResult) && (
+              <div className="space-y-1.5 border-t border-foreground/5 px-5 py-3">
+                {testResult && (
+                  <div
+                    className={cn(
+                      "rounded-lg px-3 py-2 text-xs",
+                      testResult.ok ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
+                    )}
+                  >
+                    <div className="flex items-start gap-1.5">
+                      {testResult.ok ? <Check size={12} className="mt-0.5 shrink-0" /> : <AlertCircle size={12} className="mt-0.5 shrink-0" />}
+                      <span className="break-words">{testResult.message}</span>
+                    </div>
+                  </div>
+                )}
+                {webhookResult && (
+                  <div
+                    className={cn(
+                      "rounded-lg px-3 py-2 text-xs",
+                      webhookResult.ok ? "bg-success/10 text-success" : "bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                    )}
+                  >
+                    <div className="flex items-start gap-1.5">
+                      {webhookResult.ok ? <Check size={12} className="mt-0.5 shrink-0" /> : <AlertCircle size={12} className="mt-0.5 shrink-0" />}
+                      <span className="break-words">{webhookResult.message}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-foreground/5 bg-foreground/[0.02] px-5 py-3">
               <div className="flex items-center gap-2 text-xs">
                 {schema.helpUrl && (
@@ -297,13 +394,35 @@ export function IntegrationConfigModal({
                     <AlertCircle size={11} /> {error}
                   </span>
                 )}
-                {saved && (
+                {saved && !testResult && !webhookResult && (
                   <span className="inline-flex items-center gap-1 text-success">
                     <Check size={11} /> Збережено
                   </span>
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleTest}
+                  disabled={testing || saving}
+                  className="rounded-xl gap-2 text-xs"
+                  title="Підключитись до API і перевірити що токени валідні"
+                >
+                  {testing ? <Loader2 size={12} className="animate-spin" /> : <Wifi size={12} />}
+                  Перевірити
+                </Button>
+                {canAutoRegisterWebhook && (
+                  <Button
+                    variant="outline"
+                    onClick={handleWebhookSetup}
+                    disabled={registeringWebhook || saving}
+                    className="rounded-xl gap-2 text-xs"
+                    title="Зареєструвати webhook URL у платформі"
+                  >
+                    {registeringWebhook ? <Loader2 size={12} className="animate-spin" /> : <Plug size={12} />}
+                    Підключити webhook
+                  </Button>
+                )}
                 <Button variant="outline" onClick={onClose} className="rounded-xl">
                   Закрити
                 </Button>
