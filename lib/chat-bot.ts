@@ -197,12 +197,127 @@ export const botCopy: Record<Locale, BotCopy> = {
   },
 }
 
-export function matchFaq(locale: Locale, text: string): BotReply | null {
-  const q = text.toLowerCase()
-  const pack = botCopy[locale]
-  for (const rule of pack.quickReplies) {
-    const re = new RegExp(rule.q, "i")
-    if (re.test(q)) return { text: rule.a }
+// ================================================================
+// FUZZY / SYNONYM MATCHER
+// ================================================================
+// Previous matcher was a pipe-separated regex of keywords baked into
+// botCopy. A user typing "скилки кошту" (typo) or "почому" (synonym
+// not in the list) hit the "didn't understand" fallback even though
+// the intent was obviously the price question.
+//
+// New matcher:
+//   1. Normalize input (lowercase + strip diacritics + strip punct).
+//   2. Tokenize into words ≥ 2 chars.
+//   3. For each candidate phrase (canonical question + triggers),
+//      score = (matched tokens) / (phrase tokens).
+//   4. Two tokens match if equal, substring-stem match (handles
+//      "кошту" vs "коштує"), or within a Levenshtein threshold scaled
+//      by length (1 edit for ≤5 chars, 2 for ≤8, 3 for longer).
+//   5. Best score wins, with a minimum confidence floor of 0.5.
+//
+// Pure functions — no I/O. Reusable from server or client.
+
+/** Normalize a string for fuzzy comparison. Lowercase + strip
+ *  combining marks + strip apostrophes + strip non-letter chars. */
+export function normalizeForMatch(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")   // combining marks (decomposed diacritics)
+    .replace(/['ʼʹ`]/g, "")  // straight + UA modifier + Cyrillic prime apostrophes
+    .replace(/[^\p{L}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+function tokensOf(s: string): string[] {
+  return normalizeForMatch(s).split(" ").filter((t) => t.length >= 2)
+}
+
+/** Classic Levenshtein, O(m·n) time, O(min(m,n)) memory. */
+function levenshtein(a: string, b: string): number {
+  const m = a.length
+  const n = b.length
+  if (m === 0) return n
+  if (n === 0) return m
+  let prev = new Array(n + 1)
+  let curr = new Array(n + 1)
+  for (let j = 0; j <= n; j++) prev[j] = j
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i
+    for (let j = 1; j <= n; j++) {
+      curr[j] = a[i - 1] === b[j - 1]
+        ? prev[j - 1]
+        : 1 + Math.min(prev[j], curr[j - 1], prev[j - 1])
+    }
+    ;[prev, curr] = [curr, prev]
   }
-  return null
+  return prev[n]
+}
+
+function tokensSimilar(a: string, b: string): boolean {
+  if (a === b) return true
+  if (a.length <= 3 || b.length <= 3) return false
+  // Stem match — captures inflected endings (UA, PL especially).
+  if (a.includes(b) || b.includes(a)) return true
+  const max = Math.max(a.length, b.length)
+  const threshold = max <= 5 ? 1 : max <= 8 ? 2 : 3
+  return levenshtein(a, b) <= threshold
+}
+
+function matchScore(inputTokens: string[], phrase: string): number {
+  const phraseTokens = tokensOf(phrase)
+  if (phraseTokens.length === 0 || inputTokens.length === 0) return 0
+  let hits = 0
+  for (const pt of phraseTokens) {
+    if (inputTokens.some((it) => tokensSimilar(it, pt))) hits++
+  }
+  return hits / phraseTokens.length
+}
+
+/** User-defined or default FAQ item with synonyms. Decoupled from the
+ *  chat-settings store shape so this module stays pure. */
+export type FaqItem = {
+  label: string
+  answer: string
+  triggers?: string[]
+}
+
+/** Best-effort intent match. Returns null when no candidate clears
+ *  the 0.5 confidence floor. */
+export function matchQuickReply(
+  text: string,
+  items: FaqItem[]
+): { item: FaqItem; score: number } | null {
+  const input = tokensOf(text)
+  if (input.length === 0) return null
+
+  let best: { item: FaqItem; score: number } | null = null
+  for (const item of items) {
+    const phrases = [item.label, ...(item.triggers ?? [])]
+    for (const phrase of phrases) {
+      const score = matchScore(input, phrase)
+      if (score >= 0.5 && (!best || score > best.score)) {
+        best = { item, score }
+      }
+    }
+  }
+  return best
+}
+
+/**
+ * Legacy entry — kept so callers without a custom FAQ list (e.g. the
+ * widget pre-hydration) still match against the baked-in botCopy
+ * keywords. The new fuzzy matcher is invoked under the hood with the
+ * legacy pipe-separated keywords folded into triggers.
+ */
+export function matchFaq(locale: Locale, text: string): BotReply | null {
+  const pack = botCopy[locale]
+  const items: FaqItem[] = pack.quickReplies.map((r) => ({
+    label: "",
+    answer: r.a,
+    triggers: r.q.split("|").map((t) => t.trim()).filter(Boolean),
+  }))
+  const m = matchQuickReply(text, items)
+  return m ? { text: m.item.answer } : null
 }

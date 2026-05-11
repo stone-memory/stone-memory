@@ -162,6 +162,11 @@ export default function AdminChatSettingsPage() {
                 rows={3}
                 className="w-full rounded-lg border border-foreground/10 bg-background px-3 py-2 text-sm outline-none focus:border-foreground/30"
               />
+              <TriggersField
+                value={q.triggers ?? []}
+                onChange={(triggers) => update(i, { triggers })}
+                placeholderLabel={q.label}
+              />
             </div>
           ))}
           {draftReplies.length === 0 && (
@@ -186,6 +191,129 @@ export default function AdminChatSettingsPage() {
           className="w-full rounded-lg border border-foreground/10 bg-background px-3 py-2 text-sm outline-none focus:border-foreground/30"
         />
       </section>
+    </div>
+  )
+}
+
+// ----------------------------------------------------------------
+// TriggersField — chip-style synonyms editor.
+//
+// Each trigger is a normalized phrase the bot recognises as "this
+// question". Bot matches with fuzzy/typo tolerance + word-stem
+// substrings, so editors don't need to enter every conjugation —
+// "почому" automatically covers "почому коштує", "почому стільниця"
+// etc.
+//
+// UX: existing triggers render as removable chips; new ones added via
+// the input on Enter, Tab, or comma. Backspace on empty input removes
+// the last chip. Deduplicates case-insensitively.
+// ----------------------------------------------------------------
+function TriggersField({
+  value,
+  onChange,
+  placeholderLabel,
+}: {
+  value: string[]
+  onChange: (v: string[]) => void
+  placeholderLabel?: string
+}) {
+  const [draft, setDraft] = useState("")
+
+  const commit = (raw: string) => {
+    const tokens = raw
+      .split(/[,\n]/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+    if (tokens.length === 0) return
+    const lower = new Set(value.map((v) => v.toLowerCase()))
+    const next = [...value]
+    for (const t of tokens) {
+      const k = t.toLowerCase()
+      if (lower.has(k)) continue
+      lower.add(k)
+      next.push(t)
+    }
+    onChange(next)
+    setDraft("")
+  }
+
+  const removeAt = (i: number) => {
+    onChange(value.filter((_, idx) => idx !== i))
+  }
+
+  const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === "Tab" || e.key === ",") {
+      e.preventDefault()
+      commit(draft)
+    } else if (e.key === "Backspace" && draft === "" && value.length > 0) {
+      removeAt(value.length - 1)
+    }
+  }
+
+  return (
+    <div>
+      <div className="mb-1 flex items-baseline justify-between gap-2">
+        <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          Тригери / синоніми
+        </label>
+        <span className="text-[11px] text-muted-foreground/70">
+          {value.length === 0
+            ? "Без тригерів бот шукатиме лише за текстом кнопки"
+            : `${value.length} ${value.length === 1 ? "тригер" : value.length < 5 ? "тригери" : "тригерів"}`}
+        </span>
+      </div>
+
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-1.5 rounded-lg border border-foreground/10 bg-background px-2 py-1.5 text-sm",
+          "focus-within:border-foreground/30"
+        )}
+        onClick={(e) => {
+          // Clicking empty space focuses the input
+          const target = e.target as HTMLElement
+          if (target.tagName === "DIV") {
+            ;(target.querySelector("input") as HTMLInputElement | null)?.focus()
+          }
+        }}
+      >
+        {value.map((t, i) => (
+          <span
+            key={`${t}-${i}`}
+            className="inline-flex items-center gap-1 rounded-md bg-foreground/5 px-2 py-0.5 text-xs"
+          >
+            {t}
+            <button
+              type="button"
+              onClick={() => removeAt(i)}
+              className="rounded-full p-0.5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
+              aria-label={`Видалити «${t}»`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => commit(draft)}
+          onKeyDown={onKey}
+          placeholder={
+            value.length === 0
+              ? placeholderLabel
+                ? `напр. «${placeholderLabel}», синоніми…`
+                : "Enter / кома щоб додати"
+              : "+ ще тригер"
+          }
+          className="flex-1 min-w-[120px] border-0 bg-transparent px-1 py-0.5 text-xs outline-none placeholder:text-muted-foreground/60"
+        />
+      </div>
+
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        Бот вже терпить друкарські помилки і відмінки автоматично —
+        додавайте лише принципово інші формулювання («почому» для «скільки коштує»,
+        «коли буде готово» для «термін» тощо).
+      </p>
     </div>
   )
 }
