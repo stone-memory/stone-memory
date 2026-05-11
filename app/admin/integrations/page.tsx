@@ -360,7 +360,10 @@ function BackfillChatBlock() {
       const r = await authedFetch("/api/crm/admin/backfill-chat", { method: "POST" })
       const j = await r.json()
       if (!r.ok) {
-        setError(j.error || "Помилка")
+        // 412 missing_migrations carries a multi-line `message` with
+        // explicit migration filenames — surface that instead of the
+        // short `error` slug.
+        setError(j.message || j.error || "Помилка")
         return
       }
       setResult({
@@ -420,7 +423,7 @@ function BackfillChatBlock() {
         </div>
       )}
       {error && (
-        <div className="mt-3 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <div className="mt-3 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive whitespace-pre-line">
           {error}
         </div>
       )}

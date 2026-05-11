@@ -43,6 +43,53 @@ export async function POST(req: Request) {
     return `${prefix}: ${e instanceof Error ? e.message : String(e)}`
   }
 
+  // ----- Pre-flight: confirm prerequisite columns exist -----
+  // The most common cause of "22 помилок 0 перенесено" is that the
+  // user ran crm-migration.sql but NOT crm-channels-migration.sql, so
+  // communications.thread_key and customers.channels don't exist yet.
+  // We catch that here with a friendly precondition error instead of
+  // letting the user discover it through 22 cryptic insert failures.
+  const preflightErrors: { table: string; column: string; migration: string }[] = []
+  {
+    const { error: tkErr } = await supabaseAdmin
+      .from("communications").select("thread_key").limit(1)
+    if (tkErr && tkErr.code === "42703") {
+      preflightErrors.push({
+        table: "communications", column: "thread_key",
+        migration: "crm-channels-migration.sql",
+      })
+    }
+    const { error: chErr } = await supabaseAdmin
+      .from("customers").select("channels").limit(1)
+    if (chErr && chErr.code === "42703") {
+      preflightErrors.push({
+        table: "customers", column: "channels",
+        migration: "crm-channels-migration.sql",
+      })
+    }
+  }
+  if (preflightErrors.length > 0) {
+    const lines = preflightErrors.map(
+      (e) => `• ${e.table}.${e.column} відсутня — потрібна міграція ${e.migration}`
+    )
+    const message = [
+      "Перед backfill потрібно прогнати SQL-міграції у Supabase:",
+      ...lines,
+      "",
+      "Відкрий Supabase Dashboard → SQL Editor → вставити вміст файлу і натиснути Run.",
+      "Файли в репо: supabase/crm-channels-migration.sql (і пов'язані)",
+    ].join("\n")
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "missing_migrations",
+        message,
+        preflightErrors,
+      },
+      { status: 412 }
+    )
+  }
+
   // Витягуємо ВСІ chat_messages (порціями)
   const PAGE = 200
   let offset = 0
