@@ -3,18 +3,17 @@
 import { useEffect, useState } from "react"
 import { authedFetch } from "@/lib/authed-fetch"
 import type { TeamRole } from "@/lib/crm/types"
+import type { Capability } from "@/lib/permissions/capabilities"
 
 /**
- * Client hook that resolves the current user's team role via /api/auth/me.
+ * Client hook that resolves the current user's team role + effective
+ * capabilities via /api/auth/me.
  *
  * Why an API round-trip instead of reading from team_members directly via
  * the supabase client: we want a single, server-vetted source of truth
- * that already filters on `active = true`. Saves cluttering RLS-grant
- * surface area for clients that just want "what role am I?".
- *
- * Returned role is null until hydrated, then either the role or null
- * (no team_members row → not a team member, but might still be an
- * authenticated user — UI should treat this as "no admin access").
+ * that already filters on `active = true` and resolves custom_role
+ * capabilities. Saves cluttering RLS-grant surface area for clients
+ * that just want "what can I do?".
  */
 export type CurrentRoleState = {
   role: TeamRole | null
@@ -22,6 +21,8 @@ export type CurrentRoleState = {
   loading: boolean
   /** False if the user is authed but has no active team_members row. */
   isTeamMember: boolean
+  /** Effective capabilities — base role + custom role overlay. */
+  capabilities: Capability[]
 }
 
 export function useCurrentRole(): CurrentRoleState {
@@ -30,6 +31,7 @@ export function useCurrentRole(): CurrentRoleState {
     email: null,
     loading: true,
     isTeamMember: false,
+    capabilities: [],
   })
 
   useEffect(() => {
@@ -38,20 +40,26 @@ export function useCurrentRole(): CurrentRoleState {
       .then(async (r) => {
         if (cancelled) return
         if (!r.ok) {
-          setState({ role: null, email: null, loading: false, isTeamMember: false })
+          setState({ role: null, email: null, loading: false, isTeamMember: false, capabilities: [] })
           return
         }
-        const j = (await r.json()) as { role: TeamRole | null; email: string | null; active: boolean }
+        const j = (await r.json()) as {
+          role: TeamRole | null
+          email: string | null
+          active: boolean
+          capabilities: Capability[]
+        }
         setState({
           role: j.role,
           email: j.email,
           loading: false,
           isTeamMember: Boolean(j.role && j.active),
+          capabilities: Array.isArray(j.capabilities) ? j.capabilities : [],
         })
       })
       .catch(() => {
         if (cancelled) return
-        setState({ role: null, email: null, loading: false, isTeamMember: false })
+        setState({ role: null, email: null, loading: false, isTeamMember: false, capabilities: [] })
       })
     return () => {
       cancelled = true
@@ -67,4 +75,9 @@ export function isSuperAdmin(role: TeamRole | null): boolean {
 
 export function isAdminOrAbove(role: TeamRole | null): boolean {
   return role === "admin" || role === "super_admin"
+}
+
+/** Check whether a capability is present in the supplied list. */
+export function hasCapability(caps: Capability[], cap: Capability): boolean {
+  return caps.includes(cap)
 }

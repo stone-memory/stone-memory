@@ -18,6 +18,9 @@ export async function PATCH(req: Request, ctx: Ctx) {
     phone: string | null
     active: boolean
     notes: string | null
+    /** Assign or unassign a custom role. Setting to null clears it
+     *  and the member falls back to their base enum role. */
+    custom_role_id: string | null
   }> | null
   if (!body) return NextResponse.json({ error: "invalid json" }, { status: 400 })
 

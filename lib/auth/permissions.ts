@@ -2,6 +2,7 @@ import "server-only"
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { TeamRole } from "@/lib/crm/types"
+import { resolveCapabilities, type Capability } from "@/lib/permissions/capabilities"
 
 /**
  * Server-side permission helpers. Mirror their client equivalents in
@@ -119,4 +120,68 @@ export async function requireAdminOrSuperAdmin(
     )
   }
   return ctx
+}
+
+/**
+ * Resolve the caller's effective capability set — base role caps
+ * merged with any custom_role overlay. Returns [] for anon / inactive
+ * users. Mirrors the SQL `current_user_capabilities()` function so
+ * server-side JS gates and SQL gates produce identical answers.
+ */
+export async function getCurrentCapabilities(
+  req: Request
+): Promise<{ user: AuthedUser; capabilities: Capability[] } | NextResponse> {
+  const ctx = await getAuthedUser(req)
+  if (ctx instanceof NextResponse) return ctx
+  if (!ctx.role || !ctx.active) {
+    return { user: ctx, capabilities: [] }
+  }
+
+  let extra: string[] = []
+  // Pull custom_role.capabilities if the member has one assigned. We
+  // do this with the admin client because RLS on team_members already
+  // permits the caller to read their own row, but for code simplicity
+  // we use admin client which bypasses RLS.
+  const { data: tm } = await supabaseAdmin
+    .from("team_members")
+    .select("custom_role_id")
+    .eq("user_id", ctx.user_id)
+    .maybeSingle()
+  if (tm?.custom_role_id) {
+    const { data: cr } = await supabaseAdmin
+      .from("custom_roles")
+      .select("capabilities")
+      .eq("id", tm.custom_role_id)
+      .maybeSingle()
+    if (cr?.capabilities && Array.isArray(cr.capabilities)) {
+      extra = cr.capabilities as string[]
+    }
+  }
+
+  return {
+    user: ctx,
+    capabilities: resolveCapabilities(ctx.role, extra),
+  }
+}
+
+/**
+ * Require a specific capability. Returns the user + capabilities or a
+ * 403 NextResponse if the cap isn't present.
+ *
+ *   const ctx = await requireCapability(req, "finances.view_company")
+ *   if (ctx instanceof NextResponse) return ctx
+ */
+export async function requireCapability(
+  req: Request,
+  cap: Capability
+): Promise<{ user: AuthedUser; capabilities: Capability[] } | NextResponse> {
+  const result = await getCurrentCapabilities(req)
+  if (result instanceof NextResponse) return result
+  if (!result.capabilities.includes(cap)) {
+    return NextResponse.json(
+      { error: "forbidden", reason: "missing_capability", capability: cap },
+      { status: 403 }
+    )
+  }
+  return result
 }

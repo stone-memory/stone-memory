@@ -32,6 +32,30 @@ export type TeamMember = {
   phone: string | null
   active: boolean
   notes: string | null
+  /** Optional FK to a custom_roles row. When set, UI shows the custom
+   *  role's label and uses its capability list for fine-grain gates.
+   *  The base `role` field stays in sync with custom_role.base_role
+   *  (via Postgres trigger) so RLS policies don't need to change. */
+  custom_role_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * A user-defined or system role. See supabase/crm-custom-roles-migration.sql.
+ * `is_system` rows (super_admin/admin/manager/master/sales) cannot be
+ * deleted and have a fixed `name` slug. Other rows are fully editable
+ * by super_admin via /admin/team/permissions.
+ */
+export type CustomRole = {
+  id: string
+  name: string
+  label: string
+  description: string | null
+  base_role: TeamRole
+  capabilities: string[]
+  is_system: boolean
+  created_by: string | null
   created_at: string
   updated_at: string
 }

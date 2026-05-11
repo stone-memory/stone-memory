@@ -27,6 +27,11 @@ type CreatePayload = {
   role: TeamRole
   phone?: string
   user_id?: string
+  /** Optional custom role assignment. If set, the trigger
+   *  sync_team_member_role_from_custom will overwrite `role` with the
+   *  custom role's base_role automatically — UI sends both to keep the
+   *  intent explicit. */
+  custom_role_id?: string | null
 }
 
 // POST — додати члена команди.
@@ -57,6 +62,7 @@ export async function POST(req: Request) {
       display_name: body.display_name || null,
       role: body.role,
       phone: body.phone || null,
+      custom_role_id: body.custom_role_id || null,
     })
     .select()
     .single()
