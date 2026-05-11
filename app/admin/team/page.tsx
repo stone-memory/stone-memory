@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle, Sparkles, Info } from "lucide-react"
+import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle, Sparkles, Info, Eye, EyeOff } from "lucide-react"
+import { formatPhoneAsTyped, unformatPhone } from "@/lib/phone-format"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -65,13 +66,28 @@ export default function TeamPage() {
     custom_role_id: string | null
     role: TeamRole
     phone: string
+    /** Phone in display form ("+380 67 123 45 67"); persisted to DB
+     *  as digits-only via unformatPhone() in submit(). */
+    phoneFormatted: string
+    /** Optional initial password — only visible / sendable to
+     *  super_admin. When blank, the team_members row is created
+     *  without a linked auth user. */
+    password: string
   }>({
     email: "",
     display_name: "",
     custom_role_id: null,
     role: "manager",
     phone: "",
+    phoneFormatted: "",
+    password: "",
   })
+  const [showPw, setShowPw] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  // super_admin can provision the new teammate's auth account inline by
+  // setting an initial password. Plain admins can only add the
+  // team_members row and let the user register themselves later.
+  const canSetPassword = isSuperAdmin(currentRole)
 
   useEffect(() => { load() }, [load])
 
@@ -87,20 +103,39 @@ export default function TeamPage() {
   }, [customRoles])
 
   const submit = async () => {
-    if (!draft.email) return
-    await authedFetch("/api/crm/team", {
+    setSubmitError(null)
+    if (!draft.email.trim()) {
+      setSubmitError("Email обов'язковий")
+      return
+    }
+    if (draft.password && draft.password.length < 8) {
+      setSubmitError("Пароль має бути щонайменше 8 символів")
+      return
+    }
+    const r = await authedFetch("/api/crm/team", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: draft.email,
-        display_name: draft.display_name,
+        email: draft.email.trim().toLowerCase(),
+        display_name: draft.display_name.trim() || undefined,
         role: draft.role,
         custom_role_id: draft.custom_role_id,
-        phone: draft.phone,
+        // Send digits-only canonical phone to the API; UI keeps the formatted version.
+        phone: draft.phone || undefined,
+        password: draft.password || undefined,
       }),
     })
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}))
+      setSubmitError(j.error || "Не вдалось додати")
+      return
+    }
     setShowAdd(false)
-    setDraft({ email: "", display_name: "", custom_role_id: null, role: "manager", phone: "" })
+    setDraft({
+      email: "", display_name: "", custom_role_id: null, role: "manager",
+      phone: "", phoneFormatted: "", password: "",
+    })
+    setSubmitError(null)
     // Force reload
     useTeamStore.setState({ loaded: false })
     load()
@@ -353,9 +388,66 @@ export default function TeamPage() {
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Телефон</label>
-                <Input value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} placeholder="+380…" />
+                <Input
+                  type="tel"
+                  inputMode="tel"
+                  // Strip non-digit on input, pass through the mask helper.
+                  // Setting both phone (digits-only for DB) and
+                  // phoneFormatted (display value) in one go keeps the
+                  // caret consistent without a controlled-input flicker.
+                  value={draft.phoneFormatted}
+                  onChange={(e) => {
+                    const formatted = formatPhoneAsTyped(e.target.value)
+                    setDraft({
+                      ...draft,
+                      phoneFormatted: formatted,
+                      phone: unformatPhone(formatted),
+                    })
+                  }}
+                  placeholder="+380 67 123 45 67"
+                />
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  Можна вводити «067…», «8067…» або з кодом країни — формат підставиться сам.
+                </p>
               </div>
+              {canSetPassword && (
+                <div>
+                  <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                    Пароль для входу
+                    <span className="ml-1 text-muted-foreground/70 normal-case">(необов'язково)</span>
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={showPw ? "text" : "password"}
+                      value={draft.password}
+                      onChange={(e) => setDraft({ ...draft, password: e.target.value })}
+                      placeholder="Залиш порожнім — і людина зареєструється сама"
+                      autoComplete="new-password"
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPw((v) => !v)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                      aria-label={showPw ? "Сховати" : "Показати"}
+                      tabIndex={-1}
+                    >
+                      {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                    </button>
+                  </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Якщо вкажете — створимо обліковий запис у Supabase Auth одразу і людина зможе ввійти. Мінімум 8 символів.
+                  </p>
+                </div>
+              )}
             </div>
+
+            {submitError && (
+              <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-destructive">
+                <AlertCircle size={14} /> {submitError}
+              </p>
+            )}
+
             <div className="mt-5 flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowAdd(false)} className="rounded-xl">Скасувати</Button>
               <Button onClick={submit} disabled={!draft.email} className="rounded-xl">Додати</Button>
