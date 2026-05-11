@@ -218,6 +218,25 @@ export default function TeamPage() {
                       <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
                         👑 Головний адмін
                       </span>
+                    ) : customRoles.length === 0 ? (
+                      // Fallback when custom_roles table not yet hydrated
+                      // (e.g. migration not applied). Pure enum select so
+                      // the row is still editable.
+                      <select
+                        value={m.role}
+                        onChange={(e) =>
+                          updateMember(m.id, {
+                            role: e.target.value as TeamRole,
+                            custom_role_id: null,
+                          })
+                        }
+                        className="h-8 rounded-md border border-foreground/10 bg-background px-2 text-xs max-w-[180px]"
+                      >
+                        <option value="admin">Адмін</option>
+                        <option value="manager">Менеджер</option>
+                        <option value="master">Майстер</option>
+                        <option value="sales">Продажі</option>
+                      </select>
                     ) : (
                       // Role picker driven by custom_roles. For legacy
                       // members without custom_role_id, fall back to the
@@ -241,9 +260,6 @@ export default function TeamPage() {
                             }}
                             className="h-8 rounded-md border border-foreground/10 bg-background px-2 text-xs max-w-[180px]"
                           >
-                            {customRoles.length === 0 && (
-                              <option value="">…</option>
-                            )}
                             {customRoles
                               .filter((cr) => cr.base_role !== "super_admin")
                               .map((cr) => (
@@ -323,18 +339,16 @@ export default function TeamPage() {
                 <RolePicker
                   roles={customRoles}
                   selectedId={draft.custom_role_id}
-                  onSelect={(role) =>
+                  fallbackRole={draft.role}
+                  onSelectCustom={(role) =>
                     setDraft({ ...draft, custom_role_id: role.id, role: role.base_role })
+                  }
+                  onSelectBase={(baseRole) =>
+                    setDraft({ ...draft, custom_role_id: null, role: baseRole })
                   }
                 />
                 <p className="mt-2 text-[11px] text-muted-foreground">
-                  Наведіть курсор (або натисніть «i») щоб подивитись повний список того, що дозволено та заборонено.
-                  <Link
-                    href="/admin/team/permissions"
-                    className="ml-1 underline underline-offset-2 hover:text-foreground"
-                  >
-                    Створити нову роль →
-                  </Link>
+                  Наведіть курсор (або натисніть «i») щоб подивитись що дозволено та заборонено.
                 </p>
               </div>
               <div>
@@ -501,30 +515,66 @@ function ResetPasswordDialog({
 }
 
 // ----------------------------------------------------------------
-// Role picker for the new-member modal. Lists every assignable
-// custom_role (system + user-defined), excluding super_admin (single-
-// owner role). Each card has an "i" trigger that opens a HoverCard
-// on desktop / Popover on mobile listing the role's effective
-// capabilities.
+// Role picker for the new-member modal.
+//
+// Renders one of two modes:
+//   • custom_roles loaded → cards from DB (system + user-defined),
+//     excluding super_admin. Selection writes custom_role_id.
+//   • custom_roles empty (migration not applied, or fresh DB) →
+//     fallback to the 4 hardcoded base roles. Selection writes only
+//     role enum (custom_role_id stays null). This makes the modal
+//     usable without requiring SQL migration first — the original
+//     stumbling block was a forever-spinning "Завантажую ролі…".
 // ----------------------------------------------------------------
 function RolePicker({
   roles,
   selectedId,
-  onSelect,
+  fallbackRole,
+  onSelectCustom,
+  onSelectBase,
 }: {
   roles: CustomRole[]
   selectedId: string | null
-  onSelect: (role: CustomRole) => void
+  fallbackRole: TeamRole
+  onSelectCustom: (role: CustomRole) => void
+  onSelectBase: (baseRole: TeamRole) => void
 }) {
   const assignable = useMemo(
     () => roles.filter((r) => r.base_role !== "super_admin"),
     [roles]
   )
 
+  // Fallback: enum-role grid when no custom_roles are loaded yet.
   if (assignable.length === 0) {
+    const BASE_ROLES: { role: TeamRole; label: string; hint: string; icon: typeof Shield }[] = [
+      { role: "admin", label: "Адмін", hint: "Повний доступ до CRM, ролей, фінансів", icon: Shield },
+      { role: "manager", label: "Менеджер", hint: "Управління угодами, клієнтами, платежами", icon: UserCog },
+      { role: "master", label: "Майстер", hint: "Виробничі задачі — лише свої угоди", icon: HardHat },
+      { role: "sales", label: "Продажі", hint: "Продажі — лише свої ліди", icon: BadgeCheck },
+    ]
     return (
-      <div className="rounded-xl border border-dashed border-foreground/15 px-3 py-4 text-xs text-muted-foreground">
-        Завантажую ролі…
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {BASE_ROLES.map(({ role, label, hint, icon: Icon }) => {
+          const active = fallbackRole === role
+          return (
+            <button
+              key={role}
+              type="button"
+              onClick={() => onSelectBase(role)}
+              className={cn(
+                "rounded-xl border px-3 py-2 text-left text-xs transition-colors",
+                active
+                  ? "border-foreground bg-foreground/5"
+                  : "border-foreground/15 hover:border-foreground/30 hover:bg-foreground/[0.02]"
+              )}
+            >
+              <div className="flex items-center gap-1.5 font-medium">
+                <Icon size={12} /> {label}
+              </div>
+              <p className="mt-0.5 text-muted-foreground">{hint}</p>
+            </button>
+          )
+        })}
       </div>
     )
   }
@@ -542,13 +592,13 @@ function RolePicker({
                 ? "border-foreground bg-foreground/5"
                 : "border-foreground/15 hover:border-foreground/30 hover:bg-foreground/[0.02]"
             )}
-            onClick={() => onSelect(r)}
+            onClick={() => onSelectCustom(r)}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault()
-                onSelect(r)
+                onSelectCustom(r)
               }
             }}
           >

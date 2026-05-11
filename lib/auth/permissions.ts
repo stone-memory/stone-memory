@@ -5,6 +5,29 @@ import type { TeamRole } from "@/lib/crm/types"
 import { resolveCapabilities, type Capability } from "@/lib/permissions/capabilities"
 
 /**
+ * Owner email allow-list. The owner of the business is always treated
+ * as super_admin regardless of what team_members says — protects
+ * against the bootstrap chicken-and-egg case (no super_admin migration
+ * applied yet → owner can't reach /admin/integrations to do anything).
+ *
+ * Configurable via env (OWNER_EMAILS=a@b.com,c@d.com), with a single
+ * hardcoded default that matches the SQL migration's bootstrap row.
+ *
+ * SECURITY note: Supabase Auth controls who can sign in with a given
+ * email. Adding an email here doesn't grant access to anyone who isn't
+ * already authenticated as that user.
+ */
+const OWNER_EMAILS: string[] = (process.env.OWNER_EMAILS || "sttonememory@gmail.com")
+  .split(",")
+  .map((s) => s.trim().toLowerCase())
+  .filter(Boolean)
+
+function isOwnerEmail(email: string | null | undefined): boolean {
+  if (!email) return false
+  return OWNER_EMAILS.includes(email.toLowerCase())
+}
+
+/**
  * Server-side permission helpers. Mirror their client equivalents in
  * `lib/auth/use-current-role.ts` (UI gating). Anything truly sensitive
  * (credential changes, integration writes) MUST be gated server-side
@@ -59,11 +82,31 @@ export async function getAuthedUser(
     .eq("user_id", authData.user.id)
     .maybeSingle()
 
+  const email = authData.user.email ?? tm?.email ?? null
+  const rawRole = (tm?.role as TeamRole | null) ?? null
+  const rawActive = tm?.active ?? false
+
+  // Owner-email override: if the caller's email is in OWNER_EMAILS,
+  // treat them as super_admin even when:
+  //   - team_members row doesn't exist yet, or
+  //   - the row has role='admin' (super_admin migration not applied), or
+  //   - active is somehow false on the owner row (data corruption).
+  // This is the bootstrap safety net so the business owner can never
+  // get locked out of their own CRM by partially-applied migrations.
+  if (isOwnerEmail(email)) {
+    return {
+      user_id: authData.user.id,
+      email,
+      role: "super_admin",
+      active: true,
+    }
+  }
+
   return {
     user_id: authData.user.id,
-    email: authData.user.email ?? tm?.email ?? null,
-    role: (tm?.role as TeamRole | null) ?? null,
-    active: tm?.active ?? false,
+    email,
+    role: rawRole,
+    active: rawActive,
   }
 }
 
