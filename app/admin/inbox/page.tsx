@@ -156,6 +156,13 @@ export default function InboxPage() {
         )}
       </header>
 
+      {/* Filter chips — compute unread badge per channel from the
+         full message list so the operator can see at a glance which
+         channels need attention. The list is already loaded for the
+         current filter, but we want unread counts ACROSS channels.
+         For now we count from `items` which, when filter="all", has
+         everything; on a narrower filter, badges only cover what's
+         currently fetched. Good enough for the visible signal. */}
       <div className="flex flex-wrap gap-1 rounded-full bg-foreground/5 p-1 w-fit">
         {(
           [
@@ -165,22 +172,40 @@ export default function InboxPage() {
             ["telegram", "Telegram"],
             ["whatsapp", "WhatsApp"],
             ["instagram", "Instagram"],
+            ["viber", "Viber"],
             ["email", "Email"],
             ["sms", "SMS"],
             ["phone", "Дзвінки"],
           ] as const
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => { setFilter(key as typeof filter); setActiveThread(null) }}
-            className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-              filter === key ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {label}
-          </button>
-        ))}
+        ).map(([key, label]) => {
+          const unread = items.filter((m) => {
+            if (m.direction !== "inbound" || m.read_at) return false
+            if (key === "all" || key === "unread") return true
+            return m.channel === key
+          }).length
+          return (
+            <button
+              key={key}
+              onClick={() => { setFilter(key as typeof filter); setActiveThread(null) }}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                filter === key ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <span>{label}</span>
+              {unread > 0 && (
+                <span
+                  className={cn(
+                    "inline-flex min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-semibold tabular-nums",
+                    filter === key ? "bg-accent text-accent-foreground" : "bg-accent/90 text-accent-foreground"
+                  )}
+                >
+                  {unread > 99 ? "99+" : unread}
+                </span>
+              )}
+            </button>
+          )
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 min-h-[60vh]">
@@ -270,6 +295,15 @@ function ConversationView({
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  // Reply through the channel the customer wrote from by default,
+  // but let the operator pick a different one. Useful when the
+  // inbound was via SMS but you want to reply by email, etc.
+  const [replyChannel, setReplyChannel] = useState<CommChannel>(conversation.channel)
+  // If conversation prop swaps (user clicks another thread), reset
+  // the channel back to that thread's inbound channel.
+  useEffect(() => {
+    setReplyChannel(conversation.channel)
+  }, [conversation.key, conversation.channel])
 
   const sorted = [...conversation.messages].sort(
     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
@@ -286,9 +320,9 @@ function ConversationView({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerId: conversation.customer.id,
-          channel: conversation.channel,
+          channel: replyChannel,
           body: draft,
-          subject: conversation.channel === "email" ? `Re: ${sorted[0]?.subject || "питання"}` : undefined,
+          subject: replyChannel === "email" ? `Re: ${sorted[0]?.subject || "питання"}` : undefined,
         }),
       })
       const j = await r.json()
@@ -366,10 +400,21 @@ function ConversationView({
         )}
         {success && (
           <div className="mb-2 rounded-lg bg-success/10 px-3 py-2 text-sm text-success">
-            ✓ Надіслано через {COMM_CHANNEL_LABELS[conversation.channel]}
+            ✓ Надіслано через {COMM_CHANNEL_LABELS[replyChannel]}
           </div>
         )}
-        <div className="flex items-end gap-2 rounded-2xl bg-foreground/[0.04] p-2 focus-within:ring-2 focus-within:ring-foreground/10">
+
+        {/* Channel picker — defaults to the thread's inbound channel.
+           Operators can override per-message (e.g. customer wrote via
+           SMS but the operator wants a longer reply over email). */}
+        <ReplyChannelPicker
+          current={replyChannel}
+          inboundChannel={conversation.channel}
+          customer={conversation.customer ?? null}
+          onPick={setReplyChannel}
+        />
+
+        <div className="mt-2 flex items-end gap-2 rounded-2xl bg-foreground/[0.04] p-2 focus-within:ring-2 focus-within:ring-foreground/10">
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -379,7 +424,7 @@ function ConversationView({
                 send()
               }
             }}
-            placeholder={`Відповідь у ${COMM_CHANNEL_LABELS[conversation.channel]}…`}
+            placeholder={`Відповідь у ${COMM_CHANNEL_LABELS[replyChannel]}…`}
             rows={2}
             className="flex-1 resize-none bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground"
             style={{ maxHeight: 200 }}
@@ -394,5 +439,80 @@ function ConversationView({
         </p>
       </div>
     </>
+  )
+}
+
+// ----------------------------------------------------------------
+// Channel picker for the reply form. Defaults to inboundChannel
+// (the channel the customer wrote from). Operators can switch.
+//
+// Filters the chip list to channels the customer has an identifier
+// for — no point offering Instagram if we don't have their PSID.
+// ----------------------------------------------------------------
+function ReplyChannelPicker({
+  current,
+  inboundChannel,
+  customer,
+  onPick,
+}: {
+  current: CommChannel
+  inboundChannel: CommChannel
+  customer: { id: string; name: string; phone: string; email?: string | null } | null
+  onPick: (c: CommChannel) => void
+}) {
+  // Compute reachable channels client-side from what we already have
+  // on the customer record. site_chat / phone / manual are always
+  // available; channel-specific identifiers are best-effort.
+  const reachable: CommChannel[] = ["site_chat"]
+  if (customer?.email) reachable.push("email")
+  if (customer?.phone && customer.phone !== "—") {
+    reachable.push("whatsapp")
+    reachable.push("viber")
+    reachable.push("sms")
+  }
+  // The inbound channel is always reachable — by definition we have an
+  // identifier (we just received a message on it).
+  if (!reachable.includes(inboundChannel)) reachable.push(inboundChannel)
+  // Telegram/Instagram identifiers live in customers.channels JSON
+  // which we don't pull here. Include them only if the inbound was
+  // that channel (otherwise they'd 400 on send).
+  if (inboundChannel === "telegram" && !reachable.includes("telegram")) reachable.push("telegram")
+  if (inboundChannel === "instagram" && !reachable.includes("instagram")) reachable.push("instagram")
+
+  // Stable display order
+  const order: CommChannel[] = ["telegram", "whatsapp", "instagram", "viber", "email", "sms", "site_chat"]
+  const visible = order.filter((c) => reachable.includes(c))
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <span className="text-[11px] text-muted-foreground mr-1">Відповісти через:</span>
+      {visible.map((c) => {
+        const Icon = CHANNEL_ICON[c]
+        const isCurrent = c === current
+        const isInbound = c === inboundChannel
+        return (
+          <button
+            key={c}
+            type="button"
+            onClick={() => onPick(c)}
+            className={cn(
+              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium border transition-colors",
+              isCurrent
+                ? "border-foreground bg-foreground text-background"
+                : "border-foreground/15 bg-background text-foreground/70 hover:border-foreground/30"
+            )}
+            title={isInbound ? "Канал, з якого писав клієнт (за замовчуванням)" : `Відповісти у ${COMM_CHANNEL_LABELS[c]}`}
+          >
+            <Icon size={11} className={isCurrent ? "" : CHANNEL_COLOR[c]} />
+            <span>{COMM_CHANNEL_LABELS[c]}</span>
+            {isInbound && (
+              <span className={cn("text-[9px]", isCurrent ? "opacity-70" : "text-muted-foreground")}>
+                ←
+              </span>
+            )}
+          </button>
+        )
+      })}
+    </div>
   )
 }
