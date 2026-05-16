@@ -316,3 +316,27 @@ export const finishLabels: Record<StoneFinish, Record<Locale, string>> = {
   natural: { uk: "Природна", pl: "Naturalne", en: "Natural", de: "Natur", lt: "Natūrali" },
   split: { uk: "Колота", pl: "Łupane", en: "Split", de: "Gespalten", lt: "Skaldyta" },
 }
+
+// ────────────────────────────────────────────────────────────────────────────
+// Safe label resolvers. Admins can now add custom material/colour/shape/finish
+// values that aren't in the maps above. These helpers return the localized
+// label for a known key, or gracefully fall back to the raw stored value so
+// the public catalog never crashes on an unknown option.
+function capitalize(s: string): string {
+  return s.length ? s[0].toUpperCase() + s.slice(1) : s
+}
+
+function resolveLabel<K extends string>(
+  map: Record<K, Record<Locale, string>>,
+  value: string | undefined,
+  locale: Locale
+): string {
+  if (!value) return ""
+  const entry = (map as Record<string, Record<Locale, string>>)[value]
+  return entry?.[locale] ?? capitalize(value)
+}
+
+export const colorLabel = (v: string | undefined, locale: Locale) => resolveLabel(colorLabels, v, locale)
+export const shapeLabel = (v: string | undefined, locale: Locale) => resolveLabel(shapeLabels, v, locale)
+export const finishLabel = (v: string | undefined, locale: Locale) => resolveLabel(finishLabels, v, locale)
+export const materialLabel = (v: string | undefined, locale: Locale) => resolveLabel(materialLabels, v, locale)

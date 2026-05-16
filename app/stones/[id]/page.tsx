@@ -13,7 +13,7 @@ import { StoneCard } from "@/components/stone-card"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones, useStonesAdminStore } from "@/lib/store/stones"
-import { filterLabels, colorLabels, shapeLabels, finishLabels } from "@/lib/i18n/filters"
+import { filterLabels, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { cn } from "@/lib/utils"
 
 export default function StoneDetailPage() {
@@ -94,9 +94,9 @@ export default function StoneDetailPage() {
 
   const specs: [string, string][] = [
     ["№", stone.id],
-    stone.color ? [L.color, colorLabels[stone.color][locale]] : null,
-    stone.shape ? [L.shape, shapeLabels[stone.shape][locale]] : null,
-    stone.finish ? [L.finish, finishLabels[stone.finish][locale]] : null,
+    stone.color ? [L.color, colorLabel(stone.color, locale)] : null,
+    stone.shape ? [L.shape, shapeLabel(stone.shape, locale)] : null,
+    stone.finish ? [L.finish, finishLabel(stone.finish, locale)] : null,
     stone.sizeCm ? ["Size", stone.sizeCm] : null,
     stone.weightKg ? ["Weight", `${stone.weightKg} kg`] : null,
   ].filter(Boolean) as [string, string][]

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useSelectionStore } from "@/lib/store/selection"
 import { usePopularityStore } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
-import { shapeLabels, finishLabels } from "@/lib/i18n/filters"
+import { shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import type { StoneItem, Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -47,7 +47,7 @@ const inCartLabels: Record<Locale, string> = {
 }
 
 function buildDescription(item: StoneItem, locale: Locale): string {
-  const finish = item.finish ? finishLabels[item.finish][locale].toLowerCase() : ""
+  const finish = item.finish ? finishLabel(item.finish, locale).toLowerCase() : ""
   const categoryWord: Record<Locale, string> = {
     uk: item.category === "memorial" ? "пам'ятник" : "виріб з каменю",
     pl: item.category === "memorial" ? "pomnik" : "wyrób kamienny",
@@ -93,9 +93,9 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
 
   const categoryLabel = categoryLabels[item.category][locale]
   const subLabel = item.shape
-    ? shapeLabels[item.shape][locale].toUpperCase()
+    ? shapeLabel(item.shape, locale).toUpperCase()
     : item.finish
-    ? finishLabels[item.finish][locale].toUpperCase()
+    ? finishLabel(item.finish, locale).toUpperCase()
     : ""
   const description = buildDescription(item, locale)
   const L = specLabels[locale]
@@ -162,7 +162,7 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
             )}
             {item.finish && (
               <span className="inline-flex items-center rounded-full bg-foreground/[0.04] px-3 py-1.5 text-[12px] text-foreground/75">
-                {finishLabels[item.finish][locale]}
+                {finishLabel(item.finish, locale)}
               </span>
             )}
           </div>
