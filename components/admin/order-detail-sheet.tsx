@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { StatusChanger } from "./status-changer"
 import { NotesLog } from "./notes-log"
 import { useOrdersStore } from "@/lib/store/orders"
+import { formatUAH, formatDateTime, eurHint } from "@/lib/admin-format"
 import type { Order } from "@/lib/types"
 
 interface OrderDetailSheetProps {
@@ -16,19 +17,8 @@ interface OrderDetailSheetProps {
   onClose: () => void
 }
 
-function formatPrice(price: number): string {
-  return `€${price.toLocaleString("en-US", { minimumFractionDigits: 0 })}`
-}
-
-function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString("uk-UA", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
+const formatPrice = formatUAH
+const formatDate = formatDateTime
 
 export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
   const [noteText, setNoteText] = useState("")
@@ -113,7 +103,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                     <div className="flex-1 min-w-0">
                       <p className="font-mono text-sm font-medium">№ {item.id}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        від {formatPrice(item.priceFrom)}
+                        від {formatPrice(item.priceFrom)} <span className="opacity-60">{eurHint(item.priceFrom)}</span>
                       </p>
                     </div>
                   </div>
@@ -121,7 +111,10 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
               </div>
               <div className="flex justify-between items-center pt-4 font-medium">
                 <span>Орієнтовна сума</span>
-                <span>{formatPrice(totalPrice)}</span>
+                <span className="text-right">
+                  {formatPrice(totalPrice)}
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">{eurHint(totalPrice)}</span>
+                </span>
               </div>
             </section>
 

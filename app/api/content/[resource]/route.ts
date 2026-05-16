@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { getCollection } from "@/lib/content-schema"
 import { requireAdmin } from "@/lib/api-auth"
+import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -38,5 +39,6 @@ export async function POST(req: Request, ctx: { params: Promise<{ resource: stri
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidateForResource(resource)
   return NextResponse.json({ item: data }, { status: 201 })
 }

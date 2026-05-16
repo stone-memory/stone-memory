@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { requireAdmin } from "@/lib/api-auth"
+import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -33,5 +34,6 @@ export async function PUT(req: Request) {
     if (insErr) return NextResponse.json({ error: insErr.message }, { status: 500 })
   }
 
+  revalidateForResource("featured")
   return NextResponse.json({ ids })
 }

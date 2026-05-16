@@ -80,6 +80,61 @@ export default function AdminChatSettingsPage() {
     setDraftReplies(next.map((q, idx) => ({ ...q, order: idx + 1 })))
   }
 
+  /**
+   * Fan a freshly-added trigger out to the other 4 locales by
+   * translating it and appending to each locale's matching Q&A.
+   *
+   * Source-locale UI already shows the new chip via local state —
+   * this runs in the background and persists translations into the
+   * store overrides directly. Switching to another locale tab will
+   * show the auto-added trigger; if translation failed for some
+   * locale, that one is silently skipped (admin can fix manually).
+   *
+   * Dedup is case-insensitive per locale: we don't add a translation
+   * if the same word is already present.
+   */
+  const fanOutTriggers = async (qaId: string, sourceLocale: Locale, added: string[]) => {
+    if (added.length === 0) return
+    const targets: Locale[] = LOCALES.map((l) => l.code).filter((l) => l !== sourceLocale)
+    // Resolve each target locale's CURRENT quickReplies list (override
+    // first, default second). We mutate per-target to avoid clobbering
+    // concurrent edits on those locales' drafts.
+    const currentFor = (loc: Locale): QuickReply[] =>
+      (useChatSettingsStore.getState().overrides[loc]?.quickReplies ?? defaultQuickReplies[loc]).map((q) => ({ ...q }))
+
+    for (const phrase of added) {
+      let result: Partial<Record<Locale, string>> = {}
+      try {
+        const r = await fetch("/api/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: phrase, source: sourceLocale, targets }),
+        })
+        if (r.ok) {
+          const j = (await r.json()) as { ok?: boolean; result?: Partial<Record<Locale, string>> }
+          if (j.ok && j.result) result = j.result
+        }
+      } catch {
+        // network down — silent skip; user keeps the source-locale value
+      }
+
+      for (const target of targets) {
+        const translation = result[target]?.trim()
+        if (!translation) continue
+        const replies = currentFor(target)
+        const qa = replies.find((q) => q.id === qaId)
+        if (!qa) continue
+        const current = qa.triggers ?? []
+        const lower = new Set(current.map((s) => s.toLowerCase()))
+        if (lower.has(translation.toLowerCase())) continue
+        qa.triggers = [...current, translation]
+        // Persist (await — order matters between sequential phrases
+        // so concurrent writes don't lose to each other).
+        await useChatSettingsStore.getState().setQuickReplies(target, replies)
+      }
+    }
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
@@ -162,6 +217,12 @@ export default function AdminChatSettingsPage() {
                 rows={3}
                 className="w-full rounded-lg border border-foreground/10 bg-background px-3 py-2 text-sm outline-none focus:border-foreground/30"
               />
+              <TriggersField
+                value={q.triggers ?? []}
+                onChange={(triggers) => update(i, { triggers })}
+                placeholderLabel={q.label}
+                onAdded={(added) => fanOutTriggers(q.id, locale, added)}
+              />
             </div>
           ))}
           {draftReplies.length === 0 && (
@@ -186,6 +247,138 @@ export default function AdminChatSettingsPage() {
           className="w-full rounded-lg border border-foreground/10 bg-background px-3 py-2 text-sm outline-none focus:border-foreground/30"
         />
       </section>
+    </div>
+  )
+}
+
+// ----------------------------------------------------------------
+// TriggersField — chip-style synonyms editor.
+//
+// Each trigger is a normalized phrase the bot recognises as "this
+// question". Bot matches with fuzzy/typo tolerance + word-stem
+// substrings, so editors don't need to enter every conjugation —
+// "почому" automatically covers "почому коштує", "почому стільниця"
+// etc.
+//
+// UX: existing triggers render as removable chips; new ones added via
+// the input on Enter, Tab, or comma. Backspace on empty input removes
+// the last chip. Deduplicates case-insensitively.
+// ----------------------------------------------------------------
+function TriggersField({
+  value,
+  onChange,
+  placeholderLabel,
+  onAdded,
+}: {
+  value: string[]
+  onChange: (v: string[]) => void
+  placeholderLabel?: string
+  /** Called with the array of NEW triggers committed (after dedup).
+   *  Used by the parent to fan-out auto-translations to other locales. */
+  onAdded?: (added: string[]) => void
+}) {
+  const [draft, setDraft] = useState("")
+
+  const commit = (raw: string) => {
+    const tokens = raw
+      .split(/[,\n]/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+    if (tokens.length === 0) return
+    const lower = new Set(value.map((v) => v.toLowerCase()))
+    const next = [...value]
+    const added: string[] = []
+    for (const t of tokens) {
+      const k = t.toLowerCase()
+      if (lower.has(k)) continue
+      lower.add(k)
+      next.push(t)
+      added.push(t)
+    }
+    if (added.length > 0) {
+      onChange(next)
+      onAdded?.(added)
+    }
+    setDraft("")
+  }
+
+  const removeAt = (i: number) => {
+    onChange(value.filter((_, idx) => idx !== i))
+  }
+
+  const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === "Tab" || e.key === ",") {
+      e.preventDefault()
+      commit(draft)
+    } else if (e.key === "Backspace" && draft === "" && value.length > 0) {
+      removeAt(value.length - 1)
+    }
+  }
+
+  return (
+    <div>
+      <div className="mb-1 flex items-baseline justify-between gap-2">
+        <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          Тригери / синоніми
+        </label>
+        <span className="text-[11px] text-muted-foreground/70">
+          {value.length === 0
+            ? "Без тригерів бот шукатиме лише за текстом кнопки"
+            : `${value.length} ${value.length === 1 ? "тригер" : value.length < 5 ? "тригери" : "тригерів"}`}
+        </span>
+      </div>
+
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-1.5 rounded-lg border border-foreground/10 bg-background px-2 py-1.5 text-sm",
+          "focus-within:border-foreground/30"
+        )}
+        onClick={(e) => {
+          // Clicking empty space focuses the input
+          const target = e.target as HTMLElement
+          if (target.tagName === "DIV") {
+            ;(target.querySelector("input") as HTMLInputElement | null)?.focus()
+          }
+        }}
+      >
+        {value.map((t, i) => (
+          <span
+            key={`${t}-${i}`}
+            className="inline-flex items-center gap-1 rounded-md bg-foreground/5 px-2 py-0.5 text-xs"
+          >
+            {t}
+            <button
+              type="button"
+              onClick={() => removeAt(i)}
+              className="rounded-full p-0.5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
+              aria-label={`Видалити «${t}»`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => commit(draft)}
+          onKeyDown={onKey}
+          placeholder={
+            value.length === 0
+              ? placeholderLabel
+                ? `напр. «${placeholderLabel}», синоніми…`
+                : "Enter / кома щоб додати"
+              : "+ ще тригер"
+          }
+          className="flex-1 min-w-[120px] border-0 bg-transparent px-1 py-0.5 text-xs outline-none placeholder:text-muted-foreground/60"
+        />
+      </div>
+
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        Бот вже терпить друкарські помилки і відмінки автоматично —
+        додавайте лише принципово інші формулювання («почому» для «скільки коштує»,
+        «коли буде готово» для «термін» тощо). Кожен новий тригер автоматично перекладається на 4 інші мови.
+      </p>
     </div>
   )
 }

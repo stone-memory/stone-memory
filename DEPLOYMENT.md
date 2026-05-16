@@ -78,7 +78,6 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://stonememory.com
 |--------|-------------|-------------|
 | `GOOGLE_VERIFICATION` | Мета-тег для Google Search Console | [Search Console](https://search.google.com/search-console) → Add property → HTML tag → скопіюй `content="…"` |
 | `BING_VERIFICATION` | Для Bing Webmaster | [Bing Webmaster](https://www.bing.com/webmasters) → аналогічно |
-| `YANDEX_VERIFICATION` | Для Yandex Webmaster | [Yandex Webmaster](https://webmaster.yandex.com) — потрібно лише якщо цільовий ринок включає Yandex-юзерів |
 
 ### Аналітика (опціонально, активується ПІСЛЯ згоди на cookie)
 

@@ -4,6 +4,7 @@ import { Resend } from "resend"
 import { render } from "@react-email/render"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { BaseLayout } from "@/lib/email-templates/base-layout"
+import { SITE_URL as NORMALIZED_SITE_URL } from "@/lib/site-config"
 
 const apiKey = process.env.RESEND_API_KEY
 if (!apiKey) {
@@ -15,7 +16,8 @@ export const resend = apiKey ? new Resend(apiKey) : null
 export const FROM_EMAIL = process.env.EMAIL_FROM || "onboarding@resend.dev"
 export const FROM_NAME = process.env.EMAIL_FROM_NAME || "Stone Memory"
 export const REPLY_TO = process.env.EMAIL_REPLY_TO || "sttonememory@gmail.com"
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001"
+// Re-export normalized SITE_URL — many email templates already import from here.
+export const SITE_URL = NORMALIZED_SITE_URL
 
 type CommonArgs = {
   to: string

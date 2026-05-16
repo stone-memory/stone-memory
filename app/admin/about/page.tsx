@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Image from "next/image"
-import { Plus, Trash2, RotateCcw, Check } from "lucide-react"
+import { Plus, Trash2, RotateCcw, Check, Globe, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAboutStore, defaultAbout, type Badge, type AboutContent } from "@/lib/store/about"
@@ -28,6 +28,8 @@ export default function AdminAboutPage() {
 
   const [locale, setLocale] = useState<Locale>("uk")
   const [saved, setSaved] = useState(false)
+  const [translating, setTranslating] = useState(false)
+  const [translateMsg, setTranslateMsg] = useState<string | null>(null)
 
   const current: AboutContent = useMemo(() => {
     if (!hasHydrated) return defaultAbout[locale]
@@ -57,6 +59,93 @@ export default function AdminAboutPage() {
   const reset = () => {
     resetLocale(locale)
     setDraft(defaultAbout[locale])
+  }
+
+  // Перекласти всі поля сторінки "Про нас" з обраної мови (sourceLocale)
+  // на 4 інші. Після — autosave у Supabase. Це окрема кнопка, бо тут нема
+  // <MultilingualField> (структура контенту складніша — масив абзаців + бейджі).
+  const autoTranslateAll = async () => {
+    const source = locale
+    setTranslating(true)
+    setTranslateMsg(null)
+
+    try {
+      // Збираємо унікальні рядки в один масив для batch-перекладу
+      const targets: Locale[] = (["uk", "en", "pl", "de", "lt"] as Locale[]).filter((l) => l !== source)
+      const sourceContent = draft
+
+      const fields: { kind: "heading" | "paragraph" | "photoAlt" | "badge"; index?: number; text: string }[] = [
+        { kind: "heading", text: sourceContent.heading },
+        { kind: "photoAlt", text: sourceContent.photoAlt },
+        ...sourceContent.paragraphs.map((p, i) => ({ kind: "paragraph" as const, index: i, text: p })),
+        ...sourceContent.badges.map((b, i) => ({ kind: "badge" as const, index: i, text: b.label })),
+      ]
+
+      // На кожне поле — окремий запит. /api/translate за раз перекладає 1 текст
+      // на N мов. Робимо паралельно.
+      let provider: string = "mock"
+      const perField = await Promise.all(
+        fields.map(async (f) => {
+          if (!f.text.trim()) return { f, result: {} as Partial<Record<Locale, string>> }
+          try {
+            const r = await fetch("/api/translate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text: f.text, source, targets }),
+            })
+            const data = (await r.json()) as { ok?: boolean; provider?: string; result?: Partial<Record<Locale, string>> }
+            if (data.ok && data.result) {
+              if (data.provider && data.provider !== "mock") provider = data.provider
+              return { f, result: data.result }
+            }
+          } catch {
+            /* ignore — лишимо порожнім */
+          }
+          return { f, result: {} as Partial<Record<Locale, string>> }
+        })
+      )
+
+      // Збираємо нові локалі і записуємо через store
+      for (const target of targets) {
+        const targetContent: AboutContent = {
+          ...defaultAbout[target],
+          ...sourceContent, // за замовчуванням — копія source
+          paragraphs: [...sourceContent.paragraphs],
+          badges: sourceContent.badges.map((b) => ({ ...b })),
+        }
+        for (const { f, result } of perField) {
+          const t = result[target]
+          if (!t) continue
+          if (f.kind === "heading") targetContent.heading = t
+          else if (f.kind === "photoAlt") targetContent.photoAlt = t
+          else if (f.kind === "paragraph" && typeof f.index === "number") {
+            targetContent.paragraphs[f.index] = t
+          } else if (f.kind === "badge" && typeof f.index === "number") {
+            targetContent.badges[f.index] = { ...targetContent.badges[f.index], label: t }
+          }
+        }
+        await setOverride(target, {
+          heading: targetContent.heading,
+          paragraphs: targetContent.paragraphs,
+          photo: targetContent.photo,
+          photoAlt: targetContent.photoAlt,
+          badges: targetContent.badges,
+        })
+      }
+
+      setTranslateMsg(
+        provider === "deepl"
+          ? "Готово (DeepL)"
+          : provider === "google"
+          ? "Готово (Google)"
+          : provider === "mymemory"
+          ? "Готово (MyMemory)"
+          : "Готово (Mock)"
+      )
+      setTimeout(() => setTranslateMsg(null), 3000)
+    } finally {
+      setTranslating(false)
+    }
   }
 
   const updateParagraph = (i: number, v: string) => {
@@ -89,6 +178,16 @@ export default function AdminAboutPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={autoTranslateAll}
+            disabled={translating}
+            className="rounded-xl gap-2"
+            title={`Перекласти всю сторінку «Про нас» з ${locale.toUpperCase()} на інші 4 мови`}
+          >
+            {translating ? <Loader2 size={16} className="animate-spin" /> : <Globe size={16} />}
+            {translating ? "Перекладаю…" : translateMsg || `Перекласти на 4 мови`}
+          </Button>
           <Button variant="outline" onClick={reset} className="rounded-xl gap-2">
             <RotateCcw size={16} /> Скинути {locale.toUpperCase()}
           </Button>

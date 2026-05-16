@@ -4,33 +4,57 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, ShieldCheck, CheckSquare, Building2, Send, Menu, X, UserCircle } from "lucide-react"
+import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock } from "lucide-react"
 import { useAdminRoleStore, type PermissionKey } from "@/lib/store/admin-role"
 import { useOpenTasksCount } from "@/lib/store/tasks"
+import { useNotificationCounts } from "@/lib/crm/notifications-store"
+import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
 import { cn } from "@/lib/utils"
 
-type NavItem = { href: string; icon: typeof Inbox; label: string; perm: PermissionKey }
+type NavItem = {
+  href: string
+  icon: typeof Inbox
+  label: string
+  perm: PermissionKey
+  section?: string
+  /** When true, only super_admin sees the link as a real link. Other
+   *  roles see it disabled with a Lock icon and a "owner-only" tooltip. */
+  superAdminOnly?: boolean
+}
 
 const navItems: NavItem[] = [
-  { href: "/admin", icon: Inbox, label: "Замовлення", perm: "orders" },
-  { href: "/admin/messages", icon: InboxIcon, label: "Повідомлення", perm: "messages" },
-  { href: "/admin/broadcast", icon: Send, label: "Розсилка", perm: "messages" },
-  { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат", perm: "chat" },
-  { href: "/admin/chat-settings", icon: Sparkles, label: "Налаштування чату", perm: "chatSettings" },
-  { href: "/admin/finances", icon: Wallet, label: "Фінанси", perm: "finances" },
-  { href: "/admin/stones", icon: Package, label: "Товари", perm: "products" },
-  { href: "/admin/services", icon: Wrench, label: "Послуги", perm: "services" },
-  { href: "/admin/projects", icon: Briefcase, label: "Проєкти", perm: "projects" },
-  { href: "/admin/reviews", icon: MessageSquare, label: "Відгуки", perm: "reviews" },
-  { href: "/admin/featured", icon: Star, label: "Популярні", perm: "featured" },
-  { href: "/admin/blog", icon: BookOpen, label: "Блог", perm: "blog" },
-  { href: "/admin/faq", icon: HelpCircle, label: "FAQ", perm: "faq" },
-  { href: "/admin/about", icon: Info, label: "Про нас", perm: "about" },
-  { href: "/admin/tasks", icon: CheckSquare, label: "Завдання", perm: "tasks" },
-  { href: "/admin/analytics", icon: LineChart, label: "Аналітика", perm: "analytics" },
-  { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", perm: "business" },
-  { href: "/admin/roles", icon: ShieldCheck, label: "Ролі та доступ", perm: "settings" },
-  { href: "/admin/account", icon: UserCircle, label: "Акаунт", perm: "settings" },
+  // === CRM-розділи (нові) ===
+  { href: "/admin", icon: Inbox, label: "Дашборд (заявки)", perm: "orders", section: "CRM" },
+  { href: "/admin/customers", icon: Users, label: "Клієнти", perm: "orders", section: "CRM" },
+  { href: "/admin/deals", icon: Handshake, label: "Угоди", perm: "orders", section: "CRM" },
+  { href: "/admin/reminders", icon: Bell, label: "Нагадування", perm: "tasks", section: "CRM" },
+  { href: "/admin/inbox", icon: InboxIcon, label: "Inbox (всі канали)", perm: "messages", section: "CRM" },
+  { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат сайту", perm: "chat", section: "CRM" },
+  { href: "/admin/messages", icon: MessageSquare, label: "Повідомлення (legacy)", perm: "messages", section: "CRM" },
+  { href: "/admin/broadcast", icon: Send, label: "Розсилка", perm: "messages", section: "CRM" },
+  { href: "/admin/tasks", icon: CheckSquare, label: "Особисті задачі", perm: "tasks", section: "CRM" },
+  { href: "/admin/finances", icon: Wallet, label: "Фінанси", perm: "finances", section: "CRM" },
+  { href: "/admin/analytics", icon: LineChart, label: "Аналітика", perm: "analytics", section: "CRM" },
+
+  // === Контент сайту ===
+  { href: "/admin/homepage", icon: LayoutGrid, label: "Головна сторінка", perm: "about", section: "Контент" },
+  { href: "/admin/stones", icon: Package, label: "Товари (камінь)", perm: "products", section: "Контент" },
+  { href: "/admin/services", icon: Wrench, label: "Послуги", perm: "services", section: "Контент" },
+  { href: "/admin/projects", icon: Briefcase, label: "Проєкти", perm: "projects", section: "Контент" },
+  { href: "/admin/reviews", icon: MessageSquare, label: "Відгуки", perm: "reviews", section: "Контент" },
+  { href: "/admin/featured", icon: Star, label: "Популярні", perm: "featured", section: "Контент" },
+  { href: "/admin/blog", icon: BookOpen, label: "Блог", perm: "blog", section: "Контент" },
+  { href: "/admin/faq", icon: HelpCircle, label: "FAQ", perm: "faq", section: "Контент" },
+  { href: "/admin/about", icon: Info, label: "Про нас", perm: "about", section: "Контент" },
+  { href: "/admin/chat-settings", icon: Sparkles, label: "Налаштування чату", perm: "chatSettings", section: "Контент" },
+
+  // === Налаштування ===
+  { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", perm: "settings", section: "Налаштування", superAdminOnly: true },
+  { href: "/admin/team", icon: Users, label: "Команда і ролі", perm: "settings", section: "Налаштування" },
+  { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", perm: "business", section: "Налаштування" },
+  // /admin/roles — legacy local-only permission toggle, replaced by /admin/team.
+  // Page still exists for backward compat but hidden from sidebar.
+  { href: "/admin/account", icon: UserCircle, label: "Акаунт", perm: "settings", section: "Налаштування" },
 ]
 
 export function AdminSidebar() {
@@ -38,7 +62,13 @@ export function AdminSidebar() {
   const role = useAdminRoleStore((s) => s.role)
   const managerPerms = useAdminRoleStore((s) => s.managerPermissions)
   const hasHydrated = useAdminRoleStore((s) => s.hasHydrated)
+  const { role: realRole } = useCurrentRole()
+  const currentlySuperAdmin = isSuperAdmin(realRole)
   const openTasks = useOpenTasksCount()
+  // Real-time лічильники сповіщень для бейджів. Хук сам поллить /api/crm/notifications/counts
+  // кожні 30 с і авто-зануляє лічильник коли admin відвідав відповідний розділ.
+  const counts = useNotificationCounts(pathname || undefined)
+  const totalUnread = counts.inbox + counts.reminders + counts.orders + counts.deals + counts.chat
 
   const visible = navItems.filter((item) => {
     if (!hasHydrated) return true
@@ -73,13 +103,18 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile-only top bar with burger */}
-      <header className="lg:hidden fixed top-0 inset-x-0 z-40 flex items-center justify-between bg-white border-b border-black/5 px-4 h-14">
+      <header className="md:hidden fixed top-0 inset-x-0 z-40 flex items-center justify-between bg-white border-b border-black/5 px-4 h-14">
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Відкрити меню"
-          className="p-2 -ml-2 rounded-lg hover:bg-black/5"
+          className="relative p-2 -ml-2 rounded-lg hover:bg-black/5"
         >
           <Menu size={20} />
+          {totalUnread > 0 && (
+            <span className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-accent-foreground">
+              {totalUnread > 9 ? "9+" : totalUnread}
+            </span>
+          )}
         </button>
         <div className="text-sm font-medium">Stone Memory · Адмін</div>
         <div className="w-9" />
@@ -89,7 +124,7 @@ export function AdminSidebar() {
       {mobileOpen && (
         <div
           aria-hidden="true"
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -97,8 +132,8 @@ export function AdminSidebar() {
       <aside
         className={cn(
           "fixed left-0 top-0 z-50 w-64 h-screen bg-white border-r border-black/5 flex flex-col transition-transform duration-200",
-          "lg:translate-x-0",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
       {/* Top section */}
@@ -108,14 +143,22 @@ export function AdminSidebar() {
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Закрити меню"
-            className="lg:hidden p-1 rounded-lg hover:bg-black/5"
+            className="md:hidden p-1 rounded-lg hover:bg-black/5"
           >
             <X size={18} />
           </button>
         </div>
         <div className="flex items-center justify-between gap-2">
-          <div className="inline-block text-xs uppercase tracking-widest bg-black/5 px-2 py-0.5 rounded text-muted-foreground">
+          <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-black/5 px-2 py-0.5 rounded text-muted-foreground">
             Адмін
+            {totalUnread > 0 && (
+              <span
+                className="rounded-full bg-accent px-1.5 text-[10px] font-semibold text-accent-foreground"
+                title={`${totalUnread} непрочитаних`}
+              >
+                {totalUnread > 99 ? "99+" : totalUnread}
+              </span>
+            )}
           </div>
           <kbd className="rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground" title="Відкрити пошук">
             ⌘K
@@ -123,31 +166,78 @@ export function AdminSidebar() {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-        {visible.map((item) => {
-          const isActive = pathname === item.href
-          const Icon = item.icon
-          return (
-            <Link key={item.href} href={item.href}>
-              <button
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-black/5 text-foreground"
-                    : "text-muted-foreground hover:bg-black/[0.03] hover:text-foreground"
-                }`}
-              >
-                <Icon size={18} />
-                <span className="flex-1 text-left">{item.label}</span>
-                {item.perm === "tasks" && openTasks > 0 && (
-                  <span className="rounded-full bg-foreground px-1.5 text-[10px] font-semibold text-background tabular-nums">
-                    {openTasks}
-                  </span>
-                )}
-              </button>
-            </Link>
-          )
-        })}
+      {/* Navigation — згруповано по секціях */}
+      <nav className="flex-1 px-3 py-6 space-y-4 overflow-y-auto">
+        {(() => {
+          const sections: { name: string; items: NavItem[] }[] = []
+          for (const item of visible) {
+            const sec = item.section || "CRM"
+            const last = sections[sections.length - 1]
+            if (last && last.name === sec) last.items.push(item)
+            else sections.push({ name: sec, items: [item] })
+          }
+          return sections.map((sec) => (
+            <div key={sec.name} className="space-y-1">
+              <div className="px-3 pt-1 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+                {sec.name}
+              </div>
+              {sec.items.map((item) => {
+                const isActive = pathname === item.href || (item.href !== "/admin" && pathname?.startsWith(item.href))
+                const Icon = item.icon
+
+                // Бейдж: визначаємо лічильник за href.
+                let badge = 0
+                let badgeColor = "bg-foreground text-background"
+                if (item.href === "/admin/tasks") badge = openTasks
+                else if (item.href === "/admin/inbox") { badge = counts.inbox; badgeColor = "bg-accent text-accent-foreground" }
+                else if (item.href === "/admin/reminders") { badge = counts.reminders; badgeColor = "bg-amber-500 text-white" }
+                else if (item.href === "/admin") { badge = counts.orders; badgeColor = "bg-accent text-accent-foreground" }
+                else if (item.href === "/admin/deals") { badge = counts.deals; badgeColor = "bg-accent text-accent-foreground" }
+                else if (item.href === "/admin/chat") { badge = counts.chat; badgeColor = "bg-accent text-accent-foreground" }
+
+                // super_admin-only items render as a disabled row with a
+                // Lock icon for non-super-admins. Tooltip explains why.
+                // The page itself ALSO guards (defense in depth) — hiding
+                // the link is just a UX cue.
+                const lockedForUser = item.superAdminOnly === true && !currentlySuperAdmin
+                if (lockedForUser) {
+                  return (
+                    <button
+                      key={item.href}
+                      type="button"
+                      disabled
+                      title="Доступ лише для головного адміністратора"
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium text-muted-foreground/60 cursor-not-allowed"
+                    >
+                      <Icon size={16} />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      <Lock size={12} className="opacity-70" />
+                    </button>
+                  )
+                }
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <button
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-colors ${
+                        isActive
+                          ? "bg-black/5 text-foreground"
+                          : "text-muted-foreground hover:bg-black/[0.03] hover:text-foreground"
+                      }`}
+                    >
+                      <Icon size={16} />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {badge > 0 && !isActive && (
+                        <span className={`rounded-full px-1.5 text-[10px] font-semibold tabular-nums min-w-[18px] text-center ${badgeColor}`}>
+                          {badge > 99 ? "99+" : badge}
+                        </span>
+                      )}
+                    </button>
+                  </Link>
+                )
+              })}
+            </div>
+          ))
+        })()}
       </nav>
 
       {/* Bottom section */}

@@ -9,6 +9,8 @@ import { AnalyticsPixels } from "@/components/analytics-pixels"
 import { WebVitalsReporter } from "@/components/web-vitals"
 import { CookieConsent } from "@/components/cookie-consent"
 import { SkipLink } from "@/components/skip-link"
+import { ErrorBoundaryClient } from "@/components/error-boundary-client"
+import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 import "./globals.css"
 
 const inter = Inter({
@@ -17,7 +19,6 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 const SITE_NAME = "Stone Memory"
 const TITLE_DEFAULT = "Stone Memory — monuments, countertops, window sills, stairs and paving in natural stone"
 const DESCRIPTION =
@@ -166,7 +167,6 @@ export const metadata: Metadata = {
   category: "home-and-garden",
   verification: {
     google: process.env.GOOGLE_VERIFICATION || "CgpIMtWUMYYh5IQ-WxPu-FygMeyt_syD4dtU2w06Oms",
-    yandex: process.env.YANDEX_VERIFICATION,
     other: {
       "msvalidate.01": process.env.BING_VERIFICATION || "",
     },
@@ -286,6 +286,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }} />
+        <ErrorBoundaryClient />
         <LanguageProvider>
           <Suspense fallback={null}>
             <NavProgress />

@@ -1,0 +1,332 @@
+"use client"
+
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
+import { Plus, AlertTriangle, Search } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { useDealsStore, useCustomersStore } from "@/lib/crm/store"
+import {
+  DEAL_STATUS_TO_LANE,
+  DEAL_LANE_LABELS_UK,
+  DEAL_STATUS_LABELS_UK,
+  availableTransitions,
+  computeDealSLA,
+  formatSLABadge,
+  type DealLane,
+  type DealStatus,
+} from "@/lib/crm/types"
+import { formatUAH, formatRelative } from "@/lib/admin-format"
+import { cn } from "@/lib/utils"
+
+const LANES: DealLane[] = ["lead", "discovery", "agreement", "production", "fulfillment", "paused", "closed"]
+const LANE_COLOR: Record<DealLane, string> = {
+  lead: "bg-blue-500/10 border-blue-500/30",
+  discovery: "bg-amber-500/10 border-amber-500/30",
+  agreement: "bg-purple-500/10 border-purple-500/30",
+  production: "bg-orange-500/10 border-orange-500/30",
+  fulfillment: "bg-success/10 border-success/30",
+  closed: "bg-foreground/5 border-foreground/15",
+  paused: "bg-foreground/5 border-foreground/15",
+}
+
+export default function DealsKanbanPage() {
+  const items = useDealsStore((s) => s.items)
+  const loading = useDealsStore((s) => s.loading)
+  const load = useDealsStore((s) => s.load)
+  const setStatus = useDealsStore((s) => s.setStatus)
+  const customers = useCustomersStore((s) => s.items)
+  const loadCustomers = useCustomersStore((s) => s.load)
+  const [showCreate, setShowCreate] = useState(false)
+  const [search, setSearch] = useState("")
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    load()
+    loadCustomers()
+  }, [load, loadCustomers])
+
+  const filtered = useMemo(() => {
+    if (!search) return items
+    const q = search.toLowerCase()
+    return items.filter(
+      (d) =>
+        d.reference?.toLowerCase().includes(q) ||
+        d.customers?.name?.toLowerCase().includes(q) ||
+        d.customers?.phone?.toLowerCase().includes(q)
+    )
+  }, [items, search])
+
+  const byLane = useMemo(() => {
+    const map: Record<DealLane, typeof items> = {
+      lead: [], discovery: [], agreement: [], production: [],
+      fulfillment: [], closed: [], paused: [],
+    }
+    for (const d of filtered) {
+      const lane = DEAL_STATUS_TO_LANE[d.status]
+      map[lane].push(d)
+    }
+    return map
+  }, [filtered])
+
+  return (
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight-custom">Угоди</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Канбан з усіма угодами. Натисни на статус щоб перевести угоду далі.
+          </p>
+        </div>
+        <Button onClick={() => setShowCreate(true)} className="rounded-xl gap-2">
+          <Plus size={16} /> Нова угода
+        </Button>
+      </header>
+
+      <div className="relative max-w-md">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Номер, клієнт, телефон…" className="pl-9" />
+      </div>
+
+      {error && (
+        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive flex items-center gap-2">
+          <AlertTriangle size={14} /> {error}
+        </div>
+      )}
+
+      {/* Канбан */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
+        {LANES.map((lane) => {
+          const dealsInLane = byLane[lane]
+          return (
+            <div key={lane} className={cn("rounded-2xl border bg-card", LANE_COLOR[lane])}>
+              <div className="px-3 py-2 border-b border-foreground/5 flex items-center justify-between">
+                <h2 className="text-xs font-semibold uppercase tracking-wide">{DEAL_LANE_LABELS_UK[lane]}</h2>
+                <span className="text-xs text-muted-foreground tabular-nums">{dealsInLane.length}</span>
+              </div>
+              <div className="space-y-2 p-2 max-h-[70vh] overflow-y-auto">
+                {dealsInLane.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-foreground/15 p-4 text-center text-xs text-muted-foreground">
+                    —
+                  </div>
+                )}
+                {dealsInLane.map((d) => (
+                  <DealCard
+                    key={d.id}
+                    deal={d}
+                    onStatusChange={async (next) => {
+                      setError(null)
+                      const r = await setStatus(d.id, next)
+                      if (!r.ok) setError(r.error || "Не вдалось змінити статус")
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {showCreate && (
+        <CreateDealDialog
+          onClose={() => setShowCreate(false)}
+          customers={customers}
+          onLoadCustomers={loadCustomers}
+        />
+      )}
+    </div>
+  )
+}
+
+type DealRow = {
+  id: string
+  reference: string | null
+  status: DealStatus
+  amount_eur: number | string
+  created_at: string
+  description?: string | null
+  customers?: { id: string; name: string; phone: string } | null
+  /** Populated by GET /api/crm/deals — used to compute SLA badge. */
+  last_inbound_at?: string | null
+  last_outbound_at?: string | null
+}
+
+function DealCard({
+  deal,
+  onStatusChange,
+}: {
+  deal: DealRow
+  onStatusChange: (next: DealStatus) => void
+}) {
+  const [showTransitions, setShowTransitions] = useState(false)
+  const transitions = availableTransitions(deal.status)
+  const sla = computeDealSLA(deal)
+  return (
+    <div className="rounded-xl border border-foreground/10 bg-background p-3 text-sm shadow-soft hover:shadow-hover transition-shadow">
+      <div className="flex items-start justify-between gap-2">
+        <Link href={`/admin/deals/${deal.id}`} className="font-mono text-xs font-medium hover:text-accent">
+          {deal.reference}
+        </Link>
+        <span className="text-[10px] text-muted-foreground tabular-nums">{formatRelative(deal.created_at)}</span>
+      </div>
+      {deal.customers && (
+        <Link
+          href={`/admin/customers/${deal.customers.id}`}
+          className="block mt-1 text-[13px] font-medium hover:text-accent"
+        >
+          {deal.customers.name}
+        </Link>
+      )}
+      {sla && sla.status !== "ok" && (
+        <span
+          className={cn(
+            "mt-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+            sla.status === "overdue"
+              ? "bg-destructive/10 text-destructive"
+              : sla.status === "warning"
+                ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                : "bg-blue-500/10 text-blue-700 dark:text-blue-300"
+          )}
+          title={
+            deal.last_inbound_at
+              ? `Останнє вхідне: ${new Date(deal.last_inbound_at).toLocaleString("uk-UA")}`
+              : undefined
+          }
+        >
+          ⏱ {formatSLABadge(sla)}
+        </span>
+      )}
+      {deal.description && (
+        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{deal.description}</p>
+      )}
+      <div className="mt-2 flex items-center gap-2 text-xs">
+        <button
+          onClick={() => setShowTransitions((v) => !v)}
+          className="rounded-full border border-foreground/15 px-2 py-0.5 hover:bg-foreground/5"
+        >
+          {DEAL_STATUS_LABELS_UK[deal.status]}
+        </button>
+        {Number(deal.amount_eur) > 0 && (
+          <span className="ml-auto font-medium tabular-nums">{formatUAH(Number(deal.amount_eur))}</span>
+        )}
+      </div>
+      {showTransitions && transitions.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {transitions.map((t) => (
+            <button
+              key={t}
+              onClick={() => {
+                setShowTransitions(false)
+                onStatusChange(t)
+              }}
+              className="rounded-full bg-foreground px-2 py-0.5 text-[11px] text-background hover:-translate-y-px transition-transform"
+            >
+              → {DEAL_STATUS_LABELS_UK[t]}
+            </button>
+          ))}
+        </div>
+      )}
+      {showTransitions && transitions.length === 0 && (
+        <div className="mt-2 text-[11px] text-muted-foreground italic">Кінцевий стан</div>
+      )}
+    </div>
+  )
+}
+
+function CreateDealDialog({
+  onClose,
+  customers,
+  onLoadCustomers,
+}: {
+  onClose: () => void
+  customers: { id: string; name: string; phone: string }[]
+  onLoadCustomers: () => void
+}) {
+  const create = useDealsStore((s) => s.create)
+  const [customerId, setCustomerId] = useState("")
+  const [category, setCategory] = useState<"memorial" | "home">("memorial")
+  const [description, setDescription] = useState("")
+  const [amount, setAmount] = useState("")
+  const [busy, setBusy] = useState(false)
+
+  const submit = async () => {
+    if (!customerId) return
+    setBusy(true)
+    try {
+      const d = await create({
+        customer_id: customerId,
+        category,
+        description: description || undefined,
+        amount_eur: amount ? Number(amount) : 0,
+      })
+      if (d) onClose()
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div className="w-full max-w-md rounded-2xl border border-foreground/10 bg-card p-6 shadow-hover" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-lg font-semibold mb-4">Нова угода</h2>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Клієнт *</label>
+            <select
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
+              onFocus={onLoadCustomers}
+              className="h-10 w-full rounded-xl border border-foreground/10 bg-background px-3 text-sm"
+            >
+              <option value="">— Оберіть клієнта —</option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} · {c.phone}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">Спочатку додайте клієнта у /admin/customers</p>
+          </div>
+          <div>
+            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Категорія</label>
+            <div className="flex gap-1 rounded-full bg-foreground/5 p-1 w-fit">
+              {(["memorial", "home"] as const).map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCategory(c)}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-xs font-medium",
+                    category === c ? "bg-card shadow-soft" : "text-muted-foreground"
+                  )}
+                >
+                  {c === "memorial" ? "Памʼятники" : "Дім і сад"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Опис</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              placeholder="Що саме потрібно: памʼятник з габро 80×50, лазерний портрет…"
+              className="w-full rounded-xl border border-foreground/10 bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Сума, EUR</label>
+            <Input type="text" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))} placeholder="0" />
+          </div>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose} className="rounded-xl">Скасувати</Button>
+          <Button onClick={submit} disabled={!customerId || busy} className="rounded-xl">
+            {busy ? "Створюю…" : "Створити"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

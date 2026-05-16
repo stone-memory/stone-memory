@@ -38,6 +38,11 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      // Pinterest CDN — для блогу і прикладів робіт.
+      // Pinterest роздає зображення без watermark по ID; URL формату
+      // https://i.pinimg.com/originals/<ab>/<cd>/<ef>/<hash>.jpg
+      { protocol: "https", hostname: "i.pinimg.com" },
+      { protocol: "https", hostname: "*.pinimg.com" },
       // Supabase Storage public URLs — admin-uploaded images live here.
       { protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" },
     ],

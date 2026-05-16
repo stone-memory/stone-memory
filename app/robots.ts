@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next"
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
+import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -11,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin", "/admin/*"],
       },
     ],
-    sitemap: [`${SITE}/sitemap.xml`, `${SITE}/sitemap-images.xml`],
-    host: SITE,
+    sitemap: [absoluteUrl("/sitemap.xml"), absoluteUrl("/sitemap-images.xml")],
+    host: SITE_URL,
   }
 }

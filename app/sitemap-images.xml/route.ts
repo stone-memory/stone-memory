@@ -1,9 +1,8 @@
 import { fetchStones, fetchProjects } from "@/lib/data-source"
+import { absoluteUrl } from "@/lib/site-config"
 
 export const revalidate = 60
 export const dynamic = "force-static"
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 function esc(s: string): string {
   return s
@@ -30,7 +29,7 @@ export async function GET(): Promise<Response> {
   for (const s of stones) {
     const images = s.gallery && s.gallery.length > 0 ? s.gallery : [s.imagePath]
     parts.push("<url>")
-    parts.push(`  <loc>${esc(`${SITE}/stones/${s.id}`)}</loc>`)
+    parts.push(`  <loc>${esc(absoluteUrl(`/stones/${s.id}`))}</loc>`)
     for (const img of images) {
       parts.push("  <image:image>")
       parts.push(`    <image:loc>${esc(img)}</image:loc>`)
@@ -42,7 +41,7 @@ export async function GET(): Promise<Response> {
 
   for (const p of projects) {
     parts.push("<url>")
-    parts.push(`  <loc>${esc(`${SITE}/projects`)}</loc>`)
+    parts.push(`  <loc>${esc(absoluteUrl("/projects"))}</loc>`)
     parts.push("  <image:image>")
     parts.push(`    <image:loc>${esc(p.cover)}</image:loc>`)
     parts.push(`    <image:title>${esc(p.title.en || p.title.uk)}</image:title>`)

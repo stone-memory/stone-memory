@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { fetchReviews } from "@/lib/data-source"
+import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
+const PATH = "/reviews"
 
 export const revalidate = 60
 
@@ -10,20 +11,20 @@ export const metadata: Metadata = {
   description:
     "Real client reviews about Stone Memory — granite monuments, marble countertops, fireplaces, stairs and paving. 5-year warranty, craft-level workshop in Kostopil.",
   alternates: {
-    canonical: `${SITE}/reviews`,
+    canonical: absoluteUrl(PATH),
     languages: {
-      "x-default": `${SITE}/reviews`,
-      en: `${SITE}/reviews?lang=en`,
-      uk: `${SITE}/reviews?lang=uk`,
-      pl: `${SITE}/reviews?lang=pl`,
-      de: `${SITE}/reviews?lang=de`,
-      lt: `${SITE}/reviews?lang=lt`,
+      "x-default": absoluteUrl(PATH),
+      en: `${absoluteUrl(PATH)}?lang=en`,
+      uk: `${absoluteUrl(PATH)}?lang=uk`,
+      pl: `${absoluteUrl(PATH)}?lang=pl`,
+      de: `${absoluteUrl(PATH)}?lang=de`,
+      lt: `${absoluteUrl(PATH)}?lang=lt`,
     },
   },
   openGraph: {
     title: "Stone Memory — Reviews",
     description: "What our clients say about us — granite monuments, countertops, stairs and more.",
-    url: `${SITE}/reviews`,
+    url: absoluteUrl(PATH),
     type: "website",
   },
 }
@@ -43,9 +44,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
   const orgWithRating = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": `${SITE}/#organization-with-rating`,
+    "@id": `${SITE_URL}/#organization-with-rating`,
     name: "Stone Memory",
-    url: SITE,
+    url: SITE_URL,
     ...(rated.length > 0 && {
       aggregateRating: {
         "@type": "AggregateRating",
@@ -73,8 +74,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Reviews", item: `${SITE}/reviews` },
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Reviews", item: absoluteUrl(PATH) },
     ],
   }
 

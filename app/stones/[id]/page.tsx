@@ -35,13 +35,43 @@ export default function StoneDetailPage() {
   )
   const [active, setActive] = useState(0)
 
-  const related = useMemo(
-    () =>
-      stones
-        .filter((s) => s.id !== stone.id && s.category === stone.category && s.color === stone.color)
-        .slice(0, 3),
-    [stones, stone]
-  )
+  // "Схоже" — multi-criteria scoring замість простого фільтра.
+  // Кожен співпадаючий атрибут додає бали; найвищі — у блок related.
+  // Це гарантує що клієнт бачить дійсно близькі позиції,
+  // а не випадкові з тієї ж категорії і кольору.
+  const related = useMemo(() => {
+    const PRICE_TOLERANCE = 0.35 // ±35% від ціни поточного каменю — "близько"
+    const minPrice = stone.priceFrom * (1 - PRICE_TOLERANCE)
+    const maxPrice = stone.priceFrom * (1 + PRICE_TOLERANCE)
+
+    const scored = stones
+      .filter((s) => s.id !== stone.id && s.category === stone.category)
+      .map((s) => {
+        let score = 0
+        if (s.color && s.color === stone.color) score += 4
+        if (s.materialType && s.materialType === stone.materialType) score += 4
+        if (s.shape && s.shape === stone.shape) score += 3
+        if (s.finish && s.finish === stone.finish) score += 2
+        if (s.priceFrom >= minPrice && s.priceFrom <= maxPrice) score += 2
+        if (s.origin && stone.origin && s.origin.split(",")[0] === stone.origin.split(",")[0]) score += 1
+        if (s.isFeatured) score += 1
+        return { s, score }
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6) // більше "схоже" — щоб був повноцінний скрол вниз
+      .map(({ s }) => s)
+
+    // Fallback: якщо нічого не співпало (рідкісний камінь), показуємо
+    // просто з тієї ж категорії, відсортовані за ціною біля поточного.
+    if (scored.length === 0) {
+      return stones
+        .filter((s) => s.id !== stone.id && s.category === stone.category)
+        .sort((a, b) => Math.abs(a.priceFrom - stone.priceFrom) - Math.abs(b.priceFrom - stone.priceFrom))
+        .slice(0, 6)
+    }
+    return scored
+  }, [stones, stone])
 
   const handleShare = async () => {
     if (typeof navigator === "undefined") return
@@ -71,41 +101,13 @@ export default function StoneDetailPage() {
     stone.weightKg ? ["Weight", `${stone.weightKg} kg`] : null,
   ].filter(Boolean) as [string, string][]
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
-  const canonicalUrl = `${SITE_URL}/stones/${stone.id}`
-
-  const productJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    sku: stone.id,
-    name: stone.material || `Stone ${stone.id}`,
-    description: `${stone.material || ""} · ${stone.origin || ""}`.trim(),
-    image: gallery,
-    brand: { "@type": "Brand", name: "Stone Memory" },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: stone.priceFrom,
-      availability: "https://schema.org/InStock",
-      url: canonicalUrl,
-    },
-  }
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
-      { "@type": "ListItem", position: 2, name: "Catalog", item: `${SITE_URL}/catalog` },
-      { "@type": "ListItem", position: 3, name: `№ ${stone.id}`, item: canonicalUrl },
-    ],
-  }
+  // NOTE: Product + BreadcrumbList JSON-LD are emitted server-side in
+  // ./layout.tsx (reliably crawlable). Don't duplicate them here in this
+  // client component — duplicate structured data triggers SEO warnings.
 
   return (
     <>
       <Header />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <main id="main-content" className="pb-24 pt-6 md:pt-10">
         <div className="mx-auto max-w-7xl px-6">
           <Link href="/catalog" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">

@@ -6,6 +6,7 @@ import {
   addUserMessage,
 } from "@/lib/chat-store"
 import { rateLimit, getClientIp } from "@/lib/rate-limit"
+import { recordIncoming } from "@/lib/crm/comms"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -88,6 +89,25 @@ export async function POST(req: Request) {
       lastUserAt: Date.now(),
     })
     await addUserMessage(sessionId, text)
+
+    // Дзеркаламо у CRM communications щоб з'явилось у unified inbox.
+    // Робимо тільки якщо вже маємо телефон (інакше це ще "анонім" зі стадії greet).
+    if (phone) {
+      try {
+        await recordIncoming({
+          channel: "site_chat",
+          identifier: { phone },
+          name,
+          locale,
+          body: text,
+          externalId: sessionId,
+          threadKey: `site_chat:${sessionId}`,
+          rawMeta: { session_id: sessionId },
+        })
+      } catch (e) {
+        console.error("[chat] recordIncoming failed:", e)
+      }
+    }
 
     const header = phone
       ? `<b>${escapeHtml(name || "Гість")}</b> · ${escapeHtml(phone)} · ${escapeHtml(locale || "uk")}`
