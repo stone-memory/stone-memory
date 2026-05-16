@@ -66,7 +66,7 @@ export function MultilingualField({
       if (!r.ok) throw new Error(String(r.status))
       const data = (await r.json()) as {
         ok?: boolean
-        provider?: "deepl" | "google" | "mock"
+        provider?: "deepl" | "google" | "mymemory" | "mock"
         result?: Partial<Record<Locale, string>>
       }
       if (!data.ok || !data.result) throw new Error("translate failed")
@@ -102,8 +102,10 @@ export function MultilingualField({
             ? "DeepL ✓"
             : provider === "google"
             ? "Google ✓"
+            : provider === "mymemory"
+            ? "MyMemory ✓"
             : provider === "mock"
-            ? "Mock (локальний)"
+            ? "Mock (без API)"
             : provider === "error"
             ? "Помилка"
             : `Автопереклад з ${sourceLocale.toUpperCase()}`}

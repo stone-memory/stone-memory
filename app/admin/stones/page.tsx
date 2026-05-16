@@ -9,6 +9,7 @@ import { useStonesAdminStore } from "@/lib/store/stones"
 import { ImageUploader } from "@/components/admin/image-uploader"
 import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category, Locale } from "@/lib/types"
 import { materialLabel, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
+import { formatUAH } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 
 const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", "brown", "beige", "multi"]
@@ -160,7 +161,7 @@ export default function AdminStonesPage() {
               <th className="px-4 py-3 text-left">Матеріал</th>
               <th className="px-4 py-3 text-left">Колір</th>
               <th className="px-4 py-3 text-left">Форма</th>
-              <th className="px-4 py-3 text-right">Ціна від</th>
+              <th className="px-4 py-3 text-right">Ціна (₴)</th>
               <th className="px-4 py-3 text-center">Популярний</th>
               <th className="px-4 py-3 text-right">Дії</th>
             </tr>
@@ -182,7 +183,7 @@ export default function AdminStonesPage() {
                   <td className="px-4 py-3 text-muted-foreground">{s.materialType || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.color || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.shape || s.finish || "—"}</td>
-                  <td className="px-4 py-3 text-right tabular-nums">€ {s.priceFrom}</td>
+                  <td className="px-4 py-3 text-right tabular-nums" title={`Збережено в EUR: €${s.priceFrom}`}>{formatUAH(s.priceFrom)}</td>
                   <td className="px-4 py-3 text-center">
                     <button
                       onClick={() => upsert({ ...s, isFeatured: !s.isFeatured })}
@@ -465,7 +466,7 @@ function StoneEditor({
               folder="stones"
             />
           </Field>
-          <Field label="Ціна від (€)">
+          <Field label="Ціна від (€) — у каталозі автоматично конвертується у валюту локалі">
             <Input
               type="text"
               inputMode="numeric"

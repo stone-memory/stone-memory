@@ -142,6 +142,23 @@ export function ChatWidget() {
     }
   }
 
+  /**
+   * Записуємо bot-репліку у DB — щоб admin у /admin/chat бачив усі відповіді
+   * (а не лише питання клієнта). До цього всі бот-репліки існували тільки
+   * локально у Zustand сторі цього віджета.
+   */
+  const persistBotReply = async (text: string) => {
+    try {
+      await fetch("/api/chat/bot-reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, text }),
+      })
+    } catch {
+      /* мовчки — UI вже показав, головне щоб не блокувало UX */
+    }
+  }
+
   const handleSend = async (textOverride?: string) => {
     if (sending) return
     const text = (textOverride ?? draft).trim()
@@ -158,11 +175,14 @@ export function ChatWidget() {
           setStage("need-phone")
           await new Promise((r) => setTimeout(r, 300))
           addMessage({ role: "operator", text: B.welcomeName(name) })
+          persistBotReply(B.welcomeName(name))
           await new Promise((r) => setTimeout(r, 250))
           addMessage({ role: "operator", text: B.askPhone })
+          persistBotReply(B.askPhone)
         } else {
           await new Promise((r) => setTimeout(r, 250))
           addMessage({ role: "operator", text: B.askName })
+          persistBotReply(B.askName)
         }
         return
       }
@@ -174,6 +194,7 @@ export function ChatWidget() {
         if (!digits) {
           await new Promise((r) => setTimeout(r, 250))
           addMessage({ role: "operator", text: B.phoneInvalid })
+          persistBotReply(B.phoneInvalid)
           return
         }
         const formatted = formatPhone(digits)
@@ -184,6 +205,7 @@ export function ChatWidget() {
         if (ok) markSent(msg.id); else markFailed(msg.id)
         await new Promise((r) => setTimeout(r, 250))
         addMessage({ role: "operator", text: B.phoneSaved })
+        persistBotReply(B.phoneSaved)
         return
       }
 
@@ -195,8 +217,10 @@ export function ChatWidget() {
       await new Promise((r) => setTimeout(r, 350))
       if (faq) {
         addMessage({ role: "operator", text: faq })
+        persistBotReply(faq)
       } else if (!fallbackSent) {
         addMessage({ role: "operator", text: fallback })
+        persistBotReply(fallback)
         markFallbackSent()
       }
       // If no FAQ match and fallback was already sent — stay silent; real manager
@@ -214,6 +238,7 @@ export function ChatWidget() {
       await relayToManager(qr.label)
       await new Promise((r) => setTimeout(r, 300))
       addMessage({ role: "operator", text: qr.answer })
+      persistBotReply(qr.answer)
     } finally {
       setSending(false)
     }

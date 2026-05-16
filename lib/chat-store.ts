@@ -1,5 +1,6 @@
 import "server-only"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { recordIncoming, recordOutgoing } from "@/lib/crm/comms"
 
 export type SessionWithMessages = {
   id: string
@@ -55,6 +56,14 @@ export async function addUserMessage(
     .from("chat_sessions")
     .update({ last_activity_at: data.created_at })
     .eq("id", sessionId)
+
+  // Дзеркаламо в communications щоб з'явилось у /admin/inbox.
+  // Підтягуємо name/phone/locale з поточної chat_sessions — якщо клієнт уже їх ввів,
+  // створиться повноцінний customer; якщо ні — guest-customer прив'язаний до sessionId.
+  await mirrorToInbox(sessionId, "inbound", text, data.id, data.created_at).catch((e) =>
+    console.error("[chat-store] mirror inbound failed:", e)
+  )
+
   return { id: String(data.id), text: data.text, at: new Date(data.created_at).getTime() }
 }
 
@@ -76,7 +85,67 @@ export async function addOperatorMessage(
     console.error("[chat-store] addOperatorMessage error:", error?.message)
     return null
   }
+
+  await mirrorToInbox(sessionId, "outbound", text, data.id, data.created_at).catch((e) =>
+    console.error("[chat-store] mirror outbound failed:", e)
+  )
+
   return { id: String(data.id), text: data.text, at: new Date(data.created_at).getTime() }
+}
+
+/**
+ * Дзеркало повідомлення з chat_messages у communications (для /admin/inbox).
+ *
+ * Підтягує name/phone/locale з chat_sessions і викликає recordIncoming/recordOutgoing
+ * — це означає що customer буде знайдено по телефону або створено "guest-{sessionId}".
+ *
+ * Усі помилки swallow-имо: дзеркало — не критичне, головне щоб chat-store працював.
+ */
+async function mirrorToInbox(
+  sessionId: string,
+  direction: "inbound" | "outbound",
+  body: string,
+  messageId: number | string,
+  createdAt: string
+): Promise<void> {
+  const { data: session } = await supabaseAdmin
+    .from("chat_sessions")
+    .select("name, phone, locale")
+    .eq("id", sessionId)
+    .maybeSingle()
+
+  const name = session?.name || "Гість"
+  const phone = session?.phone || undefined
+  const locale = session?.locale || "uk"
+
+  if (direction === "inbound") {
+    await recordIncoming({
+      channel: "site_chat",
+      identifier: { phone, siteSessionId: sessionId },
+      name,
+      locale,
+      body,
+      externalId: String(messageId),
+      threadKey: `site_chat:${sessionId}`,
+      rawMeta: { session_id: sessionId, mirrored_at: createdAt },
+    })
+  } else {
+    // Для outbound нам потрібен customerId — знайдемо/створимо
+    const { findOrCreateCustomer, findActiveDealForCustomer } = await import("@/lib/crm/comms")
+    const { id: customerId } = await findOrCreateCustomer(
+      { phone, siteSessionId: sessionId },
+      { name, locale }
+    )
+    const dealId = await findActiveDealForCustomer(customerId)
+    await recordOutgoing({
+      customerId,
+      dealId,
+      channel: "site_chat",
+      body,
+      externalId: String(messageId),
+      threadKey: `site_chat:${sessionId}`,
+    })
+  }
 }
 
 export async function getOperatorMessages(

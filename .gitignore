@@ -29,3 +29,12 @@ next-env.d.ts
 
 # claude local config
 .claude/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+
+# cache
+.turbo/
+.eslintcache

@@ -4,50 +4,74 @@ import { useEffect } from "react"
 import { create } from "zustand"
 import { authedFetch } from "@/lib/authed-fetch"
 import type { Locale } from "@/lib/types"
-import { botCopy, matchFaq } from "@/lib/chat-bot"
+import { botCopy, matchQuickReply, type FaqItem } from "@/lib/chat-bot"
 
-export type QuickReply = { id: string; label: string; answer: string; order: number }
+/**
+ * A user-visible quick reply.
+ *   - `label` is the button text AND the canonical question that the
+ *     bot matches against.
+ *   - `triggers` are synonyms, alternate phrasings, common typos. Bot
+ *     matches each independently. Optional — when empty, the matcher
+ *     falls back to just `label`.
+ *
+ * Stored in the `chat_settings` singleton (Supabase) keyed by locale.
+ */
+export type QuickReply = {
+  id: string
+  label: string
+  answer: string
+  order: number
+  triggers?: string[]
+}
+
+/** Default triggers seeded from the original botCopy regex patterns.
+ *  These give the FAQ-bot a working synonym list out of the box for
+ *  every locale — admin can replace later through the UI. */
+function seedTriggers(locale: Locale, idx: number): string[] {
+  const raw = botCopy[locale]?.quickReplies?.[idx]?.q ?? ""
+  return raw.split("|").map((t) => t.trim()).filter(Boolean)
+}
 
 export const defaultQuickReplies: Record<Locale, QuickReply[]> = {
   uk: [
-    { id: "q-price", label: "Скільки коштує?", answer: botCopy.uk.quickReplies[0].a, order: 1 },
-    { id: "q-term", label: "Термін виготовлення", answer: botCopy.uk.quickReplies[1].a, order: 2 },
-    { id: "q-install", label: "Монтаж і доставка", answer: botCopy.uk.quickReplies[2].a, order: 3 },
-    { id: "q-warr", label: "Гарантія", answer: botCopy.uk.quickReplies[3].a, order: 4 },
-    { id: "q-mat", label: "Які матеріали", answer: botCopy.uk.quickReplies[4].a, order: 5 },
-    { id: "q-measure", label: "Безкоштовний замір", answer: botCopy.uk.quickReplies[6].a, order: 6 },
+    { id: "q-price",   label: "Скільки коштує?",      answer: botCopy.uk.quickReplies[0].a, order: 1, triggers: seedTriggers("uk", 0) },
+    { id: "q-term",    label: "Термін виготовлення",  answer: botCopy.uk.quickReplies[1].a, order: 2, triggers: seedTriggers("uk", 1) },
+    { id: "q-install", label: "Монтаж і доставка",    answer: botCopy.uk.quickReplies[2].a, order: 3, triggers: seedTriggers("uk", 2) },
+    { id: "q-warr",    label: "Гарантія",             answer: botCopy.uk.quickReplies[3].a, order: 4, triggers: seedTriggers("uk", 3) },
+    { id: "q-mat",     label: "Які матеріали",        answer: botCopy.uk.quickReplies[4].a, order: 5, triggers: seedTriggers("uk", 4) },
+    { id: "q-measure", label: "Безкоштовний замір",   answer: botCopy.uk.quickReplies[6].a, order: 6, triggers: seedTriggers("uk", 6) },
   ],
   pl: [
-    { id: "q-price", label: "Ile kosztuje?", answer: botCopy.pl.quickReplies[0].a, order: 1 },
-    { id: "q-term", label: "Termin", answer: botCopy.pl.quickReplies[1].a, order: 2 },
-    { id: "q-install", label: "Montaż i dostawa", answer: botCopy.pl.quickReplies[2].a, order: 3 },
-    { id: "q-warr", label: "Gwarancja", answer: botCopy.pl.quickReplies[3].a, order: 4 },
-    { id: "q-mat", label: "Materiały", answer: botCopy.pl.quickReplies[4].a, order: 5 },
-    { id: "q-measure", label: "Darmowy pomiar", answer: botCopy.pl.quickReplies[6].a, order: 6 },
+    { id: "q-price",   label: "Ile kosztuje?",      answer: botCopy.pl.quickReplies[0].a, order: 1, triggers: seedTriggers("pl", 0) },
+    { id: "q-term",    label: "Termin",             answer: botCopy.pl.quickReplies[1].a, order: 2, triggers: seedTriggers("pl", 1) },
+    { id: "q-install", label: "Montaż i dostawa",   answer: botCopy.pl.quickReplies[2].a, order: 3, triggers: seedTriggers("pl", 2) },
+    { id: "q-warr",    label: "Gwarancja",          answer: botCopy.pl.quickReplies[3].a, order: 4, triggers: seedTriggers("pl", 3) },
+    { id: "q-mat",     label: "Materiały",          answer: botCopy.pl.quickReplies[4].a, order: 5, triggers: seedTriggers("pl", 4) },
+    { id: "q-measure", label: "Darmowy pomiar",     answer: botCopy.pl.quickReplies[6].a, order: 6, triggers: seedTriggers("pl", 6) },
   ],
   en: [
-    { id: "q-price", label: "How much?", answer: botCopy.en.quickReplies[0].a, order: 1 },
-    { id: "q-term", label: "Lead time", answer: botCopy.en.quickReplies[1].a, order: 2 },
-    { id: "q-install", label: "Install & delivery", answer: botCopy.en.quickReplies[2].a, order: 3 },
-    { id: "q-warr", label: "Warranty", answer: botCopy.en.quickReplies[3].a, order: 4 },
-    { id: "q-mat", label: "Materials", answer: botCopy.en.quickReplies[4].a, order: 5 },
-    { id: "q-measure", label: "Free measurement", answer: botCopy.en.quickReplies[6].a, order: 6 },
+    { id: "q-price",   label: "How much?",           answer: botCopy.en.quickReplies[0].a, order: 1, triggers: seedTriggers("en", 0) },
+    { id: "q-term",    label: "Lead time",           answer: botCopy.en.quickReplies[1].a, order: 2, triggers: seedTriggers("en", 1) },
+    { id: "q-install", label: "Install & delivery",  answer: botCopy.en.quickReplies[2].a, order: 3, triggers: seedTriggers("en", 2) },
+    { id: "q-warr",    label: "Warranty",            answer: botCopy.en.quickReplies[3].a, order: 4, triggers: seedTriggers("en", 3) },
+    { id: "q-mat",     label: "Materials",           answer: botCopy.en.quickReplies[4].a, order: 5, triggers: seedTriggers("en", 4) },
+    { id: "q-measure", label: "Free measurement",    answer: botCopy.en.quickReplies[6].a, order: 6, triggers: seedTriggers("en", 6) },
   ],
   de: [
-    { id: "q-price", label: "Wie viel?", answer: botCopy.de.quickReplies[0].a, order: 1 },
-    { id: "q-term", label: "Lieferzeit", answer: botCopy.de.quickReplies[1].a, order: 2 },
-    { id: "q-install", label: "Montage & Lieferung", answer: botCopy.de.quickReplies[2].a, order: 3 },
-    { id: "q-warr", label: "Garantie", answer: botCopy.de.quickReplies[3].a, order: 4 },
-    { id: "q-mat", label: "Materialien", answer: botCopy.de.quickReplies[4].a, order: 5 },
-    { id: "q-measure", label: "Kostenloses Aufmaß", answer: botCopy.de.quickReplies[6].a, order: 6 },
+    { id: "q-price",   label: "Wie viel?",            answer: botCopy.de.quickReplies[0].a, order: 1, triggers: seedTriggers("de", 0) },
+    { id: "q-term",    label: "Lieferzeit",           answer: botCopy.de.quickReplies[1].a, order: 2, triggers: seedTriggers("de", 1) },
+    { id: "q-install", label: "Montage & Lieferung",  answer: botCopy.de.quickReplies[2].a, order: 3, triggers: seedTriggers("de", 2) },
+    { id: "q-warr",    label: "Garantie",             answer: botCopy.de.quickReplies[3].a, order: 4, triggers: seedTriggers("de", 3) },
+    { id: "q-mat",     label: "Materialien",          answer: botCopy.de.quickReplies[4].a, order: 5, triggers: seedTriggers("de", 4) },
+    { id: "q-measure", label: "Kostenloses Aufmaß",   answer: botCopy.de.quickReplies[6].a, order: 6, triggers: seedTriggers("de", 6) },
   ],
   lt: [
-    { id: "q-price", label: "Kiek kainuoja?", answer: botCopy.lt.quickReplies[0].a, order: 1 },
-    { id: "q-term", label: "Terminas", answer: botCopy.lt.quickReplies[1].a, order: 2 },
-    { id: "q-install", label: "Montavimas", answer: botCopy.lt.quickReplies[2].a, order: 3 },
-    { id: "q-warr", label: "Garantija", answer: botCopy.lt.quickReplies[3].a, order: 4 },
-    { id: "q-mat", label: "Medžiagos", answer: botCopy.lt.quickReplies[4].a, order: 5 },
-    { id: "q-measure", label: "Nemokamas matavimas", answer: botCopy.lt.quickReplies[6].a, order: 6 },
+    { id: "q-price",   label: "Kiek kainuoja?",     answer: botCopy.lt.quickReplies[0].a, order: 1, triggers: seedTriggers("lt", 0) },
+    { id: "q-term",    label: "Terminas",           answer: botCopy.lt.quickReplies[1].a, order: 2, triggers: seedTriggers("lt", 1) },
+    { id: "q-install", label: "Montavimas",         answer: botCopy.lt.quickReplies[2].a, order: 3, triggers: seedTriggers("lt", 2) },
+    { id: "q-warr",    label: "Garantija",          answer: botCopy.lt.quickReplies[3].a, order: 4, triggers: seedTriggers("lt", 3) },
+    { id: "q-mat",     label: "Medžiagos",          answer: botCopy.lt.quickReplies[4].a, order: 5, triggers: seedTriggers("lt", 4) },
+    { id: "q-measure", label: "Nemokamas matavimas", answer: botCopy.lt.quickReplies[6].a, order: 6, triggers: seedTriggers("lt", 6) },
   ],
 }
 
@@ -152,9 +176,30 @@ export function useChatSettings(locale: Locale) {
   }
 }
 
+/**
+ * Try to match the user's free-text message against the live (admin-
+ * edited or default) FAQ list using the fuzzy/synonym matcher in
+ * lib/chat-bot.ts. Reads from the store directly so callers don't need
+ * to thread state through; safe to call from both React components and
+ * imperative event handlers.
+ *
+ * Returns the matched answer when confidence ≥ 0.5, else null.
+ */
 export function tryMatchFaq(locale: Locale, text: string): string | null {
-  const r = matchFaq(locale, text)
-  return r ? r.text : null
+  // Resolve the current quick-replies list — admin override if present,
+  // else seeded defaults. Built without React hooks so it works in
+  // both component event handlers and stand-alone util calls.
+  const overrides = useChatSettingsStore.getState().overrides
+  const replies =
+    overrides[locale]?.quickReplies ?? defaultQuickReplies[locale] ?? []
+
+  const items: FaqItem[] = replies.map((q) => ({
+    label: q.label,
+    answer: q.answer,
+    triggers: q.triggers,
+  }))
+  const m = matchQuickReply(text, items)
+  return m ? m.item.answer : null
 }
 
 export { defaultFallback }

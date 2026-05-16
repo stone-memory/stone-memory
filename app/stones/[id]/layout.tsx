@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
 import { fetchStones, fetchStoneById } from "@/lib/data-source"
+import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
 export const revalidate = 60
 export const dynamicParams = true
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 export async function generateStaticParams() {
   const stones = await fetchStones()
@@ -20,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const kind = s.category === "memorial" ? "Memorial" : "Decorative stone"
   const title = `No. ${s.id} — ${kind} | Stone Memory`
   const desc = `${kind} No. ${s.id}. Natural granite or marble, hand-finished in our Kostopil workshop. From €${s.priceFrom}. 5-year warranty.`
-  const url = `${SITE}/stones/${s.id}`
+  const url = absoluteUrl(`/stones/${s.id}`)
   return {
     title,
     description: desc,
@@ -65,7 +64,7 @@ export default async function Layout({ children, params }: { children: React.Rea
           priceCurrency: "EUR",
           price: s.priceFrom,
           availability: "https://schema.org/InStock",
-          url: `${SITE}/stones/${s.id}`,
+          url: absoluteUrl(`/stones/${s.id}`),
           seller: { "@type": "Organization", name: "Stone Memory" },
         },
       }
@@ -75,9 +74,9 @@ export default async function Layout({ children, params }: { children: React.Rea
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: SITE },
-          { "@type": "ListItem", position: 2, name: "Catalog", item: `${SITE}/catalog` },
-          { "@type": "ListItem", position: 3, name: `No. ${s.id}`, item: `${SITE}/stones/${s.id}` },
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Catalog", item: absoluteUrl("/catalog") },
+          { "@type": "ListItem", position: 3, name: `No. ${s.id}`, item: absoluteUrl(`/stones/${s.id}`) },
         ],
       }
     : null

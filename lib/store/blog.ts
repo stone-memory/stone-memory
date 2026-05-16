@@ -25,6 +25,9 @@ interface BlogState {
   softDeleteArticle: (slug: string) => Promise<void>
   restoreArticle: (slug: string) => Promise<void>
   removeArticle: (slug: string) => Promise<void>
+  /** Bulk-import the static seed articles into Supabase. Idempotent —
+   *  skips articles whose slug already exists in DB. */
+  seedArticles: () => Promise<{ imported: number; skipped: number }>
 }
 
 async function putConfig(data: BlogConfig) {
@@ -151,6 +154,30 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
       set({ articles: prev })
     }
   },
+
+  seedArticles: async () => {
+    const existingSlugs = new Set(get().articles.map((r) => r.slug))
+    const toImport = baseArticles.filter((a) => !existingSlugs.has(a.slug))
+    let imported = 0
+    let position = get().articles.length
+    for (const article of toImport) {
+      const row: ArticleRow = {
+        slug: article.slug,
+        data: article,
+        hidden: false,
+        position: position++,
+      }
+      try {
+        await putArticle(row)
+        set({ articles: [...get().articles, row] })
+        imported++
+      } catch {
+        // Stop on first failure — partial import is preferable to silent loss.
+        break
+      }
+    }
+    return { imported, skipped: baseArticles.length - imported }
+  },
 }))
 
 export function useArticles(): Article[] {
@@ -160,12 +187,14 @@ export function useArticles(): Article[] {
   useEffect(() => {
     hydrate()
   }, [hydrate])
+  // Pre-hydration: render seed so SSR/first paint isn't empty.
   if (!hasHydrated) return baseArticles
-  // Articles in DB take precedence; static articles not yet published to DB still show.
-  const dbSlugs = new Set(articles.map((r) => r.slug))
-  const dbVisible = articles.filter((r) => !r.hidden).map((r) => r.data)
-  const staticFallback = baseArticles.filter((a) => !dbSlugs.has(a.slug))
-  return [...dbVisible, ...staticFallback]
+  // Empty DB: fall back to seed (graceful default for fresh deploys).
+  if (articles.length === 0) return baseArticles
+  // Once admin has written anything, DB is the single source of truth —
+  // matches the Services / Projects / Reviews pattern. This prevents the
+  // static seed from "rebounding" after admin deletes a seed article.
+  return articles.filter((r) => !r.hidden).map((r) => r.data)
 }
 
 export function useBlogHeroSlug(defaultSlug: string): string {

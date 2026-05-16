@@ -35,7 +35,9 @@ export const defaultAbout: Record<Locale, AboutContent> = {
   pl: {
     heading: "O Stone Memory",
     paragraphs: [
-      "Stone Memory to wytwórnia wyrobów z kamienia naturalnego w mieście Kostopol na Rówieńszczyźnie.",
+      "Stone Memory to wytwórnia wyrobów z kamienia naturalnego w mieście Kostopol na Rówieńszczyźnie. Dwie równoważne linie: kompleksy memorialne oraz wyroby dla domu i ogrodu — blaty, parapety, kominki, schody, kostka brukowa.",
+      "Pracujemy z ukraińskim granitem i marmurem oraz z gatunkami importowanymi — marmur włoski, granit indyjski i chiński, kwarcyt brazylijski. Dobieramy materiał pod projekt i budżet.",
+      "Robimy starannie, bez pośpiechu, z szacunkiem do materiału i klienta. Dajemy 5 lat gwarancji na wszystko — fundament, montaż i sam kamień. Osobisty menedżer od zapytania do montażu.",
     ],
     photo: "/services/hero.jpg",
     photoAlt: "Stone Memory — zakład",
@@ -48,7 +50,9 @@ export const defaultAbout: Record<Locale, AboutContent> = {
   en: {
     heading: "About Stone Memory",
     paragraphs: [
-      "Stone Memory is a natural-stone workshop in Kostopil, Rivne region.",
+      "Stone Memory is a natural-stone workshop in Kostopil, Rivne region. Two equal product lines: memorial complexes and pieces for home and garden — countertops, window sills, fireplaces, stairs, paving.",
+      "We work with Ukrainian granite and marble as well as imported varieties — Italian marble, Indian and Chinese granite, Brazilian quartzite. We pick the material to match the project and the budget.",
+      "We work carefully and without rush, with respect to the material and to the client. Five-year warranty on everything — foundation, installation and the stone itself. A dedicated manager from enquiry to installation.",
     ],
     photo: "/services/hero.jpg",
     photoAlt: "Stone Memory workshop",
@@ -60,7 +64,11 @@ export const defaultAbout: Record<Locale, AboutContent> = {
   },
   de: {
     heading: "Über Stone Memory",
-    paragraphs: ["Stone Memory ist eine Naturstein-Werkstatt in Kostopil, Oblast Riwne."],
+    paragraphs: [
+      "Stone Memory ist eine Naturstein-Werkstatt in Kostopil, Oblast Riwne. Zwei gleichwertige Linien: Grabmal-Komplexe und Stücke für Haus und Garten — Arbeitsplatten, Fensterbänke, Kamine, Treppen, Pflaster.",
+      "Wir arbeiten mit ukrainischem Granit und Marmor sowie mit Importsorten — italienischer Marmor, indischer und chinesischer Granit, brasilianischer Quarzit. Wir wählen das Material nach Projekt und Budget.",
+      "Wir arbeiten sorgfältig und ohne Eile, mit Respekt vor Material und Kunde. 5 Jahre Garantie auf alles — Fundament, Montage und den Stein. Persönlicher Manager von der Anfrage bis zur Montage.",
+    ],
     photo: "/services/hero.jpg",
     photoAlt: "Stone Memory Werkstatt",
     badges: [
@@ -71,7 +79,11 @@ export const defaultAbout: Record<Locale, AboutContent> = {
   },
   lt: {
     heading: "Apie Stone Memory",
-    paragraphs: ["Stone Memory — natūralaus akmens gaminių dirbtuvė Kostopilyje, Rivnės srityje."],
+    paragraphs: [
+      "Stone Memory — natūralaus akmens gaminių dirbtuvė Kostopilyje, Rivnės srityje. Dvi lygiavertės linijos: memorialiniai kompleksai ir gaminiai namams bei sodui — stalviršiai, palangės, židiniai, laiptai, grindinio akmenys.",
+      "Dirbame su ukrainietišku granitu ir marmuru bei importuotomis rūšimis — italų marmuru, Indijos ir Kinijos granitu, Brazilijos kvarcitu. Medžiagą parenkame pagal projektą ir biudžetą.",
+      "Dirbame kruopščiai, be skubos, gerbdami medžiagą ir klientą. 5 metų garantija viskam — pamatui, montavimui ir pačiam akmeniui. Asmeninis vadybininkas nuo užklausos iki montavimo.",
+    ],
     photo: "/services/hero.jpg",
     photoAlt: "Stone Memory dirbtuvė",
     badges: [

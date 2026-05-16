@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
 import { fetchArticles, fetchArticleBySlug } from "@/lib/data-source"
+import { absoluteUrl } from "@/lib/site-config"
 
 export const revalidate = 60
 export const dynamicParams = true
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
 
 export async function generateStaticParams() {
   const articles = await fetchArticles()
@@ -18,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const a = await fetchArticleBySlug(slug)
   if (!a) return { title: "Article not found" }
 
-  const url = `${SITE}/blog/${a.slug}`
+  const url = absoluteUrl(`/blog/${a.slug}`)
   return {
     title: a.title.en,
     description: a.excerpt.en,
@@ -62,9 +61,9 @@ export default async function Layout({
         publisher: {
           "@type": "Organization",
           name: "Stone Memory",
-          logo: { "@type": "ImageObject", url: `${SITE}/logo-512.png` },
+          logo: { "@type": "ImageObject", url: absoluteUrl("/logo-512.png") },
         },
-        mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/blog/${a.slug}` },
+        mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(`/blog/${a.slug}`) },
       }
     : null
 

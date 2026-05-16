@@ -20,31 +20,15 @@ import {
 import { Button } from "@/components/ui/button"
 import { StatusBadge } from "./status-badge"
 import { OrderDetailSheet } from "./order-detail-sheet"
+import { formatRelative } from "@/lib/admin-format"
 import type { Order } from "@/lib/types"
 
 interface OrdersTableProps {
   orders: Order[]
 }
 
-function formatDate(date: Date): string {
-  const d = new Date(date)
-  const now = new Date()
-  const diff = now.getTime() - d.getTime()
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
-
-  if (minutes < 1) return "щойно"
-  if (minutes < 60) return `${minutes} хв тому`
-  if (hours < 24) return `${hours} год тому`
-  if (days < 7) return `${days} дн тому`
-
-  return d.toLocaleDateString("uk-UA", { month: "short", day: "numeric" })
-}
-
-function formatPrice(price: number): string {
-  return `€${price.toLocaleString("en-US", { minimumFractionDigits: 0 })}`
-}
+// Дата і ціна — виносимо в lib/admin-format.ts.
+const formatDate = formatRelative
 
 export function OrdersTable({ orders }: OrdersTableProps) {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)

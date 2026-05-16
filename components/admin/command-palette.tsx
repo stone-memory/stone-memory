@@ -30,21 +30,23 @@ const NAV_ITEMS: Item[] = [
   { id: "n-blog", label: "Блог", href: "/admin/blog", group: "Навігація" },
   { id: "n-faq", label: "FAQ", href: "/admin/faq", group: "Навігація" },
   { id: "n-about", label: "Сторінка «Про нас»", href: "/admin/about", group: "Навігація" },
-  { id: "n-cli", label: "Клієнти", href: "/admin/clients", group: "Навігація" },
   { id: "n-an", label: "Аналітика", href: "/admin/analytics", group: "Навігація" },
   { id: "n-tasks", label: "Задачі", href: "/admin/tasks", group: "Навігація" },
   { id: "n-biz", label: "Профіль бізнесу", href: "/admin/business", group: "Навігація" },
-  { id: "n-backup", label: "Резервні копії", href: "/admin/backup", group: "Навігація" },
-  { id: "n-audit", label: "Аудит", href: "/admin/audit", group: "Навігація" },
   { id: "n-roles", label: "Ролі та доступ", href: "/admin/roles", group: "Навігація" },
-  { id: "n-set", label: "Налаштування сайту", href: "/admin/settings", group: "Навігація" },
+  { id: "n-account", label: "Акаунт", href: "/admin/account", group: "Навігація" },
+  { id: "n-broadcast", label: "Розсилка", href: "/admin/broadcast", group: "Навігація" },
+  { id: "n-chat", label: "Лайв-чат", href: "/admin/chat", group: "Навігація" },
+  { id: "n-chat-set", label: "Налаштування чату", href: "/admin/chat-settings", group: "Навігація" },
+  { id: "n-fin", label: "Фінанси", href: "/admin/finances", group: "Навігація" },
 
   { id: "a-newfaq", label: "Нове питання FAQ", hint: "додати питання", href: "/admin/faq", group: "Дії" },
   { id: "a-newsvc", label: "Нова послуга", hint: "створити картку послуги", href: "/admin/services", group: "Дії" },
   { id: "a-newprj", label: "Новий проект", hint: "додати в портфоліо", href: "/admin/projects", group: "Дії" },
   { id: "a-newrev", label: "Додати відгук вручну", href: "/admin/reviews", group: "Дії" },
   { id: "a-newtask", label: "Нова задача", href: "/admin/tasks", group: "Дії" },
-  { id: "a-backup", label: "Експортувати резервну копію", href: "/admin/backup", group: "Дії" },
+  { id: "a-newstone", label: "Новий камінь", hint: "додати позицію в каталог", href: "/admin/stones", group: "Дії" },
+  { id: "a-broadcast", label: "Створити розсилку", href: "/admin/broadcast", group: "Дії" },
 ]
 
 export function CommandPalette() {

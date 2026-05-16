@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { fetchStones } from "@/lib/data-source"
+import { absoluteUrl } from "@/lib/site-config"
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
+const PATH = "/catalog"
 
 export const revalidate = 60
 
@@ -10,21 +11,21 @@ export const metadata: Metadata = {
   description:
     "Full catalog of Stone Memory pieces: memorial complexes, kitchen countertops, window sills, fireplaces, stairs and paving. Natural granite and marble — Ukrainian and imported. Hand-finished, installed across Ukraine and EU.",
   alternates: {
-    canonical: `${SITE}/catalog`,
+    canonical: absoluteUrl(PATH),
     languages: {
-      "x-default": `${SITE}/catalog`,
-      en: `${SITE}/catalog?lang=en`,
-      uk: `${SITE}/catalog?lang=uk`,
-      pl: `${SITE}/catalog?lang=pl`,
-      de: `${SITE}/catalog?lang=de`,
-      lt: `${SITE}/catalog?lang=lt`,
+      "x-default": absoluteUrl(PATH),
+      en: `${absoluteUrl(PATH)}?lang=en`,
+      uk: `${absoluteUrl(PATH)}?lang=uk`,
+      pl: `${absoluteUrl(PATH)}?lang=pl`,
+      de: `${absoluteUrl(PATH)}?lang=de`,
+      lt: `${absoluteUrl(PATH)}?lang=lt`,
     },
   },
   openGraph: {
     title: "Stone Memory — Catalog",
     description:
       "Natural stone for memory and for home — monuments, countertops, sills, fireplaces, stairs, paving.",
-    url: `${SITE}/catalog`,
+    url: absoluteUrl(PATH),
     type: "website",
     images: [{ url: "/logo-512.png", width: 512, height: 512, alt: "Stone Memory" }],
   },
@@ -38,8 +39,8 @@ export default async function CatalogLayout({ children }: { children: React.Reac
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Catalog", item: `${SITE}/catalog` },
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Catalog", item: absoluteUrl(PATH) },
     ],
   }
 
@@ -53,7 +54,7 @@ export default async function CatalogLayout({ children }: { children: React.Reac
     itemListElement: stones.slice(0, 30).map((s, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `${SITE}/stones/${s.id}`,
+      url: absoluteUrl(`/stones/${s.id}`),
       name: `No. ${s.id}`,
       image: s.imagePath,
     })),

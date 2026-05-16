@@ -18,6 +18,21 @@ export default function AdminFeaturedPage() {
   useEffect(() => {
     hydrate()
   }, [hydrate])
+
+  // Stale-ID purge: featured stores raw stone ids. When a stone gets
+  // deleted from the catalog, its id stays in the featured list and
+  // the counter reads "N/6 full" while only valid stones render —
+  // user can no longer add anything, looks broken. Once stones load,
+  // strip any id that no longer matches a real stone.
+  useEffect(() => {
+    if (stones.length === 0) return
+    const valid = new Set(stones.map((s) => s.id))
+    const filtered = ids.filter((id) => valid.has(id))
+    if (filtered.length !== ids.length) {
+      setIds(filtered)
+    }
+  }, [stones, ids, setIds])
+
   const [query, setQuery] = useState("")
   const [categoryFilter, setCategoryFilter] = useState<"all" | "memorial" | "home">("all")
 
@@ -33,6 +48,11 @@ export default function AdminFeaturedPage() {
   const selectedStones = ids
     .map((id) => stones.find((s) => s.id === id))
     .filter((s): s is (typeof stones)[number] => Boolean(s))
+  // Use valid-stone count for capacity decisions — stale ids should
+  // never count against the limit. The purge effect above will
+  // eventually align ids with selectedStones, but in the same render
+  // we want the UI to be self-consistent.
+  const slotsTaken = selectedStones.length
 
   const moveUp = (id: string) => {
     const idx = ids.indexOf(id)
@@ -58,7 +78,7 @@ export default function AdminFeaturedPage() {
             Виберіть до {MAX} позицій для блоку на головній. Зміни зберігаються автоматично.
           </p>
         </div>
-        {ids.length > 0 && (
+        {slotsTaken > 0 && (
           <Button variant="outline" size="sm" onClick={clear}>
             Очистити все
           </Button>
@@ -69,7 +89,7 @@ export default function AdminFeaturedPage() {
       <section className="rounded-2xl border border-foreground/10 bg-card p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Обрано ({ids.length}/{MAX})
+            Обрано ({slotsTaken}/{MAX})
           </h2>
           <span className="text-xs text-muted-foreground">
             Порядок визначає порядок на головній
@@ -160,7 +180,9 @@ export default function AdminFeaturedPage() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((stone) => {
             const selected = ids.includes(stone.id)
-            const disabled = !selected && ids.length >= MAX
+            // Use slotsTaken (valid stones) instead of raw ids.length —
+            // stale ids shouldn't count toward the cap.
+            const disabled = !selected && slotsTaken >= MAX
             return (
               <button
                 key={stone.id}

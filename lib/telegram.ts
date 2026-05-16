@@ -1,9 +1,21 @@
 import "server-only"
+import { getIntegrationConfig, getIntegrationConfigSync } from "@/lib/integrations/config"
 
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN
-const CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID
+/**
+ * `telegramConfigured` answers "is at least env-wired?" — used by
+ * call sites that want a sync boolean (e.g. on import). For the
+ * authoritative answer including DB-stored tokens, prefer
+ * `await isTelegramReady()` below.
+ */
+export const telegramConfigured = (() => {
+  const c = getIntegrationConfigSync("telegram")
+  return Boolean(c.bot_token && c.admin_chat_id)
+})()
 
-export const telegramConfigured = Boolean(TOKEN && CHAT_ID)
+export async function isTelegramReady(): Promise<boolean> {
+  const c = await getIntegrationConfig("telegram")
+  return Boolean(c.bot_token && c.admin_chat_id)
+}
 
 type SendArgs = {
   text: string
@@ -12,14 +24,20 @@ type SendArgs = {
   chatId?: string | number
 }
 
-// Sends a message to the admin chat (or a custom chatId). Non-blocking: logs
-// errors but never throws so the caller flow (e.g. order submission) is not
-// interrupted by Telegram outages.
+// Sends a message to the admin chat (or a custom chatId). Non-blocking:
+// logs errors but never throws so the caller flow (e.g. order submission)
+// isn't interrupted by Telegram outages.
+//
+// Reads config via getIntegrationConfig — DB-stored tokens take
+// precedence over env vars, so super_admin can rotate credentials
+// through /admin/integrations without redeploying.
 export async function sendTelegram(args: SendArgs): Promise<{ ok: boolean; error?: string }> {
+  const cfg = await getIntegrationConfig("telegram")
+  const TOKEN = cfg.bot_token
   if (!TOKEN) {
     return { ok: false, error: "TELEGRAM_BOT_TOKEN not set" }
   }
-  const chatId = args.chatId ?? CHAT_ID
+  const chatId = args.chatId ?? cfg.admin_chat_id
   if (!chatId) {
     return { ok: false, error: "TELEGRAM_ADMIN_CHAT_ID not set" }
   }

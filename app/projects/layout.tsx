@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { fetchProjects } from "@/lib/data-source"
+import { absoluteUrl } from "@/lib/site-config"
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://stonememory.com.ua"
+const PATH = "/projects"
 
 export const revalidate = 60
 
@@ -10,20 +11,20 @@ export const metadata: Metadata = {
   description:
     "Real completed projects by Stone Memory: memorial complexes, kitchen countertops, fireplaces, stairs, facades, paving. Natural stone, hand-finished in Kostopil.",
   alternates: {
-    canonical: `${SITE}/projects`,
+    canonical: absoluteUrl(PATH),
     languages: {
-      "x-default": `${SITE}/projects`,
-      en: `${SITE}/projects?lang=en`,
-      uk: `${SITE}/projects?lang=uk`,
-      pl: `${SITE}/projects?lang=pl`,
-      de: `${SITE}/projects?lang=de`,
-      lt: `${SITE}/projects?lang=lt`,
+      "x-default": absoluteUrl(PATH),
+      en: `${absoluteUrl(PATH)}?lang=en`,
+      uk: `${absoluteUrl(PATH)}?lang=uk`,
+      pl: `${absoluteUrl(PATH)}?lang=pl`,
+      de: `${absoluteUrl(PATH)}?lang=de`,
+      lt: `${absoluteUrl(PATH)}?lang=lt`,
     },
   },
   openGraph: {
     title: "Stone Memory — Projects",
     description: "Real completed projects — memorials, countertops, fireplaces, stairs, facades, paving.",
-    url: `${SITE}/projects`,
+    url: absoluteUrl(PATH),
     type: "website",
   },
 }
@@ -35,8 +36,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Projects", item: `${SITE}/projects` },
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Projects", item: absoluteUrl(PATH) },
     ],
   }
 
@@ -49,7 +50,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       "@type": "ListItem",
       position: i + 1,
       name: p.title.en || p.title.uk,
-      url: `${SITE}/projects#${p.slug}`,
+      url: `${absoluteUrl(PATH)}#${p.slug}`,
       image: p.cover,
     })),
   }

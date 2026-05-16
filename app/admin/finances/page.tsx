@@ -54,6 +54,9 @@ function startOfPeriod(p: Period): number | null {
 function fmt(n: number): string {
   return n.toLocaleString("uk-UA", { maximumFractionDigits: 0 })
 }
+// Внесені в фінанси транзакції — у тій валюті, яку вводив адмін.
+// За замовчуванням припускаємо UAH (для українського ФОП це найзручніше).
+const CUR = "₴"
 
 export default function AdminFinancesPage() {
   const transactions = useTransactions()
@@ -176,12 +179,12 @@ export default function AdminFinancesPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Kpi icon={<TrendingUp size={18} />} label="Дохід" value={`€ ${fmt(totals.inc)}`} tone="success" />
-        <Kpi icon={<TrendingDown size={18} />} label="Витрати" value={`€ ${fmt(totals.exp)}`} tone="warn" />
+        <Kpi icon={<TrendingUp size={18} />} label="Дохід" value={`${fmt(totals.inc)} ${CUR}`} tone="success" />
+        <Kpi icon={<TrendingDown size={18} />} label="Витрати" value={`${fmt(totals.exp)} ${CUR}`} tone="warn" />
         <Kpi
           icon={<CircleDollarSign size={18} />}
           label="Чистий прибуток"
-          value={`€ ${fmt(totals.profit)}`}
+          value={`${fmt(totals.profit)} ${CUR}`}
           tone={totals.profit >= 0 ? "success" : "warn"}
         />
       </div>
@@ -235,8 +238,8 @@ export default function AdminFinancesPage() {
                       {categoryLabels[cat as TxCategory]}
                     </span>
                     <span className="tabular-nums">
-                      {v.income > 0 && <span className="text-success">+€{fmt(v.income)} </span>}
-                      {v.expense > 0 && <span className="text-destructive">−€{fmt(v.expense)}</span>}
+                      {v.income > 0 && <span className="text-success">+{fmt(v.income)} {CUR} </span>}
+                      {v.expense > 0 && <span className="text-destructive">−{fmt(v.expense)} {CUR}</span>}
                     </span>
                   </div>
                 </div>
@@ -265,7 +268,7 @@ export default function AdminFinancesPage() {
               </span>
               <span className="min-w-0 flex-1 truncate">{t.note || "—"}</span>
               <span className={cn("tabular-nums font-medium", t.kind === "income" ? "text-success" : "text-destructive")}>
-                {t.kind === "income" ? "+" : "−"}€ {fmt(t.amount)}
+                {t.kind === "income" ? "+" : "−"}{fmt(t.amount)} {CUR}
               </span>
               <button
                 onClick={() => remove(t.id)}
@@ -310,7 +313,7 @@ export default function AdminFinancesPage() {
                 ))}
               </select>
               <Input
-                placeholder="Сума (€)"
+                placeholder="Сума (₴)"
                 inputMode="numeric"
                 value={draft.amount}
                 onChange={(e) => setDraft({ ...draft, amount: e.target.value.replace(/[^\d]/g, "") })}
