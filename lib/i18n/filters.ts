@@ -316,3 +316,38 @@ export const finishLabels: Record<StoneFinish, Record<Locale, string>> = {
   natural: { uk: "Природна", pl: "Naturalne", en: "Natural", de: "Natur", lt: "Natūrali" },
   split: { uk: "Колота", pl: "Łupane", en: "Split", de: "Gespalten", lt: "Skaldyta" },
 }
+
+// ────────────────────────────────────────────────────────────────────────────
+// Safe label resolvers. Admins can now add custom material/colour/shape/finish
+// values that aren't in the maps above. These helpers return the localized
+// label for a known key, or gracefully fall back to the raw stored value so
+// the public catalog never crashes on an unknown option.
+function capitalize(s: string): string {
+  return s.length ? s[0].toUpperCase() + s.slice(1) : s
+}
+
+// `i18n` is an optional admin-entered per-locale override for CUSTOM values.
+// Resolution order: manual i18n → canonical map → raw value (capitalized).
+type I18nOverride = Partial<Record<Locale, string>> | undefined
+
+function resolveLabel<K extends string>(
+  map: Record<K, Record<Locale, string>>,
+  value: string | undefined,
+  locale: Locale,
+  i18n?: I18nOverride
+): string {
+  if (!value) return ""
+  const manual = i18n?.[locale]
+  if (manual) return manual
+  const entry = (map as Record<string, Record<Locale, string>>)[value]
+  return entry?.[locale] ?? capitalize(value)
+}
+
+export const colorLabel = (v: string | undefined, locale: Locale, i18n?: I18nOverride) =>
+  resolveLabel(colorLabels, v, locale, i18n)
+export const shapeLabel = (v: string | undefined, locale: Locale, i18n?: I18nOverride) =>
+  resolveLabel(shapeLabels, v, locale, i18n)
+export const finishLabel = (v: string | undefined, locale: Locale, i18n?: I18nOverride) =>
+  resolveLabel(finishLabels, v, locale, i18n)
+export const materialLabel = (v: string | undefined, locale: Locale, i18n?: I18nOverride) =>
+  resolveLabel(materialLabels, v, locale, i18n)

@@ -49,17 +49,29 @@ export type StoneItem = {
   material?: string
   origin?: string
   nameKey?: string
-  color?: StoneColor
-  shape?: StoneShape
-  finish?: StoneFinish
-  materialType?: StoneMaterial
+  // Known keys keep autocomplete; `(string & {})` lets admins store custom
+  // values added in the product form. Always render via the *Label()
+  // resolvers in lib/i18n/filters.ts (they fall back to the raw value).
+  color?: StoneColor | (string & {})
+  shape?: StoneShape | (string & {})
+  finish?: StoneFinish | (string & {})
+  materialType?: StoneMaterial | (string & {})
   gallery?: string[]
   sizeCm?: string
   weightKg?: number
   isFeatured?: boolean
+  // Manual per-locale labels for CUSTOM option values (admin-entered).
+  // Keyed by field; each maps locale → label. Missing locale falls back
+  // to the raw stored value. Canonical values ignore this (use the maps).
+  i18n?: {
+    materialType?: Partial<Record<Locale, string>>
+    color?: Partial<Record<Locale, string>>
+    shape?: Partial<Record<Locale, string>>
+    finish?: Partial<Record<Locale, string>>
+  }
 }
 
-export function toneFromColor(color?: StoneColor): StoneTone | undefined {
+export function toneFromColor(color?: StoneColor | (string & {})): StoneTone | undefined {
   if (!color) return undefined
   if (color === "white" || color === "beige") return "light"
   if (color === "grey") return "grey"
