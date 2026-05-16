@@ -103,7 +103,7 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile-only top bar with burger */}
-      <header className="lg:hidden fixed top-0 inset-x-0 z-40 flex items-center justify-between bg-white border-b border-black/5 px-4 h-14">
+      <header className="md:hidden fixed top-0 inset-x-0 z-40 flex items-center justify-between bg-white border-b border-black/5 px-4 h-14">
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Відкрити меню"
@@ -124,7 +124,7 @@ export function AdminSidebar() {
       {mobileOpen && (
         <div
           aria-hidden="true"
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -132,8 +132,8 @@ export function AdminSidebar() {
       <aside
         className={cn(
           "fixed left-0 top-0 z-50 w-64 h-screen bg-white border-r border-black/5 flex flex-col transition-transform duration-200",
-          "lg:translate-x-0",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
       {/* Top section */}
@@ -143,7 +143,7 @@ export function AdminSidebar() {
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Закрити меню"
-            className="lg:hidden p-1 rounded-lg hover:bg-black/5"
+            className="md:hidden p-1 rounded-lg hover:bg-black/5"
           >
             <X size={18} />
           </button>

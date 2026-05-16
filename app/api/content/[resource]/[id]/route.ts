@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { getCollection } from "@/lib/content-schema"
 import { requireAdmin } from "@/lib/api-auth"
+import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -47,6 +48,7 @@ export async function PATCH(
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidateForResource(resource)
   return NextResponse.json({ item: data })
 }
 
@@ -63,5 +65,6 @@ export async function DELETE(
 
   const { error } = await supabaseAdmin.from(cfg.table).delete().eq(cfg.idColumn, id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidateForResource(resource)
   return NextResponse.json({ ok: true })
 }

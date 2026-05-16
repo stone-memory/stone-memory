@@ -191,10 +191,12 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Run for everything except internal/static/API/admin/asset routes.
-    // `api` and `admin` are unanchored on the right so /api, /api/x, /admin,
-    // /admin/x are all skipped. The `.*\..*` clause skips any path with a
-    // file extension (e.g. /favicon.ico, /something.png).
-    "/((?!_next/|_vercel/|api|admin|sitemap\\.xml|sitemap-images\\.xml|robots\\.txt|opengraph-image|favicon\\.ico|.*\\..*).*)",
+    // LOCAL DEV OVERRIDE — i18n Phase 3 (app/[locale]/ folder restructure)
+    // is paused, so any matched request would redirect into nowhere (404).
+    // The matcher below is intentionally an impossible pattern so middleware
+    // never runs and bare URLs hit app/page.tsx etc. directly. Restore the
+    // commented-out matcher below when resuming Phase 3.
+    "/__i18n_middleware_disabled_until_phase_3__",
+    // "/((?!_next/|_vercel/|api|admin|sitemap\\.xml|sitemap-images\\.xml|robots\\.txt|opengraph-image|favicon\\.ico|.*\\..*).*)",
   ],
 }

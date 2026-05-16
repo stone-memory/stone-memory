@@ -21,6 +21,11 @@ export function ReviewsSection() {
   const items = useReviewsForPlacement("home")
   const display = items.slice(0, 6)
 
+  // Hide the whole section when there are no reviews placed on "home"
+  // (e.g. all of them are set to "hidden" in the CRM). It comes back
+  // automatically once a manager places a review on the homepage.
+  if (display.length === 0) return null
+
   return (
     <section id="reviews" className="py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
