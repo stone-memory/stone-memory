@@ -6,28 +6,31 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from "@/lib/i18n/context"
 import {
   filterLabels,
-  shapeLabels,
+  shapeLabel,
   toneLabels,
-  materialLabels,
+  materialLabel,
 } from "@/lib/i18n/filters"
 import {
   toneFromColor,
   type Category,
-  type StoneShape,
   type StoneTone,
-  type StoneMaterial,
   type StoneItem,
+  type Locale,
 } from "@/lib/types"
 import { cn, toggleArr } from "@/lib/utils"
 import { useDismissable } from "@/hooks/use-dismissable"
+
+// Per-value manual translations for admin-added custom options.
+type OptI18n = Map<string, Partial<Record<Locale, string>>>
 
 export type SortKey = "featured" | "popular" | "priceAsc" | "priceDesc"
 
 export type FiltersState = {
   q: string
   tones: StoneTone[]
-  materials: StoneMaterial[]
-  shapes: StoneShape[]
+  // string (not the closed unions) so admin-added custom values flow through
+  materials: string[]
+  shapes: string[]
   sort: SortKey
 }
 
@@ -151,15 +154,35 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
   }, [items])
 
   const materialCounts = useMemo(() => {
-    const map = new Map<StoneMaterial, number>()
+    const map = new Map<string, number>()
     for (const s of items) if (s.materialType) map.set(s.materialType, (map.get(s.materialType) || 0) + 1)
     return map
   }, [items])
 
   const shapeCounts = useMemo(() => {
-    const map = new Map<StoneShape, number>()
+    const map = new Map<string, number>()
     for (const s of items) if (s.shape) map.set(s.shape, (map.get(s.shape) || 0) + 1)
     return map
+  }, [items])
+
+  // value → manual translations, gathered from stones carrying them
+  const optI18n = useMemo(() => {
+    const mk = (
+      pick: (s: StoneItem) => string | undefined,
+      get: (s: StoneItem) => Partial<Record<Locale, string>> | undefined
+    ): OptI18n => {
+      const m: OptI18n = new Map()
+      for (const s of items) {
+        const v = pick(s)
+        const tr = get(s)
+        if (v && tr) m.set(v, { ...m.get(v), ...tr })
+      }
+      return m
+    }
+    return {
+      materials: mk((s) => s.materialType, (s) => s.i18n?.materialType),
+      shapes: mk((s) => s.shape, (s) => s.i18n?.shape),
+    }
   }, [items])
 
   const availableTones = useMemo(
@@ -240,7 +263,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
                 {availableMaterials.map((m) => (
                   <Check
                     key={m}
-                    label={materialLabels[m][locale]}
+                    label={materialLabel(m, locale, optI18n.materials.get(m))}
                     count={materialCounts.get(m)}
                     checked={value.materials.includes(m)}
                     onChange={() => onChange({ ...value, materials: toggleArr(value.materials, m) })}
@@ -256,7 +279,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
                 {availableShapes.map((s) => (
                   <Check
                     key={s}
-                    label={shapeLabels[s][locale]}
+                    label={shapeLabel(s, locale, optI18n.shapes.get(s))}
                     count={shapeCounts.get(s)}
                     checked={value.shapes.includes(s)}
                     onChange={() => onChange({ ...value, shapes: toggleArr(value.shapes, s) })}
@@ -279,6 +302,8 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
           toneCounts={toneCounts}
           materialCounts={materialCounts}
           shapeCounts={shapeCounts}
+          materialI18n={optI18n.materials}
+          shapeI18n={optI18n.shapes}
         />
 
         <SortMenu value={value.sort} onChange={(s) => onChange({ ...value, sort: s })} />
@@ -300,10 +325,10 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
             <Chip key={`t-${t}`} label={toneLabels[t][locale]} onRemove={() => onChange({ ...value, tones: value.tones.filter((x) => x !== t) })} />
           ))}
           {value.materials.map((m) => (
-            <Chip key={`m-${m}`} label={materialLabels[m][locale]} onRemove={() => onChange({ ...value, materials: value.materials.filter((x) => x !== m) })} />
+            <Chip key={`m-${m}`} label={materialLabel(m, locale, optI18n.materials.get(m))} onRemove={() => onChange({ ...value, materials: value.materials.filter((x) => x !== m) })} />
           ))}
           {value.shapes.map((s) => (
-            <Chip key={`s-${s}`} label={shapeLabels[s][locale]} onRemove={() => onChange({ ...value, shapes: value.shapes.filter((x) => x !== s) })} />
+            <Chip key={`s-${s}`} label={shapeLabel(s, locale, optI18n.shapes.get(s))} onRemove={() => onChange({ ...value, shapes: value.shapes.filter((x) => x !== s) })} />
           ))}
           <span className="ml-auto text-xs text-muted-foreground tabular-nums">{totalCount}</span>
         </div>
@@ -385,11 +410,13 @@ function MobileDrawer(props: {
   value: FiltersState
   onChange: (v: FiltersState) => void
   availableTones: StoneTone[]
-  availableMaterials: StoneMaterial[]
-  availableShapes: StoneShape[]
+  availableMaterials: string[]
+  availableShapes: string[]
   toneCounts: Map<StoneTone, number>
-  materialCounts: Map<StoneMaterial, number>
-  shapeCounts: Map<StoneShape, number>
+  materialCounts: Map<string, number>
+  shapeCounts: Map<string, number>
+  materialI18n: OptI18n
+  shapeI18n: OptI18n
 }) {
   const { locale } = useTranslation()
   const L = filterLabels[locale]
@@ -466,7 +493,7 @@ function MobileDrawer(props: {
                         {props.availableMaterials.map((m) => (
                           <PillToggle
                             key={m}
-                            label={materialLabels[m][locale]}
+                            label={materialLabel(m, locale, props.materialI18n.get(m))}
                             count={props.materialCounts.get(m)}
                             active={value.materials.includes(m)}
                             onClick={() => onChange({ ...value, materials: toggleArr(value.materials, m) })}
@@ -482,7 +509,7 @@ function MobileDrawer(props: {
                         {props.availableShapes.map((s) => (
                           <PillToggle
                             key={s}
-                            label={shapeLabels[s][locale]}
+                            label={shapeLabel(s, locale, props.shapeI18n.get(s))}
                             count={props.shapeCounts.get(s)}
                             active={value.shapes.includes(s)}
                             onClick={() => onChange({ ...value, shapes: toggleArr(value.shapes, s) })}

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useStonesAdminStore } from "@/lib/store/stones"
 import { ImageUploader } from "@/components/admin/image-uploader"
-import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category } from "@/lib/types"
+import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category, Locale } from "@/lib/types"
+import { materialLabel, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { cn } from "@/lib/utils"
 
 const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", "brown", "beige", "multi"]
@@ -143,6 +144,7 @@ export default function AdminStonesPage() {
             priceFrom: 0,
           }}
           title="Новий товар"
+          allStones={items.map((r) => r.data)}
           onSave={(s) => createNew(s)}
           onCancel={() => setCreating(false)}
         />
@@ -249,6 +251,7 @@ export default function AdminStonesPage() {
         <StoneEditor
           stone={items.find((r) => r.id === editingId)!.data}
           title={`Редагувати № ${editingId}`}
+          allStones={items.map((r) => r.data)}
           onSave={(s) => saveEdit(editingId, s)}
           onCancel={() => setEditingId(null)}
         />
@@ -266,18 +269,170 @@ function Stat({ label, value }: { label: string; value: number }) {
   )
 }
 
+// Select with localized (uk) option labels + ability to add a brand-new
+// custom value. Options = canonical keys ∪ values already used across the
+// catalog, so a custom value entered once reappears for the next product.
+const CUSTOM_SENTINEL = "__custom__"
+// uk is the stored value itself; only these need manual translations.
+const TRANSLATABLE: { code: Locale; label: string }[] = [
+  { code: "pl", label: "PL" },
+  { code: "en", label: "EN" },
+  { code: "de", label: "DE" },
+  { code: "lt", label: "LT" },
+]
+function OptionPicker({
+  value,
+  canonical,
+  used,
+  resolve,
+  onChange,
+  translations,
+  onTranslationsChange,
+}: {
+  value?: string
+  canonical: string[]
+  used: string[]
+  resolve: (v: string) => string
+  onChange: (v: string | undefined) => void
+  translations?: Partial<Record<Locale, string>>
+  onTranslationsChange?: (t: Partial<Record<Locale, string>> | undefined) => void
+}) {
+  const options = useMemo(() => {
+    const seen = new Set<string>()
+    const list: string[] = []
+    for (const v of [...canonical, ...used]) {
+      if (v && !seen.has(v)) {
+        seen.add(v)
+        list.push(v)
+      }
+    }
+    return list
+  }, [canonical, used])
+
+  const [customMode, setCustomMode] = useState(false)
+  // A value not in the canonical set is custom → offer per-locale labels.
+  const isCustom = Boolean(value) && !canonical.includes(value as string)
+
+  const setTr = (code: Locale, v: string) => {
+    if (!onTranslationsChange) return
+    const next = { ...(translations || {}) }
+    // keep the raw value (incl. spaces) while typing; only drop when blank
+    if (v.trim()) next[code] = v
+    else delete next[code]
+    onTranslationsChange(Object.keys(next).length ? next : undefined)
+  }
+
+  const translationFields = isCustom && onTranslationsChange && (
+    <div className="mt-2 space-y-1.5 rounded-xl bg-foreground/[0.03] p-2.5">
+      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+        Переклади (порожнє → показуємо як уведено)
+      </div>
+      {TRANSLATABLE.map(({ code, label }) => (
+        <div key={code} className="flex items-center gap-2">
+          <span className="w-7 text-[11px] font-medium text-muted-foreground">{label}</span>
+          <Input
+            value={translations?.[code] || ""}
+            placeholder={value || ""}
+            onChange={(e) => setTr(code, e.target.value)}
+          />
+        </div>
+      ))}
+    </div>
+  )
+
+  if (customMode) {
+    return (
+      <div>
+        <div className="flex gap-2">
+          <Input
+            autoFocus
+            placeholder="Нове значення (укр)…"
+            value={value || ""}
+            onChange={(e) => onChange(e.target.value || undefined)}
+          />
+          <Button
+            variant="ghost"
+            onClick={() => {
+              onChange(undefined)
+              onTranslationsChange?.(undefined)
+              setCustomMode(false)
+            }}
+          >
+            Зі списку
+          </Button>
+        </div>
+        {translationFields}
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <select
+        value={value || ""}
+        onChange={(e) => {
+          const v = e.target.value
+          if (v === CUSTOM_SENTINEL) {
+            onChange(undefined)
+            onTranslationsChange?.(undefined)
+            setCustomMode(true)
+            return
+          }
+          onChange(v || undefined)
+          // Switching to a canonical/empty value drops stale translations.
+          if (!v || canonical.includes(v)) onTranslationsChange?.(undefined)
+        }}
+        className="h-10 w-full rounded-xl bg-foreground/5 px-3"
+      >
+        <option value="">—</option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {resolve(o)}
+          </option>
+        ))}
+        <option value={CUSTOM_SENTINEL}>➕ Додати своє…</option>
+      </select>
+      {translationFields}
+    </div>
+  )
+}
+
 function StoneEditor({
   stone,
   title,
+  allStones,
   onSave,
   onCancel,
 }: {
   stone: StoneItem
   title: string
+  allStones: StoneItem[]
   onSave: (s: StoneItem) => void
   onCancel: () => void
 }) {
   const [draft, setDraft] = useState<StoneItem>(stone)
+
+  type I18nField = "materialType" | "color" | "shape" | "finish"
+  const setI18nField = (field: I18nField, t?: Partial<Record<Locale, string>>) =>
+    setDraft((d) => {
+      const i18n = { ...(d.i18n || {}) }
+      if (t && Object.keys(t).length) i18n[field] = t
+      else delete i18n[field]
+      return { ...d, i18n: Object.keys(i18n).length ? i18n : undefined }
+    })
+
+  const used = useMemo(() => {
+    const collect = (pick: (s: StoneItem) => string | undefined) =>
+      Array.from(
+        new Set(allStones.map(pick).filter((v): v is string => Boolean(v)))
+      )
+    return {
+      materials: collect((s) => s.materialType),
+      colors: collect((s) => s.color),
+      shapes: collect((s) => s.shape),
+      finishes: collect((s) => s.finish),
+    }
+  }, [allStones])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
@@ -322,44 +477,48 @@ function StoneEditor({
             />
           </Field>
           <Field label="Матеріал">
-            <select
-              value={draft.materialType || ""}
-              onChange={(e) => setDraft({ ...draft, materialType: (e.target.value || undefined) as StoneMaterial | undefined })}
-              className="h-10 w-full rounded-xl bg-foreground/5 px-3"
-            >
-              <option value="">—</option>
-              {MATERIALS.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
+            <OptionPicker
+              value={draft.materialType}
+              canonical={MATERIALS}
+              used={used.materials}
+              resolve={(v) => materialLabel(v, "uk")}
+              onChange={(v) => setDraft({ ...draft, materialType: v })}
+              translations={draft.i18n?.materialType}
+              onTranslationsChange={(t) => setI18nField("materialType", t)}
+            />
           </Field>
           <Field label="Колір">
-            <select
-              value={draft.color || ""}
-              onChange={(e) => setDraft({ ...draft, color: (e.target.value || undefined) as StoneColor | undefined })}
-              className="h-10 w-full rounded-xl bg-foreground/5 px-3"
-            >
-              <option value="">—</option>
-              {COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <OptionPicker
+              value={draft.color}
+              canonical={COLORS}
+              used={used.colors}
+              resolve={(v) => colorLabel(v, "uk")}
+              onChange={(v) => setDraft({ ...draft, color: v })}
+              translations={draft.i18n?.color}
+              onTranslationsChange={(t) => setI18nField("color", t)}
+            />
           </Field>
           <Field label="Форма">
-            <select
-              value={draft.shape || ""}
-              onChange={(e) => setDraft({ ...draft, shape: (e.target.value || undefined) as StoneShape | undefined })}
-              className="h-10 w-full rounded-xl bg-foreground/5 px-3"
-            >
-              <option value="">—</option>
-              {SHAPES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
+            <OptionPicker
+              value={draft.shape}
+              canonical={SHAPES}
+              used={used.shapes}
+              resolve={(v) => shapeLabel(v, "uk")}
+              onChange={(v) => setDraft({ ...draft, shape: v })}
+              translations={draft.i18n?.shape}
+              onTranslationsChange={(t) => setI18nField("shape", t)}
+            />
           </Field>
           <Field label="Обробка">
-            <select
-              value={draft.finish || ""}
-              onChange={(e) => setDraft({ ...draft, finish: (e.target.value || undefined) as StoneFinish | undefined })}
-              className="h-10 w-full rounded-xl bg-foreground/5 px-3"
-            >
-              <option value="">—</option>
-              {FINISHES.map((f) => <option key={f} value={f}>{f}</option>)}
-            </select>
+            <OptionPicker
+              value={draft.finish}
+              canonical={FINISHES}
+              used={used.finishes}
+              resolve={(v) => finishLabel(v, "uk")}
+              onChange={(v) => setDraft({ ...draft, finish: v })}
+              translations={draft.i18n?.finish}
+              onTranslationsChange={(t) => setI18nField("finish", t)}
+            />
           </Field>
           <Field label="Походження">
             <Input value={draft.origin || ""} onChange={(e) => setDraft({ ...draft, origin: e.target.value })} />
