@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { StoneCard } from "@/components/stone-card"
-import { useStones } from "@/lib/store/stones"
+import { useStones, useStonesAdminStore } from "@/lib/store/stones"
 import { useTranslation } from "@/lib/i18n/context"
 import { useFeaturedStore } from "@/lib/store/featured"
 import type { Locale, StoneItem } from "@/lib/types"
@@ -39,6 +39,7 @@ export function FeaturedStones() {
   const hasHydrated = useFeaturedStore((state) => state.hasHydrated)
   const hydrate = useFeaturedStore((state) => state.hydrate)
   const stones = useStones()
+  const stonesHydrated = useStonesAdminStore((s) => s.hasHydrated)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -50,6 +51,14 @@ export function FeaturedStones() {
     if (!mounted || !hasHydrated || ids.length === 0) return pickFallback(stones)
     return pickFromIds(ids, stones)
   }, [mounted, hasHydrated, ids, stones])
+
+  // Don't render the section while still hydrating, or when there are no
+  // visible offers (e.g. all stones hidden via CRM). It re-appears
+  // automatically once a manager unhides/adds an offer — the stores
+  // re-hydrate on the client and this component re-renders.
+  if (!mounted || !stonesHydrated || !hasHydrated || featured.length === 0) {
+    return null
+  }
 
   return (
     <section id="featured" className="mx-auto max-w-7xl px-6 py-16 md:py-20 scroll-mt-14">
