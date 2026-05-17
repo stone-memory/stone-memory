@@ -25,6 +25,7 @@ export type IntegrationId =
   | "instagram"
   | "viber"
   | "email_inbound"
+  | "email_mailbox"
   | "twilio_sms"
 
 /** Canonical key → env var name. Keys mirror what the UI form uses. */
@@ -60,6 +61,17 @@ const ENV_MAP: Record<IntegrationId, Record<string, string>> = {
     account_sid: "TWILIO_ACCOUNT_SID",
     auth_token: "TWILIO_AUTH_TOKEN",
     from_number: "TWILIO_FROM_NUMBER",
+  },
+  // Two-way conversational email via the business mailbox itself
+  // (Gmail/Workspace): IMAP poll for inbound + SMTP for replies/new.
+  // Defaults target Gmail; override host/port for other providers.
+  email_mailbox: {
+    address: "EMAIL_MAILBOX_ADDRESS",
+    app_password: "EMAIL_MAILBOX_APP_PASSWORD",
+    imap_host: "EMAIL_IMAP_HOST",
+    imap_port: "EMAIL_IMAP_PORT",
+    smtp_host: "EMAIL_SMTP_HOST",
+    smtp_port: "EMAIL_SMTP_PORT",
   },
 }
 
