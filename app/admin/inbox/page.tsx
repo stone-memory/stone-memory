@@ -257,7 +257,7 @@ export default function InboxPage() {
                         <span>·</span>
                         <span>{formatRelative(c.lastMsg.created_at)}</span>
                       </div>
-                      <p className="text-xs text-foreground/70 line-clamp-2">
+                      <p className="text-xs text-foreground/70 line-clamp-2 break-words [overflow-wrap:anywhere]">
                         {c.lastMsg.direction === "outbound" && "→ "}
                         {c.lastMsg.body || "(без тексту)"}
                       </p>
@@ -382,7 +382,7 @@ function ConversationView({
                   {m.subject}
                 </div>
               )}
-              <div className="whitespace-pre-wrap leading-relaxed">{m.body || "—"}</div>
+              <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] leading-relaxed">{m.body || "—"}</div>
               <div className={cn("mt-1.5 text-[10px]", m.direction === "outbound" ? "text-background/60" : "text-muted-foreground")}>
                 {formatDateTime(m.created_at)}
                 {m.direction === "outbound" ? " · вихідне" : " · вхідне"}

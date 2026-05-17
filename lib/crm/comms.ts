@@ -49,6 +49,9 @@ export type IncomingMessage = {
   attachments?: Array<{ name: string; url: string; mime: string; size: number }>
   /** Сирі дані з платформи (для дебагу) */
   rawMeta?: Record<string, unknown>
+  /** Оригінальний час повідомлення (ISO) — напр. дата email-листа.
+   *  Якщо не задано, БД ставить now(). */
+  createdAt?: string
 }
 
 /**
@@ -236,6 +239,9 @@ export async function recordIncoming(msg: IncomingMessage): Promise<{
       body: msg.body,
       attachments: msg.attachments || null,
       meta: msg.rawMeta || null,
+      // Preserve original timestamp (email Date) so the Inbox shows and
+      // sorts by the real time, not the moment the poller ingested it.
+      ...(msg.createdAt ? { created_at: msg.createdAt } : {}),
     })
     .select("id")
     .single()

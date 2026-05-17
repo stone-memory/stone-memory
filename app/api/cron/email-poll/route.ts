@@ -55,6 +55,25 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
           await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
           continue
         }
+        // Skip bulk/automated mail (newsletters, platform notifications,
+        // no-reply senders) so it doesn't flood the Inbox or create junk
+        // customers. Real customer/order emails have none of these.
+        const hdr = (n: string) => String(parsed.headers.get(n) ?? "").toLowerCase()
+        const precedence = hdr("precedence")
+        const autoSubmitted = hdr("auto-submitted")
+        const localPart = fromEmail.split("@")[0]
+        const isAutomated =
+          parsed.headers.has("list-unsubscribe") ||
+          /^(bulk|list|junk)$/.test(precedence) ||
+          (autoSubmitted !== "" && autoSubmitted !== "no") ||
+          /^(no-?reply|do-?not-?reply|notif|notify|mailer-daemon|bounce|postmaster|alert|news|noreply)/.test(
+            localPart
+          )
+        if (isAutomated) {
+          await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
+          continue
+        }
+
         const subject = (parsed.subject || "").trim()
         const cleanSubject = subject.replace(/^(re|fw|fwd):\s*/gi, "").trim()
         const threadKey = `email:${fromEmail}:${cleanSubject.slice(0, 60)}`
@@ -73,6 +92,7 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
           body,
           externalId: parsed.messageId || String(uid),
           threadKey,
+          createdAt: parsed.date ? new Date(parsed.date).toISOString() : undefined,
           rawMeta: { message_id: parsed.messageId, uid: String(uid) },
         })
         await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
