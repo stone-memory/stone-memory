@@ -1,5 +1,4 @@
 import "server-only"
-import nodemailer from "nodemailer"
 import { sendOne } from "@/lib/email"
 import { sendTelegram } from "@/lib/telegram"
 import { recordOutgoing, getCustomerChannels } from "@/lib/crm/comms"
@@ -90,30 +89,14 @@ async function sendEmail(args: SendArgs, email?: string): Promise<SendResult> {
   const cleanSubject = (args.subject || "").replace(/^(re|fw|fwd):\s*/gi, "").trim()
   const threadKey = `email:${email.toLowerCase()}:${cleanSubject.slice(0, 60)}`
 
-  // Prefer the business mailbox via SMTP — the reply then comes FROM the
-  // footer address and threads on the client side. Fall back to Resend
-  // (used for broadcast) when the mailbox isn't configured.
-  const mbox = await getIntegrationConfig("email_mailbox")
-  let messageId: string | undefined
-  if (mbox.address && mbox.app_password) {
-    try {
-      const port = Number(mbox.smtp_port) || 465
-      const transport = nodemailer.createTransport({
-        host: mbox.smtp_host || "smtp.gmail.com",
-        port,
-        secure: port === 465,
-        auth: { user: mbox.address, pass: mbox.app_password },
-      })
-      const info = await transport.sendMail({ from: mbox.address, to: email, subject, text: args.body, html })
-      messageId = info.messageId
-    } catch (e) {
-      return { ok: false, channel: "email", error: e instanceof Error ? e.message : "SMTP send failed" }
-    }
-  } else {
-    const sent = await sendOne({ to: email, subject, html, scope: "individual" })
-    if (!sent.ok) return { ok: false, channel: "email", error: sent.error }
-    messageId = sent.id
-  }
+  // Send via Resend (domain stonememory.com.ua is verified there, so the
+  // From can be info@stonememory.com.ua without a domain mailbox/SMTP).
+  // The Gmail mailbox (EMAIL_MAILBOX_*) is used ONLY for IMAP inbound —
+  // we deliberately do NOT send through Gmail SMTP (that would send as
+  // the gmail login, not info@, and there is no domain SMTP server).
+  const sent = await sendOne({ to: email, subject, html, scope: "individual" })
+  if (!sent.ok) return { ok: false, channel: "email", error: sent.error }
+  const messageId = sent.id
 
   const commId = await recordOutgoing({
     customerId: args.customerId,
