@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MessageSquare, Plus, Download } from "lucide-react"
+import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MessageSquare, Plus, Download, Hammer, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -211,6 +211,9 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
       {/* Documents — generation */}
       <DocumentsBlock dealId={id} documents={data.documents} onChanged={refresh} />
 
+      {/* Production stages */}
+      <ProductionStagesBlock dealId={id} stages={data.productionStages} onChanged={refresh} />
+
       {/* Payments */}
       <PaymentsBlock dealId={id} customerId={d.customer_id} payments={data.payments} onChanged={refresh} />
 
@@ -336,6 +339,161 @@ function DocumentsBlock({ dealId, documents, onChanged }: { dealId: string; docu
               <Download size={14} className="text-muted-foreground" />
             </a>
           ))}
+        </div>
+      )}
+    </Section>
+  )
+}
+
+// ----- Production stages block -----
+const PROD_STAGE_KIND_LABELS: Record<string, string> = {
+  raw_material: "Сировина",
+  cutting: "Розпил",
+  grinding: "Шліфування",
+  polishing: "Полірування",
+  engraving: "Гравіювання",
+  sealing: "Герметизація",
+  qc: "Контроль якості",
+  packaging: "Пакування",
+  transport: "Транспорт",
+  foundation: "Фундамент",
+  installation: "Монтаж",
+  cleanup: "Прибирання",
+}
+const PROD_STAGE_KINDS = Object.keys(PROD_STAGE_KIND_LABELS)
+const PROD_STAGE_STATUSES: { v: string; label: string; cls: string }[] = [
+  { v: "pending", label: "Очікує", cls: "bg-foreground/10 text-muted-foreground" },
+  { v: "in_progress", label: "В роботі", cls: "bg-amber-500/15 text-amber-700" },
+  { v: "done", label: "Готово", cls: "bg-success/15 text-success" },
+  { v: "failed", label: "Збій", cls: "bg-red-500/15 text-red-600" },
+]
+
+function ProductionStagesBlock({
+  dealId,
+  stages,
+  onChanged,
+}: {
+  dealId: string
+  stages: Overview["productionStages"]
+  onChanged: () => void
+}) {
+  const [busy, setBusy] = useState(false)
+  const [addKind, setAddKind] = useState(PROD_STAGE_KINDS[0])
+
+  const seed = async () => {
+    setBusy(true)
+    try {
+      const r = await authedFetch("/api/crm/production-stages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deal_id: dealId, seed: true }),
+      })
+      if (r.ok) onChanged()
+    } finally {
+      setBusy(false)
+    }
+  }
+  const addOne = async () => {
+    setBusy(true)
+    try {
+      const r = await authedFetch("/api/crm/production-stages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deal_id: dealId, kind: addKind }),
+      })
+      if (r.ok) onChanged()
+    } finally {
+      setBusy(false)
+    }
+  }
+  const setStatus = async (id: string, status: string) => {
+    setBusy(true)
+    try {
+      const r = await authedFetch(`/api/crm/production-stages/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      })
+      if (r.ok) onChanged()
+    } finally {
+      setBusy(false)
+    }
+  }
+  const remove = async (id: string) => {
+    setBusy(true)
+    try {
+      const r = await authedFetch(`/api/crm/production-stages/${id}`, { method: "DELETE" })
+      if (r.ok) onChanged()
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Section title="Виробництво" icon={<Hammer size={16} />} count={stages.length}>
+      <div className="px-4 py-3 flex flex-wrap items-center gap-2 border-b border-foreground/5">
+        {stages.length === 0 && (
+          <Button size="sm" variant="outline" onClick={seed} disabled={busy} className="rounded-full text-xs gap-1.5">
+            <Plus size={12} /> Стандартний цикл
+          </Button>
+        )}
+        <select
+          value={addKind}
+          onChange={(e) => setAddKind(e.target.value)}
+          disabled={busy}
+          className="h-8 rounded-full bg-foreground/5 px-3 text-xs"
+        >
+          {PROD_STAGE_KINDS.map((k) => (
+            <option key={k} value={k}>{PROD_STAGE_KIND_LABELS[k]}</option>
+          ))}
+        </select>
+        <Button size="sm" variant="outline" onClick={addOne} disabled={busy} className="rounded-full text-xs gap-1.5">
+          <Plus size={12} /> Додати етап
+        </Button>
+      </div>
+      {stages.length === 0 ? (
+        <Empty text="Етапів виробництва ще немає. Додай стандартний цикл або окремий етап." />
+      ) : (
+        <div className="divide-y divide-foreground/5">
+          {stages.map((s) => {
+            const st = PROD_STAGE_STATUSES.find((x) => x.v === s.status) || PROD_STAGE_STATUSES[0]
+            return (
+              <div key={s.id} className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm">
+                <span className="font-medium min-w-[120px]">
+                  {PROD_STAGE_KIND_LABELS[s.kind] || s.kind}
+                </span>
+                <span className={`rounded-full px-2 py-0.5 text-xs ${st.cls}`}>{st.label}</span>
+                <select
+                  value={s.status}
+                  onChange={(e) => setStatus(s.id, e.target.value)}
+                  disabled={busy}
+                  className="h-7 rounded-lg bg-foreground/5 px-2 text-xs"
+                >
+                  {PROD_STAGE_STATUSES.map((x) => (
+                    <option key={x.v} value={x.v}>{x.label}</option>
+                  ))}
+                </select>
+                <span className="text-xs text-muted-foreground">
+                  {s.completed_at
+                    ? `завершено ${formatRelative(s.completed_at)}`
+                    : s.started_at
+                      ? `почато ${formatRelative(s.started_at)}`
+                      : s.due_at
+                        ? `до ${formatDateTime(s.due_at)}`
+                        : ""}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => remove(s.id)}
+                  disabled={busy}
+                  className="ml-auto text-muted-foreground hover:text-red-600"
+                  aria-label="Видалити етап"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            )
+          })}
         </div>
       )}
     </Section>
