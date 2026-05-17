@@ -20,9 +20,9 @@ const inter = Inter({
 })
 
 const SITE_NAME = "Stone Memory"
-const TITLE_DEFAULT = "Stone Memory — monuments, countertops, window sills, stairs and paving in natural stone"
+const TITLE_DEFAULT = "Stone Memory — памʼятники, стільниці, підвіконня, сходи та бруківка з натурального каменю"
 const DESCRIPTION =
-  "Natural stone for memory and for home: monuments, kitchen countertops, window sills, staircases, fireplaces and paving in granite and marble — Ukrainian stone plus imports from Italy, India, China and Brazil. Own workshop in Kostopil — design, production, installation, 5-year warranty."
+  "Натуральний камінь для памʼяті та дому: памʼятники, кухонні стільниці, підвіконня, сходи, каміни й бруківка з граніту та мармуру — український камінь і імпорт з Італії, Індії, Китаю та Бразилії. Власна майстерня в Костополі — дизайн, виробництво, монтаж, 5 років гарантії."
 
 const KEYWORDS_BASE = [
   "granite monuments", "marble monuments", "headstones", "gravestones", "tombstones",
