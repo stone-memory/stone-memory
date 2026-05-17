@@ -70,6 +70,9 @@ interface BusinessProfileState {
   hasHydrated: boolean
   loading: boolean
   hydrate: () => Promise<void>
+  /** Explicit persist of the current profile with a reported result
+   *  (the per-keystroke `update` reverts silently on failure). */
+  saveProfile: () => Promise<{ ok: boolean; error?: string }>
   update: (patch: Partial<BusinessProfile>) => Promise<void>
   updateHours: (day: Weekday, patch: Partial<DayHours>) => Promise<void>
   addHoliday: (h: Omit<Holiday, "id">) => Promise<void>
@@ -106,6 +109,15 @@ export const useBusinessProfileStore = create<BusinessProfileState>()((set, get)
       set({ hasHydrated: true })
     } finally {
       set({ loading: false })
+    }
+  },
+
+  saveProfile: async () => {
+    try {
+      await putProfile(get().profile)
+      return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : "Не вдалось зберегти" }
     }
   },
 

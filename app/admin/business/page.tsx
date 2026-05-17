@@ -24,14 +24,24 @@ export default function AdminBusinessPage() {
   const addHoliday = useBusinessProfileStore((s) => s.addHoliday)
   const removeHoliday = useBusinessProfileStore((s) => s.removeHoliday)
   const reset = useBusinessProfileStore((s) => s.reset)
+  const saveProfile = useBusinessProfileStore((s) => s.saveProfile)
 
-  const [saved, setSaved] = useState(false)
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle")
+  const [saveErr, setSaveErr] = useState<string | null>(null)
   const [newHolidayDate, setNewHolidayDate] = useState("")
   const [newHolidayLabel, setNewHolidayLabel] = useState("")
 
-  const save = () => {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 1500)
+  const save = async () => {
+    setSaveState("saving")
+    setSaveErr(null)
+    const r = await saveProfile()
+    if (r.ok) {
+      setSaveState("saved")
+      setTimeout(() => setSaveState("idle"), 1500)
+    } else {
+      setSaveState("error")
+      setSaveErr(r.error || "Не вдалось зберегти")
+    }
   }
 
   const addHol = () => {
@@ -54,10 +64,20 @@ export default function AdminBusinessPage() {
           <Button variant="outline" onClick={reset} className="rounded-xl gap-2">
             <RotateCcw size={16} /> Скинути
           </Button>
-          <Button onClick={save} className="rounded-xl gap-2">
-            <Save size={16} /> {saved ? "Збережено" : "Зберегти"}
+          <Button onClick={save} disabled={saveState === "saving"} className="rounded-xl gap-2">
+            <Save size={16} />{" "}
+            {saveState === "saving"
+              ? "Збереження…"
+              : saveState === "saved"
+                ? "Збережено"
+                : saveState === "error"
+                  ? "Помилка — повторити"
+                  : "Зберегти"}
           </Button>
         </div>
+        {saveState === "error" && saveErr && (
+          <p className="w-full text-sm text-red-600">Не збережено: {saveErr}</p>
+        )}
       </header>
 
       <section className="rounded-2xl border border-foreground/10 bg-card p-5 space-y-4">
