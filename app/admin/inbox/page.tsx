@@ -97,12 +97,17 @@ export default function InboxPage() {
 
   const markRead = async (ids: number[]) => {
     if (!ids.length) return
+    // Optimistically mark locally so the just-opened conversation stays
+    // visible — on the "unread" filter a full reload would instantly drop
+    // it (the "повідомлення зникає після відкриття" issue).
+    const now = new Date().toISOString()
+    setItems((prev) => prev.map((m) => (ids.includes(m.id) ? { ...m, read_at: m.read_at || now } : m)))
     await authedFetch("/api/crm/communications", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),
     })
-    load()
+    if (filter !== "unread") load()
   }
 
   // Групуємо повідомлення в conversations за thread_key (або customer_id+channel)

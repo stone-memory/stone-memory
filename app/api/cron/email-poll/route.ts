@@ -39,7 +39,7 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
 
   let processed = 0
   await client.connect()
-  const lock = await client.getMailboxLock("INBOX")
+  const lock = await client.getMailboxLock(mbox.imap_folder || "INBOX")
   try {
     const uids = (await client.search({ seen: false }, { uid: true })) || []
     // Process oldest-first, cap the batch so a backlog can't blow maxDuration.

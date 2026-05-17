@@ -70,6 +70,10 @@ const ENV_MAP: Record<IntegrationId, Record<string, string>> = {
     app_password: "EMAIL_MAILBOX_APP_PASSWORD",
     imap_host: "EMAIL_IMAP_HOST",
     imap_port: "EMAIL_IMAP_PORT",
+    // Gmail label to poll (label = IMAP folder). Set a Gmail filter to
+    // apply this label to order/customer mail; poller reads ONLY this
+    // folder so newsletters/notifications never enter. Default INBOX.
+    imap_folder: "EMAIL_IMAP_FOLDER",
     smtp_host: "EMAIL_SMTP_HOST",
     smtp_port: "EMAIL_SMTP_PORT",
   },
