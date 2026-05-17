@@ -36,6 +36,7 @@ export async function GET(req: Request) {
       instagram: ["page_access_token", "page_id", "verify_token"],
       viber: ["auth_token", "sender_name"],
       email_inbound: ["resend_api_key", "email_from", "inbound_secret"],
+      email_mailbox: ["address", "app_password"],
       twilio_sms: ["account_sid", "auth_token", "from_number"],
     }
     return map[id].map((k) => ({ key: k, set: setFlag(cfg, k) }))

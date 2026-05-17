@@ -131,6 +131,7 @@ function getEnvKeyFor(id: IntegrationId, key: string): string | null {
     instagram: { page_access_token: "INSTAGRAM_PAGE_ACCESS_TOKEN", page_id: "INSTAGRAM_PAGE_ID", verify_token: "INSTAGRAM_VERIFY_TOKEN" },
     viber: { auth_token: "VIBER_AUTH_TOKEN", sender_name: "VIBER_SENDER_NAME", sender_avatar: "VIBER_SENDER_AVATAR" },
     email_inbound: { resend_api_key: "RESEND_API_KEY", email_from: "EMAIL_FROM", email_from_name: "EMAIL_FROM_NAME", email_reply_to: "EMAIL_REPLY_TO", inbound_secret: "INBOUND_EMAIL_SECRET" },
+    email_mailbox: { address: "EMAIL_MAILBOX_ADDRESS", app_password: "EMAIL_MAILBOX_APP_PASSWORD", imap_host: "EMAIL_IMAP_HOST", imap_port: "EMAIL_IMAP_PORT", smtp_host: "EMAIL_SMTP_HOST", smtp_port: "EMAIL_SMTP_PORT" },
     twilio_sms: { account_sid: "TWILIO_ACCOUNT_SID", auth_token: "TWILIO_AUTH_TOKEN", from_number: "TWILIO_FROM_NUMBER" },
   }
   return map[id]?.[key] ?? null

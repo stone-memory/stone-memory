@@ -1,4 +1,5 @@
 import "server-only"
+import nodemailer from "nodemailer"
 import { sendOne } from "@/lib/email"
 import { sendTelegram } from "@/lib/telegram"
 import { recordOutgoing, getCustomerChannels } from "@/lib/crm/comms"
@@ -80,20 +81,39 @@ export async function sendToChannel(args: SendArgs): Promise<SendResult> {
 async function sendEmail(args: SendArgs, email?: string): Promise<SendResult> {
   if (!email) return { ok: false, channel: "email", error: "У клієнта немає email" }
 
+  const subject = args.subject || "Повідомлення від Stone Memory"
   const html = `<p>${escapeHtml(args.body).replace(/\n/g, "<br>")}</p>`
-  const sent = await sendOne({
-    to: email,
-    subject: args.subject || "Повідомлення від Stone Memory",
-    html,
-    scope: "individual",
-  })
-  if (!sent.ok) return { ok: false, channel: "email", error: sent.error }
 
-  // Same thread_key shape as inbound email (app/api/email/inbound) so the
-  // reply groups with the original conversation:
+  // Same thread_key shape as inbound email (app/api/email/inbound &
+  // app/api/cron/email-poll) so the reply groups with the conversation:
   //   email:<lowercase-address>:<subject sans re/fw, ≤60 chars>
   const cleanSubject = (args.subject || "").replace(/^(re|fw|fwd):\s*/gi, "").trim()
   const threadKey = `email:${email.toLowerCase()}:${cleanSubject.slice(0, 60)}`
+
+  // Prefer the business mailbox via SMTP — the reply then comes FROM the
+  // footer address and threads on the client side. Fall back to Resend
+  // (used for broadcast) when the mailbox isn't configured.
+  const mbox = await getIntegrationConfig("email_mailbox")
+  let messageId: string | undefined
+  if (mbox.address && mbox.app_password) {
+    try {
+      const port = Number(mbox.smtp_port) || 465
+      const transport = nodemailer.createTransport({
+        host: mbox.smtp_host || "smtp.gmail.com",
+        port,
+        secure: port === 465,
+        auth: { user: mbox.address, pass: mbox.app_password },
+      })
+      const info = await transport.sendMail({ from: mbox.address, to: email, subject, text: args.body, html })
+      messageId = info.messageId
+    } catch (e) {
+      return { ok: false, channel: "email", error: e instanceof Error ? e.message : "SMTP send failed" }
+    }
+  } else {
+    const sent = await sendOne({ to: email, subject, html, scope: "individual" })
+    if (!sent.ok) return { ok: false, channel: "email", error: sent.error }
+    messageId = sent.id
+  }
 
   const commId = await recordOutgoing({
     customerId: args.customerId,
@@ -102,10 +122,10 @@ async function sendEmail(args: SendArgs, email?: string): Promise<SendResult> {
     body: args.body,
     subject: args.subject,
     actorId: args.actorId,
-    externalId: sent.id,
+    externalId: messageId,
     threadKey,
   })
-  return { ok: true, channel: "email", messageId: sent.id, communicationId: commId }
+  return { ok: true, channel: "email", messageId, communicationId: commId }
 }
 
 // ====================================================
