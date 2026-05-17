@@ -8,7 +8,7 @@ import { useAbout } from "@/lib/store/about"
 import { trackEvent } from "@/components/analytics-pixels"
 
 const PHONE_DISPLAY = "+380 (67) 808 02 22"
-const EMAIL = "sttonememory@gmail.com"
+const EMAIL = "info@stonememory.com.ua"
 
 const contactLabels = {
   uk: { heading: "Контакти", address: "Адреса", phone: "Телефон", email: "Email", hours: "Графік", hoursValue: "Пн–Пт 9:00–19:00 · Сб 10:00–16:00" },

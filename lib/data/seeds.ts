@@ -377,7 +377,7 @@ export const seedFaq: SeedFaq[] = [
 export const seedBusinessProfile = {
   legalName: "ФОП Stone Memory",
   displayName: "Stone Memory",
-  email: "sttonememory@gmail.com",
+  email: "info@stonememory.com.ua",
   phone: "+380 (67) 808 02 22",
   address: "",
   city: "Костопіль",

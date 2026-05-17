@@ -198,7 +198,7 @@ export default function IntegrationsPage() {
               </a>
             </Button>
             <Button asChild className="rounded-xl gap-2">
-              <a href="mailto:sttonememory@gmail.com?subject=%5BCRM%5D%20Запит%20на%20налаштування%20інтеграції">
+              <a href="mailto:info@stonememory.com.ua?subject=%5BCRM%5D%20Запит%20на%20налаштування%20інтеграції">
                 Зв'язатись з адміном
               </a>
             </Button>

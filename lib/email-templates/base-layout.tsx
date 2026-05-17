@@ -13,7 +13,7 @@ import {
 export const COMPANY = {
   name: "Stone Memory",
   address: "Костопіль, Рівненська обл., Україна",
-  email: "sttonememory@gmail.com",
+  email: "info@stonememory.com.ua",
 }
 
 export function BaseLayout({

@@ -15,7 +15,7 @@ export const resend = apiKey ? new Resend(apiKey) : null
 
 export const FROM_EMAIL = process.env.EMAIL_FROM || "onboarding@resend.dev"
 export const FROM_NAME = process.env.EMAIL_FROM_NAME || "Stone Memory"
-export const REPLY_TO = process.env.EMAIL_REPLY_TO || "sttonememory@gmail.com"
+export const REPLY_TO = process.env.EMAIL_REPLY_TO || "info@stonememory.com.ua"
 // Re-export normalized SITE_URL — many email templates already import from here.
 export const SITE_URL = NORMALIZED_SITE_URL
 

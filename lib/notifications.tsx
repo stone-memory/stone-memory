@@ -22,7 +22,7 @@ type OrderSummary = {
   status?: string | null
 }
 
-const ADMIN_EMAIL = process.env.EMAIL_REPLY_TO || "sttonememory@gmail.com"
+const ADMIN_EMAIL = process.env.EMAIL_REPLY_TO || "info@stonememory.com.ua"
 
 function normalizeLocale(raw?: string | null): Locale {
   if (raw === "uk" || raw === "en" || raw === "pl" || raw === "de" || raw === "lt") return raw

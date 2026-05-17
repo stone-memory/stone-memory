@@ -10,7 +10,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
         Something went wrong
       </h1>
       <p className="mt-4 max-w-md text-muted-foreground">
-        Please try again. If the issue persists, contact us at sttonememory@gmail.com.
+        Please try again. If the issue persists, contact us at info@stonememory.com.ua.
       </p>
       <button
         onClick={reset}
