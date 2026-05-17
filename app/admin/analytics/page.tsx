@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import {
   TrendingUp,
-  Package,
+  Banknote,
   Users,
   CheckCircle2,
   Clock,
@@ -15,22 +15,27 @@ import {
   Repeat,
   Activity,
   AlertCircle,
+  Trophy,
+  Layers,
+  XCircle,
 } from "lucide-react"
-import { useOrdersStore } from "@/lib/store/orders"
+import { useDealsStore } from "@/lib/crm/store"
+import {
+  DEAL_STATUS_TO_LANE,
+  type Deal,
+  type DealLane,
+} from "@/lib/crm/types"
 import { authedFetch } from "@/lib/authed-fetch"
-import { formatUAH, formatRelative, ADMIN_LOCALE, pluralUk } from "@/lib/admin-format"
+import { formatUAH, formatRelative, pluralUk } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
-import { RevenueByDays } from "@/components/admin/revenue-by-days"
 
-// Sample-size thresholds for chart confidence captions. Picked to roughly
-// match a "noise vs signal" gut check — under 10 orders a peak-hour spike
-// is almost certainly random; 20+ starts to be a real pattern.
+// Sample-size thresholds for chart confidence captions. Under 10 deals a
+// peak-hour spike is almost certainly random; 20+ starts to be a pattern.
 const LOW_DATA_THRESHOLD = 10
 const TARGET_DATA_THRESHOLD = 20
 
-function requestsLabel(n: number): string {
-  // Genitive context ("На основі N ..."): 1 → заявки, 2+ → заявок
-  return `${n} ${pluralUk(n, "заявки", "заявок", "заявок")}`
+function dealsLabel(n: number): string {
+  return `${n} ${pluralUk(n, "угоди", "угод", "угод")}`
 }
 
 type Period = "today" | "7d" | "30d" | "90d" | "ytd" | "all"
@@ -74,6 +79,37 @@ const localeName: Record<string, string> = {
   lt: "Lietuvių",
 }
 
+// Deal as returned by GET /api/crm/deals — includes the joined customer.
+type DealRow = Deal & {
+  customers?: {
+    id: string
+    name: string | null
+    phone: string | null
+    email: string | null
+    locale: string | null
+    city: string | null
+  } | null
+}
+
+const LANE_LABELS: Record<DealLane, string> = {
+  lead: "Ліди",
+  discovery: "Виявлення потреб",
+  agreement: "Договір",
+  production: "Виробництво",
+  fulfillment: "Видача",
+  closed: "Закриті",
+  paused: "Пауза",
+}
+const LANE_ORDER: DealLane[] = [
+  "lead",
+  "discovery",
+  "agreement",
+  "production",
+  "fulfillment",
+  "paused",
+  "closed",
+]
+
 type ChatSession = {
   sessionId: string
   name: string
@@ -93,14 +129,19 @@ type Subscriber = {
 }
 
 export default function AnalyticsPage() {
-  const orders = useOrdersStore((s) => s.orders)
-  const ordersLoading = useOrdersStore((s) => s.loading)
+  const dealsRaw = useDealsStore((s) => s.items) as DealRow[]
+  const dealsLoading = useDealsStore((s) => s.loading)
+  const loadDeals = useDealsStore((s) => s.load)
   const [period, setPeriod] = useState<Period>("30d")
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([])
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [lastRefresh, setLastRefresh] = useState<number>(Date.now())
 
-  // Real-time: завантажуємо чат-сесії і підписників раз на хвилину
+  useEffect(() => {
+    loadDeals()
+  }, [loadDeals])
+
+  // Real-time: чат-сесії і підписники раз на хвилину
   useEffect(() => {
     const loadChat = async () => {
       try {
@@ -136,122 +177,165 @@ export default function AnalyticsPage() {
 
   const from = useMemo(() => startOf(period), [period])
 
-  const filtered = useMemo(
-    () => orders.filter((o) => !from || new Date(o.createdAt) >= from),
-    [orders, from]
+  const deals = useMemo(
+    () => dealsRaw.filter((d) => !from || new Date(d.created_at) >= from),
+    [dealsRaw, from]
   )
 
-  // ===== Базові KPI (€ суми → UAH) =====
-  const totalRevenue = filtered.reduce(
-    (sum, o) => sum + o.items.reduce((a, i) => a + i.priceFrom, 0),
-    0
-  )
-  const completed = filtered.filter((o) => o.status === "completed")
-  const inProgress = filtered.filter((o) => o.status === "in_progress")
-  const newOrders = filtered.filter((o) => o.status === "new")
-  const completedRevenue = completed.reduce(
-    (s, o) => s + o.items.reduce((a, i) => a + i.priceFrom, 0),
-    0
-  )
-  const avgOrder = filtered.length ? Math.round(totalRevenue / filtered.length) : 0
-  const uniqueClients = new Set(filtered.map((o) => o.phone)).size
+  // ===== Money KPIs =====
+  const isClosedNeg = (s: Deal["status"]) => s === "cancelled" || s === "lost"
+  const pipelineOpen = deals
+    .filter((d) => d.status !== "completed" && !isClosedNeg(d.status))
+    .reduce((sum, d) => sum + (d.amount_eur || 0), 0)
+  const completedDeals = deals.filter((d) => d.status === "completed")
+  const completedRevenue = completedDeals.reduce((s, d) => s + (d.amount_eur || 0), 0)
+  const paidTotal = deals.reduce((s, d) => s + (d.paid_eur || 0), 0)
+  const avgDeal = deals.length
+    ? Math.round(deals.reduce((s, d) => s + (d.amount_eur || 0), 0) / deals.length)
+    : 0
+  const uniqueClients = new Set(deals.map((d) => d.customer_id)).size
 
-  // ===== Conversion funnel =====
-  // chat sessions з останніх 30 днів → orders → completed
+  // ===== Win-rate & середній цикл =====
+  const lostDeals = deals.filter((d) => isClosedNeg(d.status))
+  const decided = completedDeals.length + lostDeals.length
+  const winRate = decided > 0 ? Math.round((completedDeals.length / decided) * 100) : 0
+  const avgCycleDays = useMemo(() => {
+    const samples: number[] = []
+    for (const d of completedDeals) {
+      if (!d.completed_at) continue
+      const ms = new Date(d.completed_at).getTime() - new Date(d.created_at).getTime()
+      if (ms > 0) samples.push(ms)
+    }
+    if (samples.length === 0) return null
+    const avg = samples.reduce((a, b) => a + b, 0) / samples.length
+    return Math.round(avg / 86_400_000) // днів
+  }, [completedDeals])
+
+  // ===== Воронка угод (за 30 днів) =====
   const funnelFrom = useMemo(() => {
     const d = new Date()
     d.setDate(d.getDate() - 30)
     return d.getTime()
   }, [])
+  const recentDeals = dealsRaw.filter(
+    (d) => new Date(d.created_at).getTime() >= funnelFrom
+  )
+  const recentCreated = recentDeals.length
+  const recentContracted = recentDeals.filter((d) => d.contract_signed_at != null).length
+  const recentDone = recentDeals.filter((d) => d.status === "completed").length
   const recentChats = chatSessions.filter((s) => s.lastUserAt >= funnelFrom).length
-  const recentOrders = orders.filter((o) => new Date(o.createdAt).getTime() >= funnelFrom).length
-  const recentCompleted = orders.filter(
-    (o) => o.status === "completed" && new Date(o.createdAt).getTime() >= funnelFrom
-  ).length
+  const fChatToDeal = recentChats > 0 ? Math.round((recentCreated / recentChats) * 100) : 0
+  const fDealToContract =
+    recentCreated > 0 ? Math.round((recentContracted / recentCreated) * 100) : 0
+  const fContractToDone =
+    recentContracted > 0 ? Math.round((recentDone / recentContracted) * 100) : 0
 
-  const funnelChatToOrder = recentChats > 0 ? Math.round((recentOrders / recentChats) * 100) : 0
-  const funnelOrderToDone = recentOrders > 0 ? Math.round((recentCompleted / recentOrders) * 100) : 0
+  // ===== Пайплайн по стадіях (lane) =====
+  const byLane = useMemo(() => {
+    const m = new Map<DealLane, { count: number; amount: number }>()
+    for (const d of deals) {
+      const lane = DEAL_STATUS_TO_LANE[d.status]
+      const cur = m.get(lane) || { count: 0, amount: 0 }
+      cur.count++
+      cur.amount += d.amount_eur || 0
+      m.set(lane, cur)
+    }
+    return m
+  }, [deals])
 
-  // ===== Status breakdown =====
-  const byStatus = {
-    new: newOrders.length,
-    in_progress: inProgress.length,
-    completed: completed.length,
-  }
+  // ===== Причини втрат =====
+  const lossReasons = useMemo(() => {
+    const m: Record<string, number> = {}
+    for (const d of lostDeals) {
+      const key = (d.lost_reason || "").trim() || "Не вказано"
+      m[key] = (m[key] || 0) + 1
+    }
+    return Object.entries(m).sort((a, b) => b[1] - a[1])
+  }, [lostDeals])
+
+  // ===== Джерела =====
+  const bySource = useMemo(() => {
+    const m: Record<string, number> = {}
+    for (const d of deals) {
+      const key = (d.source || "").trim() || "—"
+      m[key] = (m[key] || 0) + 1
+    }
+    return Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 8)
+  }, [deals])
 
   // ===== Категорії =====
-  const byCategory = filtered.reduce(
-    (acc, o) => {
-      for (const i of o.items) {
-        acc[i.category] = (acc[i.category] || 0) + 1
-      }
-      return acc
-    },
-    {} as Record<string, number>
-  )
-
-  // ===== Топ-10 товарів =====
-  const topItems = useMemo(() => {
-    const counts: Record<string, { count: number; revenue: number }> = {}
-    for (const o of filtered) {
-      for (const i of o.items) {
-        if (!counts[i.id]) counts[i.id] = { count: 0, revenue: 0 }
-        counts[i.id].count++
-        counts[i.id].revenue += i.priceFrom
-      }
+  const byCategory = useMemo(() => {
+    const m: Record<string, number> = {}
+    for (const d of deals) {
+      const key = (d.category || "").trim() || "—"
+      m[key] = (m[key] || 0) + 1
     }
-    return Object.entries(counts)
-      .sort((a, b) => b[1].count - a[1].count)
-      .slice(0, 10)
-  }, [filtered])
+    return Object.entries(m).sort((a, b) => b[1] - a[1])
+  }, [deals])
 
-  // Daily timeline aggregation lives inside <RevenueByDays /> now —
-  // it owns its own period state independent from this page-level
-  // `period` filter.
+  // ===== Менеджери =====
+  const byAssignee = useMemo(() => {
+    const m: Record<string, { count: number; amount: number }> = {}
+    for (const d of deals) {
+      const key = d.assigned_to || "Не призначено"
+      if (!m[key]) m[key] = { count: 0, amount: 0 }
+      m[key].count++
+      m[key].amount += d.amount_eur || 0
+    }
+    return Object.entries(m).sort((a, b) => b[1].count - a[1].count)
+  }, [deals])
 
-  // ===== Time-of-day pattern (коли клієнти найчастіше залишають заявки?) =====
+  // ===== Виторг виконаних — останні 14 днів =====
+  const revenueByDay = useMemo(() => {
+    const days: { label: string; revenue: number }[] = []
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date()
+      d.setHours(0, 0, 0, 0)
+      d.setDate(d.getDate() - i)
+      const next = new Date(d)
+      next.setDate(next.getDate() + 1)
+      const rev = dealsRaw
+        .filter(
+          (x) =>
+            x.status === "completed" &&
+            x.completed_at &&
+            new Date(x.completed_at) >= d &&
+            new Date(x.completed_at) < next
+        )
+        .reduce((s, x) => s + (x.amount_eur || 0), 0)
+      days.push({ label: `${d.getDate()}.${d.getMonth() + 1}`, revenue: rev })
+    }
+    return days
+  }, [dealsRaw])
+  const maxRevDay = Math.max(1, ...revenueByDay.map((d) => d.revenue))
+
+  // ===== Час доби / день тижня (по created_at угод) =====
   const hourlyPattern = useMemo(() => {
     const hours = Array.from({ length: 24 }, () => 0)
-    for (const o of filtered) {
-      const h = new Date(o.createdAt).getHours()
-      hours[h]++
-    }
+    for (const d of deals) hours[new Date(d.created_at).getHours()]++
     return hours
-  }, [filtered])
+  }, [deals])
   const peakHour = hourlyPattern.indexOf(Math.max(...hourlyPattern))
   const maxHourly = Math.max(1, ...hourlyPattern)
 
-  // ===== Day-of-week pattern =====
   const weekdayPattern = useMemo(() => {
-    // 0=Sun … 6=Sat. Україна — починаємо з Понеділка
     const map = [0, 0, 0, 0, 0, 0, 0]
-    for (const o of filtered) {
-      const d = new Date(o.createdAt).getDay()
-      map[d]++
-    }
-    // shift до понеділка
+    for (const d of deals) map[new Date(d.created_at).getDay()]++
     return [map[1], map[2], map[3], map[4], map[5], map[6], map[0]]
-  }, [filtered])
+  }, [deals])
   const weekdayLabels = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
   const maxWeekday = Math.max(1, ...weekdayPattern)
 
-  // ===== LTV (повторні клієнти) =====
+  // ===== Лояльність (повторні клієнти по угодах) =====
   const repeatClients = useMemo(() => {
-    const byPhone: Record<string, number> = {}
-    for (const o of orders) byPhone[o.phone] = (byPhone[o.phone] || 0) + 1
-    const repeat = Object.values(byPhone).filter((n) => n > 1).length
-    const total = Object.keys(byPhone).length
+    const byCust: Record<string, number> = {}
+    for (const d of dealsRaw) byCust[d.customer_id] = (byCust[d.customer_id] || 0) + 1
+    const total = Object.keys(byCust).length
+    const repeat = Object.values(byCust).filter((n) => n > 1).length
     return { total, repeat, rate: total > 0 ? Math.round((repeat / total) * 100) : 0 }
-  }, [orders])
+  }, [dealsRaw])
 
-  // ===== Канали зв'язку =====
-  // Чат-сесії → можна знайти ті, які стали замовленнями (ті що з phone)
-  const chatToOrderSessions = chatSessions.filter((s) => {
-    if (!s.phone) return false
-    return orders.some((o) => o.phone.replace(/\D/g, "") === s.phone!.replace(/\D/g, ""))
-  }).length
-
-  // ===== Розподіл за локалями =====
+  // ===== Локалі =====
   const subscribersByLocale = useMemo(() => {
     const map: Record<string, number> = {}
     for (const s of subscribers) {
@@ -261,15 +345,16 @@ export default function AnalyticsPage() {
     return Object.entries(map).sort((a, b) => b[1] - a[1])
   }, [subscribers])
 
-  const chatByLocale = useMemo(() => {
+  const dealsByLocale = useMemo(() => {
     const map: Record<string, number> = {}
-    for (const s of chatSessions) {
-      map[s.locale] = (map[s.locale] || 0) + 1
+    for (const d of deals) {
+      const loc = d.customers?.locale || "uk"
+      map[loc] = (map[loc] || 0) + 1
     }
     return Object.entries(map).sort((a, b) => b[1] - a[1])
-  }, [chatSessions])
+  }, [deals])
 
-  // ===== Швидкість відповіді (середній час між першим повідомленням клієнта і відповіддю оператора) =====
+  // ===== Чат: швидкість відповіді / без відповіді =====
   const avgResponseTime = useMemo(() => {
     const samples: number[] = []
     for (const s of chatSessions) {
@@ -281,18 +366,18 @@ export default function AnalyticsPage() {
     }
     if (samples.length === 0) return null
     const avg = samples.reduce((a, b) => a + b, 0) / samples.length
-    return Math.round(avg / 60_000) // у хвилинах
+    return Math.round(avg / 60_000)
   }, [chatSessions])
 
-  // ===== Сесії без відповіді (потребують уваги!) =====
   const unrepliedSessions = chatSessions.filter((s) => {
     const lastUser = s.userMessages[s.userMessages.length - 1]
     if (!lastUser) return false
     const lastOp = s.operatorMessages[s.operatorMessages.length - 1]
     if (lastOp && lastOp.at > lastUser.at) return false
-    // Старіше ніж 5 хв — потрібна увага
     return Date.now() - lastUser.at > 5 * 60_000
   })
+
+  const periodLabel = PERIODS.find((p) => p.key === period)?.label || ""
 
   return (
     <div className="space-y-8">
@@ -300,7 +385,7 @@ export default function AnalyticsPage() {
         <div>
           <h1 className="text-4xl font-semibold tracking-tight-custom">Аналітика</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filtered.length} замовлень за вибраний період · оновлено {formatRelative(lastRefresh)}
+            {deals.length} угод за вибраний період · оновлено {formatRelative(lastRefresh)}
           </p>
         </div>
         <div className="flex gap-1 rounded-full bg-foreground/5 p-1 flex-wrap">
@@ -321,7 +406,6 @@ export default function AnalyticsPage() {
         </div>
       </header>
 
-      {/* ===== Real-time alerts ===== */}
       {unrepliedSessions.length > 0 && (
         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
@@ -331,7 +415,7 @@ export default function AnalyticsPage() {
               {unrepliedSessions.length === 1 ? "сесія чекає" : "сесій чекають"} на відповідь
             </h3>
             <p className="text-xs text-amber-800/80 mt-0.5">
-              Відкрийте «Лайв-чат» — клієнти написали повідомлення, на яке поки немає відповіді понад 5 хвилин.
+              Відкрийте «Лайв-чат» — є повідомлення без відповіді понад 5 хвилин.
             </p>
           </div>
           <a
@@ -343,126 +427,94 @@ export default function AnalyticsPage() {
         </div>
       )}
 
-      {/* ===== Top-level KPIs ===== */}
+      {/* ===== Money KPIs ===== */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Kpi icon={<TrendingUp size={18} />} label="Дохід (pipeline)" value={formatUAH(totalRevenue)} hint={`Виконано: ${formatUAH(completedRevenue)}`} />
-        <Kpi icon={<Package size={18} />} label="Замовлень" value={filtered.length} hint={`Нових: ${byStatus.new} · В роботі: ${byStatus.in_progress}`} />
+        <Kpi icon={<TrendingUp size={18} />} label="Pipeline (відкриті)" value={formatUAH(pipelineOpen)} hint={`Виторг виконаних: ${formatUAH(completedRevenue)}`} />
+        <Kpi icon={<Banknote size={18} />} label="Отримано (оплати)" value={formatUAH(paidTotal)} hint="Сума paid по угодах періоду" />
+        <Kpi icon={<Layers size={18} />} label="Угод" value={deals.length} hint={`Виконано: ${completedDeals.length} · Втрачено: ${lostDeals.length}`} />
+        <Kpi icon={<CheckCircle2 size={18} />} label="Середній чек" value={formatUAH(avgDeal)} hint="amount_eur по періоду" />
+      </div>
+
+      {/* ===== Deal KPIs ===== */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Kpi icon={<Trophy size={18} />} label="Win-rate" value={`${winRate}%`} hint={`Виграно ${completedDeals.length} з ${decided} вирішених`} tone={winRate >= 50 ? "success" : "default"} />
         <Kpi icon={<Users size={18} />} label="Клієнтів" value={uniqueClients} hint={repeatClients.repeat > 0 ? `Повторних: ${repeatClients.repeat} (${repeatClients.rate}%)` : "Усі вперше"} />
-        <Kpi icon={<CheckCircle2 size={18} />} label="Середній чек" value={formatUAH(avgOrder)} hint="Базується на «від» цінах" />
+        <Kpi icon={<Clock size={18} />} label="Сер. цикл угоди" value={avgCycleDays !== null ? `${avgCycleDays} дн` : "—"} hint="Створено → Виконано" />
+        <Kpi icon={<MessageCircle size={18} />} label="Активних чат-сесій" value={chatSessions.length} hint={avgResponseTime !== null ? `Відповідь ~${avgResponseTime} хв` : "Real-time"} tone={unrepliedSessions.length > 0 ? "warn" : "default"} />
       </div>
 
-      {/* ===== Real-time KPIs (chat / subscribers) ===== */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Kpi
-          icon={<MessageCircle size={18} />}
-          label="Активних чат-сесій"
-          value={chatSessions.length}
-          hint={chatToOrderSessions > 0 ? `${chatToOrderSessions} стали замовленнями` : "Real-time"}
-          tone={unrepliedSessions.length > 0 ? "warn" : "default"}
-        />
-        <Kpi
-          icon={<Mail size={18} />}
-          label="Підписників"
-          value={subscribers.filter((s) => s.status === "active").length}
-          hint={`Всього у базі: ${subscribers.length}`}
-        />
-        <Kpi
-          icon={<Clock size={18} />}
-          label="Сер. час відповіді"
-          value={avgResponseTime !== null ? `${avgResponseTime} хв` : "—"}
-          hint={avgResponseTime !== null && avgResponseTime <= 5 ? "🟢 Швидко" : avgResponseTime !== null && avgResponseTime <= 30 ? "🟡 Норма" : "🔴 Повільно"}
-        />
-        <Kpi
-          icon={<Activity size={18} />}
-          label="Пік активності"
-          value={`${peakHour}:00`}
-          hint={`Найбільше заявок між ${peakHour}:00 і ${(peakHour + 1) % 24}:00`}
-        />
-      </div>
-
-      {/* ===== Conversion funnel (30 days) ===== */}
+      {/* ===== Воронка ===== */}
       <section className="rounded-2xl border border-foreground/10 bg-card p-6">
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Воронка конверсії (за 30 днів)
-            </h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Чат-сесії → заявки → виконано. Допомагає зрозуміти на якому етапі втрачаєте клієнтів.
-            </p>
-          </div>
+        <div className="mb-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Воронка угод (за 30 днів)
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Чат-сесії → угоди → договір → виконано. Видно, де втрачаються клієнти.
+          </p>
         </div>
-
         <div className="space-y-4">
-          <FunnelStep
-            label="Чат-сесії"
-            value={recentChats}
-            total={recentChats || 1}
-            color="bg-blue-500"
-            hint="100% — точка входу"
-          />
-          <FunnelStep
-            label="Заявки"
-            value={recentOrders}
-            total={recentChats || 1}
-            color="bg-accent"
-            hint={`Конверсія: ${funnelChatToOrder}%`}
-          />
-          <FunnelStep
-            label="Виконані"
-            value={recentCompleted}
-            total={recentChats || 1}
-            color="bg-success"
-            hint={`Виконання: ${funnelOrderToDone}% від заявок`}
-          />
+          <FunnelStep label="Чат-сесії" value={recentChats} total={recentChats || 1} color="bg-blue-500" hint="точка входу" />
+          <FunnelStep label="Створено угод" value={recentCreated} total={recentChats || 1} color="bg-accent" hint={`Конверсія з чату: ${fChatToDeal}%`} />
+          <FunnelStep label="Договір підписано" value={recentContracted} total={recentChats || 1} color="bg-amber-500" hint={`${fDealToContract}% від угод`} />
+          <FunnelStep label="Виконано" value={recentDone} total={recentChats || 1} color="bg-success" hint={`${fContractToDone}% від договорів · win-rate ${winRate}%`} />
         </div>
       </section>
 
-      {/* ===== Revenue timeline + Status =====
-         RevenueByDays is self-contained: owns its own period selector,
-         skeleton/empty/data states, and proper Recharts BarChart with
-         axes + tooltip. The old inline grey-block bar chart was the
-         source of the "broken" look in the screenshot. */}
+      {/* ===== Виторг по днях + Пайплайн ===== */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <RevenueByDays orders={orders} loading={ordersLoading} />
-
-        <div className="rounded-2xl border border-foreground/10 bg-card p-6">
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6 lg:col-span-2">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Статуси
+            Виторг виконаних угод — 14 днів
+          </h2>
+          <div className="mt-4 flex h-40 items-end gap-1.5">
+            {revenueByDay.map((d, i) => {
+              const has = d.revenue > 0
+              return (
+                <div key={i} className="flex flex-1 flex-col justify-end gap-1">
+                  <div className="relative w-full" style={{ height: "100%" }}>
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-foreground/15" />
+                    <div
+                      className={cn(
+                        "absolute bottom-0 left-0 right-0 rounded-t-md transition-colors",
+                        has ? "bg-success/70 hover:bg-success" : "bg-transparent"
+                      )}
+                      style={{ height: has ? `${Math.max(8, (d.revenue / maxRevDay) * 100)}%` : "0" }}
+                      title={`${d.label}: ${formatUAH(d.revenue)}`}
+                    />
+                  </div>
+                  <span className="text-[9px] text-muted-foreground text-center">{d.label}</span>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Пайплайн по стадіях
           </h2>
           <div className="mt-4 space-y-3">
-            <StatusBar label="Нові" value={byStatus.new} total={filtered.length} color="bg-accent" />
-            <StatusBar label="В обробці" value={byStatus.in_progress} total={filtered.length} color="bg-amber-500" />
-            <StatusBar label="Завершені" value={byStatus.completed} total={filtered.length} color="bg-success" />
+            {LANE_ORDER.map((lane) => {
+              const v = byLane.get(lane)
+              if (!v) return null
+              return (
+                <StatusBar
+                  key={lane}
+                  label={LANE_LABELS[lane]}
+                  value={v.count}
+                  total={deals.length}
+                  color={lane === "closed" ? "bg-success" : lane === "paused" ? "bg-amber-500" : "bg-accent"}
+                  suffix={formatUAH(v.amount)}
+                />
+              )
+            })}
+            {byLane.size === 0 && <p className="text-sm text-muted-foreground">—</p>}
           </div>
-          <div className="mt-6 border-t border-foreground/5 pt-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              За категорією
-            </h3>
-            <div className="mt-3 space-y-2">
-              {Object.entries(byCategory).map(([k, v]) => (
-                <div key={k} className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {k === "memorial" ? "Пам'ятники" : "Дім і сад"}
-                  </span>
-                  <span className="font-medium tabular-nums">{v}</span>
-                </div>
-              ))}
-              {Object.keys(byCategory).length === 0 && (
-                <p className="text-sm text-muted-foreground">—</p>
-              )}
-            </div>
-          </div>
-        </div>
+        </section>
       </div>
 
-      {/* ===== Time patterns =====
-         Sample-size aware: when filtered.length < LOW_DATA_THRESHOLD we
-         tell the user explicitly that one stray order is going to look
-         like a "peak". Without this, a single 03:00 lead made the chart
-         look broken. Bars on zero-count buckets render a 1px hairline at
-         the baseline so the chart is visibly responsive to all 24 hours
-         / 7 days, not just the ones with data. */}
+      {/* ===== Час доби / день тижня ===== */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="rounded-2xl border border-foreground/10 bg-card p-6">
           <header>
@@ -470,11 +522,10 @@ export default function AnalyticsPage() {
               Розподіл за годинами доби
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Коли клієнти найчастіше залишають заявки — корисно для розкладу менеджерів.
+              Коли найчастіше зʼявляються нові угоди — для розкладу менеджерів.
             </p>
-            <SampleSizeCaption count={filtered.length} periodLabel={PERIODS.find((p) => p.key === period)?.label || ""} />
+            <SampleSizeCaption count={deals.length} periodLabel={periodLabel} />
           </header>
-
           <div className="mt-4 flex h-32 items-end gap-0.5 border-b border-foreground/10">
             {hourlyPattern.map((c, h) => {
               const hasData = c > 0
@@ -483,30 +534,16 @@ export default function AnalyticsPage() {
                   key={h}
                   className={cn(
                     "group relative flex-1 rounded-t-sm transition-colors",
-                    !hasData
-                      ? "bg-foreground/10"
-                      : h === peakHour
-                        ? "bg-accent"
-                        : "bg-foreground/30 hover:bg-foreground/50"
+                    !hasData ? "bg-foreground/10" : h === peakHour ? "bg-accent" : "bg-foreground/30 hover:bg-foreground/50"
                   )}
-                  style={{
-                    // Zero-count → 1px hairline. Non-zero → proportional
-                    // with a 6px minimum so single-order buckets are visible.
-                    height: hasData
-                      ? `${Math.max(6, (c / maxHourly) * 100)}%`
-                      : "1px",
-                  }}
-                  title={`${h}:00 — ${c === 0 ? "0 замовлень" : `${c} ${pluralUk(c, "замовлення", "замовлення", "замовлень")}`}`}
+                  style={{ height: hasData ? `${Math.max(6, (c / maxHourly) * 100)}%` : "1px" }}
+                  title={`${h}:00 — ${c === 0 ? "0 угод" : dealsLabel(c)}`}
                 />
               )
             })}
           </div>
           <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
-            <span>00:00</span>
-            <span>06:00</span>
-            <span>12:00</span>
-            <span>18:00</span>
-            <span>23:00</span>
+            <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
           </div>
         </section>
 
@@ -515,33 +552,23 @@ export default function AnalyticsPage() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Розподіл за днями тижня
             </h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              На які дні припадає більшість запитів.
-            </p>
-            <SampleSizeCaption count={filtered.length} periodLabel={PERIODS.find((p) => p.key === period)?.label || ""} />
+            <p className="mt-1 text-xs text-muted-foreground">На які дні припадає більшість угод.</p>
+            <SampleSizeCaption count={deals.length} periodLabel={periodLabel} />
           </header>
-
           <div className="mt-4 flex h-32 items-end gap-1.5">
             {weekdayPattern.map((c, i) => {
               const hasData = c > 0
               return (
                 <div key={i} className="flex flex-1 flex-col justify-end gap-1">
                   <div className="relative w-full" style={{ height: "100%" }}>
-                    {/* Baseline hairline so empty days are visibly part of the chart */}
                     <div className="absolute bottom-0 left-0 right-0 h-px bg-foreground/15" />
                     <div
                       className={cn(
                         "absolute bottom-0 left-0 right-0 rounded-t-md transition-colors",
-                        !hasData
-                          ? "bg-transparent"
-                          : i >= 5
-                            ? "bg-foreground/40"
-                            : "bg-foreground/70"
+                        !hasData ? "bg-transparent" : i >= 5 ? "bg-foreground/40" : "bg-foreground/70"
                       )}
-                      style={{
-                        height: hasData ? `${Math.max(8, (c / maxWeekday) * 100)}%` : "0",
-                      }}
-                      title={`${weekdayLabels[i]}: ${c} ${pluralUk(c, "замовлення", "замовлення", "замовлень")}`}
+                      style={{ height: hasData ? `${Math.max(8, (c / maxWeekday) * 100)}%` : "0" }}
+                      title={`${weekdayLabels[i]}: ${dealsLabel(c)}`}
                     />
                   </div>
                   <span className="text-[10px] text-muted-foreground text-center">{weekdayLabels[i]}</span>
@@ -552,11 +579,104 @@ export default function AnalyticsPage() {
         </section>
       </div>
 
+      {/* ===== Джерела / Причини втрат ===== */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Джерела угод
+          </h2>
+          <div className="mt-4 space-y-3">
+            {bySource.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Немає даних</p>
+            ) : (
+              bySource.map(([src, n]) => (
+                <StatusBar key={src} label={src} value={n} total={deals.length} color="bg-accent" />
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+            <XCircle size={14} /> Причини втрат
+          </h2>
+          <div className="mt-4 space-y-3">
+            {lossReasons.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Втрачених угод немає 🎉</p>
+            ) : (
+              lossReasons.map(([reason, n]) => (
+                <StatusBar key={reason} label={reason} value={n} total={lostDeals.length} color="bg-red-500" />
+              ))
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* ===== Категорії / Менеджери ===== */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            За категорією
+          </h2>
+          <div className="mt-4 space-y-2">
+            {byCategory.length === 0 ? (
+              <p className="text-sm text-muted-foreground">—</p>
+            ) : (
+              byCategory.map(([k, v]) => (
+                <div key={k} className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {k === "memorial" ? "Памʼятники" : k === "home" ? "Дім і сад" : k}
+                  </span>
+                  <span className="font-medium tabular-nums">{v}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Менеджери
+          </h2>
+          <div className="mt-4 space-y-3">
+            {byAssignee.length === 0 ? (
+              <p className="text-sm text-muted-foreground">—</p>
+            ) : (
+              byAssignee.map(([who, v]) => (
+                <StatusBar
+                  key={who}
+                  label={who === "Не призначено" ? who : who.slice(0, 8)}
+                  value={v.count}
+                  total={deals.length}
+                  color="bg-accent"
+                  suffix={formatUAH(v.amount)}
+                />
+              ))
+            )}
+          </div>
+        </section>
+      </div>
+
       {/* ===== Локалі ===== */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="rounded-2xl border border-foreground/10 bg-card p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-            <Globe size={14} /> Підписники за мовами
+            <Globe size={14} /> Угоди за мовами клієнта
+          </h2>
+          {dealsByLocale.length === 0 ? (
+            <p className="mt-4 text-sm text-muted-foreground">Немає даних</p>
+          ) : (
+            <div className="mt-4 space-y-2">
+              {dealsByLocale.map(([loc, count]) => (
+                <LocaleBar key={loc} loc={loc} count={count} total={deals.length} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+            <Mail size={14} /> Підписники за мовами
           </h2>
           {subscribersByLocale.length === 0 ? (
             <p className="mt-4 text-sm text-muted-foreground">Поки немає підписників</p>
@@ -568,77 +688,30 @@ export default function AnalyticsPage() {
             </div>
           )}
         </section>
-
-        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-            <MessageCircle size={14} /> Чат-сесії за мовами
-          </h2>
-          {chatByLocale.length === 0 ? (
-            <p className="mt-4 text-sm text-muted-foreground">Поки немає чат-сесій</p>
-          ) : (
-            <div className="mt-4 space-y-2">
-              {chatByLocale.map(([loc, count]) => (
-                <LocaleBar key={loc} loc={loc} count={count} total={chatSessions.length} />
-              ))}
-            </div>
-          )}
-        </section>
       </div>
 
-      {/* ===== Топ товарів і повторні клієнти ===== */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <section className="rounded-2xl border border-foreground/10 bg-card p-6 lg:col-span-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            ТОП-10 товарів
-          </h2>
-          {topItems.length === 0 ? (
-            <p className="mt-4 text-sm text-muted-foreground">Немає даних</p>
-          ) : (
-            <div className="mt-4 divide-y divide-foreground/5">
-              {topItems.map(([id, v], i) => (
-                <div key={id} className="flex items-center gap-4 py-3">
-                  <span className="w-6 text-xs text-muted-foreground">#{i + 1}</span>
-                  <span className="font-medium tabular-nums">№ {id}</span>
-                  <div className="ml-auto flex items-center gap-6 text-sm">
-                    <span className="text-muted-foreground">{v.count} замовлень</span>
-                    <span className="font-medium tabular-nums">{formatUAH(v.revenue)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section className="rounded-2xl border border-foreground/10 bg-card p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-            <Repeat size={14} /> Лояльність
-          </h2>
-          <div className="mt-5 space-y-4">
-            <div>
-              <div className="text-3xl font-semibold tabular-nums">{repeatClients.rate}%</div>
-              <div className="mt-1 text-xs text-muted-foreground">
-                Клієнтів, що повертаються
-              </div>
-            </div>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <div>Усього клієнтів: <span className="font-medium text-foreground">{repeatClients.total}</span></div>
-              <div>Повторні: <span className="font-medium text-foreground">{repeatClients.repeat}</span></div>
-              <div>Single-purchase: <span className="font-medium text-foreground">{repeatClients.total - repeatClients.repeat}</span></div>
-            </div>
-            <div className="rounded-xl bg-foreground/[0.03] p-3 text-xs text-muted-foreground">
-              💡 У сегменті меморіальних виробів повторні замовлення рідкісні (раз у житті).
-              У сегменті «дім і сад» — часті (стільниці + підвіконня + сходи від одного клієнта).
-            </div>
+      {/* ===== Лояльність ===== */}
+      <section className="rounded-2xl border border-foreground/10 bg-card p-6">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+          <Repeat size={14} /> Лояльність
+        </h2>
+        <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div>
+            <div className="text-3xl font-semibold tabular-nums">{repeatClients.rate}%</div>
+            <div className="mt-1 text-xs text-muted-foreground">Клієнтів, що повертаються</div>
           </div>
-        </section>
-      </div>
+          <div className="text-xs text-muted-foreground space-y-1">
+            <div>Усього клієнтів: <span className="font-medium text-foreground">{repeatClients.total}</span></div>
+            <div>Повторні: <span className="font-medium text-foreground">{repeatClients.repeat}</span></div>
+            <div>Одна угода: <span className="font-medium text-foreground">{repeatClients.total - repeatClients.repeat}</span></div>
+          </div>
+          <div className="rounded-xl bg-foreground/[0.03] p-3 text-xs text-muted-foreground">
+            💡 У меморіальному сегменті повторні угоди рідкісні; у «дім і сад» — часті (стільниці + підвіконня + сходи).
+          </div>
+        </div>
+      </section>
 
-      {/* ===== Активні чат-сесії (real-time) =====
-         Each row is now a Link to /admin/inbox?thread=site_chat:<id>
-         so the whole card is clickable, not just the phone number.
-         The phone tel: link inside is wrapped in a stopPropagation
-         button so tapping the number still dials, but tapping anywhere
-         else opens the conversation in the unified inbox. */}
+      {/* ===== Останні чат-сесії ===== */}
       {chatSessions.length > 0 && (
         <section className="rounded-2xl border border-foreground/10 bg-card p-6">
           <div className="mb-2 flex items-center justify-between">
@@ -674,8 +747,6 @@ export default function AnalyticsPage() {
                         )}
                       </div>
                       {s.phone && (
-                        // Nested click target — stopPropagation so tapping
-                        // the phone number triggers tel: instead of nav.
                         <button
                           type="button"
                           onClick={(e) => {
@@ -699,6 +770,10 @@ export default function AnalyticsPage() {
           </ul>
         </section>
       )}
+
+      {dealsLoading && dealsRaw.length === 0 && (
+        <p className="text-center text-sm text-muted-foreground">Завантаження угод…</p>
+      )}
     </div>
   )
 }
@@ -720,7 +795,11 @@ function Kpi({
     <div
       className={cn(
         "rounded-2xl border p-5",
-        tone === "warn" ? "border-amber-500/30 bg-amber-500/5" : "border-foreground/10 bg-card"
+        tone === "warn"
+          ? "border-amber-500/30 bg-amber-500/5"
+          : tone === "success"
+            ? "border-success/30 bg-success/5"
+            : "border-foreground/10 bg-card"
       )}
     >
       <div className="flex items-center gap-2 text-muted-foreground">
@@ -738,19 +817,22 @@ function StatusBar({
   value,
   total,
   color,
+  suffix,
 }: {
   label: string
   value: number
   total: number
   color: string
+  suffix?: string
 }) {
   const pct = total ? Math.round((value / total) * 100) : 0
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-medium tabular-nums">
+        <span className="text-muted-foreground truncate pr-2">{label}</span>
+        <span className="font-medium tabular-nums whitespace-nowrap">
           {value} <span className="text-muted-foreground">· {pct}%</span>
+          {suffix && <span className="ml-2 text-muted-foreground">{suffix}</span>}
         </span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-foreground/5">
@@ -790,22 +872,12 @@ function FunnelStep({
   )
 }
 
-/**
- * Sample-size caption shown under chart titles. Honest about what
- * the user is looking at: < LOW_DATA_THRESHOLD orders gets an amber
- * "potrebno more" badge plus an explanatory info card hint; sufficient
- * data gets a neutral "based on N requests за період" caption.
- *
- * Single source of truth so both the hourly and weekday charts read
- * the same way and the user doesn't have to mentally reconcile two
- * different framings on the same row.
- */
 function SampleSizeCaption({ count, periodLabel }: { count: number; periodLabel: string }) {
   const period = periodLabel.toLowerCase()
   if (count === 0) {
     return (
       <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-foreground/[0.04] px-2.5 py-0.5 text-[11px] text-muted-foreground">
-        <AlertCircle size={11} /> Поки немає заявок за «{period}» — графік оживе як тільки прийде перша.
+        <AlertCircle size={11} /> Поки немає угод за «{period}» — графік оживе як тільки прийде перша.
       </p>
     )
   }
@@ -814,7 +886,7 @@ function SampleSizeCaption({ count, periodLabel }: { count: number; periodLabel:
       <p className="mt-2 inline-flex items-start gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-[11px] leading-snug text-amber-700 dark:text-amber-300">
         <AlertCircle size={11} className="mt-0.5 shrink-0" />
         <span>
-          На основі <span className="font-medium">{requestsLabel(count)}</span> — потрібно більше даних
+          На основі <span className="font-medium">{dealsLabel(count)}</span> — потрібно більше даних
           {count < TARGET_DATA_THRESHOLD && (
             <> (графік стає інформативним після {TARGET_DATA_THRESHOLD}+).</>
           )}
@@ -824,7 +896,7 @@ function SampleSizeCaption({ count, periodLabel }: { count: number; periodLabel:
   }
   return (
     <p className="mt-2 text-[11px] text-muted-foreground">
-      Аналіз на основі <span className="font-medium text-foreground">{requestsLabel(count)}</span> за «{period}».
+      Аналіз на основі <span className="font-medium text-foreground">{dealsLabel(count)}</span> за «{period}».
     </p>
   )
 }
