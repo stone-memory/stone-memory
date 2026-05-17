@@ -43,6 +43,7 @@ type CreatePayload = {
   external_id?: string
   attachments?: unknown[]
   meta?: Record<string, unknown>
+  thread_key?: string
 }
 
 // POST — додати запис вручну (наприклад, "клієнт подзвонив")
@@ -67,6 +68,12 @@ export async function POST(req: Request) {
       external_id: body.external_id || null,
       attachments: body.attachments || null,
       meta: body.meta || null,
+      // Explicit key, else group with the customer's other manual
+      // entries of this channel (matches the inbox UI fallback so a
+      // logged call threads instead of becoming an orphan row).
+      thread_key:
+        body.thread_key ||
+        (body.customer_id ? `customer:${body.customer_id}:${body.channel}` : null),
     })
     .select()
     .single()

@@ -91,22 +91,23 @@ export async function POST(req: Request) {
     await addUserMessage(sessionId, text)
 
     // Дзеркаламо у CRM communications щоб з'явилось у unified inbox.
-    // Робимо тільки якщо вже маємо телефон (інакше це ще "анонім" зі стадії greet).
-    if (phone) {
-      try {
-        await recordIncoming({
-          channel: "site_chat",
-          identifier: { phone },
-          name,
-          locale,
-          body: text,
-          externalId: sessionId,
-          threadKey: `site_chat:${sessionId}`,
-          rawMeta: { session_id: sessionId },
-        })
-      } catch (e) {
-        console.error("[chat] recordIncoming failed:", e)
-      }
+    // Завжди — навіть без телефону: гостьова сесія йде по siteSessionId,
+    // інакше анонімні чат-розмови були б невидимі в Inbox (втрачені ліди).
+    try {
+      await recordIncoming({
+        channel: "site_chat",
+        identifier: phone
+          ? { phone, siteSessionId: sessionId }
+          : { siteSessionId: sessionId },
+        name,
+        locale,
+        body: text,
+        externalId: sessionId,
+        threadKey: `site_chat:${sessionId}`,
+        rawMeta: { session_id: sessionId },
+      })
+    } catch (e) {
+      console.error("[chat] recordIncoming failed:", e)
     }
 
     const header = phone

@@ -89,6 +89,12 @@ async function sendEmail(args: SendArgs, email?: string): Promise<SendResult> {
   })
   if (!sent.ok) return { ok: false, channel: "email", error: sent.error }
 
+  // Same thread_key shape as inbound email (app/api/email/inbound) so the
+  // reply groups with the original conversation:
+  //   email:<lowercase-address>:<subject sans re/fw, ≤60 chars>
+  const cleanSubject = (args.subject || "").replace(/^(re|fw|fwd):\s*/gi, "").trim()
+  const threadKey = `email:${email.toLowerCase()}:${cleanSubject.slice(0, 60)}`
+
   const commId = await recordOutgoing({
     customerId: args.customerId,
     dealId: args.dealId,
@@ -97,6 +103,7 @@ async function sendEmail(args: SendArgs, email?: string): Promise<SendResult> {
     subject: args.subject,
     actorId: args.actorId,
     externalId: sent.id,
+    threadKey,
   })
   return { ok: true, channel: "email", messageId: sent.id, communicationId: commId }
 }

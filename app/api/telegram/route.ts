@@ -118,7 +118,10 @@ export async function POST(req: Request) {
         locale: fromUser.language_code === "uk" ? "uk" : fromUser.language_code === "pl" ? "pl" : fromUser.language_code === "de" ? "de" : fromUser.language_code === "lt" ? "lt" : "en",
         body: text,
         externalId: String(msg.message_id),
-        threadKey: `telegram:${chatId}`,
+        // Key by user id (same value sendTg uses for outbound:
+        // `telegram:${telegramUserId}`) so inbound+outbound thread by
+        // construction, not by the chatId==userId DM coincidence.
+        threadKey: `telegram:${String(fromUser.id)}`,
         rawMeta: { telegram_chat: msg.chat, telegram_from: fromUser },
       })
     } catch (e) {
