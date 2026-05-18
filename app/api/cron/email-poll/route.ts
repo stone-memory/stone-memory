@@ -65,6 +65,24 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
           await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
           continue
         }
+
+        // Skip emails not addressed to our business domain — filters out
+        // personal messages in the Gmail inbox that were not forwarded via
+        // ImprovMX from info@stonememory.com.ua.
+        const toAddresses = (parsed.to
+          ? (Array.isArray(parsed.to) ? parsed.to : [parsed.to])
+              .flatMap((a) => ("value" in a ? a.value : [a]))
+              .map((a) => a.address?.toLowerCase() ?? "")
+          : [])
+        const businessDomain = (mbox.address?.split("@")[1] || "").toLowerCase()
+        const isForBusiness = businessDomain
+          ? toAddresses.some((a) => a.endsWith("@" + businessDomain) || a.endsWith("." + businessDomain))
+          : true
+        if (!isForBusiness) {
+          await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
+          continue
+        }
+
         // Skip bulk/automated mail (newsletters, platform notifications,
         // no-reply senders) so it doesn't flood the Inbox or create junk
         // customers. Real customer/order emails have none of these.
