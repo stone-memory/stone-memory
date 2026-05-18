@@ -14,7 +14,7 @@ import {
 import { KPICard } from "@/components/admin/kpi-card"
 import { OrdersTable } from "@/components/admin/orders-table"
 import { useOrdersStore } from "@/lib/store/orders"
-import { formatUAH } from "@/lib/admin-format"
+import { formatUAHDirect } from "@/lib/admin-format"
 import type { Order, OrderStatus } from "@/lib/types"
 
 function exportOrdersCsv(orders: Order[]) {
@@ -186,7 +186,7 @@ export default function AdminPage() {
           value={completedThisMonth}
           trend={completedTrend}
         />
-        <KPICard label="Загальна сума pipeline" value={formatUAH(totalPipeline)} />
+        <KPICard label="Загальна сума pipeline" value={formatUAHDirect(totalPipeline)} />
       </div>
 
       {/* Orders Table */}
