@@ -136,7 +136,7 @@ export function SelectionSidebar() {
                             <div className="relative h-24 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-foreground/5">
                               <Image
                                 src={item.imagePath || "/logo-512.png"}
-                                alt={`№ ${item.id}`}
+                                alt={item.name || `№ ${item.id}`}
                                 fill
                                 className="object-cover"
                                 sizes="80px"
@@ -145,7 +145,7 @@ export function SelectionSidebar() {
 
                             {/* Info */}
                             <div className="flex-1">
-                              <p className="font-mono text-sm tabular-nums">№ {item.id}</p>
+                              <p className="font-mono text-sm tabular-nums">{item.name || `№ ${item.id}`}</p>
                               <p className="mt-1 text-sm text-muted-foreground">
                                 {item.priceFrom ? <>{t.catalog.fromPrice} {formatPrice(item.priceFrom)}</> : t.catalog.requestQuote}
                               </p>

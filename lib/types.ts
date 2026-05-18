@@ -43,6 +43,7 @@ export type StoneMaterial =
 
 export type StoneItem = {
   id: string
+  name?: string
   category: Category
   imagePath: string
   priceFrom?: number

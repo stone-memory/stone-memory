@@ -92,7 +92,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                       {item.imagePath ? (
                         <Image
                           src={item.imagePath}
-                          alt={`№ ${item.id}`}
+                          alt={item.name || `№ ${item.id}`}
                           fill
                           sizes="56px"
                           className="object-cover"
@@ -101,7 +101,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                       ) : null}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono text-sm font-medium">№ {item.id}</p>
+                      <p className="font-mono text-sm font-medium">{item.name || `№ ${item.id}`}</p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {item.priceFrom ? `від ${formatPrice(item.priceFrom)}` : "Ціна не вказана"}
                       </p>

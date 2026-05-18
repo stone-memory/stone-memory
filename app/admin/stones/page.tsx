@@ -49,7 +49,7 @@ export default function AdminStonesPage() {
     return items.filter((r) => {
       if (!showHidden && r.hidden) return false
       if (categoryFilter !== "all" && r.data.category !== categoryFilter) return false
-      if (q && !r.id.toLowerCase().includes(q)) return false
+      if (q && !r.id.toLowerCase().includes(q) && !(r.data.name || "").toLowerCase().includes(q)) return false
       return true
     })
   }, [items, query, categoryFilter, showHidden])
@@ -121,7 +121,7 @@ export default function AdminStonesPage() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Пошук за номером…"
+            placeholder="Пошук за номером або назвою…"
             className="pl-9"
           />
         </div>
@@ -157,6 +157,7 @@ export default function AdminStonesPage() {
             <tr>
               <th className="px-4 py-3 text-left">Фото</th>
               <th className="px-4 py-3 text-left">№</th>
+              <th className="px-4 py-3 text-left">Назва</th>
               <th className="px-4 py-3 text-left">Категорія</th>
               <th className="px-4 py-3 text-left">Матеріал</th>
               <th className="px-4 py-3 text-left">Колір</th>
@@ -177,6 +178,7 @@ export default function AdminStonesPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 font-medium tabular-nums">№ {row.id}</td>
+                  <td className="px-4 py-3 text-foreground/85">{s.name || <span className="text-muted-foreground/40">—</span>}</td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {s.category === "memorial" ? "Пам'ятник" : "Дім і сад"}
                   </td>
@@ -239,7 +241,7 @@ export default function AdminStonesPage() {
             })}
             {filtered.length === 0 && hasHydrated && (
               <tr>
-                <td colSpan={9} className="px-4 py-12 text-center text-sm text-muted-foreground">
+                <td colSpan={10} className="px-4 py-12 text-center text-sm text-muted-foreground">
                   Нічого не знайдено
                 </td>
               </tr>
@@ -447,6 +449,13 @@ function StoneEditor({
         <div className="max-h-[70vh] overflow-y-auto p-6 space-y-4">
           <Field label="ID">
             <Input value={draft.id} onChange={(e) => setDraft({ ...draft, id: e.target.value })} />
+          </Field>
+          <Field label="Назва товару (видима на сайті замість номера)">
+            <Input
+              placeholder="напр. Граніт Лабрадорит «Нічне небо»"
+              value={draft.name || ""}
+              onChange={(e) => setDraft({ ...draft, name: e.target.value || undefined })}
+            />
           </Field>
           <Field label="Категорія">
             <select

@@ -75,7 +75,7 @@ export default function StoneDetailPage() {
 
   const handleShare = async () => {
     if (typeof navigator === "undefined") return
-    const title = `№ ${stone.id}`
+    const title = stone.name || `№ ${stone.id}`
     const data = { title, text: title, url: window.location.href }
     try {
       if (navigator.share) await navigator.share(data)
@@ -129,7 +129,7 @@ export default function StoneDetailPage() {
                   >
                     <Image
                       src={gallery[active]}
-                      alt={`№ ${stone.id}`}
+                      alt={stone.name || `№ ${stone.id}`}
                       fill
                       sizes="(max-width: 1024px) 100vw, 55vw"
                       className="object-cover"
@@ -161,7 +161,7 @@ export default function StoneDetailPage() {
                       )}
                       aria-label={`Image ${i + 1}`}
                     >
-                      <Image src={g} alt={`№ ${stone.id}, фото ${i + 1}`} fill sizes="200px" className="object-cover" />
+                      <Image src={g} alt={`${stone.name || `№ ${stone.id}`}, фото ${i + 1}`} fill sizes="200px" className="object-cover" />
                     </button>
                   ))}
                 </div>
@@ -178,7 +178,7 @@ export default function StoneDetailPage() {
                 {stone.category === "memorial" ? t.nav.memorial : t.nav.home}
               </div>
               <h1 className="mt-2 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance tabular-nums">
-                № {stone.id}
+                {stone.name || `№ ${stone.id}`}
               </h1>
               <p className="mt-4 text-lg md:text-xl leading-relaxed text-foreground/85 text-balance">
                 {L.descriptionBody(stone.id, stone.category)}

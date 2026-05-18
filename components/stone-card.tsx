@@ -112,12 +112,12 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
         href={`/stones/${item.id}`}
         prefetch
         className="block h-full overflow-hidden rounded-2xl bg-card shadow-soft ring-1 ring-black/[0.04] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-hover hover:-translate-y-0.5"
-        aria-label={`№ ${item.id}`}
+        aria-label={item.name || `№ ${item.id}`}
       >
         <div className="relative aspect-[16/11] overflow-hidden bg-foreground/5">
           <Image
             src={imageSrc}
-            alt={`${item.category === "memorial" ? "Пам'ятник" : "Виріб з каменю"} № ${item.id}${item.material ? `, ${item.material}` : ""}`}
+            alt={item.name || `${item.category === "memorial" ? "Пам'ятник" : "Виріб з каменю"} № ${item.id}${item.material ? `, ${item.material}` : ""}`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             onError={() => setImageSrc("/stones/memorial-01.svg")}
@@ -142,7 +142,7 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
           </div>
 
           <h3 className="mt-3 text-xl font-semibold tracking-tight-custom tabular-nums">
-            № {item.id}
+            {item.name || `№ ${item.id}`}
           </h3>
 
           <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground line-clamp-2">

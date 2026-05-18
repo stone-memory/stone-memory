@@ -17,8 +17,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const s = await fetchStoneById(id)
   if (!s) return { title: "Stone not found" }
   const kind = s.category === "memorial" ? "Memorial" : "Decorative stone"
-  const title = `No. ${s.id} — ${kind} | Stone Memory`
-  const desc = `${kind} No. ${s.id}. Natural granite or marble, hand-finished in our Kostopil workshop. From €${s.priceFrom}. 5-year warranty.`
+  const displayName = s.name || `No. ${s.id}`
+  const title = `${displayName} — ${kind} | Stone Memory`
+  const desc = `${kind} ${displayName}. Natural granite or marble, hand-finished in our Kostopil workshop. From €${s.priceFrom}. 5-year warranty.`
   const url = absoluteUrl(`/stones/${s.id}`)
   return {
     title,
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       description: desc,
       url,
       type: "website",
-      images: [{ url: s.imagePath, width: 1200, height: 1500, alt: `No. ${s.id}` }],
+      images: [{ url: s.imagePath, width: 1200, height: 1500, alt: displayName }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [s.imagePath] },
   }
@@ -52,7 +53,7 @@ export default async function Layout({ children, params }: { children: React.Rea
     ? {
         "@context": "https://schema.org",
         "@type": "Product",
-        name: `${s.category === "memorial" ? "Memorial" : "Decorative stone"} No. ${s.id}`,
+        name: s.name || `${s.category === "memorial" ? "Memorial" : "Decorative stone"} No. ${s.id}`,
         sku: s.id,
         mpn: s.id,
         image: s.gallery && s.gallery.length ? s.gallery : [s.imagePath],
@@ -76,7 +77,7 @@ export default async function Layout({ children, params }: { children: React.Rea
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
           { "@type": "ListItem", position: 2, name: "Catalog", item: absoluteUrl("/catalog") },
-          { "@type": "ListItem", position: 3, name: `No. ${s.id}`, item: absoluteUrl(`/stones/${s.id}`) },
+          { "@type": "ListItem", position: 3, name: s.name || `No. ${s.id}`, item: absoluteUrl(`/stones/${s.id}`) },
         ],
       }
     : null
