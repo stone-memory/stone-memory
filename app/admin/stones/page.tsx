@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import { Plus, Search, Trash2, RotateCcw, Pencil } from "lucide-react"
+import { Plus, Search, Trash2, RotateCcw, Pencil, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useStonesAdminStore } from "@/lib/store/stones"
@@ -11,6 +11,23 @@ import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Cat
 import { materialLabel, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { formatUAHDirect } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", "brown", "beige", "multi"]
 const SHAPES: StoneShape[] = ["classic", "arch", "heart", "cross", "modern", "obelisk", "natural"]
@@ -33,16 +50,24 @@ export default function AdminStonesPage() {
   const softDelete = useStonesAdminStore((s) => s.softDelete)
   const restore = useStonesAdminStore((s) => s.restore)
   const remove = useStonesAdminStore((s) => s.remove)
+  const reorder = useStonesAdminStore((s) => s.reorder)
 
   useEffect(() => {
     hydrate()
   }, [hydrate])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
 
   const [query, setQuery] = useState("")
   const [categoryFilter, setCategoryFilter] = useState<"all" | Category>("all")
   const [showHidden, setShowHidden] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
+
+  const isDragMode = query === "" && categoryFilter === "all"
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -53,6 +78,16 @@ export default function AdminStonesPage() {
       return true
     })
   }, [items, query, categoryFilter, showHidden])
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = filtered.findIndex((r) => r.id === active.id)
+    const newIndex = filtered.findIndex((r) => r.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+    const reordered = arrayMove(filtered, oldIndex, newIndex)
+    reorder(reordered.map((r) => r.id))
+  }
 
   const totals = {
     all: items.filter((r) => !r.hidden).length,
@@ -151,10 +186,17 @@ export default function AdminStonesPage() {
         />
       )}
 
+      {!isDragMode && hasHydrated && filtered.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          Скиньте фільтри щоб перетягувати товари і змінювати порядок.
+        </p>
+      )}
+
       <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-card">
         <table className="w-full text-sm">
           <thead className="border-b border-foreground/5 bg-foreground/[0.02] text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
+              <th className="w-8 px-2 py-3" />
               <th className="px-4 py-3 text-left">Фото</th>
               <th className="px-4 py-3 text-left">№</th>
               <th className="px-4 py-3 text-left">Назва</th>
@@ -167,97 +209,31 @@ export default function AdminStonesPage() {
               <th className="px-4 py-3 text-right">Дії</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-foreground/5">
-            {filtered.map((row) => {
-              const s = row.data
-              return (
-                <tr key={row.id} className={cn(row.hidden && "opacity-50")}>
-                  <td className="px-4 py-3">
-                    <div className="relative h-10 w-14 overflow-hidden rounded-md bg-foreground/5">
-                      <Image src={s.imagePath} alt={`№ ${row.id}`} fill className="object-cover" sizes="56px" unoptimized />
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 font-medium tabular-nums">№ {row.id}</td>
-                  <td className="px-4 py-3 text-foreground/85">{s.name || <span className="text-muted-foreground/40">—</span>}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {s.category === "memorial" ? "Пам'ятник" : "Дім і сад"}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">{s.materialType || "—"}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{s.color || "—"}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{s.shape || s.finish || "—"}</td>
-                  <td className="px-4 py-3 text-right tabular-nums">{s.priceFrom !== undefined ? formatUAHDirect(s.priceFrom) : "—"}</td>
-                  <td className="px-4 py-3 text-center">
-                    <button
-                      onClick={() => upsert({ ...s, isFeatured: !s.isFeatured })}
-                      className={cn(
-                        "inline-flex h-5 w-9 items-center rounded-full border transition-colors",
-                        s.isFeatured ? "justify-end border-accent bg-accent" : "justify-start border-foreground/20 bg-foreground/5"
-                      )}
-                    >
-                      <span className="block h-3.5 w-3.5 rounded-full bg-white shadow" />
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="inline-flex items-center gap-1">
-                      {row.hidden ? (
-                        <>
-                          <button
-                            onClick={() => restore(row.id)}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                            title="Відновити"
-                          >
-                            <RotateCcw size={14} /> Відновити
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (confirm("Видалити назавжди?")) remove(row.id)
-                            }}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
-                            title="Видалити назавжди"
-                          >
-                            ✕
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => setEditingId(row.id)}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                            title="Редагувати"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          <button
-                            onClick={() => softDelete(row.id)}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                            title="Приховати"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (confirm("Видалити назавжди?")) remove(row.id)
-                            }}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
-                            title="Видалити назавжди"
-                          >
-                            ✕
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-            {filtered.length === 0 && hasHydrated && (
-              <tr>
-                <td colSpan={10} className="px-4 py-12 text-center text-sm text-muted-foreground">
-                  Нічого не знайдено
-                </td>
-              </tr>
-            )}
-          </tbody>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={filtered.map((r) => r.id)} strategy={verticalListSortingStrategy}>
+              <tbody className="divide-y divide-foreground/5">
+                {filtered.map((row) => (
+                  <SortableStoneRow
+                    key={row.id}
+                    row={row}
+                    isDragMode={isDragMode}
+                    onFeatureToggle={() => upsert({ ...row.data, isFeatured: !row.data.isFeatured })}
+                    onEdit={() => setEditingId(row.id)}
+                    onSoftDelete={() => softDelete(row.id)}
+                    onRestore={() => restore(row.id)}
+                    onRemove={() => { if (confirm("Видалити назавжди?")) remove(row.id) }}
+                  />
+                ))}
+                {filtered.length === 0 && hasHydrated && (
+                  <tr>
+                    <td colSpan={11} className="px-4 py-12 text-center text-sm text-muted-foreground">
+                      Нічого не знайдено
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </SortableContext>
+          </DndContext>
         </table>
       </div>
 
@@ -280,6 +256,129 @@ function Stat({ label, value }: { label: string; value: number }) {
       <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-semibold tabular-nums">{value}</div>
     </div>
+  )
+}
+
+type StoneRow = { id: string; data: StoneItem; hidden: boolean; position: number }
+
+function SortableStoneRow({
+  row,
+  isDragMode,
+  onFeatureToggle,
+  onEdit,
+  onSoftDelete,
+  onRestore,
+  onRemove,
+}: {
+  row: StoneRow
+  isDragMode: boolean
+  onFeatureToggle: () => void
+  onEdit: () => void
+  onSoftDelete: () => void
+  onRestore: () => void
+  onRemove: () => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: row.id })
+  const s = row.data
+
+  return (
+    <tr
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.4 : 1,
+        position: "relative",
+        zIndex: isDragging ? 10 : undefined,
+      }}
+      className={cn(row.hidden && "opacity-50")}
+    >
+      <td className="w-8 px-2 py-3">
+        {isDragMode ? (
+          <button
+            {...attributes}
+            {...listeners}
+            className="flex cursor-grab touch-none items-center justify-center rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
+            tabIndex={-1}
+          >
+            <GripVertical size={16} />
+          </button>
+        ) : null}
+      </td>
+      <td className="px-4 py-3">
+        <div className="relative h-10 w-14 overflow-hidden rounded-md bg-foreground/5">
+          <Image src={s.imagePath} alt={`№ ${row.id}`} fill className="object-cover" sizes="56px" unoptimized />
+        </div>
+      </td>
+      <td className="px-4 py-3 font-medium tabular-nums">№ {row.id}</td>
+      <td className="px-4 py-3 text-foreground/85">{s.name || <span className="text-muted-foreground/40">—</span>}</td>
+      <td className="px-4 py-3 text-muted-foreground">
+        {s.category === "memorial" ? "Пам'ятник" : "Дім і сад"}
+      </td>
+      <td className="px-4 py-3 text-muted-foreground">{s.materialType || "—"}</td>
+      <td className="px-4 py-3 text-muted-foreground">{s.color || "—"}</td>
+      <td className="px-4 py-3 text-muted-foreground">{s.shape || s.finish || "—"}</td>
+      <td className="px-4 py-3 text-right tabular-nums">
+        {s.priceFrom !== undefined ? formatUAHDirect(s.priceFrom) : "—"}
+      </td>
+      <td className="px-4 py-3 text-center">
+        <button
+          onClick={onFeatureToggle}
+          className={cn(
+            "inline-flex h-5 w-9 items-center rounded-full border transition-colors",
+            s.isFeatured ? "justify-end border-accent bg-accent" : "justify-start border-foreground/20 bg-foreground/5"
+          )}
+        >
+          <span className="block h-3.5 w-3.5 rounded-full bg-white shadow" />
+        </button>
+      </td>
+      <td className="px-4 py-3 text-right">
+        <div className="inline-flex items-center gap-1">
+          {row.hidden ? (
+            <>
+              <button
+                onClick={onRestore}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                title="Відновити"
+              >
+                <RotateCcw size={14} /> Відновити
+              </button>
+              <button
+                onClick={onRemove}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
+                title="Видалити назавжди"
+              >
+                ✕
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={onEdit}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                title="Редагувати"
+              >
+                <Pencil size={14} />
+              </button>
+              <button
+                onClick={onSoftDelete}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                title="Приховати"
+              >
+                <Trash2 size={14} />
+              </button>
+              <button
+                onClick={onRemove}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
+                title="Видалити назавжди"
+              >
+                ✕
+              </button>
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
   )
 }
 

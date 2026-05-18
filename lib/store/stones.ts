@@ -18,6 +18,7 @@ interface StonesAdminState {
   softDelete: (id: string) => Promise<void>
   restore: (id: string) => Promise<void>
   remove: (id: string) => Promise<void>
+  reorder: (orderedIds: string[]) => Promise<void>
 }
 
 async function putRow(row: { id: string; data: StoneItem; hidden: boolean; position: number }) {
@@ -104,6 +105,26 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
     try {
       const res = await authedFetch(`/api/content/stones/${encodeURIComponent(id)}`, { method: "DELETE" })
       if (!res.ok) throw new Error("delete failed")
+    } catch {
+      set({ items: prev })
+    }
+  },
+
+  reorder: async (orderedIds) => {
+    const prev = get().items
+    const idxMap = new Map(orderedIds.map((id, i) => [id, i]))
+    set({
+      items: prev
+        .map((r) => ({ ...r, position: idxMap.has(r.id) ? idxMap.get(r.id)! : r.position }))
+        .sort((a, b) => a.position - b.position),
+    })
+    try {
+      const res = await authedFetch("/api/content/stones/reorder", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: orderedIds }),
+      })
+      if (!res.ok) throw new Error("reorder failed")
     } catch {
       set({ items: prev })
     }
