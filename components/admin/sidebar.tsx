@@ -5,17 +5,24 @@ import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock } from "lucide-react"
-import { useAdminRoleStore, type PermissionKey } from "@/lib/store/admin-role"
 import { useOpenTasksCount } from "@/lib/store/tasks"
 import { useNotificationCounts } from "@/lib/crm/notifications-store"
 import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
+import type { TeamRole } from "@/lib/crm/types"
+import type { Capability } from "@/lib/permissions/capabilities"
 import { cn } from "@/lib/utils"
 
 type NavItem = {
   href: string
   icon: typeof Inbox
   label: string
-  perm: PermissionKey
+  /** Capability required to SEE this link. Mirrors the server-side gate
+   *  on the corresponding API route, so the menu never offers something
+   *  the backend would reject. Omit + alwaysShow for member-universal
+   *  pages (own tasks, own account). */
+  cap?: Capability
+  /** Visible to every active team member regardless of capabilities. */
+  alwaysShow?: boolean
   section?: string
   /** When true, only super_admin sees the link as a real link. Other
    *  roles see it disabled with a Lock icon and a "owner-only" tooltip. */
@@ -23,59 +30,69 @@ type NavItem = {
 }
 
 const navItems: NavItem[] = [
-  // === CRM-розділи (нові) ===
-  { href: "/admin", icon: Inbox, label: "Дашборд (заявки)", perm: "orders", section: "CRM" },
-  { href: "/admin/customers", icon: Users, label: "Клієнти", perm: "orders", section: "CRM" },
-  { href: "/admin/deals", icon: Handshake, label: "Угоди", perm: "orders", section: "CRM" },
-  { href: "/admin/reminders", icon: Bell, label: "Нагадування", perm: "tasks", section: "CRM" },
-  { href: "/admin/inbox", icon: InboxIcon, label: "Inbox (всі канали)", perm: "messages", section: "CRM" },
-  { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат сайту", perm: "chat", section: "CRM" },
-  { href: "/admin/messages", icon: MessageSquare, label: "Повідомлення (legacy)", perm: "messages", section: "CRM" },
-  { href: "/admin/broadcast", icon: Send, label: "Розсилка", perm: "messages", section: "CRM" },
-  { href: "/admin/tasks", icon: CheckSquare, label: "Особисті задачі", perm: "tasks", section: "CRM" },
-  { href: "/admin/finances", icon: Wallet, label: "Фінанси", perm: "finances", section: "CRM" },
-  { href: "/admin/analytics", icon: LineChart, label: "Аналітика", perm: "analytics", section: "CRM" },
+  // === CRM-розділи ===
+  { href: "/admin", icon: Inbox, label: "Дашборд (заявки)", cap: "deals.view_all", section: "CRM" },
+  { href: "/admin/customers", icon: Users, label: "Клієнти", cap: "customers.view_all", section: "CRM" },
+  { href: "/admin/deals", icon: Handshake, label: "Угоди", cap: "deals.view_all", section: "CRM" },
+  { href: "/admin/reminders", icon: Bell, label: "Нагадування", cap: "deals.edit", section: "CRM" },
+  { href: "/admin/inbox", icon: InboxIcon, label: "Inbox (всі канали)", cap: "customers.message", section: "CRM" },
+  { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат сайту", cap: "customers.message", section: "CRM" },
+  { href: "/admin/messages", icon: MessageSquare, label: "Повідомлення (legacy)", cap: "customers.message", section: "CRM" },
+  { href: "/admin/broadcast", icon: Send, label: "Розсилка", cap: "content.editorial", section: "CRM" },
+  { href: "/admin/tasks", icon: CheckSquare, label: "Особисті задачі", alwaysShow: true, section: "CRM" },
+  { href: "/admin/finances", icon: Wallet, label: "Фінанси", cap: "finances.view_company", section: "CRM" },
+  { href: "/admin/analytics", icon: LineChart, label: "Аналітика", cap: "finances.view_company", section: "CRM" },
 
   // === Контент сайту ===
-  { href: "/admin/homepage", icon: LayoutGrid, label: "Головна сторінка", perm: "about", section: "Контент" },
-  { href: "/admin/stones", icon: Package, label: "Товари (камінь)", perm: "products", section: "Контент" },
-  { href: "/admin/services", icon: Wrench, label: "Послуги", perm: "services", section: "Контент" },
-  { href: "/admin/projects", icon: Briefcase, label: "Проєкти", perm: "projects", section: "Контент" },
-  { href: "/admin/reviews", icon: MessageSquare, label: "Відгуки", perm: "reviews", section: "Контент" },
-  { href: "/admin/featured", icon: Star, label: "Популярні", perm: "featured", section: "Контент" },
-  { href: "/admin/blog", icon: BookOpen, label: "Блог", perm: "blog", section: "Контент" },
-  { href: "/admin/faq", icon: HelpCircle, label: "FAQ", perm: "faq", section: "Контент" },
-  { href: "/admin/about", icon: Info, label: "Про нас", perm: "about", section: "Контент" },
-  { href: "/admin/chat-settings", icon: Sparkles, label: "Налаштування чату", perm: "chatSettings", section: "Контент" },
+  { href: "/admin/homepage", icon: LayoutGrid, label: "Головна сторінка", cap: "content.editorial", section: "Контент" },
+  { href: "/admin/stones", icon: Package, label: "Товари (камінь)", cap: "content.catalog", section: "Контент" },
+  { href: "/admin/services", icon: Wrench, label: "Послуги", cap: "content.catalog", section: "Контент" },
+  { href: "/admin/projects", icon: Briefcase, label: "Проєкти", cap: "content.editorial", section: "Контент" },
+  { href: "/admin/reviews", icon: MessageSquare, label: "Відгуки", cap: "content.editorial", section: "Контент" },
+  { href: "/admin/featured", icon: Star, label: "Популярні", cap: "content.catalog", section: "Контент" },
+  { href: "/admin/blog", icon: BookOpen, label: "Блог", cap: "content.editorial", section: "Контент" },
+  { href: "/admin/faq", icon: HelpCircle, label: "FAQ", cap: "content.editorial", section: "Контент" },
+  { href: "/admin/about", icon: Info, label: "Про нас", cap: "content.editorial", section: "Контент" },
+  { href: "/admin/chat-settings", icon: Sparkles, label: "Налаштування чату", cap: "content.editorial", section: "Контент" },
 
   // === Налаштування ===
-  { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", perm: "settings", section: "Налаштування", superAdminOnly: true },
-  { href: "/admin/team", icon: Users, label: "Команда і ролі", perm: "settings", section: "Налаштування" },
-  { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", perm: "business", section: "Налаштування" },
+  { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", cap: "integrations.manage", section: "Налаштування", superAdminOnly: true },
+  { href: "/admin/team", icon: Users, label: "Команда і ролі", cap: "team.manage", section: "Налаштування" },
+  { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", cap: "team.manage", section: "Налаштування" },
   // /admin/roles — legacy local-only permission toggle, replaced by /admin/team.
   // Page still exists for backward compat but hidden from sidebar.
-  { href: "/admin/account", icon: UserCircle, label: "Акаунт", perm: "settings", section: "Налаштування" },
+  { href: "/admin/account", icon: UserCircle, label: "Акаунт", alwaysShow: true, section: "Налаштування" },
 ]
+
+const ROLE_LABEL_UK: Record<TeamRole, string> = {
+  super_admin: "Головний адмін",
+  admin: "Адмін",
+  manager: "Менеджер",
+  master: "Майстер",
+  sales: "Продажі",
+}
 
 export function AdminSidebar() {
   const pathname = usePathname()
-  const role = useAdminRoleStore((s) => s.role)
-  const managerPerms = useAdminRoleStore((s) => s.managerPermissions)
-  const hasHydrated = useAdminRoleStore((s) => s.hasHydrated)
-  const { role: realRole } = useCurrentRole()
+  const { role: realRole, capabilities, loading: roleLoading } = useCurrentRole()
   const currentlySuperAdmin = isSuperAdmin(realRole)
+  const roleLabel = realRole ? ROLE_LABEL_UK[realRole] : "—"
   const openTasks = useOpenTasksCount()
   // Real-time лічильники сповіщень для бейджів. Хук сам поллить /api/crm/notifications/counts
   // кожні 30 с і авто-зануляє лічильник коли admin відвідав відповідний розділ.
   const counts = useNotificationCounts(pathname || undefined)
   const totalUnread = counts.inbox + counts.reminders + counts.orders + counts.deals + counts.chat
 
-  const visible = navItems.filter((item) => {
-    if (!hasHydrated) return true
-    if (role === "admin") return true
-    if (item.perm === "settings") return false
-    return managerPerms.includes(item.perm)
-  })
+  // Capability-driven visibility — mirrors the server-side API gates so
+  // the menu never offers a section the backend would 403. super_admin
+  // resolves to the full capability set, so it sees everything.
+  const visible = roleLoading
+    ? []
+    : navItems.filter((item) => {
+        if (item.alwaysShow) return true
+        if (!item.cap) return false
+        return capabilities.includes(item.cap)
+      })
 
   const handleSignOut = async () => {
     const { getSupabase } = await import("@/lib/supabase/client")
@@ -150,7 +167,7 @@ export function AdminSidebar() {
         </div>
         <div className="flex items-center justify-between gap-2">
           <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-black/5 px-2 py-0.5 rounded text-muted-foreground">
-            Адмін
+            {roleLoading ? "…" : roleLabel}
             {totalUnread > 0 && (
               <span
                 className="rounded-full bg-accent px-1.5 text-[10px] font-semibold text-accent-foreground"
@@ -247,9 +264,9 @@ export function AdminSidebar() {
             SM
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{role === "admin" ? "Адмін" : "Менеджер"}</p>
+            <p className="text-sm font-medium truncate">{roleLoading ? "Завантаження…" : roleLabel}</p>
             <p className="text-[11px] text-muted-foreground truncate">
-              {role === "admin" ? "Повний доступ" : `${managerPerms.length} дозволів`}
+              {currentlySuperAdmin ? "Повний доступ" : `${capabilities.length} дозволів`}
             </p>
           </div>
         </div>
