@@ -447,8 +447,10 @@ function StoneEditor({
           </button>
         </header>
         <div className="max-h-[70vh] overflow-y-auto p-6 space-y-4">
-          <Field label="ID">
-            <Input value={draft.id} onChange={(e) => setDraft({ ...draft, id: e.target.value })} />
+          <Field label="ID (генерується автоматично, лише для читання)">
+            <div className="flex h-10 items-center rounded-xl bg-foreground/5 px-3 font-mono text-sm text-muted-foreground select-all">
+              {draft.id}
+            </div>
           </Field>
           <Field label="Назва товару (видима на сайті замість номера)">
             <Input
