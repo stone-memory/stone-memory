@@ -111,7 +111,7 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
 }))
 
 // Returns the visible stones list. Auto-hydrates on first render.
-// Falls back to base mock while hydrating, so SSR/first-paint isn't empty.
+// Returns [] while hydrating to avoid flashing hidden items from the static fallback.
 export function useStones(): StoneItem[] {
   const items = useStonesAdminStore((s) => s.items)
   const hasHydrated = useStonesAdminStore((s) => s.hasHydrated)
@@ -119,6 +119,6 @@ export function useStones(): StoneItem[] {
   useEffect(() => {
     hydrate()
   }, [hydrate])
-  if (!hasHydrated) return baseStones
+  if (!hasHydrated) return []
   return items.filter((r) => !r.hidden).map((r) => r.data)
 }

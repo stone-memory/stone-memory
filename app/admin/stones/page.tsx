@@ -200,13 +200,24 @@ export default function AdminStonesPage() {
                   <td className="px-4 py-3 text-right">
                     <div className="inline-flex items-center gap-1">
                       {row.hidden ? (
-                        <button
-                          onClick={() => restore(row.id)}
-                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                          title="Відновити"
-                        >
-                          <RotateCcw size={14} /> Відновити
-                        </button>
+                        <>
+                          <button
+                            onClick={() => restore(row.id)}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                            title="Відновити"
+                          >
+                            <RotateCcw size={14} /> Відновити
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm("Видалити назавжди?")) remove(row.id)
+                            }}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
+                            title="Видалити назавжди"
+                          >
+                            ✕
+                          </button>
+                        </>
                       ) : (
                         <>
                           <button
