@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { Plus, AlertTriangle, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -35,16 +35,13 @@ export default function DealsKanbanPage() {
   const loading = useDealsStore((s) => s.loading)
   const load = useDealsStore((s) => s.load)
   const setStatus = useDealsStore((s) => s.setStatus)
-  const customers = useCustomersStore((s) => s.items)
-  const loadCustomers = useCustomersStore((s) => s.load)
   const [showCreate, setShowCreate] = useState(false)
   const [search, setSearch] = useState("")
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     load()
-    loadCustomers()
-  }, [load, loadCustomers])
+  }, [load])
 
   const filtered = useMemo(() => {
     if (!search) return items
@@ -128,11 +125,7 @@ export default function DealsKanbanPage() {
       </div>
 
       {showCreate && (
-        <CreateDealDialog
-          onClose={() => setShowCreate(false)}
-          customers={customers}
-          onLoadCustomers={loadCustomers}
-        />
+        <CreateDealDialog onClose={() => setShowCreate(false)} />
       )}
     </div>
   )
@@ -233,21 +226,48 @@ function DealCard({
   )
 }
 
-function CreateDealDialog({
-  onClose,
-  customers,
-  onLoadCustomers,
-}: {
-  onClose: () => void
-  customers: { id: string; name: string; phone: string }[]
-  onLoadCustomers: () => void
-}) {
+function CreateDealDialog({ onClose }: { onClose: () => void }) {
   const create = useDealsStore((s) => s.create)
+  const allCustomers = useCustomersStore((s) => s.items)
+  const loadCustomers = useCustomersStore((s) => s.load)
+  const [customerSearch, setCustomerSearch] = useState("")
   const [customerId, setCustomerId] = useState("")
+  const [customerLabel, setCustomerLabel] = useState("")
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const [category, setCategory] = useState<"memorial" | "home">("memorial")
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [busy, setBusy] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    loadCustomers()
+  }, [loadCustomers])
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [])
+
+  const filteredCustomers = useMemo(() => {
+    if (!customerSearch.trim()) return allCustomers
+    const q = customerSearch.toLowerCase()
+    return allCustomers.filter(
+      (c) => c.name?.toLowerCase().includes(q) || c.phone?.toLowerCase().includes(q)
+    )
+  }, [allCustomers, customerSearch])
+
+  const selectCustomer = (c: { id: string; name: string; phone: string }) => {
+    setCustomerId(c.id)
+    setCustomerLabel(`${c.name} · ${c.phone}`)
+    setCustomerSearch("")
+    setDropdownOpen(false)
+  }
 
   const submit = async () => {
     if (!customerId) return
@@ -270,22 +290,53 @@ function CreateDealDialog({
       <div className="w-full max-w-md rounded-2xl border border-foreground/10 bg-card p-6 shadow-hover" onClick={(e) => e.stopPropagation()}>
         <h2 className="text-lg font-semibold mb-4">Нова угода</h2>
         <div className="space-y-3">
-          <div>
+          <div ref={dropdownRef}>
             <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Клієнт *</label>
-            <select
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-              onFocus={() => onLoadCustomers()}
-              className="h-10 w-full rounded-xl border border-foreground/10 bg-background px-3 text-sm"
-            >
-              <option value="">— Оберіть клієнта —</option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name} · {c.phone}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs text-muted-foreground">Спочатку додайте клієнта у /admin/customers</p>
+            {customerId ? (
+              <div className="flex items-center justify-between h-10 rounded-xl border border-foreground/10 bg-background px-3 text-sm">
+                <span className="truncate">{customerLabel}</span>
+                <button
+                  type="button"
+                  onClick={() => { setCustomerId(""); setCustomerLabel("") }}
+                  className="ml-2 shrink-0 text-muted-foreground hover:text-foreground"
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={customerSearch}
+                  onChange={(e) => { setCustomerSearch(e.target.value); setDropdownOpen(true) }}
+                  onFocus={() => setDropdownOpen(true)}
+                  placeholder="Пошук за іменем або телефоном…"
+                  className="h-10 w-full rounded-xl border border-foreground/10 bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-foreground/10"
+                />
+                {dropdownOpen && (
+                  <div className="absolute z-10 mt-1 w-full rounded-xl border border-foreground/10 bg-card shadow-hover max-h-48 overflow-y-auto">
+                    {filteredCustomers.length === 0 ? (
+                      <div className="px-3 py-2 text-sm text-muted-foreground">
+                        {allCustomers.length === 0 ? "Клієнтів ще немає — додайте у /admin/customers" : "Нікого не знайдено"}
+                      </div>
+                    ) : (
+                      filteredCustomers.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onMouseDown={(e) => { e.preventDefault(); selectCustomer(c) }}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-foreground/5 transition-colors"
+                        >
+                          <span className="font-medium">{c.name}</span>
+                          <span className="ml-2 text-muted-foreground">{c.phone}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Категорія</label>
