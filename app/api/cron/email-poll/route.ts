@@ -38,7 +38,17 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
   })
 
   let processed = 0
-  await client.connect()
+  try {
+    await client.connect()
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    const hint = /Invalid credentials|Authentication failed|AUTHENTICATIONFAILED/i.test(msg)
+      ? "Перевірте EMAIL_MAILBOX_ADDRESS та EMAIL_MAILBOX_APP_PASSWORD. Gmail потребує App Password (не звичайний пароль) — увімкніть 2FA і створіть App Password в налаштуваннях Google Account."
+      : /ECONNREFUSED|ETIMEDOUT|ENOTFOUND/i.test(msg)
+      ? `Не вдалося підключитися до ${mbox.imap_host || "imap.gmail.com"}:${port}. Перевірте imap_host/imap_port.`
+      : msg
+    throw new Error(`IMAP connect failed: ${hint}`)
+  }
   const lock = await client.getMailboxLock(mbox.imap_folder || "INBOX")
   try {
     const uids = (await client.search({ seen: false }, { uid: true })) || []

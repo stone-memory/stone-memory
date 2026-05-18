@@ -25,8 +25,14 @@ jobs:
             echo "::warning::APP_URL var or CRON_SECRET secret not configured — skipping."
             exit 0
           fi
-          curl -fsS -X POST \
+          RESPONSE=$(curl -sS -X POST \
             -H "Authorization: Bearer ${CRON_SECRET}" \
             -H "Content-Type: application/json" \
-            -w "\nHTTP %{http_code}\n" \
-            "${APP_URL%/}/api/cron/email-poll"
+            -w "\n---HTTP %{http_code}---" \
+            "${APP_URL%/}/api/cron/email-poll")
+          echo "$RESPONSE"
+          HTTP_CODE=$(echo "$RESPONSE" | grep -o 'HTTP [0-9]*' | awk '{print $2}')
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::email-poll returned HTTP $HTTP_CODE"
+            exit 1
+          fi
