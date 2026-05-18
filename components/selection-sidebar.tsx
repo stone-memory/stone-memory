@@ -147,7 +147,7 @@ export function SelectionSidebar() {
                             <div className="flex-1">
                               <p className="font-mono text-sm tabular-nums">№ {item.id}</p>
                               <p className="mt-1 text-sm text-muted-foreground">
-                                {t.catalog.fromPrice} {formatPrice(item.priceFrom)}
+                                {item.priceFrom ? <>{t.catalog.fromPrice} {formatPrice(item.priceFrom)}</> : t.catalog.requestQuote}
                               </p>
                             </div>
 

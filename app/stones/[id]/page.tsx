@@ -41,8 +41,8 @@ export default function StoneDetailPage() {
   // а не випадкові з тієї ж категорії і кольору.
   const related = useMemo(() => {
     const PRICE_TOLERANCE = 0.35 // ±35% від ціни поточного каменю — "близько"
-    const minPrice = stone.priceFrom * (1 - PRICE_TOLERANCE)
-    const maxPrice = stone.priceFrom * (1 + PRICE_TOLERANCE)
+    const minPrice = stone.priceFrom ? stone.priceFrom * (1 - PRICE_TOLERANCE) : undefined
+    const maxPrice = stone.priceFrom ? stone.priceFrom * (1 + PRICE_TOLERANCE) : undefined
 
     const scored = stones
       .filter((s) => s.id !== stone.id && s.category === stone.category)
@@ -52,7 +52,7 @@ export default function StoneDetailPage() {
         if (s.materialType && s.materialType === stone.materialType) score += 4
         if (s.shape && s.shape === stone.shape) score += 3
         if (s.finish && s.finish === stone.finish) score += 2
-        if (s.priceFrom >= minPrice && s.priceFrom <= maxPrice) score += 2
+        if (s.priceFrom && minPrice && maxPrice && s.priceFrom >= minPrice && s.priceFrom <= maxPrice) score += 2
         if (s.origin && stone.origin && s.origin.split(",")[0] === stone.origin.split(",")[0]) score += 1
         if (s.isFeatured) score += 1
         return { s, score }
@@ -67,7 +67,7 @@ export default function StoneDetailPage() {
     if (scored.length === 0) {
       return stones
         .filter((s) => s.id !== stone.id && s.category === stone.category)
-        .sort((a, b) => Math.abs(a.priceFrom - stone.priceFrom) - Math.abs(b.priceFrom - stone.priceFrom))
+        .sort((a, b) => Math.abs((a.priceFrom ?? 0) - (stone.priceFrom ?? 0)) - Math.abs((b.priceFrom ?? 0) - (stone.priceFrom ?? 0)))
         .slice(0, 6)
     }
     return scored
@@ -185,10 +185,24 @@ export default function StoneDetailPage() {
               </p>
 
               <div className="mt-8 flex items-baseline gap-3">
-                <span className="text-sm text-muted-foreground">{t.catalog.fromPrice}</span>
-                <span className="text-3xl font-semibold tracking-tight-custom tabular-nums md:text-4xl">
-                  {formatPrice(stone.priceFrom)}
-                </span>
+                {stone.priceFrom ? (
+                  <>
+                    <span className="text-sm text-muted-foreground">{t.catalog.fromPrice}</span>
+                    <span className="text-3xl font-semibold tracking-tight-custom tabular-nums md:text-4xl">
+                      {formatPrice(stone.priceFrom)}
+                    </span>
+                  </>
+                ) : (
+                  <a
+                    href="tel:+380678080222"
+                    className="inline-flex flex-col"
+                  >
+                    <span className="text-sm text-muted-foreground">{t.catalog.requestQuote}</span>
+                    <span className="text-2xl font-semibold tracking-tight-custom md:text-3xl">
+                      +38 (067) 808-02-22
+                    </span>
+                  </a>
+                )}
               </div>
 
               <div className="mt-6 flex flex-wrap gap-3">

@@ -183,7 +183,7 @@ export default function AdminStonesPage() {
                   <td className="px-4 py-3 text-muted-foreground">{s.materialType || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.color || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.shape || s.finish || "—"}</td>
-                  <td className="px-4 py-3 text-right tabular-nums" title={`Збережено в EUR: €${s.priceFrom}`}>{formatUAH(s.priceFrom)}</td>
+                  <td className="px-4 py-3 text-right tabular-nums" title={s.priceFrom !== undefined ? `Збережено в EUR: €${s.priceFrom}` : "Ціна не вказана"}>{s.priceFrom !== undefined ? formatUAH(s.priceFrom) : "—"}</td>
                   <td className="px-4 py-3 text-center">
                     <button
                       onClick={() => upsert({ ...s, isFeatured: !s.isFeatured })}
@@ -473,7 +473,7 @@ function StoneEditor({
               value={draft.priceFrom || ""}
               onChange={(e) => {
                 const raw = e.target.value.replace(/[^0-9]/g, "")
-                setDraft({ ...draft, priceFrom: Number(raw) })
+                setDraft({ ...draft, priceFrom: raw === "" ? undefined : Number(raw) })
               }}
             />
           </Field>

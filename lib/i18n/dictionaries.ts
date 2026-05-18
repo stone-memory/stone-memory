@@ -23,6 +23,7 @@ export type Dictionary = {
     subheading: string
     count: string
     fromPrice: string
+    requestQuote: string
     addToSelection: string
     id: string
     viewAll: string
@@ -111,6 +112,7 @@ const uk: Dictionary = {
     subheading: "Пам'ятники, стільниці, підвіконня, каміни, сходи та бруківка. Український граніт, а також імпорт — італійський мармур, індійський і китайський граніт, бразильський кварцит. Виготовляємо у власному цеху.",
     count: "позицій",
     fromPrice: "від",
+    requestQuote: "Замовити розрахунок",
     addToSelection: "Додати",
     id: "ID",
     viewAll: "Дивитись усі",
@@ -199,6 +201,7 @@ const pl: Dictionary = {
     subheading: "Pomniki, blaty, parapety, kominki, schody i kostka brukowa. Ukraiński granit oraz import — włoski marmur, granit indyjski i chiński, kwarcyt brazylijski. Produkcja we własnym zakładzie.",
     count: "pozycji",
     fromPrice: "od",
+    requestQuote: "Zamów wycenę",
     addToSelection: "Dodaj",
     id: "ID",
     viewAll: "Zobacz wszystkie",
@@ -287,6 +290,7 @@ const en: Dictionary = {
     subheading: "Monuments, countertops, window sills, fireplaces, stairs and paving. Ukrainian granite plus imports — Italian marble, Indian and Chinese granite, Brazilian quartzite. Made in our own workshop.",
     count: "pieces",
     fromPrice: "from",
+    requestQuote: "Request a quote",
     addToSelection: "Add",
     id: "ID",
     viewAll: "View all",
@@ -375,6 +379,7 @@ const de: Dictionary = {
     subheading: "Grabmale, Arbeitsplatten, Fensterbänke, Kamine, Treppen und Pflaster. Ukrainischer Granit sowie Importe — italienischer Marmor, indischer und chinesischer Granit, brasilianischer Quarzit. Gefertigt in unserer eigenen Werkstatt.",
     count: "Stücke",
     fromPrice: "ab",
+    requestQuote: "Angebot anfragen",
     addToSelection: "Hinzufügen",
     id: "ID",
     viewAll: "Alle ansehen",
@@ -463,6 +468,7 @@ const lt: Dictionary = {
     subheading: "Paminklai, stalviršiai, palangės, židiniai, laiptai ir grindinio akmenys. Ukrainietiškas granitas bei importuotos rūšys — italų marmuras, Indijos ir Kinijos granitas, Brazilijos kvarcitas. Gaminama mūsų pačių dirbtuvėje.",
     count: "prekių",
     fromPrice: "nuo",
+    requestQuote: "Užsakyti skaičiavimą",
     addToSelection: "Pridėti",
     id: "ID",
     viewAll: "Žiūrėti visus",

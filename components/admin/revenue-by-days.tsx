@@ -77,7 +77,7 @@ export function RevenueByDays({
       if (t < from) continue
       const key = t.toISOString().slice(0, 10) // YYYY-MM-DD
       const existing = map.get(key) ?? { revenue: 0, count: 0 }
-      existing.revenue += o.items.reduce((a, i) => a + i.priceFrom, 0)
+      existing.revenue += o.items.reduce((a, i) => a + (i.priceFrom ?? 0), 0)
       existing.count += 1
       map.set(key, existing)
     }

@@ -41,7 +41,7 @@ export default function AdminPage() {
     return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear()
   }).length
   const totalPipeline = orders.reduce((sum, o) => {
-    return sum + o.items.reduce((itemSum, item) => itemSum + item.priceFrom, 0)
+    return sum + o.items.reduce((itemSum, item) => itemSum + (item.priceFrom ?? 0), 0)
   }, 0)
 
   // ----- Real trends computed from createdAt history -----

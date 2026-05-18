@@ -26,7 +26,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
   const addNote = useOrdersStore((state) => state.addNote)
   const markContacted = useOrdersStore((state) => state.markContacted)
 
-  const totalPrice = order.items.reduce((sum, item) => sum + item.priceFrom, 0)
+  const totalPrice = order.items.reduce((sum, item) => sum + (item.priceFrom ?? 0), 0)
 
   const handleAddNote = () => {
     if (noteText.trim()) {
@@ -103,7 +103,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                     <div className="flex-1 min-w-0">
                       <p className="font-mono text-sm font-medium">№ {item.id}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        від {formatPrice(item.priceFrom)} <span className="opacity-60">{eurHint(item.priceFrom)}</span>
+                        {item.priceFrom ? <>від {formatPrice(item.priceFrom)} <span className="opacity-60">{eurHint(item.priceFrom)}</span></> : "Ціна не вказана"}
                       </p>
                     </div>
                   </div>

@@ -226,7 +226,8 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
   // Min/max ціни в EUR (для слайдерів)
   const priceBounds = useMemo(() => {
     if (items.length === 0) return { min: 0, max: 5000 }
-    const prices = items.map((s) => s.priceFrom).sort((a, b) => a - b)
+    const prices = items.map((s) => s.priceFrom).filter((p): p is number => p !== undefined).sort((a, b) => a - b)
+    if (prices.length === 0) return { min: 0, max: 5000 }
     return { min: prices[0], max: prices[prices.length - 1] }
   }, [items])
 
@@ -898,16 +899,16 @@ export function applyFilters(
       return c ? f.countries.includes(c) : false
     })
   }
-  if (f.priceMin !== undefined) out = out.filter((s) => s.priceFrom >= f.priceMin!)
-  if (f.priceMax !== undefined) out = out.filter((s) => s.priceFrom <= f.priceMax!)
+  if (f.priceMin !== undefined) out = out.filter((s) => s.priceFrom !== undefined && s.priceFrom >= f.priceMin!)
+  if (f.priceMax !== undefined) out = out.filter((s) => s.priceFrom !== undefined && s.priceFrom <= f.priceMax!)
   if (f.featuredOnly) out = out.filter((s) => s.isFeatured)
 
   switch (f.sort) {
     case "priceAsc":
-      out.sort((a, b) => a.priceFrom - b.priceFrom)
+      out.sort((a, b) => (a.priceFrom ?? Infinity) - (b.priceFrom ?? Infinity))
       break
     case "priceDesc":
-      out.sort((a, b) => b.priceFrom - a.priceFrom)
+      out.sort((a, b) => (b.priceFrom ?? -1) - (a.priceFrom ?? -1))
       break
     case "popular":
       out.sort(

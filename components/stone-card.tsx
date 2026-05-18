@@ -169,12 +169,33 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
 
           <div className="mt-6 flex items-center justify-between gap-3">
             <div className="flex flex-col">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                {t.catalog.fromPrice}
-              </span>
-              <span className="text-xl font-semibold tabular-nums">
-                {formatPrice(item.priceFrom)}
-              </span>
+              {item.priceFrom ? (
+                <>
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {t.catalog.fromPrice}
+                  </span>
+                  <span className="text-xl font-semibold tabular-nums">
+                    {formatPrice(item.priceFrom)}
+                  </span>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    window.location.href = "tel:+380678080222"
+                  }}
+                  className="text-left"
+                >
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground block">
+                    {t.catalog.requestQuote}
+                  </span>
+                  <span className="text-base font-semibold text-accent-foreground">
+                    +38 (067) 808-02-22
+                  </span>
+                </button>
+              )}
             </div>
             <motion.button
               type="button"

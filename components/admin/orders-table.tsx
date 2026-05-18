@@ -58,7 +58,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
           </TableHeader>
           <TableBody>
             {orders.map((order) => {
-              const totalPrice = order.items.reduce((sum, item) => sum + item.priceFrom, 0)
+              const totalPrice = order.items.reduce((sum, item) => sum + (item.priceFrom ?? 0), 0)
               const modelChips = order.items.slice(0, 3)
               const moreCount = order.items.length - 3
 
