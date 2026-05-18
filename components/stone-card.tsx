@@ -168,75 +168,71 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
           </div>
 
           <div className="mt-6 flex items-center justify-between gap-3">
-            <div className="flex flex-col">
-              {item.priceFrom ? (
-                <>
+            {item.priceFrom ? (
+              <>
+                <div className="flex flex-col">
                   <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     {t.catalog.fromPrice}
                   </span>
                   <span className="text-xl font-semibold tabular-nums">
                     {formatPrice(item.priceFrom)}
                   </span>
-                </>
-              ) : (
-                <button
+                </div>
+                <motion.button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    window.location.href = "tel:+380678080222"
-                  }}
-                  className="text-left"
+                  onClick={handleAdd}
+                  disabled={isSelected}
+                  whileTap={{ scale: 0.96 }}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    isSelected
+                      ? "bg-success/10 text-success"
+                      : "bg-accent text-accent-foreground hover:-translate-y-[1px] hover:brightness-110"
+                  )}
+                  aria-label={isSelected ? inCartLabels[locale] : addToCartLabels[locale]}
                 >
-                  <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground block">
-                    {t.catalog.requestQuote}
-                  </span>
-                  <span className="text-base font-semibold text-accent-foreground">
-                    +38 (067) 808-02-22
-                  </span>
-                </button>
-              )}
-            </div>
-            <motion.button
-              type="button"
-              onClick={handleAdd}
-              disabled={isSelected}
-              whileTap={{ scale: 0.96 }}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                isSelected
-                  ? "bg-success/10 text-success"
-                  : "bg-accent text-accent-foreground hover:-translate-y-[1px] hover:brightness-110"
-              )}
-              aria-label={isSelected ? inCartLabels[locale] : addToCartLabels[locale]}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {showSuccess || isSelected ? (
-                  <motion.span
-                    key="check"
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.6, opacity: 0 }}
-                    transition={{ duration: 0.18 }}
-                    className="inline-flex items-center gap-2"
-                  >
-                    <Check className="h-4 w-4" strokeWidth={2.25} />
-                    {inCartLabels[locale]}
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="add"
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.6, opacity: 0 }}
-                    transition={{ duration: 0.18 }}
-                  >
-                    {addToCartLabels[locale]}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
+                  <AnimatePresence mode="wait" initial={false}>
+                    {showSuccess || isSelected ? (
+                      <motion.span
+                        key="check"
+                        initial={{ scale: 0.6, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.6, opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="inline-flex items-center gap-2"
+                      >
+                        <Check className="h-4 w-4" strokeWidth={2.25} />
+                        {inCartLabels[locale]}
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="add"
+                        initial={{ scale: 0.6, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.6, opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                      >
+                        {addToCartLabels[locale]}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </>
+            ) : (
+              <motion.button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  window.location.href = "tel:+380678080222"
+                }}
+                whileTap={{ scale: 0.96 }}
+                className="w-full inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                {t.catalog.requestQuote}
+              </motion.button>
+            )}
           </div>
         </div>
       </Link>
