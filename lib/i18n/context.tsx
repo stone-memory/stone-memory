@@ -8,6 +8,7 @@ type LanguageContextValue = {
   setLocale: (l: Locale) => void
   t: Dictionary
   currency: Currency
+  currencyRate: number
   formatPrice: (uahAmount: number) => string
 }
 
@@ -78,10 +79,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }
 
   const currency = localeCurrency[locale]
+  // UAH per 1 unit of locale currency. Live rate preferred; fallback to static.
+  const currencyRate = liveRates[currency] ?? fxFromUAH[currency]
 
   const formatPrice = useMemo(() => {
-    // Rate = UAH per 1 unit of the target currency. Live rate preferred; fallback to static.
-    const rate = liveRates[currency] ?? fxFromUAH[currency]
+    const rate = currencyRate
     // Deterministic formatter — avoids Intl.NumberFormat drift between Node (SSR)
     // and browser ICU (e.g. UAH shows "₴" on server vs "грн" on client).
     const currencySymbol: Record<Currency, string> = {
@@ -112,7 +114,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [currency, liveRates])
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t: dictionaries[locale], currency, formatPrice }}>
+    <LanguageContext.Provider value={{ locale, setLocale, t: dictionaries[locale], currency, currencyRate, formatPrice }}>
       {children}
     </LanguageContext.Provider>
   )

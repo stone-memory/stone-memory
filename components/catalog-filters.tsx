@@ -162,7 +162,7 @@ function Check({
 }
 
 export function CatalogFilters({ category, items, value, onChange, totalCount }: Props) {
-  const { locale, formatPrice } = useTranslation()
+  const { locale, formatPrice, currency, currencyRate } = useTranslation()
   const L = filterLabels[locale]
 
   const toneCounts = useMemo(() => {
@@ -381,7 +381,9 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
               onChange={onChange}
               bounds={priceBounds}
               format={formatPrice}
-              labels={{ from: L.priceMin, to: L.priceMax, clear: L.clear, apply: L.apply }}
+              currencyRate={currencyRate}
+              currencyCode={currency}
+              labels={{ from: L.priceMin, to: L.priceMax, apply: L.apply }}
             />
           </Popover>
 
@@ -395,7 +397,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
                 : "border-foreground/15 bg-background text-foreground hover:bg-foreground/5"
             )}
           >
-            ⭐ {L.featured}
+            {L.featured}
           </button>
         </div>
 
@@ -422,6 +424,8 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
           i18n={optI18n}
           priceBounds={priceBounds}
           formatPrice={formatPrice}
+          currencyRate={currencyRate}
+          currencyCode={currency}
         />
 
         <SortMenu value={value.sort} onChange={(s) => onChange({ ...value, sort: s })} />
@@ -461,7 +465,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
             <Chip label={`${L.priceMax} ${formatPrice(value.priceMax)}`} onRemove={() => onChange({ ...value, priceMax: undefined })} />
           )}
           {value.featuredOnly && (
-            <Chip label={`⭐ ${L.featured}`} onRemove={() => onChange({ ...value, featuredOnly: false })} />
+            <Chip label={`${L.featured}`} onRemove={() => onChange({ ...value, featuredOnly: false })} />
           )}
           <span className="ml-auto text-xs text-muted-foreground tabular-nums">{totalCount}</span>
         </div>
@@ -486,83 +490,64 @@ function PriceFilter({
   onChange,
   bounds,
   format,
+  currencyRate,
+  currencyCode,
   labels,
 }: {
   value: FiltersState
   onChange: (v: FiltersState) => void
   bounds: { min: number; max: number }
-  format: (eur: number) => string
-  labels: { from: string; to: string; clear: string; apply: string }
+  format: (uah: number) => string
+  currencyRate: number
+  currencyCode: string
+  labels: { from: string; to: string; apply: string }
 }) {
-  const [draftMin, setDraftMin] = useState<string>(value.priceMin?.toString() ?? "")
-  const [draftMax, setDraftMax] = useState<string>(value.priceMax?.toString() ?? "")
+  // Drafts are in the display currency (PLN/EUR/UAH); stored filter state is always UAH.
+  const toDisplay = (uah: number) => Math.round(uah / currencyRate)
+  const toUAH = (display: number) => Math.round(display * currencyRate)
 
-  const presets: Array<{ label: string; min?: number; max?: number }> = [
-    { label: `< ${format(1000)}`, max: 1000 },
-    { label: `${format(1000)} – ${format(2500)}`, min: 1000, max: 2500 },
-    { label: `${format(2500)} – ${format(5000)}`, min: 2500, max: 5000 },
-    { label: `> ${format(5000)}`, min: 5000 },
-  ]
+  const [draftMin, setDraftMin] = useState<string>(
+    value.priceMin !== undefined ? String(toDisplay(value.priceMin)) : ""
+  )
+  const [draftMax, setDraftMax] = useState<string>(
+    value.priceMax !== undefined ? String(toDisplay(value.priceMax)) : ""
+  )
 
   return (
     <div className="space-y-3">
-      <div className="space-y-1.5">
-        {presets.map((p, i) => {
-          const active = p.min === value.priceMin && p.max === value.priceMax
-          return (
-            <button
-              key={i}
-              type="button"
-              onClick={() => {
-                onChange({ ...value, priceMin: p.min, priceMax: p.max })
-                setDraftMin(p.min?.toString() ?? "")
-                setDraftMax(p.max?.toString() ?? "")
-              }}
-              className={cn(
-                "w-full rounded-xl px-3 py-2 text-left text-[13px] transition-colors",
-                active ? "bg-foreground text-background" : "hover:bg-foreground/5"
-              )}
-            >
-              {p.label}
-            </button>
-          )
-        })}
+      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{currencyCode}</div>
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder={labels.from}
+          value={draftMin}
+          onChange={(e) => setDraftMin(e.target.value.replace(/\D/g, ""))}
+          className="h-9 w-full rounded-lg border border-foreground/10 bg-background px-2 text-sm tabular-nums outline-none focus:border-foreground/30"
+        />
+        <span className="text-muted-foreground">—</span>
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder={labels.to}
+          value={draftMax}
+          onChange={(e) => setDraftMax(e.target.value.replace(/\D/g, ""))}
+          className="h-9 w-full rounded-lg border border-foreground/10 bg-background px-2 text-sm tabular-nums outline-none focus:border-foreground/30"
+        />
       </div>
-      <div className="border-t border-foreground/5 pt-3">
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-2">EUR</div>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder={labels.from}
-            value={draftMin}
-            onChange={(e) => setDraftMin(e.target.value.replace(/\D/g, ""))}
-            className="h-9 w-full rounded-lg border border-foreground/10 bg-background px-2 text-sm tabular-nums outline-none focus:border-foreground/30"
-          />
-          <span className="text-muted-foreground">—</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder={labels.to}
-            value={draftMax}
-            onChange={(e) => setDraftMax(e.target.value.replace(/\D/g, ""))}
-            className="h-9 w-full rounded-lg border border-foreground/10 bg-background px-2 text-sm tabular-nums outline-none focus:border-foreground/30"
-          />
-        </div>
-        <button
-          type="button"
-          onClick={() =>
-            onChange({
-              ...value,
-              priceMin: draftMin ? Number(draftMin) : undefined,
-              priceMax: draftMax ? Number(draftMax) : undefined,
-            })
-          }
-          className="mt-2 w-full rounded-xl bg-foreground py-2 text-[13px] font-medium text-background"
-        >
-          {labels.apply}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() =>
+          onChange({
+            ...value,
+            priceMin: draftMin ? toUAH(Number(draftMin)) : undefined,
+            priceMax: draftMax ? toUAH(Number(draftMax)) : undefined,
+          })
+        }
+        className="w-full rounded-xl bg-foreground py-2 text-[13px] font-medium text-background"
+      >
+        {labels.apply}
+      </button>
       <div className="text-[11px] text-muted-foreground">
         {format(bounds.min)} – {format(bounds.max)}
       </div>
@@ -647,7 +632,9 @@ function MobileDrawer(props: {
   }
   i18n: OptI18nSet
   priceBounds: { min: number; max: number }
-  formatPrice: (eur: number) => string
+  formatPrice: (uah: number) => string
+  currencyRate: number
+  currencyCode: string
 }) {
   const { locale } = useTranslation()
   const L = filterLabels[locale]
@@ -788,13 +775,15 @@ function MobileDrawer(props: {
                       onChange={onChange}
                       bounds={props.priceBounds}
                       format={props.formatPrice}
-                      labels={{ from: L.priceMin, to: L.priceMax, clear: L.clear, apply: L.apply }}
+                      currencyRate={props.currencyRate}
+                      currencyCode={props.currencyCode}
+                      labels={{ from: L.priceMin, to: L.priceMax, apply: L.apply }}
                     />
                   </Section>
 
                   <Section label={L.featured}>
                     <PillToggle
-                      label={`⭐ ${L.featured}`}
+                      label={`${L.featured}`}
                       active={value.featuredOnly}
                       onClick={() => onChange({ ...value, featuredOnly: !value.featuredOnly })}
                     />
@@ -876,7 +865,7 @@ export function applyFilters(
   let out = items.slice()
   const q = f.q.trim().toLowerCase()
   if (q) {
-    out = out.filter((s) => s.id.toLowerCase().includes(q))
+    out = out.filter((s) => s.id.toLowerCase().includes(q) || (s.name || "").toLowerCase().includes(q))
   }
   if (f.tones.length) {
     out = out.filter((s) => {
@@ -899,8 +888,8 @@ export function applyFilters(
       return c ? f.countries.includes(c) : false
     })
   }
-  if (f.priceMin !== undefined) out = out.filter((s) => s.priceFrom !== undefined && s.priceFrom >= f.priceMin!)
-  if (f.priceMax !== undefined) out = out.filter((s) => s.priceFrom !== undefined && s.priceFrom <= f.priceMax!)
+  if (f.priceMin !== undefined) out = out.filter((s) => s.priceFrom === undefined || s.priceFrom >= f.priceMin!)
+  if (f.priceMax !== undefined) out = out.filter((s) => s.priceFrom === undefined || s.priceFrom <= f.priceMax!)
   if (f.featuredOnly) out = out.filter((s) => s.isFeatured)
 
   switch (f.sort) {
