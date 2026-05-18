@@ -76,6 +76,10 @@ const ENV_MAP: Record<IntegrationId, Record<string, string>> = {
     imap_folder: "EMAIL_IMAP_FOLDER",
     smtp_host: "EMAIL_SMTP_HOST",
     smtp_port: "EMAIL_SMTP_PORT",
+    // Business domain used to filter forwarded mail. Only emails where
+    // To: ends with this domain are imported into CRM. Set to e.g.
+    // "stonememory.com.ua" so personal Gmail messages are ignored.
+    inbound_domain: "EMAIL_INBOUND_DOMAIN",
   },
 }
 

@@ -68,15 +68,16 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
 
         // Skip emails not addressed to our business domain — filters out
         // personal messages in the Gmail inbox that were not forwarded via
-        // ImprovMX from info@stonememory.com.ua.
+        // ImprovMX. We check the To: header against EMAIL_INBOUND_DOMAIN
+        // (e.g. "stonememory.com.ua"). Falls back to permissive if not set.
         const toAddresses = (parsed.to
           ? (Array.isArray(parsed.to) ? parsed.to : [parsed.to])
               .flatMap((a) => ("value" in a ? a.value : [a]))
               .map((a) => a.address?.toLowerCase() ?? "")
           : [])
-        const businessDomain = (mbox.address?.split("@")[1] || "").toLowerCase()
-        const isForBusiness = businessDomain
-          ? toAddresses.some((a) => a.endsWith("@" + businessDomain) || a.endsWith("." + businessDomain))
+        const inboundDomain = (mbox.inbound_domain || process.env.EMAIL_INBOUND_DOMAIN || "").toLowerCase()
+        const isForBusiness = inboundDomain
+          ? toAddresses.some((a) => a.endsWith("@" + inboundDomain) || a.endsWith("." + inboundDomain))
           : true
         if (!isForBusiness) {
           await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
