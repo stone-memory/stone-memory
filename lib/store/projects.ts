@@ -144,7 +144,7 @@ export function useProjects(): Project[] {
   useEffect(() => {
     hydrate()
   }, [hydrate])
-  if (!hasHydrated) return baseProjects
+  if (!hasHydrated) return []
   return items.filter((r) => !r.hidden).map((r) => r.data)
 }
 
@@ -156,6 +156,6 @@ export function useVisibleCategories(): ProjectCategory[] {
     hydrate()
   }, [hydrate])
   const all = Object.keys(baseCategoryLabels) as ProjectCategory[]
-  if (!hasHydrated) return all
+  if (!hasHydrated) return []
   return all.filter((c) => !hidden.includes(c))
 }

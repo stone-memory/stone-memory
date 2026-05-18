@@ -187,8 +187,7 @@ export function useArticles(): Article[] {
   useEffect(() => {
     hydrate()
   }, [hydrate])
-  // Pre-hydration: render seed so SSR/first paint isn't empty.
-  if (!hasHydrated) return baseArticles
+  if (!hasHydrated) return []
   // Empty DB: fall back to seed (graceful default for fresh deploys).
   if (articles.length === 0) return baseArticles
   // Once admin has written anything, DB is the single source of truth —

@@ -112,6 +112,6 @@ export function useServices(): Service[] {
   useEffect(() => {
     hydrate()
   }, [hydrate])
-  if (!hasHydrated) return baseServices
+  if (!hasHydrated) return []
   return items.filter((r) => !r.hidden).map((r) => r.data)
 }
