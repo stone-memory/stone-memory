@@ -7,12 +7,21 @@ import { useTranslation } from "@/lib/i18n/context"
 import { useBusinessProfile } from "@/lib/store/business-profile"
 import { PhoneLink } from "@/components/phone-link"
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 
 export function Footer() {
   const { t, locale } = useTranslation()
   const profile = useBusinessProfile()
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
+  const pathname = usePathname()
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (pathname === "/") {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -76,7 +85,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 md:grid-cols-2 md:gap-16">
           <div className="max-w-md">
-            <Link href="/" className="flex items-center gap-2 text-foreground" aria-label="Stone Memory">
+            <Link href="/" className="flex items-center gap-2 text-foreground" aria-label="Stone Memory" onClick={handleLogoClick}>
               <Image src="/logo-mark.png" alt="" width={36} height={36} className="h-9 w-9 select-none" />
               <span className="text-xl font-semibold tracking-tight-custom">Stone Memory</span>
             </Link>

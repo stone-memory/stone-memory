@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ShoppingBag, Menu, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useSelectionStore } from "@/lib/store/selection"
@@ -28,6 +29,14 @@ export function Header({ className }: HeaderProps) {
   const { items, openSidebar } = useSelectionStore()
   const { t, locale } = useTranslation()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname()
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (pathname === "/") {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
   const itemCount = items.length
 
   const projectsLabels: Record<Locale, string> = {
@@ -60,6 +69,7 @@ export function Header({ className }: HeaderProps) {
           href="/"
           className="flex items-center gap-2 text-foreground"
           aria-label="Stone Memory — home"
+          onClick={handleLogoClick}
         >
           <Image
             src="/logo-mark.png"
