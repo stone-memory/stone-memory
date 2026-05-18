@@ -19,7 +19,7 @@ const MATERIALS: StoneMaterial[] = ["granite", "gabbro", "marble", "labradorite"
 const CATEGORIES: Category[] = ["memorial", "home"]
 
 function nextId(existing: string[]): string {
-  let n = 900000
+  let n = 1
   const set = new Set(existing)
   while (set.has(String(n))) n++
   return String(n)
