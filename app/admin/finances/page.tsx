@@ -120,20 +120,26 @@ export default function AdminFinancesPage() {
   }
 
   const exportCsv = () => {
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`
+    const fmtDate = (ts: number) => {
+      const d = new Date(ts)
+      return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`
+    }
+    const kindLabel: Record<TxKind, string> = { income: "Дохід", expense: "Витрата" }
     const rows = [
-      ["id", "kind", "category", "amount_eur", "date_iso", "note"].join(","),
+      ["номер", "тип", "категорія", "сума_₴", "дата", "примітка"].join(","),
       ...filtered.map((t) =>
         [
-          t.id,
-          t.kind,
-          t.category,
+          esc(t.id),
+          kindLabel[t.kind],
+          categoryLabels[t.category],
           t.amount,
-          new Date(t.date).toISOString(),
-          `"${(t.note || "").replace(/"/g, '""')}"`,
+          fmtDate(t.date),
+          esc(t.note || ""),
         ].join(",")
       ),
     ].join("\n")
-    const blob = new Blob([rows], { type: "text/csv;charset=utf-8;" })
+    const blob = new Blob(["﻿" + rows], { type: "text/csv;charset=utf-8;" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url

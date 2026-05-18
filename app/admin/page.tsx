@@ -19,7 +19,14 @@ import type { Order, OrderStatus } from "@/lib/types"
 
 function exportOrdersCsv(orders: Order[]) {
   const esc = (v: string) => `"${v.replace(/"/g, '""')}"`
-  const header = ["id", "name", "phone", "status", "created_at", "reference", "contacted", "total_uah", "items"].join(",")
+  const fmtDate = (d: Date) =>
+    `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`
+  const statusLabel: Record<string, string> = {
+    new: "Нове",
+    in_progress: "В роботі",
+    completed: "Завершено",
+  }
+  const header = ["номер", "клієнт", "телефон", "статус", "дата", "референс", "сконтактовано", "сума_₴", "товари"].join(",")
   const rows = orders.map((o) => {
     const total = o.items.reduce((s, i) => s + (i.priceFrom ?? 0), 0)
     const items = o.items.map((i) => i.name || i.id).join("; ")
@@ -27,10 +34,10 @@ function exportOrdersCsv(orders: Order[]) {
       esc(o.id),
       esc(o.name),
       esc(o.phone),
-      o.status ?? "new",
-      new Date(o.createdAt).toISOString(),
+      statusLabel[o.status ?? "new"] ?? "Нове",
+      fmtDate(new Date(o.createdAt)),
       esc(o.reference ?? ""),
-      o.contacted ? "yes" : "no",
+      o.contacted ? "Так" : "Ні",
       total,
       esc(items),
     ].join(",")
@@ -40,7 +47,7 @@ function exportOrdersCsv(orders: Order[]) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url
-  a.download = `orders-${new Date().toISOString().slice(0, 10)}.csv`
+  a.download = `orders-${fmtDate(new Date())}.csv`
   a.click()
   URL.revokeObjectURL(url)
 }
