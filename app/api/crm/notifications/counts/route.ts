@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardTeamMember } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic"
  * Кешу немає — викликається 1 раз на 30с з sidebar.
  */
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardTeamMember(req)
   if (unauth) return unauth
 
   const now = new Date().toISOString()

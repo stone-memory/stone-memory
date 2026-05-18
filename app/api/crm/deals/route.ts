@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import type { DealStatus, DealPriority } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
 // GET /api/crm/deals?status=...&assigned=...&customer=... — список з фільтрацією
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.view_all")
   if (unauth) return unauth
 
   const url = new URL(req.url)
@@ -87,7 +87,7 @@ type CreatePayload = {
 
 // POST /api/crm/deals — створити нову угоду + опціонально позиції
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.create")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as CreatePayload | null

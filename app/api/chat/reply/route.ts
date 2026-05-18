@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
 import { addOperatorMessage } from "@/lib/chat-store"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 export async function POST(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "customers.message")
   if (unauthorized) return unauthorized
 
   try {

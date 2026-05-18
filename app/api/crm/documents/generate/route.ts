@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import {
   renderQuoteHTML,
   renderContractHTML,
@@ -22,7 +22,7 @@ type Payload = {
 
 // POST /api/crm/documents/generate — генерує HTML-документ і зберігає у Supabase Storage
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "finances.create_documents")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as Payload | null

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardTeamMember } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
@@ -43,7 +43,7 @@ function sanitizeFolder(input: string | null): string {
 }
 
 export async function POST(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardTeamMember(req)
   if (unauthorized) return unauthorized
 
   const url = new URL(req.url)

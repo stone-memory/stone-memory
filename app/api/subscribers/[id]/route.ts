@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
 export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "content.editorial")
   if (unauthorized) return unauthorized
   const { id } = await ctx.params
   const { error } = await supabaseAdmin.from("subscribers").delete().eq("id", id)

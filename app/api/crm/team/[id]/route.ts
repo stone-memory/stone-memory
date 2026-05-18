@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import type { TeamRole } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic"
 type Ctx = { params: Promise<{ id: string }> }
 
 export async function PATCH(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "team.manage")
   if (unauth) return unauth
 
   const { id } = await ctx.params
@@ -36,7 +36,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
 }
 
 export async function DELETE(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "team.manage")
   if (unauth) return unauth
   const { id } = await ctx.params
   // Soft-delete через active=false щоб зберегти історію assignment-ів

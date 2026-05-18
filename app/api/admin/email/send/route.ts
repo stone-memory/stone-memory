@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import {
   resolveRecipients,
@@ -38,7 +38,7 @@ function parseRequest(body: Body): SendRequest | { error: string } {
 }
 
 export async function POST(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "customers.message")
   if (unauthorized) return unauthorized
 
   let body: Body

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { notifyCustomerStatusChange } from "@/lib/notifications"
 
 export const dynamic = "force-dynamic"
@@ -12,7 +12,7 @@ type PatchPayload = {
 }
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "deals.edit")
   if (unauthorized) return unauthorized
   const { id } = await ctx.params
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 })
@@ -83,7 +83,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 }
 
 export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "deals.delete_permanent")
   if (unauthorized) return unauthorized
   const { id } = await ctx.params
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 })

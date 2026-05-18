@@ -11,14 +11,14 @@ import {
   seedAbout,
   seedBlogConfig,
 } from "@/lib/data/seeds"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
 // POST /api/admin/seed?force=true  — re-run even if tables are already populated.
 // Without force, only inserts rows that don't already exist (upsert ignore duplicates).
 export async function POST(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "data.export")
   if (unauthorized) return unauthorized
 
   const url = new URL(req.url)

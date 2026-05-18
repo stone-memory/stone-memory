@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { canTransition, type DealStatus } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
@@ -9,7 +9,7 @@ type Ctx = { params: Promise<{ id: string }> }
 
 // GET /api/crm/deals/[id] — повний overview угоди (всі зв'язані сутності)
 export async function GET(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.view_all")
   if (unauth) return unauth
 
   const { id } = await ctx.params
@@ -66,7 +66,7 @@ type PatchPayload = Partial<{
 
 // PATCH /api/crm/deals/[id] — змінити поля. При зміні status — валідація переходу.
 export async function PATCH(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
 
   const { id } = await ctx.params
@@ -107,7 +107,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
 
 // DELETE — повне видалення (каскадно зносить items, events, reminders, payments, docs)
 export async function DELETE(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.delete_permanent")
   if (unauth) return unauth
 
   const { id } = await ctx.params

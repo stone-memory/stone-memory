@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -12,7 +12,7 @@ export async function GET() {
 
 // PUT { categories: string[] } — replaces the full set. Admin only.
 export async function PUT(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "content.editorial")
   if (unauthorized) return unauthorized
   const body = (await req.json().catch(() => null)) as { categories?: string[] } | null
   if (!body || !Array.isArray(body.categories)) {

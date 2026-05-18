@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -8,7 +8,7 @@ type Ctx = { params: Promise<{ id: string }> }
 
 // GET /api/crm/customers/[id] — Customer 360°: всі deals + reminders + comms + payments + docs
 export async function GET(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.view_all")
   if (unauth) return unauth
 
   const { id } = await ctx.params
@@ -74,7 +74,7 @@ export async function GET(req: Request, ctx: Ctx) {
 
 // PATCH /api/crm/customers/[id] — часткове оновлення
 export async function PATCH(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.edit")
   if (unauth) return unauth
 
   const { id } = await ctx.params
@@ -106,7 +106,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
 
 // DELETE — обережно, каскадно знесе всі deals/comms/payments цього клієнта
 export async function DELETE(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.edit")
   if (unauth) return unauth
 
   const { id } = await ctx.params

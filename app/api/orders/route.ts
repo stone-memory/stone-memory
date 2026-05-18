@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { notifyAdminNewOrder, sendCustomerConfirmation } from "@/lib/notifications"
 import { findOrCreateCustomer } from "@/lib/crm/comms"
 
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "deals.view_all")
   if (unauthorized) return unauthorized
   const { data, error } = await supabaseAdmin
     .from("orders")

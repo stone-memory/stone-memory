@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
 
 // Admin — list all subscribers.
 export async function GET(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "content.editorial")
   if (unauthorized) return unauthorized
 
   const { data, error } = await supabaseAdmin

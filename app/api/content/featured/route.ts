@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
@@ -17,7 +17,7 @@ export async function GET() {
 
 // PUT { ids: string[] } — replaces the full ordered list. Admin only.
 export async function PUT(req: Request) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "content.catalog")
   if (unauthorized) return unauthorized
   const body = (await req.json().catch(() => null)) as { ids?: string[] } | null
   if (!body || !Array.isArray(body.ids)) {

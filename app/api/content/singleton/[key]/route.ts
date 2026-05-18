@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -17,7 +17,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ key: string }>
 }
 
 export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> }) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "content.editorial")
   if (unauthorized) return unauthorized
   const { key } = await ctx.params
   const body = (await req.json().catch(() => null)) as { data?: unknown } | null
@@ -39,7 +39,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> 
 }
 
 export async function DELETE(req: Request, ctx: { params: Promise<{ key: string }> }) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "content.editorial")
   if (unauthorized) return unauthorized
   const { key } = await ctx.params
   const { error } = await supabaseAdmin.from("site_content").delete().eq("key", key)

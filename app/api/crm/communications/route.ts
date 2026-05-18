@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import type { CommChannel, CommDirection } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
 // GET /api/crm/communications?customer=...&deal=...&channel=...&unread=true
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.message")
   if (unauth) return unauth
 
   const url = new URL(req.url)
@@ -48,7 +48,7 @@ type CreatePayload = {
 
 // POST — додати запис вручну (наприклад, "клієнт подзвонив")
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.message")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as CreatePayload | null
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
 // PATCH /api/crm/communications — bulk mark as read.
 // Body: { ids: number[] }
 export async function PATCH(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.message")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as { ids?: number[] } | null

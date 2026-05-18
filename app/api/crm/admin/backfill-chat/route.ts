@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { findOrCreateCustomer, findActiveDealForCustomer } from "@/lib/crm/comms"
 
 export const dynamic = "force-dynamic"
@@ -16,7 +16,7 @@ export const maxDuration = 60
  * Returns: { ok, processed, skipped, customersCreated, errors }
  */
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "integrations.manage")
   if (unauth) return unauth
 
   let processed = 0

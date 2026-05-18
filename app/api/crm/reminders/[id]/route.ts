@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -23,7 +23,7 @@ type Patch = Partial<{
 }>
 
 export async function PATCH(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
 
   const { id } = await ctx.params
@@ -60,7 +60,7 @@ export async function PATCH(req: Request, ctx: Ctx) {
 }
 
 export async function DELETE(req: Request, ctx: Ctx) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
   const { id } = await ctx.params
   const { error } = await supabaseAdmin.from("reminders").delete().eq("id", id)

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { sendToChannel } from "@/lib/crm/send"
 import type { CommChannel } from "@/lib/crm/types"
 
@@ -15,10 +15,10 @@ export const dynamic = "force-dynamic"
  * Маршрутизує до правильного каналу через lib/crm/send.ts:sendToChannel
  * і записує у communications. Повертає { ok, channel, error?, communicationId? }.
  *
- * Дозволено лише для admin/manager (через requireAdmin).
+ * Потребує capability customers.message.
  */
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.message")
   if (unauth) return unauth
 
   let body: {

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
 // GET /api/crm/customers?q=...&assigned=... — список з пошуком і фільтрацією.
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.view_all")
   if (unauth) return unauth
 
   const url = new URL(req.url)
@@ -51,7 +51,7 @@ type CreatePayload = {
 
 // POST /api/crm/customers — створити (або upsert по phone_norm)
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "customers.edit")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as CreatePayload | null

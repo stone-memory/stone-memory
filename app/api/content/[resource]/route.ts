@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { getCollection } from "@/lib/content-schema"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardContentMutation } from "@/lib/auth/permissions"
 import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
@@ -20,14 +20,16 @@ export async function GET(_req: Request, ctx: { params: Promise<{ resource: stri
   return NextResponse.json({ items: data ?? [] })
 }
 
-// POST = create or upsert. Body must include the record's id/slug. Admin only.
+// POST = create or upsert. Body must include the record's id/slug.
+// Gated by the collection's writeCapability (content.catalog /
+// content.editorial / finances.view_company / customers.message / …).
 export async function POST(req: Request, ctx: { params: Promise<{ resource: string }> }) {
-  const unauthorized = await requireAdmin(req)
-  if (unauthorized) return unauthorized
-
   const { resource } = await ctx.params
   const cfg = getCollection(resource)
   if (!cfg) return NextResponse.json({ error: "unknown resource" }, { status: 404 })
+
+  const unauthorized = await guardContentMutation(req, cfg.writeCapability)
+  if (unauthorized) return unauthorized
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
   if (!body) return NextResponse.json({ error: "invalid json" }, { status: 400 })

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireAdmin(req)
+  const unauthorized = await guardCapability(req, "customers.message")
   if (unauthorized) return unauthorized
 
   const { id } = await ctx.params

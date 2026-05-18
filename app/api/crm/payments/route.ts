@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import type { PaymentKind, PaymentMethod } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
 // GET /api/crm/payments?deal=...&customer=...
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "finances.record_payments")
   if (unauth) return unauth
 
   const url = new URL(req.url)
@@ -39,7 +39,7 @@ type CreatePayload = {
 
 // POST — реєстрація платежу. Тригер автоматично оновить deals.paid_eur.
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "finances.record_payments")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as CreatePayload | null

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 import type { ReminderKind } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
 // GET /api/crm/reminders?status=pending&assigned=...&due_before=ISO
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
 
   const url = new URL(req.url)
@@ -45,7 +45,7 @@ type CreatePayload = {
 
 // POST /api/crm/reminders
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as CreatePayload | null

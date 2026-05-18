@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdmin } from "@/lib/api-auth"
+import { guardCapability } from "@/lib/auth/permissions"
 
 export const dynamic = "force-dynamic"
 
@@ -34,7 +34,7 @@ type Body = {
 // GET /api/crm/production-stages?deal=<id> — list (the deal overview already
 // returns these, but this exists for standalone refetch).
 export async function GET(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
   const dealId = new URL(req.url).searchParams.get("deal")
   if (!dealId) return NextResponse.json({ error: "deal обов'язковий" }, { status: 400 })
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
 
 // POST — seed standard pipeline OR add a single stage.
 export async function POST(req: Request) {
-  const unauth = await requireAdmin(req)
+  const unauth = await guardCapability(req, "deals.edit")
   if (unauth) return unauth
 
   const body = (await req.json().catch(() => null)) as Body | null

@@ -228,3 +228,59 @@ export async function requireCapability(
   }
   return result
 }
+
+/**
+ * Capability guard with the same return contract as the legacy
+ * `requireAdmin` (NextResponse to bail out, or null to proceed). Lets
+ * existing routes swap `requireAdmin` → `guardCapability` mechanically:
+ *
+ *   const unauth = await guardCapability(req, "deals.edit")
+ *   if (unauth) return unauth
+ *
+ * Accepts a single capability or an array — array means "any of these"
+ * (e.g. a list endpoint that both content.catalog and content.editorial
+ * roles may read). Use requireCapability() instead when the handler
+ * needs the resolved user / capability set.
+ */
+export async function guardCapability(
+  req: Request,
+  cap: Capability | Capability[]
+): Promise<NextResponse | null> {
+  const result = await getCurrentCapabilities(req)
+  if (result instanceof NextResponse) return result
+  const needed = Array.isArray(cap) ? cap : [cap]
+  const ok = needed.some((c) => result.capabilities.includes(c))
+  if (!ok) {
+    return NextResponse.json(
+      { error: "forbidden", reason: "missing_capability", capability: needed.join("|") },
+      { status: 403 }
+    )
+  }
+  return null
+}
+
+/**
+ * Guard form of requireTeamMember: any active team member passes.
+ * Same NextResponse|null contract for mechanical route swaps. Use for
+ * endpoints every authenticated member legitimately needs (own
+ * notification counts, own profile, shared read-only lookups).
+ */
+export async function guardTeamMember(req: Request): Promise<NextResponse | null> {
+  const ctx = await requireTeamMember(req)
+  if (ctx instanceof NextResponse) return ctx
+  return null
+}
+
+/**
+ * Guard for the generic /api/content/[resource] mutations. The required
+ * capability depends on which collection is being written, so it's
+ * resolved per-request from content-schema. `null` means the resource
+ * isn't role-gated (e.g. personal tasks) → any active member may write.
+ */
+export async function guardContentMutation(
+  req: Request,
+  writeCapability: Capability | null
+): Promise<NextResponse | null> {
+  if (writeCapability === null) return guardTeamMember(req)
+  return guardCapability(req, writeCapability)
+}
