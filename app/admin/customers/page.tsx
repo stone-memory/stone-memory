@@ -6,7 +6,7 @@ import { Search, Plus, User, Phone, Mail, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCustomersStore } from "@/lib/crm/store"
-import { formatUAH, formatRelative } from "@/lib/admin-format"
+import { formatUAHDirect, formatRelative } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 
 export default function AdminCustomersPage() {
@@ -119,8 +119,8 @@ export default function AdminCustomersPage() {
                   ) : "—"}
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums font-medium">{c.deal_count}</td>
-                <td className="px-4 py-3 text-right tabular-nums" title={`€${c.ltv_eur}`}>
-                  {c.ltv_eur > 0 ? formatUAH(Number(c.ltv_eur)) : "—"}
+                <td className="px-4 py-3 text-right tabular-nums">
+                  {c.ltv_eur > 0 ? formatUAHDirect(Number(c.ltv_eur)) : "—"}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {c.last_contact_at ? formatRelative(c.last_contact_at) : "—"}

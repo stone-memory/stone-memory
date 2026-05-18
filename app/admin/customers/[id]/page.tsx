@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, Phone, Mail, MapPin, MessageSquare, FileText, CreditCard, Bell, Activity } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { fetchCustomerOverview } from "@/lib/crm/store"
-import { formatUAH, formatDateTime, formatRelative } from "@/lib/admin-format"
+import { formatUAHDirect, formatDateTime, formatRelative } from "@/lib/admin-format"
 import {
   COMM_CHANNEL_LABELS,
   DEAL_STATUS_LABELS_UK,
@@ -103,7 +103,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           <div className="grid grid-cols-3 gap-3">
             <Stat label="Угод" value={c.deal_count} />
             <Stat label="Активних" value={data.openDealsCount} highlight />
-            <Stat label="LTV" value={formatUAH(data.totalLifetimeValue)} />
+            <Stat label="LTV" value={formatUAHDirect(data.totalLifetimeValue)} />
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
               <Link key={d.id} href={`/admin/deals/${d.id}`} className="flex items-center gap-4 px-4 py-3 hover:bg-foreground/[0.02]">
                 <span className="font-mono text-sm font-medium tabular-nums">{d.reference}</span>
                 <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs">{DEAL_STATUS_LABELS_UK[d.status]}</span>
-                <span className="ml-auto text-sm font-medium tabular-nums">{formatUAH(Number(d.amount_eur))}</span>
+                <span className="ml-auto text-sm font-medium tabular-nums">{formatUAHDirect(Number(d.amount_eur))}</span>
                 <span className="text-xs text-muted-foreground">{formatRelative(d.created_at)}</span>
               </Link>
             ))}
@@ -225,7 +225,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 </span>
                 <span className="text-muted-foreground">{PAYMENT_METHOD_LABELS_UK[p.method]}</span>
                 {p.reference && <span className="font-mono text-xs text-muted-foreground">{p.reference}</span>}
-                <span className="ml-auto font-medium tabular-nums">{formatUAH(Number(p.amount_eur))}</span>
+                <span className="ml-auto font-medium tabular-nums">{formatUAHDirect(Number(p.amount_eur))}</span>
                 <span className="text-xs text-muted-foreground">{formatDateTime(p.paid_at)}</span>
               </div>
             ))}

@@ -16,7 +16,7 @@ import {
   type DealLane,
   type DealStatus,
 } from "@/lib/crm/types"
-import { formatUAH, formatRelative } from "@/lib/admin-format"
+import { formatUAHDirect, formatRelative } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 
 const LANES: DealLane[] = ["lead", "discovery", "agreement", "production", "fulfillment", "paused", "closed"]
@@ -200,7 +200,7 @@ function DealCard({
           {DEAL_STATUS_LABELS_UK[deal.status]}
         </button>
         {Number(deal.amount_eur) > 0 && (
-          <span className="ml-auto font-medium tabular-nums">{formatUAH(Number(deal.amount_eur))}</span>
+          <span className="ml-auto font-medium tabular-nums">{formatUAHDirect(Number(deal.amount_eur))}</span>
         )}
       </div>
       {showTransitions && transitions.length > 0 && (
@@ -367,7 +367,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Сума, EUR</label>
+            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Сума, ₴</label>
             <Input type="text" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))} placeholder="0" />
           </div>
         </div>

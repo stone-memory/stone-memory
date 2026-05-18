@@ -26,7 +26,7 @@ import {
   type DealLane,
 } from "@/lib/crm/types"
 import { authedFetch } from "@/lib/authed-fetch"
-import { formatUAH, formatRelative, pluralUk } from "@/lib/admin-format"
+import { formatUAHDirect, formatRelative, pluralUk } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 
 // Sample-size thresholds for chart confidence captions. Under 10 deals a
@@ -430,10 +430,10 @@ export default function AnalyticsPage() {
 
       {/* ===== Money KPIs ===== */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Kpi icon={<TrendingUp size={18} />} label="Pipeline (відкриті)" value={formatUAH(pipelineOpen)} hint={`Виторг виконаних: ${formatUAH(completedRevenue)}`} />
-        <Kpi icon={<Banknote size={18} />} label="Отримано (оплати)" value={formatUAH(paidTotal)} hint="Сума paid по угодах періоду" />
+        <Kpi icon={<TrendingUp size={18} />} label="Pipeline (відкриті)" value={formatUAHDirect(pipelineOpen)} hint={`Виторг виконаних: ${formatUAHDirect(completedRevenue)}`} />
+        <Kpi icon={<Banknote size={18} />} label="Отримано (оплати)" value={formatUAHDirect(paidTotal)} hint="Сума paid по угодах періоду" />
         <Kpi icon={<Layers size={18} />} label="Угод" value={deals.length} hint={`Виконано: ${completedDeals.length} · Втрачено: ${lostDeals.length}`} />
-        <Kpi icon={<CheckCircle2 size={18} />} label="Середній чек" value={formatUAH(avgDeal)} hint="amount_eur по періоду" />
+        <Kpi icon={<CheckCircle2 size={18} />} label="Середній чек" value={formatUAHDirect(avgDeal)} hint="Середній чек угод за період" />
       </div>
 
       {/* ===== Deal KPIs ===== */}
@@ -481,7 +481,7 @@ export default function AnalyticsPage() {
                         has ? "bg-success/70 hover:bg-success" : "bg-transparent"
                       )}
                       style={{ height: has ? `${Math.max(8, (d.revenue / maxRevDay) * 100)}%` : "0" }}
-                      title={`${d.label}: ${formatUAH(d.revenue)}`}
+                      title={`${d.label}: ${formatUAHDirect(d.revenue)}`}
                     />
                   </div>
                   <span className="text-[9px] text-muted-foreground text-center">{d.label}</span>
@@ -506,7 +506,7 @@ export default function AnalyticsPage() {
                   value={v.count}
                   total={deals.length}
                   color={lane === "closed" ? "bg-success" : lane === "paused" ? "bg-amber-500" : "bg-accent"}
-                  suffix={formatUAH(v.amount)}
+                  suffix={formatUAHDirect(v.amount)}
                 />
               )
             })}
@@ -650,7 +650,7 @@ export default function AnalyticsPage() {
                   value={v.count}
                   total={deals.length}
                   color="bg-accent"
-                  suffix={formatUAH(v.amount)}
+                  suffix={formatUAHDirect(v.amount)}
                 />
               ))
             )}

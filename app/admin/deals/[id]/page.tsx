@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
 import { fetchDealOverview } from "@/lib/crm/store"
-import { formatUAH, formatDateTime, formatRelative, eurHint } from "@/lib/admin-format"
+import { formatUAHDirect, formatDateTime, formatRelative } from "@/lib/admin-format"
 import {
   DEAL_STATUS_LABELS_UK,
   PAYMENT_KIND_LABELS_UK,
@@ -125,9 +125,9 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
             )}
           </div>
           <div className="grid grid-cols-3 gap-3 min-w-[300px]">
-            <Stat label="Сума" value={formatUAH(Number(d.amount_eur))} hint={eurHint(Number(d.amount_eur))} />
-            <Stat label="Сплачено" value={formatUAH(Number(d.paid_eur))} hint={eurHint(Number(d.paid_eur))} />
-            <Stat label="Залишок" value={formatUAH(Number(d.balance_eur))} hint={eurHint(Number(d.balance_eur))} highlight={Number(d.balance_eur) > 0} />
+            <Stat label="Сума" value={formatUAHDirect(Number(d.amount_eur))} />
+            <Stat label="Сплачено" value={formatUAHDirect(Number(d.paid_eur))} />
+            <Stat label="Залишок" value={formatUAHDirect(Number(d.balance_eur))} highlight={Number(d.balance_eur) > 0} />
           </div>
         </div>
 
@@ -199,8 +199,8 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
                 <tr key={it.id}>
                   <td className="px-4 py-2">{it.title}</td>
                   <td className="px-4 py-2 text-right tabular-nums">{it.qty}</td>
-                  <td className="px-4 py-2 text-right tabular-nums">{formatUAH(Number(it.unit_price_eur))}</td>
-                  <td className="px-4 py-2 text-right tabular-nums font-medium">{formatUAH(Number(it.total_eur))}</td>
+                  <td className="px-4 py-2 text-right tabular-nums">{formatUAHDirect(Number(it.unit_price_eur))}</td>
+                  <td className="px-4 py-2 text-right tabular-nums font-medium">{formatUAHDirect(Number(it.total_eur))}</td>
                 </tr>
               ))}
             </tbody>
@@ -531,7 +531,7 @@ function PaymentsBlock({
               </span>
               <span className="text-muted-foreground text-xs">{PAYMENT_METHOD_LABELS_UK[p.method]}</span>
               {p.reference && <span className="font-mono text-xs text-muted-foreground">{p.reference}</span>}
-              <span className="ml-auto font-medium tabular-nums">{formatUAH(Number(p.amount_eur))}</span>
+              <span className="ml-auto font-medium tabular-nums">{formatUAHDirect(Number(p.amount_eur))}</span>
               <span className="text-xs text-muted-foreground">{formatDateTime(p.paid_at)}</span>
             </div>
           ))}
@@ -593,7 +593,7 @@ function AddPaymentDialog({ dealId, customerId, onClose }: { dealId: string; cus
             </select>
           </div>
           <div>
-            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Сума, EUR *</label>
+            <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Сума, ₴ *</label>
             <Input type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))} />
           </div>
           <div>
