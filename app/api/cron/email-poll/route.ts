@@ -151,6 +151,17 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
-  return NextResponse.json({ ok: true, info: "email IMAP poll cron — POST with CRON_SECRET" })
+// Vercel Cron Jobs invoke GET — reuse the same auth + poll logic.
+export async function GET(req: Request) {
+  if (!(await isAllowed(req))) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 })
+  }
+  try {
+    return NextResponse.json(await poll())
+  } catch (e) {
+    return NextResponse.json(
+      { ok: false, error: e instanceof Error ? e.message : "poll failed" },
+      { status: 500 }
+    )
+  }
 }

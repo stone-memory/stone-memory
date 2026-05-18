@@ -275,7 +275,7 @@ function CreateDealDialog({
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
-              onFocus={onLoadCustomers}
+              onFocus={() => onLoadCustomers()}
               className="h-10 w-full rounded-xl border border-foreground/10 bg-background px-3 text-sm"
             >
               <option value="">— Оберіть клієнта —</option>
