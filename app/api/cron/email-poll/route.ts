@@ -66,6 +66,14 @@ async function poll(): Promise<{ ok: boolean; processed?: number; skipped?: stri
           continue
         }
 
+        // Skip emails sent FROM our own mailbox address — this filters out
+        // admin order-notification emails that arrive in our own inbox and
+        // would otherwise create a "Stone Memory" customer record.
+        if (fromEmail === (mbox.address || "").toLowerCase()) {
+          await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
+          continue
+        }
+
         // Skip emails not addressed to our business domain — filters out
         // personal messages in the Gmail inbox that were not forwarded via
         // ImprovMX. We check the To: header against EMAIL_INBOUND_DOMAIN

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { requireAdmin } from "@/lib/api-auth"
 import { notifyAdminNewOrder, sendCustomerConfirmation } from "@/lib/notifications"
+import { findOrCreateCustomer } from "@/lib/crm/comms"
 
 export const dynamic = "force-dynamic"
 
@@ -50,6 +51,16 @@ export async function POST(req: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  // Create (or find) a CRM customer with the real name + phone from the order.
+  // Fire-and-forget: errors must not fail the public order response.
+  findOrCreateCustomer(
+    {
+      phone: data.phone,
+      ...(data.email ? { email: data.email } : {}),
+    },
+    { name: data.name, locale: data.locale || "uk" }
+  ).catch(() => {})
 
   // Fire-and-forget notifications. Errors are logged but don't fail the response.
   Promise.allSettled([

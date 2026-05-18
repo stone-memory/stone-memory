@@ -210,13 +210,37 @@ export async function recordIncoming(msg: IncomingMessage): Promise<{
     locale: msg.locale,
   })
 
-  // Якщо знайшли існуючого але прийшов новий канальний ID — апдейтимо
   if (!created) {
+    // Update channel IDs if new ones arrived (Telegram, Instagram, etc.)
     await updateCustomerChannelIds(customerId, {
       telegramUserId: msg.identifier.telegramUserId,
       instagramPsid: msg.identifier.instagramPsid,
       facebookPsid: msg.identifier.facebookPsid,
     })
+
+    // Upgrade guest placeholder phone → real phone when the chat user
+    // provides it later (stage "need-phone"). The customer was initially
+    // found by siteSessionId with a "guest-..." placeholder.
+    if (msg.identifier.phone) {
+      const { error: upErr } = await supabaseAdmin
+        .from("customers")
+        .update({
+          phone: msg.identifier.phone,
+          ...(msg.name ? { name: msg.name } : {}),
+          last_contact_at: new Date().toISOString(),
+        })
+        .eq("id", customerId)
+        .like("phone", "guest-%")
+      if (upErr && upErr.code !== "23505") {
+        // 23505 = unique_violation: another customer already has this phone; skip
+        console.error("[comms] phone upgrade failed:", upErr.message)
+      }
+    } else {
+      await supabaseAdmin
+        .from("customers")
+        .update({ last_contact_at: new Date().toISOString() })
+        .eq("id", customerId)
+    }
   } else {
     await supabaseAdmin
       .from("customers")
