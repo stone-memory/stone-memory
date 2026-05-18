@@ -161,7 +161,7 @@ export default function AdminStonesPage() {
               <th className="px-4 py-3 text-left">Категорія</th>
               <th className="px-4 py-3 text-left">Матеріал</th>
               <th className="px-4 py-3 text-left">Колір</th>
-              <th className="px-4 py-3 text-left">Форма</th>
+              <th className="px-4 py-3 text-left">Тип</th>
               <th className="px-4 py-3 text-right">Ціна (₴)</th>
               <th className="px-4 py-3 text-center">Популярний</th>
               <th className="px-4 py-3 text-right">Дії</th>
@@ -521,7 +521,7 @@ function StoneEditor({
               onTranslationsChange={(t) => setI18nField("color", t)}
             />
           </Field>
-          <Field label="Форма">
+          <Field label="Тип">
             <OptionPicker
               value={draft.shape}
               canonical={SHAPES}
