@@ -17,6 +17,34 @@ import { useOrdersStore } from "@/lib/store/orders"
 import { formatUAH } from "@/lib/admin-format"
 import type { Order, OrderStatus } from "@/lib/types"
 
+function exportOrdersCsv(orders: Order[]) {
+  const esc = (v: string) => `"${v.replace(/"/g, '""')}"`
+  const header = ["id", "name", "phone", "status", "created_at", "reference", "contacted", "total_uah", "items"].join(",")
+  const rows = orders.map((o) => {
+    const total = o.items.reduce((s, i) => s + (i.priceFrom ?? 0), 0)
+    const items = o.items.map((i) => i.name || i.id).join("; ")
+    return [
+      esc(o.id),
+      esc(o.name),
+      esc(o.phone),
+      o.status ?? "new",
+      new Date(o.createdAt).toISOString(),
+      esc(o.reference ?? ""),
+      o.contacted ? "yes" : "no",
+      total,
+      esc(items),
+    ].join(",")
+  })
+  const csv = [header, ...rows].join("\n")
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = `orders-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all")
@@ -100,7 +128,7 @@ export default function AdminPage() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-semibold tracking-tight">Замовлення</h1>
-          <Button variant="outline" className="gap-2 rounded-xl">
+          <Button variant="outline" className="gap-2 rounded-xl" onClick={() => exportOrdersCsv(filteredOrders)}>
             <Download size={16} />
             Експорт CSV
           </Button>
