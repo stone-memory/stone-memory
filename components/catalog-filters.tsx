@@ -38,7 +38,7 @@ export type FiltersState = {
   shapes: string[]
   finishes: string[]
   countries: StoneCountry[]
-  // priceMin/priceMax зберігаються у EUR (як і в БД); конвертацію робить formatPrice
+  // priceMin/priceMax у ₴ (UAH); конвертацію в локальну валюту робить formatPrice
   priceMin?: number
   priceMax?: number
   featuredOnly: boolean

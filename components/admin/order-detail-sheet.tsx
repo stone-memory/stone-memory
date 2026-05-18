@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { StatusChanger } from "./status-changer"
 import { NotesLog } from "./notes-log"
 import { useOrdersStore } from "@/lib/store/orders"
-import { formatUAH, formatDateTime, eurHint } from "@/lib/admin-format"
+import { formatUAHDirect, formatDateTime } from "@/lib/admin-format"
 import type { Order } from "@/lib/types"
 
 interface OrderDetailSheetProps {
@@ -17,7 +17,7 @@ interface OrderDetailSheetProps {
   onClose: () => void
 }
 
-const formatPrice = formatUAH
+const formatPrice = formatUAHDirect
 const formatDate = formatDateTime
 
 export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
@@ -103,7 +103,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                     <div className="flex-1 min-w-0">
                       <p className="font-mono text-sm font-medium">№ {item.id}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {item.priceFrom ? <>від {formatPrice(item.priceFrom)} <span className="opacity-60">{eurHint(item.priceFrom)}</span></> : "Ціна не вказана"}
+                        {item.priceFrom ? `від ${formatPrice(item.priceFrom)}` : "Ціна не вказана"}
                       </p>
                     </div>
                   </div>
@@ -113,7 +113,6 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                 <span>Орієнтовна сума</span>
                 <span className="text-right">
                   {formatPrice(totalPrice)}
-                  <span className="ml-2 text-xs font-normal text-muted-foreground">{eurHint(totalPrice)}</span>
                 </span>
               </div>
             </section>

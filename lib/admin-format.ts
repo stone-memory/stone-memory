@@ -9,14 +9,29 @@
  * /api/fx з ECB, поміняти потрібно тільки тут.
  */
 
-import { fxFromEUR } from "@/lib/types"
+import { fxFromUAH } from "@/lib/types"
 
 export const ADMIN_LOCALE = "uk-UA"
 
-/** Округлення вгору до 10 ₴ — щоб не показувати "1234,56 ₴" у списках. */
+/**
+ * CRM amounts are stored in EUR (amount_eur columns). This helper converts
+ * EUR → UAH using the static fallback rate and formats for admin display.
+ * For stone catalog prices (stored in UAH) use formatUAHDirect() instead.
+ */
 export function formatUAH(eur: number, opts?: { decimals?: boolean }): string {
-  const rate = fxFromEUR.UAH
+  const rate = fxFromUAH.EUR
   const uah = eur * rate
+  const decimals = opts?.decimals ?? false
+  const rounded = decimals ? uah : Math.round(uah / 10) * 10
+  const num = rounded.toLocaleString(ADMIN_LOCALE, {
+    maximumFractionDigits: decimals ? 2 : 0,
+    minimumFractionDigits: decimals ? 2 : 0,
+  })
+  return `${num} ₴`
+}
+
+/** Formats a UAH amount directly (no currency conversion). Used for stone prices. */
+export function formatUAHDirect(uah: number, opts?: { decimals?: boolean }): string {
   const decimals = opts?.decimals ?? false
   const rounded = decimals ? uah : Math.round(uah / 10) * 10
   const num = rounded.toLocaleString(ADMIN_LOCALE, {
@@ -64,7 +79,7 @@ export function formatRelative(d: Date | string | number): string {
   return new Date(t).toLocaleDateString(ADMIN_LOCALE, { month: "short", day: "numeric" })
 }
 
-/** Підказка під ціною: "≈ €1 200" — корисно поряд з UAH. */
+/** Підказка для CRM: "≈ €1 200" — показує суму в EUR поряд з UAH конвертацією. */
 export function eurHint(eur: number): string {
   return `≈ €${eur.toLocaleString(ADMIN_LOCALE)}`
 }

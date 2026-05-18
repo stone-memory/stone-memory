@@ -129,12 +129,14 @@ export const localeCurrency: Record<Locale, Currency> = {
   lt: "EUR",
 }
 
-export const fxFromEUR: Record<Currency, number> = {
-  EUR: 1,
-  UAH: 45,
-  PLN: 4.3,
-  USD: 1.08,
-  GBP: 0.85,
+// UAH per 1 unit of each currency (static fallback).
+// Live rates are fetched from /api/fx-rates (NBU) and update daily.
+export const fxFromUAH: Record<Currency, number> = {
+  UAH: 1,
+  EUR: 45,
+  PLN: 10.5,
+  USD: 41.7,
+  GBP: 53,
 }
 
 export const countryToLocale: Record<string, Locale> = {

@@ -1,14 +1,14 @@
 "use client"
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react"
 import { dictionaries, Locale, Dictionary } from "./dictionaries"
-import { Currency, localeCurrency, fxFromEUR, countryToLocale } from "@/lib/types"
+import { Currency, localeCurrency, fxFromUAH, countryToLocale } from "@/lib/types"
 
 type LanguageContextValue = {
   locale: Locale
   setLocale: (l: Locale) => void
   t: Dictionary
   currency: Currency
-  formatPrice: (eurAmount: number) => string
+  formatPrice: (uahAmount: number) => string
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
@@ -45,6 +45,7 @@ async function countryFromIP(): Promise<Locale | null> {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE)
+  const [liveRates, setLiveRates] = useState<Record<string, number>>({})
 
   useEffect(() => {
     const saved = typeof localStorage !== "undefined" ? (localStorage.getItem(LS_LOCALE) as Locale | null) : null
@@ -63,6 +64,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  useEffect(() => {
+    fetch("/api/fx-rates")
+      .then((r) => r.json())
+      .then((data: Record<string, number>) => setLiveRates(data))
+      .catch(() => {})
+  }, [])
+
   const setLocale = (l: Locale) => {
     setLocaleState(l)
     localStorage.setItem(LS_LOCALE, l)
@@ -72,7 +80,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const currency = localeCurrency[locale]
 
   const formatPrice = useMemo(() => {
-    const rate = fxFromEUR[currency]
+    // Rate = UAH per 1 unit of the target currency. Live rate preferred; fallback to static.
+    const rate = liveRates[currency] ?? fxFromUAH[currency]
     // Deterministic formatter — avoids Intl.NumberFormat drift between Node (SSR)
     // and browser ICU (e.g. UAH shows "₴" on server vs "грн" on client).
     const currencySymbol: Record<Currency, string> = {
@@ -86,20 +95,21 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const formatNumber = (n: number) => {
       const abs = Math.abs(Math.round(n))
       // Group thousands with a non-breaking space, consistent everywhere.
-      return abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      return abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
     }
     const placement = currency === "EUR" || currency === "USD" || currency === "GBP" ? "before" : "after"
 
-    return (eur: number) => {
-      const converted = eur * rate
+    return (uah: number) => {
+      // Prices are stored in UAH; divide by rate to get target currency amount.
+      const converted = currency === "UAH" ? uah : uah / rate
       const rounded =
         currency === "UAH" ? Math.round(converted / 10) * 10 :
         currency === "PLN" ? Math.round(converted / 5) * 5 :
         Math.round(converted / 5) * 5
       const num = formatNumber(rounded)
-      return placement === "before" ? `${symbol}${num}` : `${num} ${symbol}`
+      return placement === "before" ? `${symbol}${num}` : `${num} ${symbol}`
     }
-  }, [currency])
+  }, [currency, liveRates])
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t: dictionaries[locale], currency, formatPrice }}>
