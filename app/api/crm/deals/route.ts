@@ -113,7 +113,7 @@ export async function POST(req: Request) {
       install_address: body.install_address || null,
       install_city: body.install_city || null,
     })
-    .select()
+    .select("*, customers(id, name, phone, email, locale, city)")
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

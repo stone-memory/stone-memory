@@ -229,6 +229,7 @@ function DealCard({
 function CreateDealDialog({ onClose }: { onClose: () => void }) {
   const create = useDealsStore((s) => s.create)
   const allCustomers = useCustomersStore((s) => s.items)
+  const customersLoading = useCustomersStore((s) => s.loading)
   const loadCustomers = useCustomersStore((s) => s.load)
   const [customerSearch, setCustomerSearch] = useState("")
   const [customerId, setCustomerId] = useState("")
@@ -238,6 +239,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [busy, setBusy] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -272,6 +274,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
   const submit = async () => {
     if (!customerId) return
     setBusy(true)
+    setErrorMsg(null)
     try {
       const d = await create({
         customer_id: customerId,
@@ -279,7 +282,11 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
         description: description || undefined,
         amount_eur: amount ? Number(amount) : 0,
       })
-      if (d) onClose()
+      if (d) {
+        onClose()
+      } else {
+        setErrorMsg("Не вдалось створити угоду. Перевірте зʼєднання або спробуйте ще раз.")
+      }
     } finally {
       setBusy(false)
     }
@@ -318,7 +325,11 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
                   <div className="absolute z-10 mt-1 w-full rounded-xl border border-foreground/10 bg-card shadow-hover max-h-48 overflow-y-auto">
                     {filteredCustomers.length === 0 ? (
                       <div className="px-3 py-2 text-sm text-muted-foreground">
-                        {allCustomers.length === 0 ? "Клієнтів ще немає — додайте у /admin/customers" : "Нікого не знайдено"}
+                        {customersLoading
+                          ? "Завантаження клієнтів…"
+                          : allCustomers.length === 0
+                            ? "Клієнтів ще немає — спочатку додайте клієнта у /admin/customers"
+                            : "Нікого не знайдено"}
                       </div>
                     ) : (
                       filteredCustomers.map((c) => (
@@ -371,9 +382,12 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
             <Input type="text" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))} placeholder="0" />
           </div>
         </div>
-        <div className="mt-5 flex justify-end gap-2">
+        {errorMsg && (
+          <p className="mt-3 rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{errorMsg}</p>
+        )}
+        <div className="mt-4 flex justify-end gap-2">
           <Button variant="outline" onClick={onClose} className="rounded-xl">Скасувати</Button>
-          <Button onClick={submit} disabled={!customerId || busy} className="rounded-xl">
+          <Button onClick={submit} disabled={!customerId || busy} className="rounded-xl" title={!customerId ? "Спочатку оберіть клієнта" : undefined}>
             {busy ? "Створюю…" : "Створити"}
           </Button>
         </div>
