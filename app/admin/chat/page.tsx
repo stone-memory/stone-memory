@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Send, RefreshCw, User } from "lucide-react"
+import { Send, RefreshCw, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { authedFetch } from "@/lib/authed-fetch"
 import { getSupabase } from "@/lib/supabase/client"
@@ -22,6 +22,7 @@ export default function AdminChatPage() {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [draft, setDraft] = useState("")
   const [sending, setSending] = useState(false)
+  const [closing, setClosing] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const load = async () => {
@@ -119,6 +120,19 @@ export default function AdminChatPage() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [activeId, active?.operatorMessages.length])
 
+  const closeSession = async () => {
+    if (!activeId || closing) return
+    if (!confirm("Закрити діалог і видалити сесію?")) return
+    setClosing(true)
+    try {
+      await authedFetch(`/api/chat/sessions/${activeId}`, { method: "DELETE" })
+      setSessions((prev) => prev.filter((s) => s.sessionId !== activeId))
+      setActiveId(null)
+    } finally {
+      setClosing(false)
+    }
+  }
+
   const reply = async () => {
     const text = draft.trim()
     if (!text || !activeId) return
@@ -196,17 +210,28 @@ export default function AdminChatPage() {
             </div>
           ) : (
             <>
-              <div className="border-b border-foreground/5 px-5 py-3">
-                <div className="text-sm font-semibold">{active.name}</div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  {active.phone && (
-                    <a href={`tel:${active.phone.replace(/\s+/g, "")}`} className="text-accent hover:underline">
-                      {active.phone}
-                    </a>
-                  )}
-                  <span>· {active.locale}</span>
-                  <span>· Сесія <code className="bg-foreground/5 px-1.5 py-0.5 rounded">{active.sessionId}</code></span>
+              <div className="border-b border-foreground/5 px-5 py-3 flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-sm font-semibold">{active.name}</div>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    {active.phone && (
+                      <a href={`tel:${active.phone.replace(/\s+/g, "")}`} className="text-accent hover:underline">
+                        {active.phone}
+                      </a>
+                    )}
+                    <span>· {active.locale}</span>
+                    <span>· Сесія <code className="bg-foreground/5 px-1.5 py-0.5 rounded">{active.sessionId}</code></span>
+                  </div>
                 </div>
+                <button
+                  onClick={closeSession}
+                  disabled={closing}
+                  title="Закрити діалог"
+                  className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-40"
+                >
+                  <X size={13} />
+                  Закрити
+                </button>
               </div>
               <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
                 {(() => {

@@ -374,7 +374,8 @@ export default function AnalyticsPage() {
     if (!lastUser) return false
     const lastOp = s.operatorMessages[s.operatorMessages.length - 1]
     if (lastOp && lastOp.at > lastUser.at) return false
-    return Date.now() - lastUser.at > 5 * 60_000
+    const age = Date.now() - lastUser.at
+    return age > 5 * 60_000 && age < 24 * 60 * 60_000
   })
 
   const periodLabel = PERIODS.find((p) => p.key === period)?.label || ""
