@@ -19,7 +19,10 @@ import {
 import { formatUAHDirect, formatRelative } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 
+// "На паузі" is an exceptional state — always shown when occupied, hidden when empty.
 const LANES: DealLane[] = ["lead", "discovery", "agreement", "production", "fulfillment", "paused", "closed"]
+const ALWAYS_SHOW_LANES = new Set<DealLane>(["lead", "discovery", "agreement", "production", "fulfillment", "closed"])
+
 const LANE_COLOR: Record<DealLane, string> = {
   lead: "bg-blue-500/10 border-blue-500/30",
   discovery: "bg-amber-500/10 border-amber-500/30",
@@ -27,8 +30,10 @@ const LANE_COLOR: Record<DealLane, string> = {
   production: "bg-orange-500/10 border-orange-500/30",
   fulfillment: "bg-success/10 border-success/30",
   closed: "bg-foreground/5 border-foreground/15",
-  paused: "bg-foreground/5 border-foreground/15",
+  paused: "bg-amber-500/10 border-amber-500/30",
 }
+
+const CLOSED_STATUSES = new Set<DealStatus>(["completed", "cancelled", "lost"])
 
 export default function DealsKanbanPage() {
   const items = useDealsStore((s) => s.items)
@@ -92,8 +97,8 @@ export default function DealsKanbanPage() {
       )}
 
       {/* Канбан */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
-        {LANES.map((lane) => {
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+        {LANES.filter((lane) => ALWAYS_SHOW_LANES.has(lane) || byLane[lane].length > 0).map((lane) => {
           const dealsInLane = byLane[lane]
           return (
             <div key={lane} className={cn("rounded-2xl border bg-card", LANE_COLOR[lane])}>
@@ -116,6 +121,11 @@ export default function DealsKanbanPage() {
                       const r = await setStatus(d.id, next)
                       if (!r.ok) setError(r.error || "Не вдалось змінити статус")
                     }}
+                    onReopen={CLOSED_STATUSES.has(d.status) ? async () => {
+                      setError(null)
+                      const r = await setStatus(d.id, "new")
+                      if (!r.ok) setError(r.error || "Не вдалось відновити угоду")
+                    } : undefined}
                   />
                 ))}
               </div>
@@ -147,15 +157,29 @@ type DealRow = {
 function DealCard({
   deal,
   onStatusChange,
+  onReopen,
 }: {
   deal: DealRow
   onStatusChange: (next: DealStatus) => void
+  onReopen?: () => void
 }) {
   const [showTransitions, setShowTransitions] = useState(false)
-  const transitions = availableTransitions(deal.status)
+  // Exclude "new" from normal transition buttons — reopen has its own dedicated button
+  const transitions = availableTransitions(deal.status).filter((s) => s !== "new")
   const sla = computeDealSLA(deal)
+  const isClosed = CLOSED_STATUSES.has(deal.status)
+
+  const statusColor = deal.status === "completed"
+    ? "border-success/40 text-success bg-success/5"
+    : deal.status === "cancelled" || deal.status === "lost"
+      ? "border-destructive/30 text-destructive bg-destructive/5"
+      : "border-foreground/15"
+
   return (
-    <div className="rounded-xl border border-foreground/10 bg-background p-3 text-sm shadow-soft hover:shadow-hover transition-shadow">
+    <div className={cn(
+      "rounded-xl border bg-background p-3 text-sm shadow-soft hover:shadow-hover transition-shadow",
+      isClosed ? "opacity-75" : "border-foreground/10"
+    )}>
       <div className="flex items-start justify-between gap-2">
         <Link href={`/admin/deals/${deal.id}`} className="font-mono text-xs font-medium hover:text-accent">
           {deal.reference}
@@ -165,7 +189,7 @@ function DealCard({
       {deal.customers && (
         <Link
           href={`/admin/customers/${deal.customers.id}`}
-          className="block mt-1 text-[13px] font-medium hover:text-accent"
+          className="block mt-1 text-[13px] font-medium hover:text-accent truncate"
         >
           {deal.customers.name}
         </Link>
@@ -193,12 +217,18 @@ function DealCard({
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{deal.description}</p>
       )}
       <div className="mt-2 flex items-center gap-2 text-xs">
-        <button
-          onClick={() => setShowTransitions((v) => !v)}
-          className="rounded-full border border-foreground/15 px-2 py-0.5 hover:bg-foreground/5"
-        >
-          {DEAL_STATUS_LABELS_UK[deal.status]}
-        </button>
+        {!isClosed ? (
+          <button
+            onClick={() => setShowTransitions((v) => !v)}
+            className="rounded-full border border-foreground/15 px-2 py-0.5 hover:bg-foreground/5"
+          >
+            {DEAL_STATUS_LABELS_UK[deal.status]}
+          </button>
+        ) : (
+          <span className={cn("rounded-full border px-2 py-0.5 text-[11px]", statusColor)}>
+            {DEAL_STATUS_LABELS_UK[deal.status]}
+          </span>
+        )}
         {Number(deal.amount_eur) > 0 && (
           <span className="ml-auto font-medium tabular-nums">{formatUAHDirect(Number(deal.amount_eur))}</span>
         )}
@@ -219,8 +249,13 @@ function DealCard({
           ))}
         </div>
       )}
-      {showTransitions && transitions.length === 0 && (
-        <div className="mt-2 text-[11px] text-muted-foreground italic">Кінцевий стан</div>
+      {isClosed && onReopen && (
+        <button
+          onClick={onReopen}
+          className="mt-2 w-full rounded-lg border border-foreground/15 py-1 text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-colors"
+        >
+          ↩ Відновити угоду
+        </button>
       )}
     </div>
   )

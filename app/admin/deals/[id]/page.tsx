@@ -94,7 +94,8 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
 
   const d = data.deal
   const customer = d.customers
-  const transitions = availableTransitions(d.status)
+  const isClosed = (["completed", "cancelled", "lost"] as DealStatus[]).includes(d.status)
+  const transitions = availableTransitions(d.status).filter((s) => s !== "new")
 
   return (
     <div className="space-y-6">
@@ -138,7 +139,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
             {DEAL_STATUS_LABELS_UK[d.status]}
           </span>
           <span className="text-muted-foreground">→</span>
-          {transitions.length === 0 && <span className="text-xs text-muted-foreground italic">Кінцевий стан</span>}
+          {transitions.length === 0 && !isClosed && <span className="text-xs text-muted-foreground italic">Кінцевий стан</span>}
           {transitions.map((t) => (
             <button
               key={t}
@@ -148,6 +149,14 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
               {DEAL_STATUS_LABELS_UK[t]}
             </button>
           ))}
+          {isClosed && (
+            <button
+              onClick={async () => { if (await patchDeal({ status: "new" })) refresh() }}
+              className="rounded-full border border-accent/40 bg-accent/5 px-4 py-1 text-xs font-medium text-accent hover:bg-accent/10 hover:border-accent transition-all"
+            >
+              ↩ Відновити угоду
+            </button>
+          )}
         </div>
 
         {error && (

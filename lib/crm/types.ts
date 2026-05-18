@@ -106,10 +106,10 @@ export const DEAL_TRANSITIONS: Record<DealStatus, DealStatus[]> = {
   delivery: ["installed", "ready"],
   installed: ["paid", "delivery"],
   paid: ["completed", "installed"],
-  completed: [],
+  completed: ["new"],
   on_hold: ["new", "contacted", "sketch", "in_production"],
-  cancelled: [],
-  lost: [],
+  cancelled: ["new"],
+  lost: ["new"],
 }
 
 /**
