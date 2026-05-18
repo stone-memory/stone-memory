@@ -33,6 +33,7 @@ interface ChatState {
   markSent: (id: string) => void
   markFailed: (id: string) => void
   markFallbackSent: () => void
+  updateMessageId: (localId: string, dbId: string) => void
   clear: () => void
   setHasHydrated: (v: boolean) => void
 }
@@ -99,6 +100,12 @@ export const useChatStore = create<ChatState>()(
           ),
         })),
       markFallbackSent: () => set({ fallbackSent: true }),
+      updateMessageId: (localId, dbId) =>
+        set((state) => ({
+          messages: state.messages.map((m) =>
+            m.id === localId ? { ...m, id: dbId } : m
+          ),
+        })),
       clear: () =>
         set({
           messages: [],

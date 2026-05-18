@@ -48,6 +48,7 @@ export function ChatWidget() {
   const markSent = useChatStore((s) => s.markSent)
   const markFailed = useChatStore((s) => s.markFailed)
   const markFallbackSent = useChatStore((s) => s.markFallbackSent)
+  const updateMessageId = useChatStore((s) => s.updateMessageId)
   const openChat = useChatStore((s) => s.open)
   const closeChat = useChatStore((s) => s.close)
   const [draft, setDraft] = useState("")
@@ -147,13 +148,17 @@ export function ChatWidget() {
    * (а не лише питання клієнта). До цього всі бот-репліки існували тільки
    * локально у Zustand сторі цього віджета.
    */
-  const persistBotReply = async (text: string) => {
+  const persistBotReply = async (localId: string, text: string) => {
     try {
-      await fetch("/api/chat/bot-reply", {
+      const r = await fetch("/api/chat/bot-reply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId, text }),
       })
+      if (r.ok) {
+        const data = (await r.json()) as { message?: { id: string } }
+        if (data.message?.id) updateMessageId(localId, data.message.id)
+      }
     } catch {
       /* мовчки — UI вже показав, головне щоб не блокувало UX */
     }
@@ -174,15 +179,15 @@ export function ChatWidget() {
           setUserName(name)
           setStage("need-phone")
           await new Promise((r) => setTimeout(r, 300))
-          addMessage({ role: "operator", text: B.welcomeName(name) })
-          persistBotReply(B.welcomeName(name))
+          const m1 = addMessage({ role: "operator", text: B.welcomeName(name) })
+          persistBotReply(m1.id, B.welcomeName(name))
           await new Promise((r) => setTimeout(r, 250))
-          addMessage({ role: "operator", text: B.askPhone })
-          persistBotReply(B.askPhone)
+          const m2 = addMessage({ role: "operator", text: B.askPhone })
+          persistBotReply(m2.id, B.askPhone)
         } else {
           await new Promise((r) => setTimeout(r, 250))
-          addMessage({ role: "operator", text: B.askName })
-          persistBotReply(B.askName)
+          const m3 = addMessage({ role: "operator", text: B.askName })
+          persistBotReply(m3.id, B.askName)
         }
         return
       }
@@ -193,8 +198,8 @@ export function ChatWidget() {
         const digits = extractPhone(text)
         if (!digits) {
           await new Promise((r) => setTimeout(r, 250))
-          addMessage({ role: "operator", text: B.phoneInvalid })
-          persistBotReply(B.phoneInvalid)
+          const mInvalid = addMessage({ role: "operator", text: B.phoneInvalid })
+          persistBotReply(mInvalid.id, B.phoneInvalid)
           return
         }
         const formatted = formatPhone(digits)
@@ -204,8 +209,8 @@ export function ChatWidget() {
         const ok = await relayToManager(`📞 ${formatted}\n👤 ${userName}`, { name: userName, phone: formatted })
         if (ok) markSent(msg.id); else markFailed(msg.id)
         await new Promise((r) => setTimeout(r, 250))
-        addMessage({ role: "operator", text: B.phoneSaved })
-        persistBotReply(B.phoneSaved)
+        const mSaved = addMessage({ role: "operator", text: B.phoneSaved })
+        persistBotReply(mSaved.id, B.phoneSaved)
         return
       }
 
@@ -216,11 +221,11 @@ export function ChatWidget() {
       if (ok) markSent(userMsg.id); else markFailed(userMsg.id)
       await new Promise((r) => setTimeout(r, 350))
       if (faq) {
-        addMessage({ role: "operator", text: faq })
-        persistBotReply(faq)
+        const mFaq = addMessage({ role: "operator", text: faq })
+        persistBotReply(mFaq.id, faq)
       } else if (!fallbackSent) {
-        addMessage({ role: "operator", text: fallback })
-        persistBotReply(fallback)
+        const mFallback = addMessage({ role: "operator", text: fallback })
+        persistBotReply(mFallback.id, fallback)
         markFallbackSent()
       }
       // If no FAQ match and fallback was already sent — stay silent; real manager
@@ -237,8 +242,8 @@ export function ChatWidget() {
       addMessage({ role: "user", text: qr.label })
       await relayToManager(qr.label)
       await new Promise((r) => setTimeout(r, 300))
-      addMessage({ role: "operator", text: qr.answer })
-      persistBotReply(qr.answer)
+      const mQr = addMessage({ role: "operator", text: qr.answer })
+      persistBotReply(mQr.id, qr.answer)
     } finally {
       setSending(false)
     }
