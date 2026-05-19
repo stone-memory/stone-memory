@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { AdminSidebar } from "@/components/admin/sidebar"
 import { AuthGate } from "@/components/admin/auth-gate"
 import { CommandPalette } from "@/components/admin/command-palette"
+import { Toaster } from "@/components/ui/sonner"
 import { useOrdersStore } from "@/lib/store/orders"
 import { getSupabase } from "@/lib/supabase/client"
 
@@ -40,6 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </main>
         <CommandPalette />
       </div>
+      <Toaster position="top-center" richColors />
     </AuthGate>
   )
 }

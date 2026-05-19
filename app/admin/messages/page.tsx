@@ -123,7 +123,7 @@ export default function AdminMessagesPage() {
       <section className="rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 text-sm text-muted-foreground">
         <p>
           <strong className="text-foreground">Як підключити справжню синхронізацію:</strong>{" "}
-          Facebook/Instagram — через Meta Graph API + webhook на <code>/api/webhooks/meta</code>. Telegram — через Bot API webhook на <code>/api/telegram</code> (уже налаштовано). Додайте токени в <code>.env.local</code>: <code>META_PAGE_TOKEN</code>, <code>META_VERIFY_TOKEN</code>, <code>TELEGRAM_BOT_TOKEN</code>, <code>TELEGRAM_WEBHOOK_SECRET</code>.
+          Instagram — webhook на <code>/api/instagram/webhook</code>, WhatsApp — на <code>/api/whatsapp/webhook</code>, Telegram — Bot API webhook на <code>/api/telegram</code>. Канали підключаються в розділі «Інтеграції каналів» (або через відповідні env-змінні: <code>INSTAGRAM_*</code>, <code>WHATSAPP_*</code>, <code>TELEGRAM_BOT_TOKEN</code>, <code>TELEGRAM_WEBHOOK_SECRET</code>).
         </p>
       </section>
     </div>
