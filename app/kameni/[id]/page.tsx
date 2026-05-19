@@ -34,6 +34,7 @@ export default function StoneDetailPage() {
     [stone]
   )
   const [active, setActive] = useState(0)
+  const [shared, setShared] = useState(false)
 
   // "Схоже" — multi-criteria scoring замість простого фільтра.
   // Кожен співпадаючий атрибут додає бали; найвищі — у блок related.
@@ -78,8 +79,15 @@ export default function StoneDetailPage() {
     const title = stone.name || `№ ${stone.id}`
     const data = { title, text: title, url: window.location.href }
     try {
-      if (navigator.share) await navigator.share(data)
-      else if (navigator.clipboard) await navigator.clipboard.writeText(data.url)
+      if (navigator.share) {
+        await navigator.share(data)
+      } else if (navigator.clipboard) {
+        // Desktop has no share sheet — copy the link and confirm visually
+        // so the action doesn't feel like it did nothing.
+        await navigator.clipboard.writeText(data.url)
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      }
     } catch {}
   }
 
@@ -142,10 +150,17 @@ export default function StoneDetailPage() {
                 <button
                   type="button"
                   onClick={handleShare}
-                  aria-label={L.shareTitle}
-                  className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/85 backdrop-blur-md text-foreground shadow-soft transition-transform hover:-translate-y-0.5"
+                  aria-label={shared ? "Посилання скопійовано" : L.shareTitle}
+                  className="absolute right-4 top-4 z-10 flex h-10 items-center justify-center gap-1.5 rounded-full bg-white/85 px-3 backdrop-blur-md text-foreground shadow-soft transition-transform hover:-translate-y-0.5"
                 >
-                  <Share2 className="h-4 w-4" strokeWidth={1.75} />
+                  {shared ? (
+                    <>
+                      <Check className="h-4 w-4 text-green-600" strokeWidth={2} />
+                      <span className="text-xs font-medium">Скопійовано</span>
+                    </>
+                  ) : (
+                    <Share2 className="h-4 w-4" strokeWidth={1.75} />
+                  )}
                 </button>
               </div>
 

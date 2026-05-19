@@ -1,0 +1,9 @@
+- generic [active]:
+  - link "Перейти до основного вмісту" [ref=e1] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Stone Memory" [ref=e2]:
+    - img [ref=e3]
+  - link "Подзвонити" [ref=e5] [cursor=pointer]:
+    - /url: tel:+380(67)8080222
+    - img [ref=e6]
+  - alert [ref=e8]
