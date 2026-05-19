@@ -21,26 +21,33 @@ export default function StoneDetailPage() {
   const stones = useStones()
   const hasHydrated = useStonesAdminStore((s) => s.hasHydrated)
   const stone = stones.find((s) => s.id === params.id)
-  if (hasHydrated && !stone) notFound()
-  if (!stone) return null
 
+  // Hooks must run unconditionally and in the same order on EVERY render,
+  // including the hydrating render where `stone` is still undefined
+  // (useStones() returns [] until the store hydrates). The notFound()/
+  // return guards therefore live AFTER all hooks below — an early return
+  // before a hook is a Rules-of-Hooks violation (React error #310).
   const { t, locale, formatPrice } = useTranslation()
-  const L = filterLabels[locale]
   const { addItem, items, openSidebar } = useSelectionStore()
-  const isSelected = items.some((i) => i.id === stone.id)
-
-  const gallery = useMemo(
-    () => (stone.gallery && stone.gallery.length > 0 ? stone.gallery : [stone.imagePath]),
-    [stone]
-  )
   const [active, setActive] = useState(0)
   const [shared, setShared] = useState(false)
+
+  const gallery = useMemo(
+    () =>
+      stone?.gallery && stone.gallery.length > 0
+        ? stone.gallery
+        : stone
+          ? [stone.imagePath]
+          : [],
+    [stone]
+  )
 
   // "Схоже" — multi-criteria scoring замість простого фільтра.
   // Кожен співпадаючий атрибут додає бали; найвищі — у блок related.
   // Це гарантує що клієнт бачить дійсно близькі позиції,
   // а не випадкові з тієї ж категорії і кольору.
   const related = useMemo(() => {
+    if (!stone) return []
     const PRICE_TOLERANCE = 0.35 // ±35% від ціни поточного каменю — "близько"
     const minPrice = stone.priceFrom ? stone.priceFrom * (1 - PRICE_TOLERANCE) : undefined
     const maxPrice = stone.priceFrom ? stone.priceFrom * (1 + PRICE_TOLERANCE) : undefined
@@ -73,6 +80,13 @@ export default function StoneDetailPage() {
     }
     return scored
   }, [stones, stone])
+
+  // All hooks have run — safe to short-circuit render now.
+  if (hasHydrated && !stone) notFound()
+  if (!stone) return null
+
+  const L = filterLabels[locale]
+  const isSelected = items.some((i) => i.id === stone.id)
 
   const handleShare = async () => {
     if (typeof navigator === "undefined") return
