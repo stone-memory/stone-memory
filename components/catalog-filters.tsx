@@ -865,7 +865,14 @@ export function applyFilters(
   let out = items.slice()
   const q = f.q.trim().toLowerCase()
   if (q) {
-    out = out.filter((s) => s.id.toLowerCase().includes(q) || (s.name || "").toLowerCase().includes(q))
+    // Named items match by name only; unnamed items fall back to id.
+    // Prevents "4" matching item #3 just because its internal id is "4".
+    out = out.filter((s) => {
+      const name = (s.name || "").trim()
+      return name
+        ? name.toLowerCase().includes(q)
+        : s.id.toLowerCase().includes(q)
+    })
   }
   if (f.tones.length) {
     out = out.filter((s) => {
