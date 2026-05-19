@@ -69,7 +69,7 @@ export function FeaturedStones() {
           </h2>
         </div>
         <Link
-          href="/catalog"
+          href="/kataloh"
           prefetch
           className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:-translate-y-[1px]"
         >

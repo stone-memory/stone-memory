@@ -6,24 +6,24 @@ import { revalidatePath } from "next/cache"
 const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
   stones: [
     ["/", "page"],
-    ["/catalog", "page"],
-    ["/stones/[id]", "page"],
+    ["/kataloh", "page"],
+    ["/kameni/[id]", "page"],
   ],
-  services: [["/services", "page"]],
-  projects: [["/projects", "page"]],
+  services: [["/posluhy", "page"]],
+  projects: [["/proekty", "page"]],
   articles: [
     ["/blog", "page"],
     ["/blog/[slug]", "page"],
   ],
   reviews: [
     ["/", "page"],
-    ["/reviews", "page"],
+    ["/vidhuky", "page"],
   ],
   "faq-items": [["/", "page"]],
   // featured stones aren't a generic resource — handled via the literal key below
   featured: [
     ["/", "page"],
-    ["/catalog", "page"],
+    ["/kataloh", "page"],
   ],
 }
 

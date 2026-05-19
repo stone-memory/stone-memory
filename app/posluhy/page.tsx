@@ -81,7 +81,7 @@ export default function ServicesPage() {
             </h3>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/catalog"
+                href="/kataloh"
                 prefetch
                 className="group inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-medium text-foreground transition-transform hover:-translate-y-[1px]"
               >

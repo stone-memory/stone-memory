@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { fetchStones } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 
-const PATH = "/catalog"
+const PATH = "/kataloh"
 
 export const revalidate = 60
 
@@ -54,7 +54,7 @@ export default async function CatalogLayout({ children }: { children: React.Reac
     itemListElement: stones.slice(0, 30).map((s, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: absoluteUrl(`/stones/${s.id}`),
+      url: absoluteUrl(`/kameni/${s.id}`),
       name: `No. ${s.id}`,
       image: s.imagePath,
     })),

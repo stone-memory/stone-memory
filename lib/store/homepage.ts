@@ -49,7 +49,7 @@ export const DEFAULT_HOMEPAGE_CATEGORIES: HomepageCategoriesContent = {
   },
   memorial: {
     image: "/stones/memorial-01.svg",
-    href: "/catalog?cat=memorial",
+    href: "/kataloh?cat=memorial",
     title: {
       uk: "Пам'ятники",
       pl: "Pomniki",
@@ -81,7 +81,7 @@ export const DEFAULT_HOMEPAGE_CATEGORIES: HomepageCategoriesContent = {
   },
   home: {
     image: u("photo-1556909211-36987daf7b4d"),
-    href: "/catalog?cat=home",
+    href: "/kataloh?cat=home",
     title: {
       uk: "Дім і сад",
       pl: "Dom i ogród",
@@ -126,7 +126,9 @@ function mergeWithDefault(raw: unknown): HomepageCategoriesContent {
     fallback: HomepageCategoryCard
   ): HomepageCategoryCard => ({
     image: db?.image || fallback.image,
-    href: db?.href || fallback.href,
+    // Legacy CMS rows may still hold the old /catalog slug — normalize to
+    // the localized /kataloh so the link is clean (no extra 308 hop).
+    href: (db?.href || fallback.href).replace(/^\/catalog(?=$|[/?#])/, "/kataloh"),
     title: { ...fallback.title, ...(db?.title || {}) },
     description: { ...fallback.description, ...(db?.description || {}) },
     cta: { ...fallback.cta, ...(db?.cta || {}) },

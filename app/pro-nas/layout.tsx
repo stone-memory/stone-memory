@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { absoluteUrl } from "@/lib/site-config"
 
-const PATH = "/about"
+const PATH = "/pro-nas"
 
 export const metadata: Metadata = {
   title: "Про Stone Memory — майстерня натурального каменю, Костопіль",

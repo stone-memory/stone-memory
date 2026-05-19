@@ -111,7 +111,7 @@ export default function StoneDetailPage() {
       <Header />
       <main id="main-content" className="pb-24 pt-6 md:pt-10">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/catalog" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+          <Link href="/kataloh" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" strokeWidth={2} />
             {L.back}
           </Link>

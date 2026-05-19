@@ -157,7 +157,7 @@ export default function ProjectsPage() {
             </h3>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/catalog"
+                href="/kataloh"
                 prefetch
                 className="inline-flex items-center gap-2 rounded-full bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-transform hover:-translate-y-[1px]"
               >

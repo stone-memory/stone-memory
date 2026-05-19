@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const displayName = s.name || `№ ${s.id}`
   const title = `${displayName} — ${kind}`
   const desc = `${kind} ${displayName}. Натуральний граніт або мармур, ручна обробка у власному цеху в Костополі. Від ${s.priceFrom} ₴. Гарантія 5 років.`
-  const url = absoluteUrl(`/stones/${s.id}`)
+  const url = absoluteUrl(`/kameni/${s.id}`)
   return {
     title,
     description: desc,
@@ -65,7 +65,7 @@ export default async function Layout({ children, params }: { children: React.Rea
           priceCurrency: "EUR",
           price: s.priceFrom,
           availability: "https://schema.org/InStock",
-          url: absoluteUrl(`/stones/${s.id}`),
+          url: absoluteUrl(`/kameni/${s.id}`),
           seller: { "@type": "Organization", name: "Stone Memory" },
         },
       }
@@ -76,8 +76,8 @@ export default async function Layout({ children, params }: { children: React.Rea
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Головна", item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: "Каталог", item: absoluteUrl("/catalog") },
-          { "@type": "ListItem", position: 3, name: s.name || `No. ${s.id}`, item: absoluteUrl(`/stones/${s.id}`) },
+          { "@type": "ListItem", position: 2, name: "Каталог", item: absoluteUrl("/kataloh") },
+          { "@type": "ListItem", position: 3, name: s.name || `No. ${s.id}`, item: absoluteUrl(`/kameni/${s.id}`) },
         ],
       }
     : null

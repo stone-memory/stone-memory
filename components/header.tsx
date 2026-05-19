@@ -48,10 +48,10 @@ export function Header({ className }: HeaderProps) {
   }
 
   const navItems = [
-    { href: "/catalog", label: t.nav.catalog },
-    { href: "/services", label: t.nav.services },
-    { href: "/projects", label: projectsLabels[locale] },
-    { href: "/about", label: aboutLabels[locale] },
+    { href: "/kataloh", label: t.nav.catalog },
+    { href: "/posluhy", label: t.nav.services },
+    { href: "/proekty", label: projectsLabels[locale] },
+    { href: "/pro-nas", label: aboutLabels[locale] },
     { href: "/blog", label: t.nav.blog },
   ]
 

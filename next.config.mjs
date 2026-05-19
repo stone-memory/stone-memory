@@ -72,6 +72,25 @@ const nextConfig = {
     }
     return routes
   },
+  // Legacy English paths → localized Ukrainian slugs (uk is the priority
+  // market, served at root with no locale prefix). 308 permanent so
+  // search engines transfer ranking signal. Query strings are forwarded
+  // automatically by Next. Single-segment `source` matches the exact
+  // route only — it does NOT touch public assets like
+  // /services/hero.jpg or /stones/memorial-01.svg.
+  async redirects() {
+    return [
+      { source: "/catalog", destination: "/kataloh", permanent: true },
+      { source: "/services", destination: "/posluhy", permanent: true },
+      { source: "/about", destination: "/pro-nas", permanent: true },
+      { source: "/projects", destination: "/proekty", permanent: true },
+      { source: "/reviews", destination: "/vidhuky", permanent: true },
+      { source: "/privacy", destination: "/konfidentsiinist", permanent: true },
+      { source: "/terms", destination: "/umovy", permanent: true },
+      // Numeric ids only — keeps /stones/memorial-01.svg (public asset) intact.
+      { source: "/stones/:id(\\d+)", destination: "/kameni/:id", permanent: true },
+    ]
+  },
 }
 
 export default nextConfig

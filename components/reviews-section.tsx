@@ -34,7 +34,7 @@ export function ReviewsSection() {
             {L.heading}
           </h2>
           <Link
-            href="/reviews"
+            href="/vidhuky"
             prefetch
             className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:-translate-y-[1px]"
           >

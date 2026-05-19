@@ -4,7 +4,7 @@ import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
 export const revalidate = 60
 
-const PATH = "/services"
+const PATH = "/posluhy"
 
 export const metadata: Metadata = {
   title: "Послуги — дизайн, виробництво, монтаж і догляд",

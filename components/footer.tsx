@@ -144,9 +144,9 @@ export function Footer() {
               {t.footer.explore}
             </h3>
             <ul className="space-y-2.5 text-[15px]">
-              <li><Link href="/catalog" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.catalog}</Link></li>
-              <li><Link href="/services" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.services}</Link></li>
-              <li><Link href="/about" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.about}</Link></li>
+              <li><Link href="/kataloh" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.catalog}</Link></li>
+              <li><Link href="/posluhy" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.services}</Link></li>
+              <li><Link href="/pro-nas" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.about}</Link></li>
               <li><Link href="/blog" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.blog}</Link></li>
             </ul>
           </div>
@@ -156,8 +156,8 @@ export function Footer() {
               {t.footer.support}
             </h3>
             <ul className="space-y-2.5 text-[15px]">
-              <li><Link href="/services#warranty" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.warranty}</Link></li>
-              <li><Link href="/services#delivery" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.delivery}</Link></li>
+              <li><Link href="/posluhy#warranty" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.warranty}</Link></li>
+              <li><Link href="/posluhy#delivery" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.delivery}</Link></li>
               <li><Link href="/#faq" className="text-foreground/85 hover:text-foreground">{t.footer.faq}</Link></li>
             </ul>
           </div>
@@ -196,9 +196,9 @@ export function Footer() {
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-foreground/5 pt-8 text-sm text-muted-foreground sm:flex-row sm:items-center">
           <p>{t.footer.copyright}</p>
           <div className="flex flex-wrap items-center gap-5">
-            <Link href="/about" prefetch className="transition-colors hover:text-foreground">{t.footer.about}</Link>
-            <Link href="/privacy" prefetch className="transition-colors hover:text-foreground">{t.footer.privacy}</Link>
-            <Link href="/terms" prefetch className="transition-colors hover:text-foreground">{t.footer.terms}</Link>
+            <Link href="/pro-nas" prefetch className="transition-colors hover:text-foreground">{t.footer.about}</Link>
+            <Link href="/konfidentsiinist" prefetch className="transition-colors hover:text-foreground">{t.footer.privacy}</Link>
+            <Link href="/umovy" prefetch className="transition-colors hover:text-foreground">{t.footer.terms}</Link>
             <a href="#contact" className="transition-colors hover:text-foreground">{t.footer.contact}</a>
           </div>
         </div>

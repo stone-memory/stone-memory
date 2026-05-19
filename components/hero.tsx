@@ -107,7 +107,7 @@ export function Hero() {
           className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           <Link
-            href="/catalog"
+            href="/kataloh"
             prefetch
             className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-transform hover:-translate-y-[1px] active:scale-[0.98]"
           >
@@ -115,7 +115,7 @@ export function Hero() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
           </Link>
           <Link
-            href="/services"
+            href="/posluhy"
             prefetch
             className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-all hover:bg-white/10 hover:-translate-y-[1px] active:scale-[0.98]"
           >

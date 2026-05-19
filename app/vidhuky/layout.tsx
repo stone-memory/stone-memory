@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { fetchReviews } from "@/lib/data-source"
 import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
-const PATH = "/reviews"
+const PATH = "/vidhuky"
 
 export const revalidate = 60
 

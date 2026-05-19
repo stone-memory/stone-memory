@@ -24,14 +24,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "daily", priority: 1, alternates: withAlternates("/") },
-    { url: absoluteUrl("/catalog"), lastModified: now, changeFrequency: "daily", priority: 0.95, alternates: withAlternates("/catalog") },
-    { url: absoluteUrl("/projects"), lastModified: now, changeFrequency: "weekly", priority: 0.9, alternates: withAlternates("/projects") },
-    { url: absoluteUrl("/services"), lastModified: now, changeFrequency: "monthly", priority: 0.9, alternates: withAlternates("/services") },
-    { url: absoluteUrl("/about"), lastModified: now, changeFrequency: "monthly", priority: 0.8, alternates: withAlternates("/about") },
+    { url: absoluteUrl("/kataloh"), lastModified: now, changeFrequency: "daily", priority: 0.95, alternates: withAlternates("/kataloh") },
+    { url: absoluteUrl("/proekty"), lastModified: now, changeFrequency: "weekly", priority: 0.9, alternates: withAlternates("/proekty") },
+    { url: absoluteUrl("/posluhy"), lastModified: now, changeFrequency: "monthly", priority: 0.9, alternates: withAlternates("/posluhy") },
+    { url: absoluteUrl("/pro-nas"), lastModified: now, changeFrequency: "monthly", priority: 0.8, alternates: withAlternates("/pro-nas") },
     { url: absoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.85, alternates: withAlternates("/blog") },
-    { url: absoluteUrl("/reviews"), lastModified: now, changeFrequency: "weekly", priority: 0.7, alternates: withAlternates("/reviews") },
-    { url: absoluteUrl("/privacy"), lastModified: now, changeFrequency: "yearly", priority: 0.3, alternates: withAlternates("/privacy") },
-    { url: absoluteUrl("/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.3, alternates: withAlternates("/terms") },
+    { url: absoluteUrl("/vidhuky"), lastModified: now, changeFrequency: "weekly", priority: 0.7, alternates: withAlternates("/vidhuky") },
+    { url: absoluteUrl("/konfidentsiinist"), lastModified: now, changeFrequency: "yearly", priority: 0.3, alternates: withAlternates("/konfidentsiinist") },
+    { url: absoluteUrl("/umovy"), lastModified: now, changeFrequency: "yearly", priority: 0.3, alternates: withAlternates("/umovy") },
   ]
 
   const articleRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
@@ -43,15 +43,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const stoneRoutes: MetadataRoute.Sitemap = stones.map((s) => ({
-    url: absoluteUrl(`/stones/${s.id}`),
+    url: absoluteUrl(`/kameni/${s.id}`),
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.7,
-    alternates: withAlternates(`/stones/${s.id}`),
+    alternates: withAlternates(`/kameni/${s.id}`),
   }))
 
   const serviceAnchors: MetadataRoute.Sitemap = services.map((s) => ({
-    url: `${absoluteUrl("/services")}#${s.slug}`,
+    url: `${absoluteUrl("/posluhy")}#${s.slug}`,
     lastModified: now,
     changeFrequency: "monthly",
     priority: 0.5,

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { fetchProjects } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 
-const PATH = "/projects"
+const PATH = "/proekty"
 
 export const revalidate = 60
 

@@ -110,7 +110,7 @@ export function OrderReceived({
         </>
       )}
       <Text style={paragraph}>{L.next}</Text>
-      <Button href={`${siteUrl}/catalog`} style={button}>
+      <Button href={`${siteUrl}/kataloh`} style={button}>
         {L.cta}
       </Button>
       <Text style={{ ...muted, marginTop: 24, whiteSpace: "pre-line" }}>{L.signature}</Text>

@@ -187,7 +187,7 @@ export function CookieConsent() {
               </h2>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 {L.body}{" "}
-                <Link href="/privacy" className="underline-offset-2 hover:underline">
+                <Link href="/konfidentsiinist" className="underline-offset-2 hover:underline">
                   {L.privacyLink}
                 </Link>
                 .

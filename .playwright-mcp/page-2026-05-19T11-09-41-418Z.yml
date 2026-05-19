@@ -1,0 +1,299 @@
+- generic [active] [ref=e1]:
+  - link "Перейти до основного вмісту" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Stone Memory — home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: Stone Memory
+      - navigation [ref=e7]:
+        - link "Каталог" [ref=e8] [cursor=pointer]:
+          - /url: /kataloh
+        - link "Послуги" [ref=e9] [cursor=pointer]:
+          - /url: /posluhy
+        - link "Наші роботи" [ref=e10] [cursor=pointer]:
+          - /url: /proekty
+        - link "Про нас" [ref=e11] [cursor=pointer]:
+          - /url: /pro-nas
+        - link "Блог" [ref=e12] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e13]:
+        - button "🇺🇦 uk" [ref=e15]:
+          - generic [ref=e16]: 🇺🇦
+          - generic [ref=e17]: uk
+          - img
+        - button "Вибране" [ref=e18]:
+          - img
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e23]:
+        - generic [ref=e24]: 5 РОКІВ ГАРАНТІЇ
+        - heading "Натуральний камінь" [level=1] [ref=e25]
+        - paragraph [ref=e26]: Пам'ятники, стільниці, підвіконня, сходи, каміни та бруківка. Український граніт і мармур, а також імпортні породи. Власне виробництво в Костополі.
+        - generic [ref=e27]:
+          - link "Переглянути каталог" [ref=e28] [cursor=pointer]:
+            - /url: /kataloh
+            - text: Переглянути каталог
+            - img [ref=e29]
+          - link "Наші послуги" [ref=e31] [cursor=pointer]:
+            - /url: /posluhy
+      - img [ref=e33]
+    - generic [ref=e35]:
+      - heading "Що саме ми робимо" [level=2] [ref=e37]
+      - generic [ref=e38]:
+        - link "Пам'ятники Пам'ятники Меморіальні комплекси з граніту і мармуру — український і імпортний камінь. Ескіз, виготовлення, гравіювання, монтаж. Одиночні та парні Сімейні комплекси Хрести та обеліски Реставрація Гравіювання портретів Огорожі й благоустрій Переглянути пам'ятники" [ref=e40] [cursor=pointer]:
+          - /url: /catalog?cat=memorial
+          - generic [ref=e41]:
+            - img "Пам'ятники" [ref=e42]
+            - heading "Пам'ятники" [level=3] [ref=e44]
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Меморіальні комплекси з граніту і мармуру — український і імпортний камінь. Ескіз, виготовлення, гравіювання, монтаж.
+            - list [ref=e47]:
+              - listitem [ref=e48]: Одиночні та парні
+              - listitem [ref=e50]: Сімейні комплекси
+              - listitem [ref=e52]: Хрести та обеліски
+              - listitem [ref=e54]: Реставрація
+              - listitem [ref=e56]: Гравіювання портретів
+              - listitem [ref=e58]: Огорожі й благоустрій
+            - generic [ref=e60]:
+              - text: Переглянути пам'ятники
+              - img [ref=e61]
+        - link "Дім і сад Дім і сад Стільниці, підвіконня, каміни, сходи та бруківка. Преміальні вироби з природного каменю для ваших інтер'єрів і ландшафту. Стільниці на кухню Підвіконня Сходи й балясини Каміни й портали Підлога й слаб Бруківка й доріжки Дім і сад" [ref=e64] [cursor=pointer]:
+          - /url: /catalog?cat=home
+          - generic [ref=e65]:
+            - img "Дім і сад" [ref=e66]
+            - heading "Дім і сад" [level=3] [ref=e68]
+          - generic [ref=e69]:
+            - paragraph [ref=e70]: Стільниці, підвіконня, каміни, сходи та бруківка. Преміальні вироби з природного каменю для ваших інтер'єрів і ландшафту.
+            - list [ref=e71]:
+              - listitem [ref=e72]: Стільниці на кухню
+              - listitem [ref=e74]: Підвіконня
+              - listitem [ref=e76]: Сходи й балясини
+              - listitem [ref=e78]: Каміни й портали
+              - listitem [ref=e80]: Підлога й слаб
+              - listitem [ref=e82]: Бруківка й доріжки
+            - generic [ref=e84]:
+              - text: Дім і сад
+              - img [ref=e85]
+    - generic [ref=e87]:
+      - generic [ref=e88]:
+        - heading "Що купують найчастіше" [level=2] [ref=e90]
+        - link "Весь каталог" [ref=e91] [cursor=pointer]:
+          - /url: /kataloh
+          - text: Весь каталог
+          - img [ref=e92]
+      - generic [ref=e94]:
+        - article [ref=e95]:
+          - link "001" [ref=e96] [cursor=pointer]:
+            - /url: /kameni/1
+            - generic [ref=e97]:
+              - img "001" [ref=e98]
+              - generic [ref=e99]: ХІТ
+            - generic [ref=e100]:
+              - generic [ref=e101]:
+                - generic [ref=e102]: ПАМ'ЯТНИКИ
+                - generic [ref=e103]: •
+                - generic [ref=e104]: ОДИНОЧНИЙ
+              - heading "001" [level=3] [ref=e105]
+              - paragraph [ref=e106]: Натуральний камінь, пам'ятник.
+              - button "Замовити розрахунок" [ref=e108]
+        - article [ref=e109]:
+          - link "002" [ref=e110] [cursor=pointer]:
+            - /url: /kameni/3
+            - generic [ref=e111]:
+              - img "002" [ref=e112]
+              - generic [ref=e113]: ХІТ
+            - generic [ref=e114]:
+              - generic [ref=e115]:
+                - generic [ref=e116]: ПАМ'ЯТНИКИ
+                - generic [ref=e117]: •
+                - generic [ref=e118]: КОМПЛЕКС
+              - heading "002" [level=3] [ref=e119]
+              - paragraph [ref=e120]: Натуральний камінь, пам'ятник.
+              - button "Замовити розрахунок" [ref=e122]
+        - article [ref=e123]:
+          - link "003" [ref=e124] [cursor=pointer]:
+            - /url: /kameni/4
+            - generic [ref=e125]:
+              - img "003" [ref=e126]
+              - generic [ref=e127]: ХІТ
+            - generic [ref=e128]:
+              - generic [ref=e129]:
+                - generic [ref=e130]: ПАМ'ЯТНИКИ
+                - generic [ref=e131]: •
+                - generic [ref=e132]: КОМПЛЕКС
+              - heading "003" [level=3] [ref=e133]
+              - paragraph [ref=e134]: Натуральний камінь, пам'ятник.
+              - button "Замовити розрахунок" [ref=e136]
+        - article [ref=e137]:
+          - link "004" [ref=e138] [cursor=pointer]:
+            - /url: /kameni/5
+            - generic [ref=e139]:
+              - img "004" [ref=e140]
+              - generic [ref=e141]: ХІТ
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: ПАМ'ЯТНИКИ
+                - generic [ref=e145]: •
+                - generic [ref=e146]: ОДИНОЧНИЙ
+              - heading "004" [level=3] [ref=e147]
+              - paragraph [ref=e148]: Натуральний камінь, пам'ятник.
+              - button "Замовити розрахунок" [ref=e150]
+        - article [ref=e151]:
+          - link "006" [ref=e152] [cursor=pointer]:
+            - /url: /kameni/7
+            - generic [ref=e153]:
+              - img "006" [ref=e154]
+              - generic [ref=e155]: ХІТ
+            - generic [ref=e156]:
+              - generic [ref=e157]:
+                - generic [ref=e158]: ПАМ'ЯТНИКИ
+                - generic [ref=e159]: •
+                - generic [ref=e160]: КОМПЛЕКС
+              - heading "006" [level=3] [ref=e161]
+              - paragraph [ref=e162]: Натуральний камінь, пам'ятник.
+              - button "Замовити розрахунок" [ref=e164]
+        - article [ref=e165]:
+          - link "№ 11" [ref=e166] [cursor=pointer]:
+            - /url: /kameni/11
+            - generic [ref=e167]:
+              - img "Пам'ятник № 11" [ref=e168]
+              - generic [ref=e169]: ХІТ
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: ПАМ'ЯТНИКИ
+                - generic [ref=e173]: •
+                - generic [ref=e174]: КОМПЛЕКС
+              - heading "№ 11" [level=3] [ref=e175]
+              - paragraph [ref=e176]: Натуральний камінь, пам'ятник.
+              - button "Замовити розрахунок" [ref=e178]
+    - generic [ref=e180]:
+      - generic [ref=e181]:
+        - text: FAQ
+        - heading "Часті запитання" [level=2] [ref=e182]
+      - generic [ref=e184]:
+        - heading "Який реальний термін виготовлення меморіального комплексу?" [level=3] [ref=e186]:
+          - button "Який реальний термін виготовлення меморіального комплексу?" [ref=e187]:
+            - text: Який реальний термін виготовлення меморіального комплексу?
+            - img
+        - heading "Чи надаєте ви офіційну юридичну гарантію?" [level=3] [ref=e189]:
+          - button "Чи надаєте ви офіційну юридичну гарантію?" [ref=e190]:
+            - text: Чи надаєте ви офіційну юридичну гарантію?
+            - img
+        - heading "Як правильно доглядати за полірованим гранітом?" [level=3] [ref=e192]:
+          - button "Як правильно доглядати за полірованим гранітом?" [ref=e193]:
+            - text: Як правильно доглядати за полірованим гранітом?
+            - img
+        - heading "Чи можу я замовити пам'ятник дистанційно?" [level=3] [ref=e195]:
+          - button "Чи можу я замовити пам'ятник дистанційно?" [ref=e196]:
+            - text: Чи можу я замовити пам'ятник дистанційно?
+            - img
+        - heading "Як формується вартість проекту?" [level=3] [ref=e198]:
+          - button "Як формується вартість проекту?" [ref=e199]:
+            - text: Як формується вартість проекту?
+            - img
+  - contentinfo [ref=e200]:
+    - generic [ref=e201]:
+      - generic [ref=e202]:
+        - generic [ref=e203]:
+          - link "Stone Memory" [ref=e204] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e205]: Stone Memory
+          - paragraph [ref=e206]: Натуральний камінь для пам'яті і для дому. Власне виробництво в Костополі.
+          - generic [ref=e207]:
+            - link "Instagram" [ref=e208] [cursor=pointer]:
+              - /url: https://www.instagram.com/sttonememory
+              - img [ref=e209]
+            - link "Facebook" [ref=e212] [cursor=pointer]:
+              - /url: https://www.facebook.com/profile.php?id=61588950935616
+              - img [ref=e213]
+        - generic [ref=e215]:
+          - generic [ref=e216]: Підписатися на новини
+          - paragraph [ref=e217]: Раз на місяць — нові колекції, історії клієнтів і гайди.
+          - generic [ref=e218]:
+            - textbox "Ваш email" [ref=e219]
+            - button "Підписатися" [ref=e220]:
+              - text: Підписатися
+              - img [ref=e221]
+      - generic [ref=e223]:
+        - generic [ref=e224]:
+          - heading "Дослідити" [level=3] [ref=e225]
+          - list [ref=e226]:
+            - listitem [ref=e227]:
+              - link "Каталог" [ref=e228] [cursor=pointer]:
+                - /url: /kataloh
+            - listitem [ref=e229]:
+              - link "Послуги" [ref=e230] [cursor=pointer]:
+                - /url: /posluhy
+            - listitem [ref=e231]:
+              - link "Про нас" [ref=e232] [cursor=pointer]:
+                - /url: /pro-nas
+            - listitem [ref=e233]:
+              - link "Блог" [ref=e234] [cursor=pointer]:
+                - /url: /blog
+        - generic [ref=e235]:
+          - heading "Підтримка" [level=3] [ref=e236]
+          - list [ref=e237]:
+            - listitem [ref=e238]:
+              - link "Гарантія" [ref=e239] [cursor=pointer]:
+                - /url: /posluhy#warranty
+            - listitem [ref=e240]:
+              - link "Доставка та монтаж" [ref=e241] [cursor=pointer]:
+                - /url: /posluhy#delivery
+            - listitem [ref=e242]:
+              - link "Питання й відповіді" [ref=e243] [cursor=pointer]:
+                - /url: /#faq
+        - generic [ref=e244]:
+          - heading "Контакти" [level=3] [ref=e245]
+          - list [ref=e246]:
+            - listitem [ref=e247]:
+              - img [ref=e248]
+              - link "+380 (67) 808 02 22" [ref=e250] [cursor=pointer]:
+                - /url: tel:+380(67)8080222
+            - listitem [ref=e251]:
+              - img [ref=e252]
+              - link "info@stonememory.com.ua" [ref=e255] [cursor=pointer]:
+                - /url: mailto:info@stonememory.com.ua
+            - listitem [ref=e256]:
+              - img [ref=e257]
+              - generic [ref=e260]:
+                - generic [ref=e261]: Студія і цех
+                - generic [ref=e262]: Костопіль
+            - listitem [ref=e263]:
+              - img [ref=e264]
+              - generic [ref=e267]:
+                - generic [ref=e268]: Години роботи
+                - generic [ref=e269]: Пн–Пт 9:00–19:00 · Сб 10:00–16:00
+      - generic [ref=e270]:
+        - paragraph [ref=e271]: © 2026 Stone Memory. Усі права захищені.
+        - generic [ref=e272]:
+          - link "Про нас" [ref=e273] [cursor=pointer]:
+            - /url: /pro-nas
+          - link "Конфіденційність" [ref=e274] [cursor=pointer]:
+            - /url: /konfidentsiinist
+          - link "Умови" [ref=e275] [cursor=pointer]:
+            - /url: /umovy
+          - link "Контакти" [ref=e276] [cursor=pointer]:
+            - /url: "#contact"
+  - button "Stone Memory" [ref=e277]:
+    - img [ref=e278]
+  - link "Подзвонити" [ref=e280] [cursor=pointer]:
+    - /url: tel:+380(67)8080222
+    - img [ref=e281]
+  - alert [ref=e283]
+  - dialog "Ми використовуємо файли cookie" [ref=e284]:
+    - generic [ref=e285]:
+      - img [ref=e287]
+      - generic [ref=e289]:
+        - heading "Ми використовуємо файли cookie" [level=2] [ref=e290]
+        - paragraph [ref=e291]:
+          - text: Необхідні cookie обов'язкові для роботи сайту. Аналітичні та маркетингові допомагають нам покращувати сервіс — ви можете їх увімкнути чи вимкнути.
+          - link "Політика конфіденційності" [ref=e292] [cursor=pointer]:
+            - /url: /konfidentsiinist
+          - text: .
+        - generic [ref=e293]:
+          - button "Налаштувати" [ref=e294]
+          - button "Тільки необхідні" [ref=e295]
+          - button "Прийняти всі" [ref=e296]
+      - button "Закрити" [ref=e297]:
+        - img [ref=e298]
