@@ -207,7 +207,7 @@ export function AdminSidebar() {
                 let badgeColor = "bg-foreground text-background"
                 if (item.href === "/admin/tasks") badge = openTasks
                 else if (item.href === "/admin/inbox") { badge = counts.inbox; badgeColor = "bg-accent text-accent-foreground" }
-                else if (item.href === "/admin/reminders") { badge = counts.reminders; badgeColor = "bg-amber-500 text-white" }
+                else if (item.href === "/admin/reminders") { badge = counts.reminders; badgeColor = "bg-red-500 text-white" }
                 else if (item.href === "/admin") { badge = counts.orders; badgeColor = "bg-accent text-accent-foreground" }
                 else if (item.href === "/admin/deals") { badge = counts.deals; badgeColor = "bg-accent text-accent-foreground" }
                 else if (item.href === "/admin/chat") { badge = counts.chat; badgeColor = "bg-accent text-accent-foreground" }

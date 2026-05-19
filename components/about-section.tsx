@@ -121,8 +121,8 @@ export function AboutSection() {
         <div className="mt-12 overflow-hidden rounded-2xl ring-1 ring-black/[0.06] shadow-soft md:mt-16">
           <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
             <iframe
-              title="Stone Memory — Костопіль, Рівненська область"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=26.3400%2C50.8600%2C26.4200%2C50.9000&layer=mapnik&marker=50.8800%2C26.3800`}
+              title="Stone Memory — Костопіль, провулок Білий, 20"
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=26.4439%2C50.8550%2C26.4639%2C50.8750&layer=mapnik&marker=50.8650090%2C26.4539213`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="absolute inset-0 h-full w-full border-0"
@@ -131,9 +131,9 @@ export function AboutSection() {
             />
             {/* Covers OpenStreetMap attribution footer (which is localized by browser) with our own Ukrainian version */}
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-background/90 px-3 py-1.5 text-[10px] text-muted-foreground backdrop-blur">
-              <span>Костопіль, Рівненська область, Україна</span>
+              <span>Костопіль, провулок Білий, 20 · Рівненська область</span>
               <a
-                href="https://www.openstreetmap.org/?mlat=50.8800&mlon=26.3800#map=13/50.8800/26.3800"
+                href="https://www.openstreetmap.org/?mlat=50.8650090&mlon=26.4539213#map=17/50.8650090/26.4539213"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-foreground"
