@@ -7,9 +7,9 @@ const PATH = "/projects"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Projects — monuments, countertops, fireplaces, stairs",
+  title: "Проєкти — пам'ятники, стільниці, каміни, сходи",
   description:
-    "Real completed projects by Stone Memory: memorial complexes, kitchen countertops, fireplaces, stairs, facades, paving. Natural stone, hand-finished in Kostopil.",
+    "Реалізовані проєкти Stone Memory: меморіальні комплекси, кухонні стільниці, каміни, сходи, фасади, бруківка. Натуральний камінь, ручна обробка в Костополі.",
   alternates: {
     canonical: absoluteUrl(PATH),
     languages: {
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Stone Memory — Projects",
-    description: "Real completed projects — memorials, countertops, fireplaces, stairs, facades, paving.",
+    title: "Stone Memory — Проєкти",
+    description: "Реалізовані проєкти — пам'ятники, стільниці, каміни, сходи, фасади, бруківка.",
     url: absoluteUrl(PATH),
     type: "website",
   },

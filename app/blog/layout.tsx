@@ -4,14 +4,14 @@ import { absoluteUrl } from "@/lib/site-config"
 const PATH = "/blog"
 
 export const metadata: Metadata = {
-  title: "Journal — stone, memorials, design & care",
+  title: "Журнал — камінь, пам'ятники, дизайн і догляд",
   description:
-    "Expert guides on choosing granite, writing epitaphs, caring for stone across seasons, memorial architecture, and natural stone in modern interiors.",
+    "Експертні гайди: як вибрати граніт, написати епітафію, доглядати за каменем у різні сезони, меморіальна архітектура та натуральний камінь у сучасних інтер'єрах.",
   alternates: { canonical: absoluteUrl(PATH) },
   openGraph: {
-    title: "The Stone Memory Journal",
+    title: "Журнал Stone Memory",
     description:
-      "History, materials, care and design in the world of stone.",
+      "Історія, матеріали, догляд і дизайн у світі каменю.",
     url: absoluteUrl(PATH),
     type: "website",
   },

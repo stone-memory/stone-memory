@@ -7,14 +7,14 @@ export const revalidate = 60
 const PATH = "/services"
 
 export const metadata: Metadata = {
-  title: "Services — design, production, installation & care",
+  title: "Послуги — дизайн, виробництво, монтаж і догляд",
   description:
-    "Full-cycle stone services: custom design and 3D visualisation, engraving and portraits, production in our Kostopil workshop, delivery, installation, restoration. Ukrainian granite and marble plus imports from Italy, India, China, Brazil. 5-year warranty across Ukraine.",
+    "Повний цикл робіт з каменю: індивідуальний дизайн і 3D-візуалізація, гравіювання та портрети, виробництво у власному цеху в Костополі, доставка, монтаж, реставрація. Український граніт і мармур та імпорт з Італії, Індії, Китаю, Бразилії. Гарантія 5 років по Україні.",
   alternates: { canonical: absoluteUrl(PATH) },
   openGraph: {
-    title: "Stone Memory — Services",
+    title: "Stone Memory — Послуги",
     description:
-      "From sketch to installation: design, engraving, production, delivery, care. Ukrainian stone, 5-year warranty.",
+      "Від ескізу до монтажу: дизайн, гравіювання, виробництво, доставка, догляд. Український камінь, гарантія 5 років.",
     url: absoluteUrl(PATH),
     type: "website",
   },

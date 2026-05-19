@@ -15,11 +15,11 @@ type Params = { id: string }
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params
   const s = await fetchStoneById(id)
-  if (!s) return { title: "Stone not found" }
-  const kind = s.category === "memorial" ? "Memorial" : "Decorative stone"
-  const displayName = s.name || `No. ${s.id}`
-  const title = `${displayName} — ${kind} | Stone Memory`
-  const desc = `${kind} ${displayName}. Natural granite or marble, hand-finished in our Kostopil workshop. From €${s.priceFrom}. 5-year warranty.`
+  if (!s) return { title: "Камінь не знайдено" }
+  const kind = s.category === "memorial" ? "Пам'ятник" : "Декоративний камінь"
+  const displayName = s.name || `№ ${s.id}`
+  const title = `${displayName} — ${kind}`
+  const desc = `${kind} ${displayName}. Натуральний граніт або мармур, ручна обробка у власному цеху в Костополі. Від ${s.priceFrom} ₴. Гарантія 5 років.`
   const url = absoluteUrl(`/stones/${s.id}`)
   return {
     title,
@@ -53,13 +53,13 @@ export default async function Layout({ children, params }: { children: React.Rea
     ? {
         "@context": "https://schema.org",
         "@type": "Product",
-        name: s.name || `${s.category === "memorial" ? "Memorial" : "Decorative stone"} No. ${s.id}`,
+        name: s.name || `${s.category === "memorial" ? "Пам'ятник" : "Декоративний камінь"} № ${s.id}`,
         sku: s.id,
         mpn: s.id,
         image: s.gallery && s.gallery.length ? s.gallery : [s.imagePath],
-        description: `Natural stone ${s.category === "memorial" ? "monument" : "piece"} №${s.id}. Hand-finished in our Kostopil workshop.`,
+        description: `${s.category === "memorial" ? "Пам'ятник" : "Виріб"} з натурального каменю №${s.id}. Ручна обробка у власному цеху в Костополі.`,
         brand: { "@type": "Brand", name: "Stone Memory" },
-        category: s.category === "memorial" ? "Memorial Stone" : "Decorative Stone",
+        category: s.category === "memorial" ? "Пам'ятники" : "Декоративний камінь",
         offers: {
           "@type": "Offer",
           priceCurrency: "EUR",
@@ -75,8 +75,8 @@ export default async function Layout({ children, params }: { children: React.Rea
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: "Catalog", item: absoluteUrl("/catalog") },
+          { "@type": "ListItem", position: 1, name: "Головна", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Каталог", item: absoluteUrl("/catalog") },
           { "@type": "ListItem", position: 3, name: s.name || `No. ${s.id}`, item: absoluteUrl(`/stones/${s.id}`) },
         ],
       }

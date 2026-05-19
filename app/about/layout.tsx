@@ -4,9 +4,9 @@ import { absoluteUrl } from "@/lib/site-config"
 const PATH = "/about"
 
 export const metadata: Metadata = {
-  title: "About Stone Memory — natural stone workshop, Kostopil",
+  title: "Про Stone Memory — майстерня натурального каменю, Костопіль",
   description:
-    "Stone Memory is a natural-stone workshop in Kostopil, Rivne region. Two product lines — memorial complexes and home/garden stone (countertops, sills, fireplaces, stairs, paving). Ukrainian granite and marble plus imports. 5-year warranty.",
+    "Stone Memory — майстерня натурального каменю в Костополі, Рівненщина. Два напрями: меморіальні комплекси та камінь для дому й саду (стільниці, підвіконня, каміни, сходи, бруківка). Український граніт і мармур та імпорт. Гарантія 5 років.",
   alternates: {
     canonical: absoluteUrl(PATH),
     languages: {
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "About Stone Memory",
-    description: "Natural-stone workshop in Kostopil. Memorials, countertops, sills, fireplaces, stairs, paving.",
+    title: "Про Stone Memory",
+    description: "Майстерня натурального каменю в Костополі. Пам'ятники, стільниці, підвіконня, каміни, сходи, бруківка.",
     url: absoluteUrl(PATH),
     type: "website",
   },

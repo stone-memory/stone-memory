@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { absoluteUrl } from "@/lib/site-config"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Stone Memory privacy policy — how we collect, use and protect your personal data.",
+  title: "Політика конфіденційності",
+  description: "Політика конфіденційності Stone Memory — як ми збираємо, використовуємо та захищаємо ваші персональні дані.",
   alternates: { canonical: absoluteUrl("/privacy") },
   // Legal boilerplate shouldn't compete in search for product keywords.
   robots: { index: false, follow: true },

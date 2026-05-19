@@ -15,25 +15,29 @@ type Params = { slug: string }
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params
   const a = await fetchArticleBySlug(slug)
-  if (!a) return { title: "Article not found" }
+  if (!a) return { title: "Статтю не знайдено" }
 
+  // uk is the priority market — prefer the Ukrainian copy, fall back to
+  // English only if a translation is missing.
+  const title = a.title.uk || a.title.en
+  const excerpt = a.excerpt.uk || a.excerpt.en
   const url = absoluteUrl(`/blog/${a.slug}`)
   return {
-    title: a.title.en,
-    description: a.excerpt.en,
+    title,
+    description: excerpt,
     alternates: { canonical: url },
     openGraph: {
-      title: a.title.en,
-      description: a.excerpt.en,
+      title,
+      description: excerpt,
       url,
       type: "article",
       publishedTime: a.date,
-      images: [{ url: a.cover, width: 1600, height: 1000, alt: a.title.en }],
+      images: [{ url: a.cover, width: 1600, height: 1000, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
-      title: a.title.en,
-      description: a.excerpt.en,
+      title,
+      description: excerpt,
       images: [a.cover],
     },
   }
@@ -52,8 +56,8 @@ export default async function Layout({
     ? {
         "@context": "https://schema.org",
         "@type": "Article",
-        headline: a.title.en,
-        description: a.excerpt.en,
+        headline: a.title.uk || a.title.en,
+        description: a.excerpt.uk || a.excerpt.en,
         image: [a.cover],
         datePublished: a.date,
         dateModified: a.date,

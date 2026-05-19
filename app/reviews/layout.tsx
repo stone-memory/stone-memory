@@ -7,9 +7,9 @@ const PATH = "/reviews"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Reviews — what clients say about Stone Memory",
+  title: "Відгуки — що кажуть клієнти Stone Memory",
   description:
-    "Real client reviews about Stone Memory — granite monuments, marble countertops, fireplaces, stairs and paving. 5-year warranty, craft-level workshop in Kostopil.",
+    "Реальні відгуки клієнтів Stone Memory — гранітні пам'ятники, мармурові стільниці, каміни, сходи та бруківка. Гарантія 5 років, майстерня в Костополі.",
   alternates: {
     canonical: absoluteUrl(PATH),
     languages: {
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Stone Memory — Reviews",
-    description: "What our clients say about us — granite monuments, countertops, stairs and more.",
+    title: "Stone Memory — Відгуки",
+    description: "Що кажуть про нас клієнти — гранітні пам'ятники, стільниці, сходи та інше.",
     url: absoluteUrl(PATH),
     type: "website",
   },

@@ -7,9 +7,9 @@ const PATH = "/catalog"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Catalog — monuments, countertops, window sills, stairs, paving",
+  title: "Каталог — пам'ятники, стільниці, підвіконня, сходи, бруківка",
   description:
-    "Full catalog of Stone Memory pieces: memorial complexes, kitchen countertops, window sills, fireplaces, stairs and paving. Natural granite and marble — Ukrainian and imported. Hand-finished, installed across Ukraine and EU.",
+    "Повний каталог виробів Stone Memory: меморіальні комплекси, кухонні стільниці, підвіконня, каміни, сходи та бруківка. Натуральний граніт і мармур — український та імпортний. Ручна обробка, монтаж по Україні та ЄС.",
   alternates: {
     canonical: absoluteUrl(PATH),
     languages: {
@@ -22,14 +22,14 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Stone Memory — Catalog",
+    title: "Stone Memory — Каталог",
     description:
-      "Natural stone for memory and for home — monuments, countertops, sills, fireplaces, stairs, paving.",
+      "Натуральний камінь для пам'яті і для дому — пам'ятники, стільниці, підвіконня, каміни, сходи, бруківка.",
     url: absoluteUrl(PATH),
     type: "website",
     images: [{ url: "/logo-512.png", width: 512, height: 512, alt: "Stone Memory" }],
   },
-  twitter: { card: "summary_large_image", title: "Stone Memory — Catalog" },
+  twitter: { card: "summary_large_image", title: "Stone Memory — Каталог" },
 }
 
 export default async function CatalogLayout({ children }: { children: React.ReactNode }) {

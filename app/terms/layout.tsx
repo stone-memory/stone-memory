@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { absoluteUrl } from "@/lib/site-config"
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Terms of Service for Stone Memory — conditions for using our website and services.",
+  title: "Умови користування",
+  description: "Умови користування Stone Memory — правила використання нашого сайту та послуг.",
   alternates: { canonical: absoluteUrl("/terms") },
   robots: { index: false, follow: true },
 }
