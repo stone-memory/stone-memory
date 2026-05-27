@@ -95,7 +95,7 @@ export default async function OG() {
               borderRadius: 999,
             }}
           >
-            Монтаж по ЄС
+            Монтаж
           </span>
           <span
             style={{
