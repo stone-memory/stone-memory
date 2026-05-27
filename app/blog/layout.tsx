@@ -14,6 +14,7 @@ export const metadata: Metadata = {
       "Історія, матеріали, догляд і дизайн у світі каменю.",
     url: absoluteUrl(PATH),
     type: "website",
+    images: ["/opengraph-image"],
   },
 }
 

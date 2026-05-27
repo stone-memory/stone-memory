@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     description: "Майстерня натурального каменю в Костополі. Пам'ятники, стільниці, підвіконня, каміни, сходи, бруківка.",
     url: absoluteUrl(PATH),
     type: "website",
+    images: ["/opengraph-image"],
   },
 }
 

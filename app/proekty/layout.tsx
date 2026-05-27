@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     description: "Реалізовані проєкти — пам'ятники, стільниці, каміни, сходи, фасади, бруківка.",
     url: absoluteUrl(PATH),
     type: "website",
+    images: ["/opengraph-image"],
   },
 }
 

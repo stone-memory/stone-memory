@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     description: "Що кажуть про нас клієнти — гранітні пам'ятники, стільниці, сходи та інше.",
     url: absoluteUrl(PATH),
     type: "website",
+    images: ["/opengraph-image"],
   },
 }
 

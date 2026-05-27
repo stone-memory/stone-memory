@@ -17,6 +17,7 @@ export const metadata: Metadata = {
       "Від ескізу до монтажу: дизайн, гравіювання, виробництво, доставка, догляд. Український камінь, гарантія 5 років.",
     url: absoluteUrl(PATH),
     type: "website",
+    images: ["/opengraph-image"],
   },
 }
 
