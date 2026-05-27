@@ -27,7 +27,6 @@ export const metadata: Metadata = {
       "Натуральний камінь для пам'яті і для дому — пам'ятники, стільниці, підвіконня, каміни, сходи, бруківка.",
     url: absoluteUrl(PATH),
     type: "website",
-    images: [{ url: "/logo-512.png", width: 512, height: 512, alt: "Stone Memory" }],
   },
   twitter: { card: "summary_large_image", title: "Stone Memory — Каталог" },
 }
