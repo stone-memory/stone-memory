@@ -25,7 +25,7 @@ export function SegmentedControl({
   return (
     <div
       className={cn(
-        "flex items-center gap-1 rounded-full bg-foreground/5 p-1",
+        "flex items-stretch gap-1 rounded-full bg-foreground/5 p-1",
         className
       )}
     >
@@ -34,7 +34,7 @@ export function SegmentedControl({
           key={segment.value}
           onClick={() => onChange(segment.value)}
           className={cn(
-            "relative px-4 py-1.5 text-sm font-medium transition-colors duration-200",
+            "relative flex items-center justify-center px-4 py-1.5 text-sm font-medium transition-colors duration-200",
             "rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             value === segment.value
               ? "text-foreground"

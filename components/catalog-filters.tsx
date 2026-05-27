@@ -586,7 +586,7 @@ function SortMenu({ value, onChange }: { value: SortKey; onChange: (s: SortKey) 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-0 top-full z-40 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-2xl border border-foreground/10 bg-card p-1.5 shadow-hover"
+            className="absolute left-0 lg:left-auto lg:right-0 top-full z-40 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-2xl border border-foreground/10 bg-card p-1.5 shadow-hover"
           >
             {items.map(([k, l]) => (
               <button
