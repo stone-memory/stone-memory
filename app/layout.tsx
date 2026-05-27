@@ -10,7 +10,7 @@ import { WebVitalsReporter } from "@/components/web-vitals"
 import { CookieConsent } from "@/components/cookie-consent"
 import { SkipLink } from "@/components/skip-link"
 import { ErrorBoundaryClient } from "@/components/error-boundary-client"
-import { SITE_URL, absoluteUrl } from "@/lib/site-config"
+import { SITE_URL } from "@/lib/site-config"
 import "./globals.css"
 
 const inter = Inter({
@@ -133,13 +133,11 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     locale: "en_GB",
     alternateLocale: ["uk_UA", "pl_PL", "de_DE", "lt_LT"],
-    images: [{ url: "/logo-512.png", width: 512, height: 512, alt: `${SITE_NAME} logo` }],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE_DEFAULT,
     description: DESCRIPTION,
-    images: ["/logo-512.png"],
     creator: "@stonememory",
   },
   robots: {

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og"
+import { SITE_URL } from "@/lib/site-config"
 
 export const runtime = "edge"
 export const alt = "Stone Memory — natural stone for memory and home"
@@ -25,22 +26,23 @@ export default async function OG() {
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 12,
+              width: 56,
+              height: 56,
+              borderRadius: 14,
               background: "#fafafa",
-              color: "#0a0a0a",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 24,
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
             }}
           >
-            SM
+            <img
+              src={`${SITE_URL}/logo-mark.png`}
+              width={40}
+              height={40}
+              alt=""
+            />
           </div>
-          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em" }}>
+          <div style={{ fontSize: 26, fontWeight: 600, letterSpacing: "-0.02em" }}>
             Stone Memory
           </div>
         </div>
