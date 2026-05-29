@@ -74,6 +74,33 @@ export function CatalogGrid() {
     [baseItems, filters, popularity]
   )
 
+  // Render the grid in windows and grow it as the user scrolls, so the page
+  // mounts ~one screen of cards instead of all 60+ at once.
+  const PAGE_SIZE = 9
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [category, filters])
+
+  const visibleStones = filteredStones.slice(0, visibleCount)
+  const hasMore = visibleCount < filteredStones.length
+
+  useEffect(() => {
+    if (!hasMore) return
+    const el = sentinelRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) setVisibleCount((c) => c + PAGE_SIZE)
+      },
+      { rootMargin: "600px 0px" }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [hasMore, filteredStones.length])
+
   return (
     <section id="catalog" className="mx-auto max-w-7xl px-6 pt-6 pb-16 md:pt-8 md:pb-20 scroll-mt-14">
       <div className="mb-6 md:mb-8">
@@ -105,11 +132,14 @@ export function CatalogGrid() {
           <p className="text-lg text-muted-foreground">{L.noResults}</p>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredStones.map((stone) => (
-            <StoneCard key={stone.id} item={stone} />
-          ))}
-        </div>
+        <>
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleStones.map((stone) => (
+              <StoneCard key={stone.id} item={stone} />
+            ))}
+          </div>
+          {hasMore && <div ref={sentinelRef} aria-hidden className="h-12" />}
+        </>
       )}
     </section>
   )
