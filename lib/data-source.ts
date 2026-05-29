@@ -1,10 +1,12 @@
 import "server-only"
+import { unstable_cache } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { StoneItem } from "@/lib/types"
 import { stones as baseStones } from "@/lib/data/stones"
 import { services as baseServices, type Service } from "@/lib/data/services"
 import { projects as baseProjects, type Project } from "@/lib/data/projects"
 import { articles as baseArticles, type Article } from "@/lib/data/articles"
+import { NAV_SETTINGS_KEY, DEFAULT_NAV_SETTINGS, type NavSettings } from "@/lib/nav-settings"
 
 // ---------- Stones ----------
 
@@ -133,3 +135,15 @@ export async function fetchSingleton<T = unknown>(key: string): Promise<T | null
   if (error || !data) return null
   return (data.data as T) ?? null
 }
+
+// Cached so the root layout (which renders on every request) doesn't hit the
+// DB each time and pages can stay statically/incrementally rendered. The admin
+// toggle reflects within the revalidate window.
+export const fetchNavSettings = unstable_cache(
+  async (): Promise<NavSettings> => {
+    const data = await fetchSingleton<Partial<NavSettings>>(NAV_SETTINGS_KEY)
+    return { ...DEFAULT_NAV_SETTINGS, ...(data ?? {}) }
+  },
+  ["nav-settings"],
+  { revalidate: 30 }
+)

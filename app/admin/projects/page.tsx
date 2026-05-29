@@ -13,6 +13,9 @@ import {
 import { useProjectsAdminStore } from "@/lib/store/projects"
 import { MultilingualField } from "@/components/admin/multilingual-field"
 import { ImageUploader } from "@/components/admin/image-uploader"
+import { Switch } from "@/components/ui/switch"
+import { authedFetch } from "@/lib/authed-fetch"
+import { NAV_SETTINGS_KEY } from "@/lib/nav-settings"
 import { cn } from "@/lib/utils"
 
 const CATEGORIES: ProjectCategory[] = [
@@ -45,6 +48,30 @@ export default function AdminProjectsPage() {
   const [creating, setCreating] = useState(false)
   const [showHidden, setShowHidden] = useState(false)
 
+  // Whether the "Наші роботи" link shows in the public site navigation.
+  const [showInNav, setShowInNav] = useState<boolean | null>(null)
+  useEffect(() => {
+    fetch(`/api/content/singleton/${NAV_SETTINGS_KEY}`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => setShowInNav(Boolean(j?.data?.showProjects)))
+      .catch(() => setShowInNav(false))
+  }, [])
+
+  const toggleShowInNav = async (next: boolean) => {
+    const prev = showInNav
+    setShowInNav(next)
+    try {
+      const res = await authedFetch(`/api/content/singleton/${NAV_SETTINGS_KEY}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: { showProjects: next } }),
+      })
+      if (!res.ok) throw new Error()
+    } catch {
+      setShowInNav(prev)
+    }
+  }
+
   const filtered = showHidden ? items : items.filter((r) => !r.hidden)
 
   const save = (slug: string, draft: Project) => {
@@ -71,6 +98,25 @@ export default function AdminProjectsPage() {
           <Plus size={16} /> Новий проект
         </Button>
       </header>
+
+      <section className="rounded-2xl border border-foreground/10 bg-card p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Вкладка «Наші роботи» в меню сайту
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Коли вимкнено — пункт меню прихований від відвідувачів. Увімкніть, коли проєкти готові до показу.
+            </p>
+          </div>
+          <Switch
+            checked={showInNav ?? false}
+            disabled={showInNav === null}
+            onCheckedChange={toggleShowInNav}
+            aria-label="Показувати «Наші роботи» в меню"
+          />
+        </div>
+      </section>
 
       <section className="rounded-2xl border border-foreground/10 bg-card p-5">
         <div className="mb-3 flex items-center justify-between">

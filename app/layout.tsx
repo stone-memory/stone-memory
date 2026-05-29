@@ -11,6 +11,8 @@ import { CookieConsent } from "@/components/cookie-consent"
 import { SkipLink } from "@/components/skip-link"
 import { ErrorBoundaryClient } from "@/components/error-boundary-client"
 import { SITE_URL } from "@/lib/site-config"
+import { fetchNavSettings } from "@/lib/data-source"
+import { NavSettingsProvider } from "@/components/nav-settings-provider"
 import "./globals.css"
 
 const inter = Inter({
@@ -260,11 +262,12 @@ const localBusinessJsonLd = {
   paymentAccepted: "Cash, Credit Card, Bank Transfer",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const navSettings = await fetchNavSettings()
   return (
     <html lang="uk" className={inter.variable} data-scroll-behavior="smooth">
       <head>
@@ -286,13 +289,15 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }} />
         <ErrorBoundaryClient />
         <LanguageProvider>
-          <Suspense fallback={null}>
-            <NavProgress />
-          </Suspense>
-          <SkipLink />
-          {children}
-          <PublicChrome />
-          <CookieConsent />
+          <NavSettingsProvider value={navSettings}>
+            <Suspense fallback={null}>
+              <NavProgress />
+            </Suspense>
+            <SkipLink />
+            {children}
+            <PublicChrome />
+            <CookieConsent />
+          </NavSettingsProvider>
         </LanguageProvider>
         <AnalyticsPixels />
         <WebVitalsReporter />

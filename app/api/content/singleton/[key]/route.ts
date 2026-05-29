@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
+import { NAV_SETTINGS_KEY } from "@/lib/nav-settings"
 
 export const dynamic = "force-dynamic"
 
@@ -35,6 +37,17 @@ export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> 
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // The nav toggle is read in the root layout (shared by every page), so
+  // re-render all pages' layout to apply it promptly.
+  if (key === NAV_SETTINGS_KEY) {
+    try {
+      revalidatePath("/", "layout")
+    } catch {
+      // best-effort — revalidation is an optimisation, not correctness
+    }
+  }
+
   return NextResponse.json({ data: data?.data, updatedAt: data?.updated_at })
 }
 

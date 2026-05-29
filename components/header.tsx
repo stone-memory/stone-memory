@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
+import { useNavSettings } from "@/components/nav-settings-provider"
 import { cn } from "@/lib/utils"
 import type { Locale } from "@/lib/types"
 
@@ -28,6 +29,7 @@ const aboutLabels: Record<Locale, string> = {
 export function Header({ className }: HeaderProps) {
   const { items, openSidebar } = useSelectionStore()
   const { t, locale } = useTranslation()
+  const { showProjects } = useNavSettings()
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
 
@@ -50,7 +52,7 @@ export function Header({ className }: HeaderProps) {
   const navItems = [
     { href: "/kataloh", label: t.nav.catalog },
     { href: "/posluhy", label: t.nav.services },
-    { href: "/proekty", label: projectsLabels[locale] },
+    ...(showProjects ? [{ href: "/proekty", label: projectsLabels[locale] }] : []),
     { href: "/pro-nas", label: aboutLabels[locale] },
     { href: "/blog", label: t.nav.blog },
   ]
