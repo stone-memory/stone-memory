@@ -15,26 +15,23 @@ type Params = { id: string }
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params
   const s = await fetchStoneById(id)
-  if (!s) return { title: "Камінь не знайдено" }
+  // page.tsx calls notFound() for this case, so the response is a real 404.
+  // Kept noindex as a belt-and-braces guard in case metadata is ever resolved
+  // for a route that still renders.
+  if (!s) return { title: "Камінь не знайдено", robots: { index: false, follow: false } }
   const kind = s.category === "memorial" ? "Пам'ятник" : "Декоративний камінь"
   const displayName = s.name || `№ ${s.id}`
   const title = `${displayName} — ${kind}`
-  const desc = `${kind} ${displayName}. Натуральний граніт або мармур, ручна обробка у власному цеху в Костополі. Від ${s.priceFrom} ₴. Гарантія 5 років.`
+  // Only quote a price when there is one. priceFrom is UAH and is currently 0
+  // for every row in production, which rendered a literal "Від 0 ₴" in the
+  // SERP snippet on all 60 product pages.
+  const priceSentence = s.priceFrom ? ` Від ${s.priceFrom.toLocaleString("uk-UA")} ₴.` : ""
+  const desc = `${kind} ${displayName}. Натуральний граніт або мармур, ручна обробка у власному цеху в Костополі.${priceSentence} Гарантія 5 років.`
   const url = absoluteUrl(`/kameni/${s.id}`)
   return {
     title,
     description: desc,
-    alternates: {
-      canonical: url,
-      languages: {
-        "x-default": url,
-        en: `${url}?lang=en`,
-        uk: `${url}?lang=uk`,
-        pl: `${url}?lang=pl`,
-        de: `${url}?lang=de`,
-        lt: `${url}?lang=lt`,
-      },
-    },
+    alternates: { canonical: url },
     openGraph: {
       title,
       description: desc,
@@ -60,14 +57,28 @@ export default async function Layout({ children, params }: { children: React.Rea
         description: `${s.category === "memorial" ? "Пам'ятник" : "Виріб"} з натурального каменю №${s.id}. Ручна обробка у власному цеху в Костополі.`,
         brand: { "@type": "Brand", name: "Stone Memory" },
         category: s.category === "memorial" ? "Пам'ятники" : "Декоративний камінь",
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "EUR",
-          price: s.priceFrom,
-          availability: "https://schema.org/InStock",
-          url: absoluteUrl(`/kameni/${s.id}`),
-          seller: { "@type": "Organization", name: "Stone Memory" },
-        },
+        // Two fixes here.
+        //
+        // 1. Currency. priceFrom is UAH — formatPrice() in lib/i18n/context is
+        //    typed `(uahAmount: number)` and the seed values are 92000, 80000…
+        //    Declaring EUR understated every price by ~45x and contradicted the
+        //    "₴" shown on the page.
+        // 2. Missing prices. priceFrom is 0 for every production row, and
+        //    "price": 0 is invalid for an Offer — Google rejects the whole
+        //    Product. Omit the offer entirely instead; the page already falls
+        //    back to a "request a quote" phone CTA in that case.
+        ...(s.priceFrom
+          ? {
+              offers: {
+                "@type": "Offer",
+                priceCurrency: "UAH",
+                price: s.priceFrom,
+                availability: "https://schema.org/InStock",
+                url: absoluteUrl(`/kameni/${s.id}`),
+                seller: { "@type": "Organization", name: "Stone Memory" },
+              },
+            }
+          : {}),
       }
     : null
   const breadcrumb = s

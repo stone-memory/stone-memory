@@ -15,7 +15,9 @@ type Params = { slug: string }
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params
   const a = await fetchArticleBySlug(slug)
-  if (!a) return { title: "Статтю не знайдено" }
+  // page.tsx calls notFound() for this case, so the response is a real 404
+  // rather than the old 200-with-"not found"-title soft 404.
+  if (!a) return { title: "Статтю не знайдено", robots: { index: false, follow: false } }
 
   // uk is the priority market — prefer the Ukrainian copy, fall back to
   // English only if a translation is missing.

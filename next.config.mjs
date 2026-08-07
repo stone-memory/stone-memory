@@ -13,12 +13,24 @@ const cspDirectives = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com`,
+  // clarity.ms: components/analytics-pixels.tsx injects the Microsoft Clarity
+  // tag (id wol8xdpeuc) but the host was never allow-listed, so the browser
+  // blocked it and Clarity has been collecting nothing.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://*.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.google-analytics.com https://api.telegram.org https://maps.googleapis.com https://places.googleapis.com https://*.supabase.co wss://*.supabase.co",
+  // Analytics beacons. GA4 does NOT report to www.google-analytics.com — it
+  // posts to a regional endpoint (region1.analytics.google.com/g/collect for
+  // EU traffic), which connect-src never allowed. Every event was refused, so
+  // GA4 has been installed but recording nothing. Wildcards cover the other
+  // regions and the *.google-analytics.com fallbacks.
+  //
+  // No ipapi.co: the geo lookup it served was removed from
+  // lib/i18n/context.tsx — its free quota answered 429 on every call and it
+  // added nothing over navigator.language.
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net https://api.telegram.org https://maps.googleapis.com https://places.googleapis.com https://*.supabase.co wss://*.supabase.co https://*.clarity.ms https://*.bing.com",
   "frame-src 'self' https://www.openstreetmap.org https://www.google.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",

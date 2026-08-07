@@ -12,14 +12,6 @@ export const metadata: Metadata = {
     "Повний каталог виробів Stone Memory: меморіальні комплекси, кухонні стільниці, підвіконня, каміни, сходи та бруківка. Натуральний граніт і мармур — український та імпортний. Ручна обробка, монтаж по Україні та ЄС.",
   alternates: {
     canonical: absoluteUrl(PATH),
-    languages: {
-      "x-default": absoluteUrl(PATH),
-      en: `${absoluteUrl(PATH)}?lang=en`,
-      uk: `${absoluteUrl(PATH)}?lang=uk`,
-      pl: `${absoluteUrl(PATH)}?lang=pl`,
-      de: `${absoluteUrl(PATH)}?lang=de`,
-      lt: `${absoluteUrl(PATH)}?lang=lt`,
-    },
   },
   openGraph: {
     title: "Stone Memory — Каталог",

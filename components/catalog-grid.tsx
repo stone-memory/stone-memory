@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useSearchParams } from "next/navigation"
 import { StoneCard } from "@/components/stone-card"
 import { SegmentedControl } from "@/components/segmented-control"
 import { CatalogFilters, applyFilters, emptyFilters, type FiltersState } from "@/components/catalog-filters"
@@ -11,12 +10,11 @@ import { usePopularity } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones } from "@/lib/store/stones"
 import { filterLabels } from "@/lib/i18n/filters"
-import type { Category } from "@/lib/types"
+import type { Category, StoneItem } from "@/lib/types"
 
-export function CatalogGrid() {
+export function CatalogGrid({ initialStones }: { initialStones: StoneItem[] }) {
   const storedCategory = useSelectionStore((state) => state.category)
   const setCategory = useSelectionStore((state) => state.setCategory)
-  const searchParams = useSearchParams()
   const [mounted, setMounted] = useState(false)
   const urlParamApplied = useRef(false)
 
@@ -27,19 +25,28 @@ export function CatalogGrid() {
   // Use a stable "memorial" on SSR to prevent hydration mismatch from persisted category
   const category: Category = mounted ? storedCategory : "memorial"
 
-  // Apply ?cat= URL param only once on initial mount — subsequent button clicks
-  // must not be overridden by the stale URL param still sitting in searchParams.
+  // Apply ?cat= only once on initial mount — subsequent button clicks must not
+  // be overridden by the stale param still sitting in the URL.
+  //
+  // Read from window rather than useSearchParams(): calling that hook during
+  // render opts the whole subtree out of static generation, so Next served an
+  // empty shell and the grid only appeared after hydration — which is exactly
+  // the crawlability bug this page had. The param is only consulted on mount,
+  // so window is sufficient and keeps the route prerenderable.
   useEffect(() => {
     if (!mounted || urlParamApplied.current) return
-    const cat = searchParams.get("cat")
+    const cat = new URLSearchParams(window.location.search).get("cat")
     if (cat === "memorial" || cat === "home") {
       setCategory(cat)
     }
     urlParamApplied.current = true
-  }, [mounted, searchParams, setCategory])
+  }, [mounted, setCategory])
   const { t, locale } = useTranslation()
   const L = filterLabels[locale]
-  const stones = useStones()
+  const storeStones = useStones()
+  // Server-provided list is the source of truth for the first paint; the store
+  // takes over once it hydrates so admin edits still appear live.
+  const stones = storeStones.length > 0 ? storeStones : initialStones
 
   const baseItems = useMemo(() => stones.filter((s) => s.category === category), [category, stones])
 
@@ -104,9 +111,11 @@ export function CatalogGrid() {
   return (
     <section id="catalog" className="mx-auto max-w-7xl px-6 pt-6 pb-16 md:pt-8 md:pb-20 scroll-mt-14">
       <div className="mb-6 md:mb-8">
-        <h2 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
+        {/* h1, not h2: this is the catalogue page's main heading and the route
+            previously shipped no h1 at all. */}
+        <h1 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
           {t.catalog.heading}
-        </h2>
+        </h1>
         <p className="mt-3 max-w-2xl text-base text-muted-foreground text-balance md:text-lg">
           {t.catalog.subheading}
         </p>

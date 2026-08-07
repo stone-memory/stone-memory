@@ -12,14 +12,6 @@ export const metadata: Metadata = {
     "Реалізовані проєкти Stone Memory: меморіальні комплекси, кухонні стільниці, каміни, сходи, фасади, бруківка. Натуральний камінь, ручна обробка в Костополі.",
   alternates: {
     canonical: absoluteUrl(PATH),
-    languages: {
-      "x-default": absoluteUrl(PATH),
-      en: `${absoluteUrl(PATH)}?lang=en`,
-      uk: `${absoluteUrl(PATH)}?lang=uk`,
-      pl: `${absoluteUrl(PATH)}?lang=pl`,
-      de: `${absoluteUrl(PATH)}?lang=de`,
-      lt: `${absoluteUrl(PATH)}?lang=lt`,
-    },
   },
   openGraph: {
     title: "Stone Memory — Проєкти",

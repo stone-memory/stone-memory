@@ -1,37 +1,41 @@
 import type { MetadataRoute } from "next"
-import { fetchArticles, fetchServices, fetchStones } from "@/lib/data-source"
+import { fetchArticles, fetchStones } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 
 export const revalidate = 60
 
-const withAlternates = (path: string) => ({
-  languages: {
-    en: `${absoluteUrl(path)}?lang=en`,
-    uk: `${absoluteUrl(path)}?lang=uk`,
-    pl: `${absoluteUrl(path)}?lang=pl`,
-    de: `${absoluteUrl(path)}?lang=de`,
-    lt: `${absoluteUrl(path)}?lang=lt`,
-  },
-})
-
+/**
+ * No `hreflang` alternates here (and none in page metadata either).
+ *
+ * The five languages currently share ONE URL each — `?lang=de` returns
+ * byte-identical HTML to the bare URL, always `<html lang="uk">`, always the
+ * Ukrainian <title>; the copy is swapped client-side by LanguageProvider.
+ * Declaring those query URLs as hreflang alternates told Google about five
+ * "translations" that are in fact five duplicates of the same Ukrainian page,
+ * which invalidates the whole cluster.
+ *
+ * Real alternates belong here once i18n Phase 3 ships genuine per-locale URLs
+ * (/uk/…, /pl/… — see the disabled matcher in middleware.ts). Until then, one
+ * honest URL per document is the correct signal.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date()
-  const [articles, services, stones] = await Promise.all([
-    fetchArticles(),
-    fetchServices(),
-    fetchStones(),
-  ])
+  const [articles, stones] = await Promise.all([fetchArticles(), fetchStones()])
 
+  // No `lastModified` on routes where we have no real change signal — a
+  // build-time timestamp repeated across every URL reads as noise and Google
+  // discards the whole signal. Articles carry a genuine date, so they keep it.
+  //
+  // /umovy and /konfidentsiinist are deliberately `robots: noindex` (see their
+  // layouts) and therefore must NOT be listed here — a URL that is both
+  // submitted and noindexed is a contradictory signal.
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/"), lastModified: now, changeFrequency: "daily", priority: 1, alternates: withAlternates("/") },
-    { url: absoluteUrl("/kataloh"), lastModified: now, changeFrequency: "daily", priority: 0.95, alternates: withAlternates("/kataloh") },
-    { url: absoluteUrl("/proekty"), lastModified: now, changeFrequency: "weekly", priority: 0.9, alternates: withAlternates("/proekty") },
-    { url: absoluteUrl("/posluhy"), lastModified: now, changeFrequency: "monthly", priority: 0.9, alternates: withAlternates("/posluhy") },
-    { url: absoluteUrl("/pro-nas"), lastModified: now, changeFrequency: "monthly", priority: 0.8, alternates: withAlternates("/pro-nas") },
-    { url: absoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.85, alternates: withAlternates("/blog") },
-    { url: absoluteUrl("/vidhuky"), lastModified: now, changeFrequency: "weekly", priority: 0.7, alternates: withAlternates("/vidhuky") },
-    { url: absoluteUrl("/konfidentsiinist"), lastModified: now, changeFrequency: "yearly", priority: 0.3, alternates: withAlternates("/konfidentsiinist") },
-    { url: absoluteUrl("/umovy"), lastModified: now, changeFrequency: "yearly", priority: 0.3, alternates: withAlternates("/umovy") },
+    { url: absoluteUrl("/"), changeFrequency: "daily", priority: 1 },
+    { url: absoluteUrl("/kataloh"), changeFrequency: "daily", priority: 0.95 },
+    { url: absoluteUrl("/proekty"), changeFrequency: "weekly", priority: 0.9 },
+    { url: absoluteUrl("/posluhy"), changeFrequency: "monthly", priority: 0.9 },
+    { url: absoluteUrl("/pro-nas"), changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/blog"), changeFrequency: "weekly", priority: 0.85 },
+    { url: absoluteUrl("/vidhuky"), changeFrequency: "weekly", priority: 0.7 },
   ]
 
   const articleRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
@@ -39,23 +43,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(a.date),
     changeFrequency: "monthly",
     priority: 0.6,
-    alternates: withAlternates(`/blog/${a.slug}`),
   }))
 
   const stoneRoutes: MetadataRoute.Sitemap = stones.map((s) => ({
     url: absoluteUrl(`/kameni/${s.id}`),
-    lastModified: now,
     changeFrequency: "weekly",
     priority: 0.7,
-    alternates: withAlternates(`/kameni/${s.id}`),
   }))
 
-  const serviceAnchors: MetadataRoute.Sitemap = services.map((s) => ({
-    url: `${absoluteUrl("/posluhy")}#${s.slug}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.5,
-  }))
-
-  return [...staticRoutes, ...stoneRoutes, ...articleRoutes, ...serviceAnchors]
+  // Service anchors (/posluhy#design …) are intentionally omitted: a URL
+  // fragment is not a separate document, so search engines collapse them into
+  // /posluhy and the extra entries only dilute the sitemap.
+  return [...staticRoutes, ...stoneRoutes, ...articleRoutes]
 }

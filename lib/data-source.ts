@@ -21,10 +21,18 @@ export async function fetchStones(opts?: { includeHidden?: boolean }): Promise<S
   return rows.map((r) => r.data as StoneItem)
 }
 
+/**
+ * Returns null ONLY when the row genuinely does not exist (or is hidden).
+ *
+ * A transport/DB error is deliberately NOT treated as "missing": callers turn
+ * null into a 404, and collapsing an outage into 404 would let a few minutes of
+ * Supabase trouble deindex the whole catalogue. On error we fall back to the
+ * bundled seed data, matching what fetchStones() already does for lists.
+ */
 export async function fetchStoneById(id: string): Promise<StoneItem | null> {
   const { data, error } = await supabaseAdmin.from("stones").select("data, hidden").eq("id", id).maybeSingle()
-  if (error || !data) return null
-  if (data.hidden) return null
+  if (error) return baseStones.find((s) => s.id === id) ?? null
+  if (!data || data.hidden) return null
   return data.data as StoneItem
 }
 
@@ -67,14 +75,15 @@ export async function fetchArticles(): Promise<Article[]> {
   return data.filter((r) => !r.hidden).map((r) => r.data as Article)
 }
 
+/** Same outage-vs-missing distinction as fetchStoneById(). */
 export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
   const { data, error } = await supabaseAdmin
     .from("articles")
     .select("data, hidden")
     .eq("slug", slug)
     .maybeSingle()
-  if (error || !data) return null
-  if (data.hidden) return null
+  if (error) return baseArticles.find((a) => a.slug === slug) ?? null
+  if (!data || data.hidden) return null
   return data.data as Article
 }
 
