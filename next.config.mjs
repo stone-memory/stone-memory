@@ -16,15 +16,20 @@ const cspDirectives = [
   // clarity.ms: components/analytics-pixels.tsx injects the Microsoft Clarity
   // tag (id wol8xdpeuc) but the host was never allow-listed, so the browser
   // blocked it and Clarity has been collecting nothing.
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://*.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
   "font-src 'self' data:",
+  // Analytics beacons. GA4 does NOT report to www.google-analytics.com — it
+  // posts to a regional endpoint (region1.analytics.google.com/g/collect for
+  // EU traffic), which connect-src never allowed. Every event was refused, so
+  // GA4 has been installed but recording nothing. Wildcards cover the other
+  // regions and the *.google-analytics.com fallbacks.
+  //
   // ipapi.co: lib/i18n/context.tsx resolves the visitor's country to pick a
-  // locale. Same story — the fetch was blocked by connect-src, so geo-based
-  // language detection silently fell through to Accept-Language for everyone.
-  "connect-src 'self' https://www.google-analytics.com https://api.telegram.org https://maps.googleapis.com https://places.googleapis.com https://*.supabase.co wss://*.supabase.co https://ipapi.co https://*.clarity.ms",
+  // locale — also blocked, so geo detection fell through to Accept-Language.
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://api.telegram.org https://maps.googleapis.com https://places.googleapis.com https://*.supabase.co wss://*.supabase.co https://ipapi.co https://*.clarity.ms https://*.bing.com",
   "frame-src 'self' https://www.openstreetmap.org https://www.google.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
