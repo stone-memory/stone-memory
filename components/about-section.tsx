@@ -36,9 +36,11 @@ export function AboutSection() {
     <section id="about" className="pt-8 pb-16 md:pt-10 md:pb-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-8 md:mb-10">
-          <h2 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
+          {/* h1: this section is the entire content of /pro-nas — its only
+              consumer — and that route previously shipped no h1 at all. */}
+          <h1 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
             {content.heading}
-          </h2>
+          </h1>
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.3fr_1fr] md:gap-10 lg:gap-14">

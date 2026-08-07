@@ -12,14 +12,6 @@ export const metadata: Metadata = {
     "Реальні відгуки клієнтів Stone Memory — гранітні пам'ятники, мармурові стільниці, каміни, сходи та бруківка. Гарантія 5 років, майстерня в Костополі.",
   alternates: {
     canonical: absoluteUrl(PATH),
-    languages: {
-      "x-default": absoluteUrl(PATH),
-      en: `${absoluteUrl(PATH)}?lang=en`,
-      uk: `${absoluteUrl(PATH)}?lang=uk`,
-      pl: `${absoluteUrl(PATH)}?lang=pl`,
-      de: `${absoluteUrl(PATH)}?lang=de`,
-      lt: `${absoluteUrl(PATH)}?lang=lt`,
-    },
   },
   openGraph: {
     title: "Stone Memory — Відгуки",
