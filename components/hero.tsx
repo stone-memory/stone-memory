@@ -49,16 +49,24 @@ export function Hero() {
         style={{ y: mediaY, scale: mediaScale }}
         className="absolute inset-0 will-change-transform"
       >
+        {/*
+          The source used to be a 38 MB / 20 Mbps 1080p file with an unused AAC
+          track, fetched eagerly via preload="auto" — it dominated LCP and burned
+          mobile data before a single word of copy was readable. Re-encoded to
+          ~3.4 MB (video-only, CRF 28, faststart) and preloaded as metadata only;
+          the poster is now a real first frame instead of an SVG placeholder, so
+          something representative paints immediately.
+        */}
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
           src="/hero/hero.mp4"
-          poster="/hero/granite-hero.svg"
+          poster="/hero/hero-poster.jpg"
           autoPlay
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           disablePictureInPicture
           disableRemotePlayback
           controls={false}

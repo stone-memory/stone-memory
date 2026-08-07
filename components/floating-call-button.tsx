@@ -3,6 +3,7 @@
 import { Phone } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
 import { useBusinessProfile } from "@/lib/store/business-profile"
+import { toTelHref } from "@/lib/phone-format"
 import type { Locale } from "@/lib/types"
 
 const CALL_LABEL: Record<Locale, string> = {
@@ -20,7 +21,7 @@ export function FloatingCallButton() {
   const { locale } = useTranslation()
   const profile = useBusinessProfile()
   const phone = profile.phone
-  const href = `tel:${phone.replace(/\s+/g, "")}`
+  const href = toTelHref(phone)
   const label = CALL_LABEL[locale]
 
   return (

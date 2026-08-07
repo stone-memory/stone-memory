@@ -22,9 +22,10 @@ const inter = Inter({
 })
 
 const SITE_NAME = "Stone Memory"
-const TITLE_DEFAULT = "Stone Memory — памʼятники, стільниці, підвіконня, сходи та бруківка з натурального каменю"
+// Kept under ~65 / ~160 chars so neither is truncated in the SERP.
+const TITLE_DEFAULT = "Stone Memory — пам'ятники, стільниці, сходи з натурального каменю"
 const DESCRIPTION =
-  "Натуральний камінь для памʼяті та дому: памʼятники, кухонні стільниці, підвіконня, сходи, каміни й бруківка з граніту та мармуру — український камінь і імпорт з Італії, Індії, Китаю та Бразилії. Власна майстерня в Костополі — дизайн, виробництво, монтаж, 5 років гарантії."
+  "Пам'ятники, кухонні стільниці, підвіконня, сходи та бруківка з граніту й мармуру. Власна майстерня в Костополі: дизайн, виробництво, монтаж, гарантія 5 років."
 
 const KEYWORDS_BASE = [
   "granite monuments", "marble monuments", "headstones", "gravestones", "tombstones",
@@ -108,24 +109,12 @@ export const metadata: Metadata = {
   authors: [{ name: SITE_NAME, url: SITE_URL }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
+  // No `languages` map — see the note in app/sitemap.ts. `?lang=xx` serves the
+  // same Ukrainian HTML as the bare URL, so advertising those as hreflang
+  // alternates pointed Google at five duplicates of one document. Restore this
+  // once i18n Phase 3 ships real per-locale paths.
   alternates: {
     canonical: SITE_URL,
-    languages: {
-      "x-default": SITE_URL,
-      "en-GB": `${SITE_URL}/?lang=en`,
-      "en-US": `${SITE_URL}/?lang=en`,
-      en: `${SITE_URL}/?lang=en`,
-      "uk-UA": `${SITE_URL}/?lang=uk`,
-      uk: `${SITE_URL}/?lang=uk`,
-      "pl-PL": `${SITE_URL}/?lang=pl`,
-      pl: `${SITE_URL}/?lang=pl`,
-      "de-DE": `${SITE_URL}/?lang=de`,
-      "de-AT": `${SITE_URL}/?lang=de`,
-      "de-CH": `${SITE_URL}/?lang=de`,
-      de: `${SITE_URL}/?lang=de`,
-      "lt-LT": `${SITE_URL}/?lang=lt`,
-      lt: `${SITE_URL}/?lang=lt`,
-    },
   },
   openGraph: {
     type: "website",
@@ -133,8 +122,9 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: TITLE_DEFAULT,
     description: DESCRIPTION,
-    locale: "en_GB",
-    alternateLocale: ["uk_UA", "pl_PL", "de_DE", "lt_LT"],
+    // Matches what the server actually renders (<html lang="uk">).
+    locale: "uk_UA",
+    alternateLocale: ["en_GB", "pl_PL", "de_DE", "lt_LT"],
   },
   twitter: {
     card: "summary_large_image",
@@ -217,7 +207,7 @@ const organizationJsonLd = {
   contactPoint: [
     {
       "@type": "ContactPoint",
-      telephone: "+380-67-808-02-22",
+      telephone: "+380678080222",
       contactType: "customer service",
       areaServed: ["UA", "PL", "DE", "LT", "EU"],
       availableLanguage: ["uk", "pl", "de", "lt", "en"],
@@ -232,7 +222,7 @@ const localBusinessJsonLd = {
   name: SITE_NAME,
   image: `${SITE_URL}/logo-512.png`,
   url: SITE_URL,
-  telephone: "+380-67-808-02-22",
+  telephone: "+380678080222",
   priceRange: "€€–€€€€",
   address: {
     "@type": "PostalAddress",
@@ -273,7 +263,8 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
-        <link rel="preconnect" href="https://ipapi.co" crossOrigin="" />
+        {/* No ipapi.co preconnect: locale is resolved server-side and the
+            client never calls that host, so the handshake was pure overhead. */}
       </head>
       <body className="font-sans antialiased bg-background">
         <noscript>

@@ -1,6 +1,7 @@
 "use client"
 
 import { trackEvent } from "@/components/analytics-pixels"
+import { toTelHref } from "@/lib/phone-format"
 import { type ReactNode } from "react"
 
 type Props = {
@@ -12,10 +13,10 @@ type Props = {
 }
 
 export function PhoneLink({ number, source, className, children, ariaLabel }: Props) {
-  const tel = number.replace(/\s+/g, "")
+  const tel = toTelHref(number)
   return (
     <a
-      href={`tel:${tel}`}
+      href={tel}
       className={className}
       aria-label={ariaLabel}
       onClick={() => trackEvent("phone_click", { source, number: tel })}
