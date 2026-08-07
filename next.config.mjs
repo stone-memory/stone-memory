@@ -27,9 +27,10 @@ const cspDirectives = [
   // GA4 has been installed but recording nothing. Wildcards cover the other
   // regions and the *.google-analytics.com fallbacks.
   //
-  // ipapi.co: lib/i18n/context.tsx resolves the visitor's country to pick a
-  // locale — also blocked, so geo detection fell through to Accept-Language.
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net https://api.telegram.org https://maps.googleapis.com https://places.googleapis.com https://*.supabase.co wss://*.supabase.co https://ipapi.co https://*.clarity.ms https://*.bing.com",
+  // No ipapi.co: the geo lookup it served was removed from
+  // lib/i18n/context.tsx — its free quota answered 429 on every call and it
+  // added nothing over navigator.language.
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net https://api.telegram.org https://maps.googleapis.com https://places.googleapis.com https://*.supabase.co wss://*.supabase.co https://*.clarity.ms https://*.bing.com",
   "frame-src 'self' https://www.openstreetmap.org https://www.google.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",

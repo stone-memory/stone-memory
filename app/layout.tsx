@@ -263,10 +263,6 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
-        {/* ipapi.co IS on the critical path: middleware.ts is disabled until
-            i18n Phase 3, so countryFromIP() in lib/i18n/context.tsx is the only
-            geo signal for picking a locale. Warming the connection early. */}
-        <link rel="preconnect" href="https://ipapi.co" crossOrigin="" />
       </head>
       <body className="font-sans antialiased bg-background">
         <noscript>

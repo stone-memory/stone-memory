@@ -1,7 +1,7 @@
 "use client"
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react"
 import { dictionaries, Locale, Dictionary } from "./dictionaries"
-import { Currency, localeCurrency, fxFromUAH, countryToLocale } from "@/lib/types"
+import { Currency, localeCurrency, fxFromUAH } from "@/lib/types"
 
 type LanguageContextValue = {
   locale: Locale
@@ -15,7 +15,6 @@ type LanguageContextValue = {
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 const LS_LOCALE = "sm-locale"
-const LS_GEO = "sm-geo-resolved"
 const DEFAULT_LOCALE: Locale = "uk"
 
 function localeFromNavigator(): Locale | null {
@@ -32,18 +31,21 @@ function localeFromNavigator(): Locale | null {
   return null
 }
 
-async function countryFromIP(): Promise<Locale | null> {
-  try {
-    const r = await fetch("https://ipapi.co/json/", { cache: "force-cache" })
-    if (!r.ok) return null
-    const j = await r.json()
-    const code = (j?.country_code || j?.country || "").toUpperCase()
-    return countryToLocale[code] || null
-  } catch {
-    return null
-  }
-}
-
+/**
+ * Locale detection is navigator-only by design.
+ *
+ * There used to be a countryFromIP() lookup against ipapi.co here. It was dead
+ * weight twice over: the CSP blocked the request outright for as long as it
+ * existed, and once unblocked the free quota answered
+ * `429 {"reason": "RateLimited"}` on every call. It bought no accuracy over
+ * navigator.language — a visitor's browser language is normally their country's
+ * language — while costing a round-trip, a third-party IP disclosure and a
+ * dependency that fails silently.
+ *
+ * The server-side alternative (Vercel's x-vercel-ip-country) is not free
+ * either: reading headers() in the root layout would opt every page out of
+ * static generation. Revisit with i18n Phase 3, which routes by path anyway.
+ */
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE)
   const [liveRates, setLiveRates] = useState<Record<string, number>>({})
@@ -56,13 +58,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
     const nav = localeFromNavigator()
     if (nav && nav !== DEFAULT_LOCALE) setLocaleState(nav)
-
-    if (localStorage.getItem(LS_GEO)) return
-    countryFromIP().then((geoLoc) => {
-      localStorage.setItem(LS_GEO, "1")
-      if (!geoLoc || localStorage.getItem(LS_LOCALE)) return
-      setLocaleState(geoLoc)
-    })
   }, [])
 
   useEffect(() => {
