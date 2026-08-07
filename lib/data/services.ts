@@ -82,7 +82,7 @@ export const services: Service[] = [
   {
     slug: "production",
     icon: "chisel",
-    image: u("photo-1581092795442-6d4147b3c3b5"),
+    image: u("photo-1556911220-bff31c812dba"),
     title: {
       uk: "Виробництво і обробка",
       en: "Production & finishing",
@@ -181,7 +181,7 @@ export const services: Service[] = [
   {
     slug: "warranty",
     icon: "shield",
-    image: u("photo-1505843490578-27b2d6f0ff24"),
+    image: u("photo-1540518614846-7eded433c457"),
     title: {
       uk: "Гарантія 5 років",
       en: "5-year guarantee",
@@ -214,7 +214,7 @@ export const services: Service[] = [
   {
     slug: "landscape",
     icon: "landscape",
-    image: u("photo-1584967334362-26f31ae95b3f"),
+    image: u("photo-1554995207-c18c203602cb"),
     title: {
       uk: "Ландшафт і благоустрій",
       en: "Landscape & surroundings",

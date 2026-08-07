@@ -240,7 +240,7 @@ export const articles: Article[] = [
   {
     slug: "black-granite-deep-dive",
     category: "stone",
-    cover: u("photo-1604756277257-ce7bfdec8b89"),
+    cover: u("photo-1558618666-fcd25c85cd64"),
     readMinutes: 6,
     date: "2026-01-21",
     title: {
@@ -290,7 +290,7 @@ export const articles: Article[] = [
   {
     slug: "garden-stone-composition",
     category: "design",
-    cover: u("photo-1584967334362-26f31ae95b3f"),
+    cover: u("photo-1554995207-c18c203602cb"),
     readMinutes: 5,
     date: "2026-04-05",
     title: {
@@ -355,7 +355,7 @@ export const articles: Article[] = [
   {
     slug: "restoring-old-monuments",
     category: "care",
-    cover: u("photo-1505843490578-27b2d6f0ff24"),
+    cover: u("photo-1540518614846-7eded433c457"),
     readMinutes: 7,
     date: "2026-03-08",
     title: {
