@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { Textarea } from "@/components/ui/textarea"
 import { StatusChanger } from "./status-changer"
 import { NotesLog } from "./notes-log"
+import { AttributionPanel } from "./attribution-panel"
 import { useOrdersStore } from "@/lib/store/orders"
 import { formatUAHDirect, formatDateTime } from "@/lib/admin-format"
 import type { Order } from "@/lib/types"
@@ -79,6 +80,9 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
               </a>
               <Button className="w-full rounded-xl h-11">Зателефонувати клієнту</Button>
             </section>
+
+            {/* Renders only when the lead carried campaign tags. */}
+            <AttributionPanel attribution={order.attribution} />
 
             {/* Selected Items Section */}
             <section>

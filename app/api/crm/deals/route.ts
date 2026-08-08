@@ -95,9 +95,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "customer_id обов'язковий" }, { status: 400 })
   }
 
+  // Carry the customer's first-touch campaign onto the deal, so revenue can be
+  // grouped by campaign without a join. deals.utm has existed since the CRM
+  // migration but nothing ever wrote to it.
+  //
+  // Deals are created by hand from a customer, so this is the only moment the
+  // link can be made. Best-effort: a failed lookup must not block deal
+  // creation, it just leaves utm null as before.
+  let utm: Record<string, string> | null = null
+  try {
+    const { data: customer } = await supabaseAdmin
+      .from("customers")
+      .select("attribution")
+      .eq("id", body.customer_id)
+      .maybeSingle()
+    utm = (customer?.attribution as Record<string, string> | null) ?? null
+  } catch {
+    /* attribution is metadata — never fail a deal over it */
+  }
+
   const { data: deal, error } = await supabaseAdmin
     .from("deals")
     .insert({
+      utm,
       customer_id: body.customer_id,
       status: body.status || "new",
       priority: body.priority || "normal",

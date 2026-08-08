@@ -1,3 +1,5 @@
+import type { Attribution } from "@/lib/attribution"
+
 export type Category = "memorial" | "home"
 export type OrderStatus = "new" | "in_progress" | "completed"
 
@@ -98,6 +100,8 @@ export type Order = {
   status?: OrderStatus
   contacted?: boolean
   notes?: OrderNote[]
+  /** First-touch campaign tags; null for direct traffic. See lib/attribution.ts. */
+  attribution?: Attribution | null
 }
 
 export type Locale = "uk" | "pl" | "en" | "de" | "lt"

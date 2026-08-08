@@ -1,3 +1,5 @@
+import type { Attribution } from "@/lib/attribution"
+
 /**
  * Stone Memory CRM — TypeScript типи (відповідають supabase/crm-migration.sql).
  * Використовуються у всіх stores і API routes.
@@ -198,6 +200,8 @@ export type Customer = {
   last_contact_at: string | null
   do_not_contact: boolean
   assigned_to: string | null
+  /** First-touch campaign tags, set once when the customer is created. */
+  attribution: Attribution | null
   created_at: string
   updated_at: string
 }

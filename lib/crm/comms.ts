@@ -66,7 +66,16 @@ export type IncomingMessage = {
  */
 export async function findOrCreateCustomer(
   id: ChannelIdentifier,
-  fallback: { name?: string; locale?: string } = {}
+  fallback: {
+    name?: string
+    locale?: string
+    /**
+     * First-touch campaign tags, stored only when the customer row is created.
+     * A returning customer keeps the campaign that originally won them — that
+     * is the number the ad spend is judged on.
+     */
+    attribution?: Record<string, string> | null
+  } = {}
 ): Promise<{ id: string; created: boolean }> {
   // 1. По телефону
   if (id.phone) {
@@ -124,18 +133,31 @@ export async function findOrCreateCustomer(
   const phone = id.phone || (id.siteSessionId ? `guest-${id.siteSessionId.slice(0, 16)}` : `guest-${Date.now()}`)
   const phoneNorm = phone.replace(/\D/g, "")
 
-  const { data: created, error } = await supabaseAdmin
+  const customerRow = {
+    phone,
+    name: fallback.name || (id.email ? id.email.split("@")[0] : "Гість"),
+    email: id.email || null,
+    locale: fallback.locale || "uk",
+    source: "channel",
+    channels,
+  }
+
+  let { data: created, error } = await supabaseAdmin
     .from("customers")
-    .insert({
-      phone,
-      name: fallback.name || (id.email ? id.email.split("@")[0] : "Гість"),
-      email: id.email || null,
-      locale: fallback.locale || "uk",
-      source: "channel",
-      channels,
-    })
+    .insert({ ...customerRow, attribution: fallback.attribution ?? null })
     .select("id")
     .single()
+
+  // 42703 = undefined_column — this deploy landed before
+  // supabase/attribution-migration.sql. Retry without the column; a customer
+  // must never fail to be created over optional analytics metadata.
+  if (error?.code === "42703") {
+    ;({ data: created, error } = await supabaseAdmin
+      .from("customers")
+      .insert(customerRow)
+      .select("id")
+      .single())
+  }
 
   if (error) {
     // Якщо вже існує по phone_norm унікальному index — спробуємо знайти повторно
@@ -149,6 +171,10 @@ export async function findOrCreateCustomer(
     }
     throw new Error(`findOrCreateCustomer: ${error.message}`)
   }
+
+  // Reassigning `created` through the retry above widens its type, so the
+  // no-error-but-no-row case has to be ruled out explicitly.
+  if (!created) throw new Error("findOrCreateCustomer: insert returned no row")
 
   return { id: created.id, created: true }
 }

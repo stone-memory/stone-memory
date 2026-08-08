@@ -6,6 +6,7 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { generateOrderRef } from "@/lib/data/stones"
 import { trackEvent } from "@/components/analytics-pixels"
+import { readAttribution } from "@/lib/attribution"
 import { cn } from "@/lib/utils"
 
 const LOCALE_TO_CC: Record<string, string> = {
@@ -58,6 +59,15 @@ export function SelectionForm() {
     const reference = generateOrderRef()
 
     try {
+      // Attribution is strictly optional cargo: if reading it fails for any
+      // reason the order must still go through untouched.
+      let attribution = null
+      try {
+        attribution = readAttribution()
+      } catch {
+        /* never block a lead over analytics metadata */
+      }
+
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,6 +78,7 @@ export function SelectionForm() {
           source: "selection-form",
           reference,
           items: items.map((i) => ({ ...i })),
+          ...(attribution ? { attribution } : {}),
         }),
       })
       if (!res.ok) {

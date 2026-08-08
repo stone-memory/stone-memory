@@ -24,6 +24,7 @@ import type {
   Payment,
 } from "@/lib/crm/types"
 import { ActivityTimeline } from "@/components/admin/activity-timeline"
+import { AttributionPanel } from "@/components/admin/attribution-panel"
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -107,6 +108,14 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
       </div>
+
+      {/* Which campaign won this customer. Renders only when the lead carried
+          tags, so direct and messenger customers show nothing. */}
+      {c.attribution && (
+        <div className="rounded-2xl border border-foreground/10 bg-card p-5">
+          <AttributionPanel attribution={c.attribution} />
+        </div>
+      )}
 
       {/* Notes inline editing */}
       <NotesEditor customer={c} onSaved={refresh} />
