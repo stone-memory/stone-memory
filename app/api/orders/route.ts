@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
 import { notifyAdminNewOrder, sendCustomerConfirmation } from "@/lib/notifications"
 import { findOrCreateCustomer } from "@/lib/crm/comms"
+import { sanitizeAttribution } from "@/lib/attribution"
 
 export const dynamic = "force-dynamic"
 
@@ -15,6 +16,8 @@ type OrderPayload = {
   source?: string
   reference?: string
   items?: Array<{ id: string; [key: string]: unknown }>
+  /** First-touch campaign tags captured client-side; see lib/attribution.ts. */
+  attribution?: unknown
 }
 
 export async function POST(req: Request) {
@@ -27,26 +30,37 @@ export async function POST(req: Request) {
 
   const name = body.name?.trim()
   const phone = body.phone?.trim()
+  const attribution = sanitizeAttribution(body.attribution)
 
   if (!name || !phone) {
     return NextResponse.json({ error: "name and phone required" }, { status: 400 })
   }
 
-  const { data, error } = await supabaseAdmin
+  const row = {
+    name,
+    phone,
+    email: body.email?.trim() || null,
+    message: body.message?.trim() || null,
+    locale: body.locale || "uk",
+    source: body.source || "selection-form",
+    reference: body.reference || null,
+    items: body.items || null,
+    stone_id: body.items?.[0]?.id || null,
+  }
+
+  let { data, error } = await supabaseAdmin
     .from("orders")
-    .insert({
-      name,
-      phone,
-      email: body.email?.trim() || null,
-      message: body.message?.trim() || null,
-      locale: body.locale || "uk",
-      source: body.source || "selection-form",
-      reference: body.reference || null,
-      items: body.items || null,
-      stone_id: body.items?.[0]?.id || null,
-    })
+    .insert({ ...row, attribution })
     .select()
     .single()
+
+  // 42703 = undefined_column. Happens when this deploy lands before
+  // supabase/attribution-migration.sql has been run. Losing a lead over a
+  // missing analytics column would be indefensible, so retry without it —
+  // that makes the deploy order irrelevant in both directions.
+  if (error?.code === "42703") {
+    ;({ data, error } = await supabaseAdmin.from("orders").insert(row).select().single())
+  }
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -59,7 +73,7 @@ export async function POST(req: Request) {
       phone: data.phone,
       ...(data.email ? { email: data.email } : {}),
     },
-    { name: data.name, locale: data.locale || "uk" }
+    { name: data.name, locale: data.locale || "uk", attribution }
   ).catch(() => {})
 
   // Fire-and-forget notifications. Errors are logged but don't fail the response.
