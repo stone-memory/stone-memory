@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
+import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Plus, Search, Trash2, RotateCcw, Pencil, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -307,7 +308,7 @@ function SortableStoneRow({
       </td>
       <td className="px-4 py-3">
         <div className="relative h-10 w-14 overflow-hidden rounded-md bg-foreground/5">
-          <Image src={s.imagePath} alt={`№ ${row.id}`} fill className="object-cover" sizes="56px" unoptimized />
+          <Image src={s.imagePath} alt={`№ ${row.id}`} fill className="object-cover" sizes="56px" unoptimized={shouldBypassOptimizer(s.imagePath)} />
         </div>
       </td>
       <td className="px-4 py-3 font-medium tabular-nums">№ {row.id}</td>

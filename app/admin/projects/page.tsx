@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Plus, Trash2, RotateCcw, Pencil, Eye, EyeOff, X, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -177,7 +178,7 @@ export default function AdminProjectsPage() {
                 <tr key={row.slug} className={cn(row.hidden && "opacity-50")}>
                   <td className="px-4 py-3">
                     <div className="relative h-10 w-14 overflow-hidden rounded-md bg-foreground/5">
-                      <Image src={p.cover} alt="" fill className="object-cover" sizes="56px" unoptimized />
+                      <Image src={p.cover} alt="" fill className="object-cover" sizes="56px" unoptimized={shouldBypassOptimizer(p.cover)} />
                     </div>
                   </td>
                   <td className="px-4 py-3">

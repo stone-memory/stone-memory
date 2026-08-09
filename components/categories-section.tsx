@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { shouldBypassOptimizer } from "@/lib/image-source"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
@@ -66,7 +67,7 @@ function CategoryCard({
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority={priority}
               className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
-              unoptimized={card.image.endsWith(".svg")}
+              unoptimized={shouldBypassOptimizer(card.image)}
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />

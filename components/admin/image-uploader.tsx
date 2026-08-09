@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react"
 import Image from "next/image"
+import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Upload, X, AlertCircle, Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -70,7 +71,7 @@ export function ImageUploader({ value, onChange, folder = "misc", className }: P
               fill
               sizes="(max-width: 768px) 100vw, 400px"
               className="object-cover"
-              unoptimized={value.startsWith("data:") || value.endsWith(".svg")}
+              unoptimized={shouldBypassOptimizer(value)}
             />
             <button
               type="button"
