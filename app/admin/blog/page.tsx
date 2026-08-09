@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Pin, PinOff, Plus, Pencil, Trash2, RotateCcw, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useBlogStore } from "@/lib/store/blog"
@@ -213,7 +214,7 @@ export default function AdminBlogPage() {
                           fill
                           sizes="56px"
                           className="object-cover"
-                          unoptimized
+                          unoptimized={shouldBypassOptimizer(a.cover)}
                         />
                       )}
                     </div>

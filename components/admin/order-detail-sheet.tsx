@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Phone, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
@@ -100,7 +101,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                           fill
                           sizes="56px"
                           className="object-cover"
-                          unoptimized={item.imagePath.endsWith(".svg")}
+                          unoptimized={shouldBypassOptimizer(item.imagePath)}
                         />
                       ) : null}
                     </div>
