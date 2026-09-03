@@ -16,6 +16,7 @@ import { SelectionForm } from "@/components/selection-form"
 import { SelectionSuccess } from "@/components/selection-success"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
+import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { cn } from "@/lib/utils"
 
 const clearLabels = {
@@ -136,7 +137,7 @@ export function SelectionSidebar() {
                             <div className="relative h-24 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-foreground/5">
                               <Image
                                 src={item.imagePath || "/logo-512.png"}
-                                alt={item.name || `№ ${item.id}`}
+                                alt={stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}
                                 fill
                                 className="object-cover"
                                 sizes="80px"
@@ -145,7 +146,7 @@ export function SelectionSidebar() {
 
                             {/* Info */}
                             <div className="flex-1">
-                              <p className="font-mono text-sm tabular-nums">{item.name || `№ ${item.id}`}</p>
+                              <p className="font-mono text-sm tabular-nums">{stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}</p>
                               <p className="mt-1 text-sm text-muted-foreground">
                                 {item.priceFrom ? <>{t.catalog.fromPrice} {formatPrice(item.priceFrom)}</> : t.catalog.requestQuote}
                               </p>

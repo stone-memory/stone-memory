@@ -224,10 +224,31 @@ assertNoFacetCollision()
  */
 export function findStoneByCode(stones: StoneItem[], code: string): StoneItem | undefined {
   const monuments = stones.filter((s) => s.category === "memorial")
-  return monuments.find((s) => s.name === code) ?? monuments.find((s) => s.id === code)
+  return monuments.find((s) => stoneCode(s) === code) ?? monuments.find((s) => s.id === code)
+}
+
+/**
+ * The catalogue number, resolved across both data shapes.
+ *
+ * Rows written before names existed keep the number in `name`; rows written
+ * after keep it in `code` and use `name` for the display name. Reading through
+ * this helper means the migration can be deployed before the data changes and
+ * stay correct after — the URL never moves either way.
+ */
+export function stoneCode(stone: StoneItem): string {
+  if (stone.code) return stone.code
+  // Legacy: `name` held the number as long as it looks like one.
+  if (stone.name && /^\d+$/.test(stone.name)) return stone.name
+  return stone.id
+}
+
+/** Display name, or null when the row only carries a number. */
+export function stoneDisplayName(stone: StoneItem): string | null {
+  if (!stone.name) return null
+  return /^\d+$/.test(stone.name) ? null : stone.name
 }
 
 /** Canonical public path for a product. Only memorial products have one. */
 export function stonePath(stone: StoneItem): string {
-  return `/memorial/pamyatnyky/${stone.name || stone.id}`
+  return `/memorial/pamyatnyky/${stoneCode(stone)}`
 }

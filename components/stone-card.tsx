@@ -9,7 +9,7 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { usePopularityStore } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
 import { shapeLabel, finishLabel } from "@/lib/i18n/filters"
-import { stonePath } from "@/lib/catalog-taxonomy"
+import { stoneCode, stoneDisplayName, stonePath } from "@/lib/catalog-taxonomy"
 import { stoneAlt } from "@/lib/stone-meta"
 import type { StoneItem, Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -123,7 +123,7 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
         href={stonePath(item)}
         prefetch
         className="block h-full overflow-hidden rounded-2xl bg-card shadow-soft ring-1 ring-black/[0.04] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-hover hover:-translate-y-0.5"
-        aria-label={item.name || `№ ${item.id}`}
+        aria-label={stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}
       >
         <div className="relative aspect-[16/11] overflow-hidden bg-foreground/5">
           <Image
@@ -154,7 +154,7 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
           </div>
 
           <h3 className="mt-3 text-xl font-semibold tracking-tight-custom tabular-nums">
-            {item.name || `№ ${item.id}`}
+            {stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}
           </h3>
 
           <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground line-clamp-2">

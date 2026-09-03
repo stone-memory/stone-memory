@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { fetchStones } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 import { stonePath, verticalLabel } from "@/lib/catalog-taxonomy"
+import { stoneTitle } from "@/lib/stone-meta"
 
 const PATH = "/memorial/pamyatnyky"
 
@@ -55,7 +56,7 @@ export default async function MonumentsCatalogLayout({ children }: { children: R
       "@type": "ListItem",
       position: i + 1,
       url: absoluteUrl(stonePath(s)),
-      name: `Пам'ятник №${s.name || s.id}`,
+      name: stoneTitle(s),
       image: s.imagePath,
     })),
   }

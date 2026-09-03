@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { stonePath } from "@/lib/catalog-taxonomy"
+import { stoneCode, stoneDisplayName, stonePath } from "@/lib/catalog-taxonomy"
 import type { StoneItem } from "@/lib/types"
 
 const GROUP_LABEL: Record<string, string> = {
@@ -56,7 +56,7 @@ export function CatalogIndex({ stones }: { stones: StoneItem[] }) {
                     href={stonePath(stone)}
                     className="text-sm text-muted-foreground tabular-nums transition-colors hover:text-foreground"
                   >
-                    {stone.name || `№ ${stone.id}`}
+                    {stoneDisplayName(stone) ?? `№ ${stoneCode(stone)}`}
                   </Link>
                 </li>
               ))}

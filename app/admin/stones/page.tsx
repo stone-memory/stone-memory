@@ -11,6 +11,7 @@ import { ImageUploader } from "@/components/admin/image-uploader"
 import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category, Locale } from "@/lib/types"
 import { materialLabel, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { formatUAHDirect } from "@/lib/admin-format"
+import { stoneCode } from "@/lib/catalog-taxonomy"
 import { cn } from "@/lib/utils"
 import {
   DndContext,
@@ -77,7 +78,8 @@ export default function AdminStonesPage() {
     return items.filter((r) => {
       if (!showHidden && r.hidden) return false
       if (categoryFilter !== "all" && r.data.category !== categoryFilter) return false
-      if (q && !r.id.toLowerCase().includes(q) && !(r.data.name || "").toLowerCase().includes(q)) return false
+      const hay = `${r.id} ${stoneCode(r.data)} ${r.data.name || ""}`.toLowerCase()
+      if (q && !hay.includes(q)) return false
       return true
     })
   }, [items, query, categoryFilter, showHidden])
@@ -317,7 +319,7 @@ function SortableStoneRow({
           <Image src={s.imagePath} alt={`№ ${row.id}`} fill className="object-cover" sizes="56px" unoptimized={shouldBypassOptimizer(s.imagePath)} />
         </div>
       </td>
-      <td className="px-4 py-3 font-medium tabular-nums">№ {row.id}</td>
+      <td className="px-4 py-3 font-medium tabular-nums">№ {stoneCode(s)}</td>
       <td className="px-4 py-3 text-foreground/85">{s.name || <span className="text-muted-foreground/40">—</span>}</td>
       <td className="px-4 py-3 text-muted-foreground">
         {s.category === "memorial" ? "Пам'ятник" : s.category}

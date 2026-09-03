@@ -8,6 +8,7 @@ import {
   findFacet,
   findStoneByCode,
   isProductCode,
+  stoneCode,
   stonePath,
   verticalLabel,
 } from "@/lib/catalog-taxonomy"
@@ -33,7 +34,7 @@ export async function generateStaticParams(): Promise<Params[]> {
   const monuments = stones.filter((s) => s.category === "memorial")
   return [
     ...MEMORIAL_FACETS.map((f) => ({ slug: f.slug })),
-    ...monuments.map((s) => ({ slug: s.name || s.id })),
+    ...monuments.map((s) => ({ slug: stoneCode(s) })),
   ]
 }
 
@@ -121,7 +122,7 @@ export default async function SlugLayout({
           "@type": "ListItem",
           position: i + 1,
           url: absoluteUrl(stonePath(s)),
-          name: `Пам'ятник №${s.name || s.id}`,
+          name: stoneTitle(s),
           image: s.imagePath,
         })),
       })
@@ -129,7 +130,7 @@ export default async function SlugLayout({
   } else {
     const stone = findStoneByCode(stones, slug)
     if (stone) {
-      const code = stone.name || stone.id
+      const code = stoneCode(stone)
       blocks.push(trail(`Пам'ятник №${code}`, stonePath(stone)))
       blocks.push({
         "@context": "https://schema.org",

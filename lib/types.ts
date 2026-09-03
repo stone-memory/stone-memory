@@ -45,6 +45,15 @@ export type StoneMaterial =
 
 export type StoneItem = {
   id: string
+  /**
+   * Catalogue number shown to customers ("001") and used in the product URL.
+   *
+   * Split out from `name`, which used to hold both. Once names became real
+   * words the two could no longer share a field: the URL needs a stable,
+   * URL-safe token, while the name is free text an admin may re-edit at will.
+   */
+  code?: string
+  /** Display name ("Ангел Скорботи"). Falls back to the code when empty. */
   name?: string
   category: Category
   imagePath: string

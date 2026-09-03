@@ -1,4 +1,5 @@
 import { colorLabel, materialLabel, shapeLabel } from "@/lib/i18n/filters"
+import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import type { Locale, StoneItem } from "@/lib/types"
 
 /**
@@ -19,8 +20,10 @@ import type { Locale, StoneItem } from "@/lib/types"
  */
 
 type Parts = {
-  /** "002" — the human-facing code; falls back to the row id. */
+  /** "002" — the human-facing catalogue number. */
   code: string
+  /** "Ангел Скорботи", or null when the row has no name yet. */
+  display: string | null
   /** "Пам'ятник" | "Виріб з каменю" */
   kind: string
   /** "Граніт" | "Габро" | "Покостівський" | "" */
@@ -33,7 +36,8 @@ type Parts = {
 
 function parts(s: StoneItem, locale: Locale = "uk"): Parts {
   return {
-    code: s.name || s.id,
+    code: stoneCode(s),
+    display: stoneDisplayName(s),
     kind: s.category === "memorial" ? "Пам'ятник" : "Виріб з каменю",
     material: s.materialType ? materialLabel(s.materialType, locale, s.i18n?.materialType) : "",
     color: s.color ? colorLabel(s.color, locale, s.i18n?.color) : "",
@@ -49,7 +53,9 @@ function parts(s: StoneItem, locale: Locale = "uk"): Parts {
 export function stoneTitle(s: StoneItem, locale: Locale = "uk"): string {
   const p = parts(s, locale)
   const spec = [p.material, p.color].filter(Boolean).join(", ").toLowerCase()
-  const base = `${p.kind} №${p.code}`
+  // A named model leads with its name — that is the memorable, searchable part.
+  // Unnamed rows keep the number so the title is never just a bare noun.
+  const base = p.display ? `${p.kind} «${p.display}»` : `${p.kind} №${p.code}`
   return spec ? `${base} — ${spec}` : base
 }
 
@@ -70,7 +76,8 @@ export function stoneDescription(s: StoneItem, locale: Locale = "uk"): string {
   const spec = [p.type && p.type.toLowerCase(), p.material && p.material.toLowerCase(), p.color && p.color.toLowerCase()]
     .filter(Boolean)
     .join(", ")
-  const lead = spec ? `${p.kind} №${p.code}: ${spec}.` : `${p.kind} №${p.code}.`
+  const subject = p.display ? `${p.kind} «${p.display}» (№${p.code})` : `${p.kind} №${p.code}`
+  const lead = spec ? `${subject}: ${spec}.` : `${subject}.`
   const price = s.priceFrom ? ` Від ${s.priceFrom.toLocaleString("uk-UA")} ₴.` : ""
   // Tail kept short so the whole line stays under ~160 chars even for the
   // longest spec combination ("комплекс військовий, покостівський, червоний").
@@ -83,5 +90,6 @@ export function stoneAlt(s: StoneItem, locale: Locale = "uk"): string {
   const spec = [p.type && p.type.toLowerCase(), p.material && p.material.toLowerCase(), p.color && p.color.toLowerCase()]
     .filter(Boolean)
     .join(", ")
-  return spec ? `${p.kind} №${p.code} — ${spec}` : `${p.kind} №${p.code}`
+  const base = p.display ? `${p.kind} «${p.display}» №${p.code}` : `${p.kind} №${p.code}`
+  return spec ? `${base} — ${spec}` : base
 }

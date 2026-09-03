@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
+import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { Phone, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
@@ -97,7 +98,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                       {item.imagePath ? (
                         <Image
                           src={item.imagePath}
-                          alt={item.name || `№ ${item.id}`}
+                          alt={stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}
                           fill
                           sizes="56px"
                           className="object-cover"
@@ -106,7 +107,7 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                       ) : null}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono text-sm font-medium">{item.name || `№ ${item.id}`}</p>
+                      <p className="font-mono text-sm font-medium">{stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}</p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {item.priceFrom ? `від ${formatPrice(item.priceFrom)}` : "Ціна не вказана"}
                       </p>

@@ -14,7 +14,7 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones } from "@/lib/store/stones"
 import { filterLabels, colorLabel, shapeLabel, finishLabel, materialLabel } from "@/lib/i18n/filters"
-import { VERTICAL_LABELS } from "@/lib/catalog-taxonomy"
+import { VERTICAL_LABELS, stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { stoneAlt, stoneHeading } from "@/lib/stone-meta"
 import { toTelHref } from "@/lib/phone-format"
 import { cn } from "@/lib/utils"
@@ -90,7 +90,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
 
   const L = filterLabels[locale]
   const isSelected = items.some((i) => i.id === stone.id)
-  const displayName = stone.name || `№ ${stone.id}`
+  const displayName = stoneDisplayName(stone) ?? `№ ${stoneCode(stone)}`
   // Descriptive h1 and alt text — the page used to render the bare code ("001")
   // as its only heading, which gave 60 products 60 near-identical headings with
   // no keyword in any of them.
@@ -130,7 +130,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   }
 
   const specs: [string, string][] = [
-    ["№", stone.id],
+    ["№", stoneCode(stone)],
     stone.materialType ? [L.material, materialLabel(stone.materialType, locale, stone.i18n?.materialType)] : null,
     stone.color ? [L.color, colorLabel(stone.color, locale, stone.i18n?.color)] : null,
     stone.shape ? [L.shape, shapeLabel(stone.shape, locale, stone.i18n?.shape)] : null,
@@ -152,7 +152,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
             items={[
               { name: verticalName, href: verticalHref },
               { name: t.nav.catalog, href: catalogHref },
-              { name: `№${stone.name || stone.id}` },
+              { name: displayName },
             ]}
           />
 
