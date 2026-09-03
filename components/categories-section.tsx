@@ -31,9 +31,13 @@ export function CategoriesSection() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-        <CategoryCard card={content.memorial} locale={locale} priority />
-        <CategoryCard card={content.home} locale={locale} priority />
+      {/* One card since the "Дім і сад" line was discontinued. Capped width so
+          a single card does not stretch across the full grid — the section is
+          due a redesign once the new layout lands. */}
+      <div className="grid grid-cols-1 gap-6 lg:gap-8">
+        <div className="lg:max-w-[calc(50%-1rem)]">
+          <CategoryCard card={content.memorial} locale={locale} priority />
+        </div>
       </div>
     </section>
   )

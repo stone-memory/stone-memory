@@ -44,7 +44,7 @@ export default function AdminHomepagePage() {
     if (hasHydrated) setDraft(stored)
   }, [hasHydrated, stored])
 
-  const updateCard = (which: "memorial" | "home", patch: Partial<HomepageCategoryCard>) => {
+  const updateCard = (which: "memorial", patch: Partial<HomepageCategoryCard>) => {
     setDraft((d) => ({ ...d, [which]: { ...d[which], ...patch } }))
   }
 
@@ -125,18 +125,12 @@ export default function AdminHomepagePage() {
         />
       </section>
 
+      {/* The "Дім і сад" card editor is gone with the product line itself. */}
       <CardEditor
-        cardLabel="Картка 1 — Пам'ятники"
+        cardLabel="Картка — Пам'ятники"
         which="memorial"
         card={draft.memorial}
         onChange={(patch) => updateCard("memorial", patch)}
-      />
-
-      <CardEditor
-        cardLabel="Картка 2 — Дім і сад"
-        which="home"
-        card={draft.home}
-        onChange={(patch) => updateCard("home", patch)}
       />
     </div>
   )
@@ -149,7 +143,7 @@ function CardEditor({
   onChange,
 }: {
   cardLabel: string
-  which: "memorial" | "home"
+  which: "memorial"
   card: HomepageCategoryCard
   onChange: (patch: Partial<HomepageCategoryCard>) => void
 }) {

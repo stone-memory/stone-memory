@@ -7,15 +7,16 @@ const PATH = "/vidhuky"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Відгуки — що кажуть клієнти Stone Memory",
+  // Brand omitted — the root title template already appends it.
+  title: "Відгуки — що кажуть наші клієнти",
   description:
-    "Реальні відгуки клієнтів Stone Memory — гранітні пам'ятники, мармурові стільниці, каміни, сходи та бруківка. Гарантія 5 років, майстерня в Костополі.",
+    "Реальні відгуки клієнтів Stone Memory про гранітні пам'ятники, меморіальні комплекси, гравіювання й монтаж. Гарантія 5 років, майстерня в Костополі.",
   alternates: {
     canonical: absoluteUrl(PATH),
   },
   openGraph: {
     title: "Stone Memory — Відгуки",
-    description: "Що кажуть про нас клієнти — гранітні пам'ятники, стільниці, сходи та інше.",
+    description: "Що кажуть про нас клієнти — гранітні пам'ятники, комплекси, гравіювання, монтаж.",
     url: absoluteUrl(PATH),
     type: "website",
     images: ["/opengraph-image"],
