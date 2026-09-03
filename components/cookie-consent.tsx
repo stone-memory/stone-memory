@@ -168,8 +168,15 @@ export function CookieConsent() {
     <AnimatePresence>
       {open && (
         <motion.aside
-          role="dialog"
-          aria-modal="false"
+          // No role="dialog" here. It was paired with aria-modal="false",
+          // which is a contradiction: a dialog role promises focus management
+          // and a trapped, modal-like interaction this banner does not
+          // implement. Lighthouse's agentic-browsing audit flags exactly that
+          // ("ARIA role should be appropriate for the element"), and screen
+          // readers announce a dialog that never behaves like one.
+          //
+          // <aside> already carries the implicit `complementary` role, which is
+          // right for a persistent notice; aria-labelledby keeps it named.
           aria-labelledby="cookie-consent-title"
           initial={prefersReduced ? { opacity: 0 } : { opacity: 0, y: 40 }}
           animate={prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
