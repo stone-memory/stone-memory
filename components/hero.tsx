@@ -3,7 +3,8 @@
 import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { ChevronDown, ArrowRight } from "lucide-react"
-import { useEffect, useRef } from "react"
+import Image from "next/image"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "@/lib/i18n/context"
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -11,6 +12,18 @@ const EASE = [0.22, 1, 0.36, 1] as const
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  /**
+   * The hero video is desktop-only.
+   *
+   * hero.mp4 is 3.4 MB — 79% of the page's entire 4.3 MB transfer — and on
+   * mobile it was also the LCP element, so phones paid for the whole file
+   * before anything scored. Desktop measures 99 with it and has the bandwidth,
+   * so it keeps the video; phones get the 46 KB poster and nothing else.
+   *
+   * Gated behind mount + matchMedia rather than CSS: `display: none` would
+   * still download the file.
+   */
+  const [showVideo, setShowVideo] = useState(false)
   const { t } = useTranslation()
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -21,6 +34,14 @@ export function Hero() {
   const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1.08])
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"])
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)")
+    const sync = () => setShowVideo(mq.matches)
+    sync()
+    mq.addEventListener("change", sync)
+    return () => mq.removeEventListener("change", sync)
+  }, [])
 
   useEffect(() => {
     const video = videoRef.current
@@ -37,8 +58,7 @@ export function Hero() {
     }
     document.addEventListener("visibilitychange", onVisible)
     return () => document.removeEventListener("visibilitychange", onVisible)
-  }, [])
-
+  }, [showVideo])
 
   return (
     <section
@@ -57,21 +77,37 @@ export function Hero() {
           the poster is now a real first frame instead of an SVG placeholder, so
           something representative paints immediately.
         */}
-        <video
-          ref={videoRef}
-          className="h-full w-full object-cover"
-          src="/hero/hero.mp4"
-          poster="/hero/hero-poster.jpg"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          disablePictureInPicture
-          disableRemotePlayback
-          controls={false}
-          aria-hidden="true"
+        {/* Poster as a real <Image>: it is the LCP element on mobile, so it
+            needs priority (which emits fetchpriority="high" — PSI flagged its
+            absence). On desktop the video paints over it once mounted. */}
+        <Image
+          src="/hero/hero-poster.jpg"
+          alt=""
+          fill
+          priority
+          // PSI's LCP audit asks for fetchpriority=high explicitly; `priority`
+          // alone emits the preload link but not this attribute in this version.
+          fetchPriority="high"
+          sizes="100vw"
+          className="object-cover"
         />
+        {showVideo && (
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover"
+            src="/hero/hero.mp4"
+            poster="/hero/hero-poster.jpg"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            disablePictureInPicture
+            disableRemotePlayback
+            controls={false}
+            aria-hidden="true"
+          />
+        )}
       </motion.div>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/75" />
