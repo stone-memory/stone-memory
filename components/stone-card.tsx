@@ -9,6 +9,7 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { usePopularityStore } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
 import { shapeLabel, finishLabel } from "@/lib/i18n/filters"
+import { stonePath } from "@/lib/catalog-taxonomy"
 import type { StoneItem, Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -110,7 +111,7 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
       className="group relative"
     >
       <Link
-        href={`/kameni/${item.id}`}
+        href={stonePath(item)}
         prefetch
         className="block h-full overflow-hidden rounded-2xl bg-card shadow-soft ring-1 ring-black/[0.04] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-hover hover:-translate-y-0.5"
         aria-label={item.name || `№ ${item.id}`}
