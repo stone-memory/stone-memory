@@ -228,7 +228,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                 </span>
               )}
               <div className="mt-3 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-                {stone.category === "memorial" ? t.nav.memorial : t.nav.home}
+                {t.nav.memorial}
               </div>
               <h1 className="mt-2 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
                 {heading}

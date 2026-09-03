@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { StoneCard } from "@/components/stone-card"
-import { SegmentedControl } from "@/components/segmented-control"
 import { CatalogFilters, applyFilters, emptyFilters, type FiltersState } from "@/components/catalog-filters"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useOrdersStore } from "@/lib/store/orders"
@@ -16,11 +15,11 @@ import type { Category, StoneItem } from "@/lib/types"
 type CatalogGridProps = {
   initialStones: StoneItem[]
   /**
-   * Pin the grid to one vertical and hide the memorial/home switch.
+   * Pin the grid to one category and hide the category switch.
    *
-   * /memorial/pamyatnyky is a category URL, so letting the visitor flip to
-   * "Дім і сад" there would show content the URL, h1 and title all disagree
-   * with — the exact mismatch the ?cat= structure was replaced to fix.
+   * Every caller passes this today — the catalogue lives at /memorial/pamyatnyky,
+   * whose URL, h1 and title all name one category, so the grid must not be able
+   * to show anything else underneath them.
    */
   lockedCategory?: Category
   /**
@@ -43,7 +42,6 @@ export function CatalogGrid({
   const storedCategory = useSelectionStore((state) => state.category)
   const setCategory = useSelectionStore((state) => state.setCategory)
   const [mounted, setMounted] = useState(false)
-  const urlParamApplied = useRef(false)
 
   useEffect(() => {
     setMounted(true)
@@ -51,23 +49,6 @@ export function CatalogGrid({
 
   // Use a stable "memorial" on SSR to prevent hydration mismatch from persisted category
   const category: Category = lockedCategory ?? (mounted ? storedCategory : "memorial")
-
-  // Apply ?cat= only once on initial mount — subsequent button clicks must not
-  // be overridden by the stale param still sitting in the URL.
-  //
-  // Read from window rather than useSearchParams(): calling that hook during
-  // render opts the whole subtree out of static generation, so Next served an
-  // empty shell and the grid only appeared after hydration — which is exactly
-  // the crawlability bug this page had. The param is only consulted on mount,
-  // so window is sufficient and keeps the route prerenderable.
-  useEffect(() => {
-    if (lockedCategory || !mounted || urlParamApplied.current) return
-    const cat = new URLSearchParams(window.location.search).get("cat")
-    if (cat === "memorial" || cat === "home") {
-      setCategory(cat)
-    }
-    urlParamApplied.current = true
-  }, [lockedCategory, mounted, setCategory])
 
   // Keep the persisted store in step with a pinned route, so the sidebar and
   // any later navigation back to the open catalogue start from this vertical.
@@ -161,7 +142,7 @@ export function CatalogGrid({
       </div>
 
       <div className="mb-5 flex items-center justify-between gap-3">
-        {lockedCategory ? <span /> : <SegmentedControl value={category} onChange={setCategory} />}
+        <span />
         <span className="text-sm text-muted-foreground tabular-nums">
           {filteredStones.length} {t.catalog.count}
         </span>

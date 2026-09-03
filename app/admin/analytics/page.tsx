@@ -626,7 +626,7 @@ export default function AnalyticsPage() {
               byCategory.map(([k, v]) => (
                 <div key={k} className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
-                    {k === "memorial" ? "Памʼятники" : k === "home" ? "Дім і сад" : k}
+                    {k === "memorial" ? "Памʼятники" : k}
                   </span>
                   <span className="font-medium tabular-nums">{v}</span>
                 </div>
@@ -707,7 +707,7 @@ export default function AnalyticsPage() {
             <div>Одна угода: <span className="font-medium text-foreground">{repeatClients.total - repeatClients.repeat}</span></div>
           </div>
           <div className="rounded-xl bg-foreground/[0.03] p-3 text-xs text-muted-foreground">
-            💡 У меморіальному сегменті повторні угоди рідкісні; у «дім і сад» — часті (стільниці + підвіконня + сходи).
+            💡 У меморіальному сегменті повторні угоди рідкісні — родина замовляє раз. Цінність тут у рекомендаціях, а не в повторних покупках.
           </div>
         </div>
       </section>
