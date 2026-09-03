@@ -193,24 +193,30 @@ export default function AdminStonesPage() {
         </p>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-card">
-        <table className="w-full text-sm">
-          <thead className="border-b border-foreground/5 bg-foreground/[0.02] text-xs uppercase tracking-wide text-muted-foreground">
-            <tr>
-              <th className="w-8 px-2 py-3" />
-              <th className="px-4 py-3 text-left">Фото</th>
-              <th className="px-4 py-3 text-left">№</th>
-              <th className="px-4 py-3 text-left">Назва</th>
-              <th className="px-4 py-3 text-left">Категорія</th>
-              <th className="px-4 py-3 text-left">Матеріал</th>
-              <th className="px-4 py-3 text-left">Колір</th>
-              <th className="px-4 py-3 text-left">Тип</th>
-              <th className="px-4 py-3 text-right">Ціна (₴)</th>
-              <th className="px-4 py-3 text-center">Популярний</th>
-              <th className="px-4 py-3 text-right">Дії</th>
-            </tr>
-          </thead>
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      {/* DndContext renders hidden <div>s for screen-reader announcements, so
+          it must sit OUTSIDE <table>. Nested between <table> and <tbody> the
+          browser hoists those divs out of the table during parsing, so the
+          client tree no longer matched the server tree — that was the
+          "<div> cannot be a child of <table>" hydration error.
+          SortableContext renders no DOM of its own and can stay inside. */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-card">
+          <table className="w-full text-sm">
+            <thead className="border-b border-foreground/5 bg-foreground/[0.02] text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="w-8 px-2 py-3" />
+                <th className="px-4 py-3 text-left">Фото</th>
+                <th className="px-4 py-3 text-left">№</th>
+                <th className="px-4 py-3 text-left">Назва</th>
+                <th className="px-4 py-3 text-left">Категорія</th>
+                <th className="px-4 py-3 text-left">Матеріал</th>
+                <th className="px-4 py-3 text-left">Колір</th>
+                <th className="px-4 py-3 text-left">Тип</th>
+                <th className="px-4 py-3 text-right">Ціна (₴)</th>
+                <th className="px-4 py-3 text-center">Популярний</th>
+                <th className="px-4 py-3 text-right">Дії</th>
+              </tr>
+            </thead>
             <SortableContext items={filtered.map((r) => r.id)} strategy={verticalListSortingStrategy}>
               <tbody className="divide-y divide-foreground/5">
                 {filtered.map((row) => (
@@ -234,9 +240,9 @@ export default function AdminStonesPage() {
                 )}
               </tbody>
             </SortableContext>
-          </DndContext>
-        </table>
-      </div>
+          </table>
+        </div>
+      </DndContext>
 
       {editingId && (
         <StoneEditor

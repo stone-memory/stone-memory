@@ -24,77 +24,62 @@ const inter = Inter({
 
 const SITE_NAME = "Stone Memory"
 // Kept under ~65 / ~160 chars so neither is truncated in the SERP.
-const TITLE_DEFAULT = "Stone Memory — пам'ятники, стільниці, сходи з натурального каменю"
+//
+// Memorial-only since the home/countertop line was discontinued. The previous
+// copy promised "стільниці, підвіконня, сходи, бруківка" in the <title> of
+// every page on the site — the single most visible place to advertise a
+// product range that no longer exists.
+const TITLE_DEFAULT = "Stone Memory — пам'ятники з граніту та мармуру від виробника"
 const DESCRIPTION =
-  "Пам'ятники, кухонні стільниці, підвіконня, сходи та бруківка з граніту й мармуру. Власна майстерня в Костополі: дизайн, виробництво, монтаж, гарантія 5 років."
+  "Пам'ятники, меморіальні комплекси й надгробки з граніту, габро та мармуру. Власна майстерня в Костополі: дизайн, гравіювання, монтаж, гарантія 5 років."
 
+// Countertop / window-sill / paving / fireplace terms removed across every
+// locale — that product line is discontinued, and keywords describing goods
+// the site does not sell attract traffic that can only bounce.
 const KEYWORDS_BASE = [
   "granite monuments", "marble monuments", "headstones", "gravestones", "tombstones",
   "memorial stones", "custom monument", "family memorial complex", "cross monument", "obelisk",
-  "kitchen countertops", "granite countertops", "marble countertops", "quartzite countertops",
-  "calacatta marble", "carrara marble", "black galaxy granite", "kashmir white",
-  "window sills stone", "granite staircase", "marble stairs", "fireplace surround",
-  "stone fireplace mantel", "paving stone", "granite cobblestone", "stone slabs",
-  "decorative stone", "garden stone", "landscape stone", "stone engraving", "portrait engraving",
+  "grave marker", "military memorial", "columbarium plaque", "grave restoration",
+  "stone engraving", "portrait engraving", "epitaph engraving",
   "natural stone Ukraine", "stone workshop Kostopil", "memorial studio",
-  "buy granite online", "stone price calculator", "stone delivery EU",
+  "monument installation", "monument price", "monument delivery EU",
 ]
 const KEYWORDS_UK = [
   "пам'ятники", "надгробки", "виготовлення пам'ятників", "пам'ятник на кладовище",
   "сімейний пам'ятник", "одиночний пам'ятник", "подвійний пам'ятник", "пам'ятник з хрестом",
-  "граніт", "мармур", "габро", "лабрадорит", "кварцит", "вапняк", "онікс",
-  "стільниці граніт", "стільниці мармур", "стільниці кухонні", "мармурова стільниця",
-  "підвіконня камінь", "підвіконня мармур", "підвіконня граніт",
-  "сходи з каменю", "гранітні сходи", "мармурові сходи", "балясини",
-  "каміни портал", "камін мармуровий", "камін гранітний", "камінний портал",
-  "бруківка", "гранітна бруківка", "бруківка волинська", "тротуарна плитка",
-  "декоративний камінь", "декоративний щебінь", "плити гранітні", "слаб мармур",
-  "камінь для саду", "фасад камінь", "гравіювання портретів", "епітафія золотом",
+  "меморіальний комплекс", "військовий пам'ятник", "пам'ятник військовослужбовцю",
+  "стела на могилу", "обеліск", "хрест гранітний", "квітник на могилу", "огорожа на могилу",
+  "граніт", "мармур", "габро", "лабрадорит",
+  "гравіювання портретів", "епітафія золотом", "портрет на граніті",
+  "благоустрій місця поховання", "встановлення пам'ятника", "реставрація пам'ятника",
   "пам'ятник Київ", "пам'ятник Львів", "пам'ятник Одеса", "пам'ятник Рівне",
-  "Carrara Calacatta", "Прилузький мармур", "Головинське габро", "Покостівський граніт",
-  "Костопіль камінь", "ціна пам'ятника", "калькулятор вартості каменю",
+  "Головинське габро", "Покостівський граніт", "Лезниківський граніт",
+  "Костопіль пам'ятники", "ціна пам'ятника", "купити пам'ятник",
 ]
 const KEYWORDS_PL = [
   "pomniki granitowe", "pomniki marmurowe", "nagrobki", "pomnik pojedynczy", "pomnik podwójny",
   "pomnik z krzyżem", "kompleks rodzinny memorialny", "obelisk kamienny",
-  "granit", "marmur", "gabro", "labradoryt", "kwarcyt", "wapień", "onyks",
-  "blaty granitowe", "blaty marmurowe", "blaty kuchenne", "blat kwarcytowy",
-  "parapety kamienne", "parapety marmurowe", "parapety granitowe",
-  "schody granitowe", "schody marmurowe", "balustrady kamienne",
-  "kominki kamienne", "kominek marmurowy", "portale kominkowe",
-  "kostka brukowa granitowa", "kostka granitowa", "płyty chodnikowe granitowe",
-  "kamień dekoracyjny", "płyty granitowe", "slab marmur",
-  "kamień do ogrodu", "elewacja kamienna", "grawerowanie portretów",
-  "Carrara Calacatta", "granit indyjski", "granit chiński", "kwarcyt brazylijski",
-  "pomniki Warszawa", "pomniki Kraków", "ceny pomników", "kalkulator kamienia",
+  "stela nagrobna", "pomnik wojskowy", "renowacja nagrobków", "montaż nagrobka",
+  "granit", "marmur", "gabro", "labradoryt",
+  "grawerowanie portretów", "epitafium złotem", "portret na granicie",
+  "granit indyjski", "granit chiński", "gabro ukraińskie",
+  "pomniki Warszawa", "pomniki Kraków", "ceny pomników",
 ]
 const KEYWORDS_DE = [
   "Grabmale", "Grabsteine", "Einzel-Grabmal", "Doppel-Grabmal", "Kreuzgrabmal",
-  "Familien-Grabmal", "Obelisk", "Urnengrab",
-  "Granit", "Marmor", "Gabbro", "Labradorit", "Quarzit", "Kalkstein", "Onyx",
-  "Granit Arbeitsplatten", "Marmor Arbeitsplatten", "Küchenarbeitsplatten",
-  "Fensterbänke Naturstein", "Fensterbänke Marmor", "Fensterbänke Granit",
-  "Granittreppe", "Marmortreppe", "Innenraum-Treppe",
-  "Kaminportal", "Kamin Marmor", "Kamin Granit",
-  "Pflastersteine Granit", "Granit-Gehwegplatten",
-  "Naturstein", "Dekorstein", "Gartensteine", "Natursteinfassade",
-  "Steinmetz", "Denkmal", "Porträtgravur",
-  "Carrara Calacatta", "indischer Granit", "chinesischer Granit", "brasilianischer Quarzit",
-  "Grabmal Berlin", "Grabmal München", "Preis Grabmal", "Steinrechner",
+  "Familien-Grabmal", "Obelisk", "Urnengrab", "Grabplatte", "Grabeinfassung",
+  "Granit", "Marmor", "Gabbro", "Labradorit",
+  "Steinmetz", "Denkmal", "Porträtgravur", "Grabinschrift", "Grabmal Restaurierung",
+  "Grabmal Montage", "indischer Granit", "chinesischer Granit",
+  "Grabmal Berlin", "Grabmal München", "Preis Grabmal",
 ]
 const KEYWORDS_LT = [
   "paminklai", "antkapiai", "paminklas kapams", "vienvietis paminklas", "dvivietis paminklas",
-  "paminklas su kryžiumi", "šeimos paminklas", "obeliskas",
-  "granitas", "marmuras", "gabbras", "labradoritas", "kvarcitas", "klintis", "oniksas",
-  "granito stalviršiai", "marmuro stalviršiai", "virtuvės stalviršiai",
-  "palangės akmens", "palangės marmuro", "palangės granito",
-  "granito laiptai", "marmuro laiptai", "laiptų turėklai",
-  "židinio portalai", "židinys marmuro", "židinys granito",
-  "grindinio akmenys", "granito grindinys", "trinkelės granitas",
-  "dekoratyvinis akmuo", "granito plokštės", "marmuro plokštės",
-  "akmuo sodui", "akmens fasadas", "portretų graviravimas",
-  "Carrara Calacatta", "Indijos granitas", "Kinijos granitas", "Brazilijos kvarcitas",
-  "paminklai Vilnius", "paminklai Kaunas", "paminklo kaina", "akmens skaičiuoklė",
+  "paminklas su kryžiumi", "šeimos paminklas", "obeliskas", "kapo tvorelė", "kapo plokštė",
+  "granitas", "marmuras", "gabbras", "labradoritas",
+  "portretų graviravimas", "epitafija", "paminklo restauravimas", "paminklo montavimas",
+  "Indijos granitas", "Kinijos granitas",
+  "paminklai Vilnius", "paminklai Kaunas", "paminklo kaina",
 ]
 
 export const metadata: Metadata = {
@@ -155,7 +140,7 @@ export const metadata: Metadata = {
     shortcut: "/icon-light-32x32.png",
   },
   manifest: "/manifest.webmanifest",
-  category: "home-and-garden",
+  category: "funeral-services",
   verification: {
     google: process.env.GOOGLE_VERIFICATION || "CgpIMtWUMYYh5IQ-WxPu-FygMeyt_syD4dtU2w06Oms",
     other: {

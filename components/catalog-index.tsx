@@ -19,7 +19,10 @@ const GROUP_LABEL: Record<string, string> = {
  * path from the catalogue.
  */
 export function CatalogIndex({ stones }: { stones: StoneItem[] }) {
-  const groups = (["memorial", "home"] as const)
+  // Memorial only — the "home" line is discontinued and its rows must not be
+  // linked from the index, which is the one place that gives every product a
+  // crawlable path.
+  const groups = (["memorial"] as const)
     .map((category) => ({
       category,
       items: stones.filter((s) => s.category === category),

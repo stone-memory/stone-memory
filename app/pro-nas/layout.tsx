@@ -4,15 +4,16 @@ import { absoluteUrl } from "@/lib/site-config"
 const PATH = "/pro-nas"
 
 export const metadata: Metadata = {
-  title: "Про Stone Memory — майстерня натурального каменю, Костопіль",
+  // No "Stone Memory" here — app/layout.tsx appends it via the title template.
+  title: "Про нас — меморіальна майстерня в Костополі",
   description:
-    "Stone Memory — майстерня натурального каменю в Костополі, Рівненщина. Два напрями: меморіальні комплекси та камінь для дому й саду (стільниці, підвіконня, каміни, сходи, бруківка). Український граніт і мармур та імпорт. Гарантія 5 років.",
+    "Меморіальна майстерня в Костополі. Пам'ятники, сімейні та військові комплекси, благоустрій поховання. Український граніт і габро. Гарантія 5 років.",
   alternates: {
     canonical: absoluteUrl(PATH),
   },
   openGraph: {
     title: "Про Stone Memory",
-    description: "Майстерня натурального каменю в Костополі. Пам'ятники, стільниці, підвіконня, каміни, сходи, бруківка.",
+    description: "Меморіальна майстерня в Костополі. Пам'ятники, комплекси, гравіювання, монтаж.",
     url: absoluteUrl(PATH),
     type: "website",
     images: ["/opengraph-image"],

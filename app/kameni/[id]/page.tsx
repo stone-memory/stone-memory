@@ -1,24 +1,21 @@
-import { notFound } from "next/navigation"
-import { fetchStoneById, fetchStones } from "@/lib/data-source"
-import { StoneDetailClient } from "@/components/stone-detail-client"
+import { notFound, permanentRedirect } from "next/navigation"
+import { fetchStoneById } from "@/lib/data-source"
+import { stonePath } from "@/lib/catalog-taxonomy"
+
+export const revalidate = 60
 
 /**
- * Server component: resolves the stone (and the pool used for "схоже") before
- * render, so the h1, copy, specs and related links are in the initial HTML.
+ * Legacy product URL — kept permanently as a redirect.
  *
- * Previously this route was `"use client"` and returned `null` until the
- * zustand store hydrated — Googlebot received 45KB of markup containing 42
- * characters of text and no h1.
- *
- * fetchStoneById() returns null only for a genuinely absent/hidden row; a
- * Supabase outage falls back to seed data, so an incident cannot turn the whole
- * catalogue into 404s.
+ * These 60 URLs are the ones currently indexed and ranking, so they 308 to
+ * the new keyword-bearing path rather than 404ing. The mapping cannot live in
+ * next.config.mjs because it is data-dependent: the row id and the public code
+ * have drifted apart in production (row id 3 carries code "002"), so the
+ * destination has to be resolved from the record.
  */
-export default async function StoneDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function LegacyStonePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [stone, stones] = await Promise.all([fetchStoneById(id), fetchStones()])
-
+  const stone = await fetchStoneById(id)
   if (!stone) notFound()
-
-  return <StoneDetailClient initialStone={stone} initialStones={stones} />
+  permanentRedirect(stonePath(stone))
 }

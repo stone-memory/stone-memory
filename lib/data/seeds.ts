@@ -56,7 +56,7 @@ export const seedReviews: SeedReview[] = [
   {
     id: "r4",
     name: "Андрій К.",
-    text: "Стільниця з Calacatta — мрія здійснилася. Замір провели швидко, поставили без недоліків, меблі ідеально з нею стали.",
+    text: "Пам'ятник для мами вийшов саме таким, як на ескізі. Замір зробили швидко, встановили акуратно, прибрали за собою.",
     rating: 5,
     date: daysAgo(30),
     source: "google",
@@ -104,7 +104,7 @@ export const seedReviews: SeedReview[] = [
   {
     id: "r9",
     name: "Irena K.",
-    text: "Marmurowy parapet w kuchni. Świetna jakość, terminowo, rozsądna cena. Polecam.",
+    text: "Pomnik dla ojca wykonany dokładnie według projektu. Świetna jakość, terminowo, rozsądna cena. Polecam.",
     rating: 5,
     date: daysAgo(120),
     source: "google",
@@ -378,7 +378,7 @@ export const seedBusinessProfile = {
   legalName: "ФОП Stone Memory",
   displayName: "Stone Memory",
   email: "info@stonememory.com.ua",
-  phone: "+380 (67) 808 02 22",
+  phone: "+380 (68) 808 02 22",
   address: "",
   city: "Костопіль",
   region: "Рівненська область",
@@ -414,8 +414,8 @@ export const seedAbout: Record<Locale, AboutContent> = {
   uk: {
     heading: "Про Stone Memory",
     paragraphs: [
-      "Stone Memory — виробництво виробів з натурального каменю у Костополі на Рівненщині. Дві рівноцінні лінії: меморіальні комплекси та вироби для дому й саду — стільниці, підвіконня, каміни, сходи, бруківка.",
-      "Працюємо з українським гранітом і мармуром, а також з імпортними породами — італійський мармур, індійський і китайський граніт, бразильський кварцит. Підбираємо матеріал під проект і бюджет.",
+      "Stone Memory — меморіальна майстерня в Костополі на Рівненщині. Виготовляємо одиночні та подвійні пам'ятники, сімейні й військові меморіальні комплекси, хрести, обеліски, надгробні плити та елементи благоустрою поховання.",
+      "Працюємо з українським гранітом і габро — Головинське габро, Лезниківський, Покостівський, — а також з імпортними породами: індійський і китайський граніт. Підбираємо матеріал під проєкт і бюджет.",
       "Робимо акуратно, без поспіху, з повагою до матеріалу і клієнта. Даємо 5 років гарантії на все — фундамент, монтаж і сам камінь. Особистий менеджер від запиту до встановлення.",
     ],
     photo: "/services/hero.jpg",
@@ -429,8 +429,8 @@ export const seedAbout: Record<Locale, AboutContent> = {
   pl: {
     heading: "O Stone Memory",
     paragraphs: [
-      "Stone Memory to wytwórnia wyrobów z kamienia naturalnego w mieście Kostopol na Rówieńszczyźnie. Dwie równoważne linie: kompleksy memorialne oraz wyroby dla domu i ogrodu — blaty, parapety, kominki, schody, kostka brukowa.",
-      "Pracujemy z ukraińskim granitem i marmurem oraz z gatunkami importowanymi — marmur włoski, granit indyjski i chiński, kwarcyt brazylijski. Dobieramy materiał pod projekt i budżet.",
+      "Stone Memory to pracownia memorialna w Kostopolu na Rówieńszczyźnie. Wykonujemy pomniki pojedyncze i podwójne, rodzinne oraz wojskowe kompleksy memorialne, krzyże, obeliski, płyty nagrobne i elementy zagospodarowania grobu.",
+      "Pracujemy z ukraińskim granitem i gabro — gabro gołowyńskie, łeznykowski, pokostiwski — oraz z gatunkami importowanymi: granit indyjski i chiński. Dobieramy materiał pod projekt i budżet.",
       "Robimy starannie, bez pośpiechu, z szacunkiem do materiału i klienta. Dajemy 5 lat gwarancji na wszystko — fundament, montaż i sam kamień. Osobisty menedżer od zapytania do montażu.",
     ],
     photo: "/services/hero.jpg",
@@ -444,8 +444,8 @@ export const seedAbout: Record<Locale, AboutContent> = {
   en: {
     heading: "About Stone Memory",
     paragraphs: [
-      "Stone Memory is a natural-stone workshop in Kostopil, Rivne region. Two equal product lines: memorial complexes and pieces for home and garden — countertops, window sills, fireplaces, stairs, paving.",
-      "We work with Ukrainian granite and marble as well as imported varieties — Italian marble, Indian and Chinese granite, Brazilian quartzite. We pick the material to match the project and the budget.",
+      "Stone Memory is a memorial workshop in Kostopil, Rivne region. We make single and double monuments, family and military memorial complexes, crosses, obelisks, grave slabs and grave-surround elements.",
+      "We work with Ukrainian granite and gabbro — Holovyne gabbro, Leznyky, Pokostivka — as well as imported varieties: Indian and Chinese granite. We pick the material to match the project and the budget.",
       "We work carefully and without rush, with respect to the material and to the client. Five-year warranty on everything — foundation, installation and the stone itself. A dedicated manager from enquiry to installation.",
     ],
     photo: "/services/hero.jpg",
@@ -459,8 +459,8 @@ export const seedAbout: Record<Locale, AboutContent> = {
   de: {
     heading: "Über Stone Memory",
     paragraphs: [
-      "Stone Memory ist eine Naturstein-Werkstatt in Kostopil, Oblast Riwne. Zwei gleichwertige Linien: Grabmal-Komplexe und Stücke für Haus und Garten — Arbeitsplatten, Fensterbänke, Kamine, Treppen, Pflaster.",
-      "Wir arbeiten mit ukrainischem Granit und Marmor sowie mit Importsorten — italienischer Marmor, indischer und chinesischer Granit, brasilianischer Quarzit. Wir wählen das Material nach Projekt und Budget.",
+      "Stone Memory ist eine Grabmal-Werkstatt in Kostopil, Oblast Riwne. Wir fertigen Einzel- und Doppelgrabmale, Familien- und Militär-Gedenkkomplexe, Kreuze, Obelisken, Grabplatten und Einfassungen.",
+      "Wir arbeiten mit ukrainischem Granit und Gabbro — Holowyne-Gabbro, Lesnyky, Pokostiwka — sowie mit Importsorten: indischer und chinesischer Granit. Wir wählen das Material nach Projekt und Budget.",
       "Wir arbeiten sorgfältig und ohne Eile, mit Respekt vor Material und Kunde. 5 Jahre Garantie auf alles — Fundament, Montage und den Stein. Persönlicher Manager von der Anfrage bis zur Montage.",
     ],
     photo: "/services/hero.jpg",
@@ -474,8 +474,8 @@ export const seedAbout: Record<Locale, AboutContent> = {
   lt: {
     heading: "Apie Stone Memory",
     paragraphs: [
-      "Stone Memory — natūralaus akmens gaminių dirbtuvė Kostopilyje, Rivnės srityje. Dvi lygiavertės linijos: memorialiniai kompleksai ir gaminiai namams bei sodui — stalviršiai, palangės, židiniai, laiptai, grindinio akmenys.",
-      "Dirbame su ukrainietišku granitu ir marmuru bei importuotomis rūšimis — italų marmuru, Indijos ir Kinijos granitu, Brazilijos kvarcitu. Medžiagą parenkame pagal projektą ir biudžetą.",
+      "Stone Memory — memorialinė dirbtuvė Kostopilyje, Rivnės srityje. Gaminame vienviečius ir dvivietius paminklus, šeimos bei karių memorialinius kompleksus, kryžius, obeliskus, kapo plokštes ir kapo aptvarų elementus.",
+      "Dirbame su ukrainietišku granitu ir gabbru — Holovynės gabbras, Leznykai, Pokostivka — bei importuotomis rūšimis: Indijos ir Kinijos granitu. Medžiagą parenkame pagal projektą ir biudžetą.",
       "Dirbame kruopščiai, be skubos, gerbdami medžiagą ir klientą. 5 metų garantija viskam — pamatui, montavimui ir pačiam akmeniui. Asmeninis vadybininkas nuo užklausos iki montavimo.",
     ],
     photo: "/services/hero.jpg",

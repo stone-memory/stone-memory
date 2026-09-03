@@ -9,7 +9,9 @@ const PATH = "/posluhy"
 export const metadata: Metadata = {
   title: "Послуги — дизайн, виробництво, монтаж і догляд",
   description:
-    "Повний цикл робіт з каменю: індивідуальний дизайн і 3D-візуалізація, гравіювання та портрети, виробництво у власному цеху в Костополі, доставка, монтаж, реставрація. Український граніт і мармур та імпорт з Італії, Індії, Китаю, Бразилії. Гарантія 5 років по Україні.",
+    // Trimmed to ~155 chars: the previous 266-character version was cut off
+    // mid-sentence in the SERP, so the last third was never seen.
+    "Повний цикл: дизайн і 3D-візуалізація, гравіювання портретів, виробництво у власному цеху в Костополі, доставка, монтаж, реставрація. Гарантія 5 років.",
   alternates: { canonical: absoluteUrl(PATH) },
   openGraph: {
     title: "Stone Memory — Послуги",

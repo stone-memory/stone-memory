@@ -30,7 +30,13 @@ export type HomepageCategoryCard = {
 export type HomepageCategoriesContent = {
   heading: Record<Locale, string>
   memorial: HomepageCategoryCard
-  home: HomepageCategoryCard
+  /**
+   * Discontinued "Дім і сад" card. Optional rather than deleted: rows already
+   * saved in `site_content.homepage_categories` still carry this key, and a
+   * required field would make every one of them fail to parse. Nothing renders
+   * it — see components/categories-section.tsx.
+   */
+  home?: HomepageCategoryCard
 }
 
 const u = (id: string) =>
@@ -49,7 +55,7 @@ export const DEFAULT_HOMEPAGE_CATEGORIES: HomepageCategoriesContent = {
   },
   memorial: {
     image: "/stones/memorial-01.svg",
-    href: "/kataloh?cat=memorial",
+    href: "/memorial/pamyatnyky",
     title: {
       uk: "Пам'ятники",
       pl: "Pomniki",
@@ -79,38 +85,6 @@ export const DEFAULT_HOMEPAGE_CATEGORIES: HomepageCategoriesContent = {
       lt: ["Pavieniai ir poriniai", "Šeimos kompleksai", "Kryžiai ir obeliskai", "Restauravimas", "Portretų graviravimas", "Aptvarai ir sutvarkymas"],
     },
   },
-  home: {
-    image: u("photo-1556909211-36987daf7b4d"),
-    href: "/kataloh?cat=home",
-    title: {
-      uk: "Дім і сад",
-      pl: "Dom i ogród",
-      en: "Home & Garden",
-      de: "Haus & Garten",
-      lt: "Namams ir sodui",
-    },
-    description: {
-      uk: "Стільниці, підвіконня, каміни, сходи та бруківка. Преміальні вироби з природного каменю для ваших інтер'єрів і ландшафту.",
-      pl: "Blaty, parapety, kominki, schody i kostka brukowa. Premium wyroby z kamienia naturalnego do wnętrz i krajobrazu.",
-      en: "Countertops, window sills, fireplaces, stairs and paving. Premium natural-stone pieces for interiors and landscape.",
-      de: "Arbeitsplatten, Fensterbänke, Kamine, Treppen und Pflaster. Premium-Natursteinelemente für Interieur und Landschaft.",
-      lt: "Stalviršiai, palangės, židiniai, laiptai ir grindinio akmenys. Aukščiausios klasės natūralaus akmens gaminiai interjerui ir kraštovaizdžiui.",
-    },
-    cta: {
-      uk: "Дім і сад",
-      pl: "Dom i ogród",
-      en: "Home & Garden",
-      de: "Haus & Garten",
-      lt: "Namams ir sodui",
-    },
-    items: {
-      uk: ["Стільниці на кухню", "Підвіконня", "Сходи й балясини", "Каміни й портали", "Підлога й слаб", "Бруківка й доріжки"],
-      pl: ["Blaty kuchenne", "Parapety", "Schody i balustrady", "Kominki i portale", "Podłogi i slaby", "Kostka i ścieżki"],
-      en: ["Kitchen countertops", "Window sills", "Staircases", "Fireplaces & portals", "Slabs & flooring", "Paving & pathways"],
-      de: ["Küchenarbeitsplatten", "Fensterbänke", "Treppen & Geländer", "Kamine & Portale", "Böden & Platten", "Pflaster & Wege"],
-      lt: ["Virtuvės stalviršiai", "Palangės", "Laiptai ir turėklai", "Židiniai ir portalai", "Grindys ir plokštės", "Grindinys ir takai"],
-    },
-  },
 }
 
 /**
@@ -118,6 +92,22 @@ export const DEFAULT_HOMEPAGE_CATEGORIES: HomepageCategoriesContent = {
  * Schemas evolve — old rows might miss new locales, etc. This guarantees
  * every required field exists with a sane fallback.
  */
+/**
+ * Map any historic catalogue href onto the current vertical paths.
+ *
+ * Admin-editable rows in Supabase still hold links written before the split
+ * (`/catalog`, `/kataloh`, `/kataloh?cat=home`). next.config.mjs redirects all
+ * of them, but a homepage tile that costs every visitor a 308 is a wasted hop
+ * and a wasted crawl budget — rewrite them at read time.
+ */
+function normalizeCategoryHref(href: string): string {
+  // Includes ?cat=home: the "Дім і сад" line is discontinued, so a saved link
+  // to it now points at the monuments catalogue rather than a dead route.
+  if (/^\/(catalog|kataloh)(?=$|[/?#])/.test(href)) return "/memorial/pamyatnyky"
+  if (/^\/stone(?=$|[/?#])/.test(href)) return "/memorial/pamyatnyky"
+  return href
+}
+
 function mergeWithDefault(raw: unknown): HomepageCategoriesContent {
   if (!raw || typeof raw !== "object") return DEFAULT_HOMEPAGE_CATEGORIES
   const r = raw as Partial<HomepageCategoriesContent>
@@ -126,9 +116,9 @@ function mergeWithDefault(raw: unknown): HomepageCategoriesContent {
     fallback: HomepageCategoryCard
   ): HomepageCategoryCard => ({
     image: db?.image || fallback.image,
-    // Legacy CMS rows may still hold the old /catalog slug — normalize to
-    // the localized /kataloh so the link is clean (no extra 308 hop).
-    href: (db?.href || fallback.href).replace(/^\/catalog(?=$|[/?#])/, "/kataloh"),
+    // Legacy CMS rows may still hold /catalog or /kataloh?cat=… — normalize to
+    // the vertical paths so the homepage links land directly (no 308 hop).
+    href: normalizeCategoryHref(db?.href || fallback.href),
     title: { ...fallback.title, ...(db?.title || {}) },
     description: { ...fallback.description, ...(db?.description || {}) },
     cta: { ...fallback.cta, ...(db?.cta || {}) },
@@ -137,7 +127,8 @@ function mergeWithDefault(raw: unknown): HomepageCategoriesContent {
   return {
     heading: { ...DEFAULT_HOMEPAGE_CATEGORIES.heading, ...(r.heading || {}) },
     memorial: mergeCard(r.memorial, DEFAULT_HOMEPAGE_CATEGORIES.memorial),
-    home: mergeCard(r.home, DEFAULT_HOMEPAGE_CATEGORIES.home),
+    // `home` is intentionally dropped, not merged — the card is discontinued,
+    // so a stale DB row must not resurrect it on the homepage.
   }
 }
 

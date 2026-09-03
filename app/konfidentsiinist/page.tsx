@@ -16,7 +16,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Файли cookie", p: "Необхідні cookie завжди активні. Аналітичні та маркетингові — лише з вашої згоди через банер згоди. Ви можете змінити вибір у будь-який момент, очистивши локальне сховище." },
       { h: "Ваші права (GDPR)", p: "Доступ до даних, виправлення, видалення, обмеження обробки, перенесення, відкликання згоди. Напишіть: info@stonememory.com.ua." },
       { h: "Зберігання", p: "Дані замовлень зберігаються до 3 років (податкові вимоги). Аналітичні — до 14 місяців. Маркетингові — до 12 місяців або до відкликання згоди." },
-      { h: "Контакти", p: "Stone Memory, Костопіль, Рівненська область, Україна. Email: info@stonememory.com.ua. Тел.: +380 (67) 808 02 22." },
+      { h: "Контакти", p: "Stone Memory, Костопіль, Рівненська область, Україна. Email: info@stonememory.com.ua. Тел.: +380 (68) 808 02 22." },
     ],
   },
   pl: {
@@ -29,7 +29,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Cookies", p: "Niezbędne są zawsze aktywne. Analityczne i marketingowe — tylko za zgodą poprzez baner. Możesz zmienić wybór w dowolnym momencie." },
       { h: "Twoje prawa (RODO)", p: "Dostęp, sprostowanie, usunięcie, ograniczenie, przenoszenie, cofnięcie zgody. Kontakt: info@stonememory.com.ua." },
       { h: "Przechowywanie", p: "Dane zamówień — do 3 lat. Analityczne — do 14 miesięcy. Marketingowe — do 12 miesięcy lub do cofnięcia zgody." },
-      { h: "Kontakt", p: "Stone Memory, Kostopol, obwód rówieński, Ukraina. E-mail: info@stonememory.com.ua. Tel.: +380 (67) 808 02 22." },
+      { h: "Kontakt", p: "Stone Memory, Kostopol, obwód rówieński, Ukraina. E-mail: info@stonememory.com.ua. Tel.: +380 (68) 808 02 22." },
     ],
   },
   en: {

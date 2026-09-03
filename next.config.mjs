@@ -92,7 +92,12 @@ const nextConfig = {
   // /services/hero.jpg or /stones/memorial-01.svg.
   async redirects() {
     return [
-      { source: "/catalog", destination: "/kataloh", permanent: true },
+      // ---- Catalogue moved to /memorial/pamyatnyky ----
+      // ?cat=home included: the "Дім і сад" line is discontinued, so that URL
+      // now lands on the monuments catalogue rather than 404ing. It was a live,
+      // linkable URL, so it must resolve to something rather than die.
+      { source: "/kataloh", destination: "/memorial/pamyatnyky", permanent: true },
+      { source: "/catalog", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/services", destination: "/posluhy", permanent: true },
       { source: "/about", destination: "/pro-nas", permanent: true },
       { source: "/projects", destination: "/proekty", permanent: true },

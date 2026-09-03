@@ -244,39 +244,6 @@ export const services: Service[] = [
       lt: ["Granitiniai apvadai", "LED apšvietimas", "Dekoratyvinis žvyras", "Augalų priežiūra"],
     },
   },
-  {
-    slug: "interiors",
-    icon: "palette",
-    image: u("photo-1600566753104-685f4f24cb4d"),
-    title: {
-      uk: "Камінь в інтер'єрі",
-      en: "Stone interiors",
-      pl: "Kamień we wnętrzach",
-      de: "Stein im Interieur",
-      lt: "Akmuo interjere",
-    },
-    shortDesc: {
-      uk: "Стільниці, підвіконня, каміни, підлога. Натуральний камінь у вашому домі.",
-      en: "Countertops, sills, fireplaces, flooring. Natural stone in your home.",
-      pl: "Blaty, parapety, kominki, podłogi.",
-      de: "Arbeitsplatten, Fensterbänke, Kamine, Böden.",
-      lt: "Stalviršiai, palangės, židiniai, grindys.",
-    },
-    longDesc: {
-      uk: "Робимо преміальні стільниці з українського мармуру та граніту: Прилузький, Слов'янський, Покостівський, Головинське габро. Повний цикл: замір, виготовлення, монтаж.",
-      en: "Premium countertops in Ukrainian marble and granite — Pryluzkyi, Slovianskyi, Pokostivskyi, Holovyne gabbro. Full cycle: measure, fabricate, install.",
-      pl: "Premium blaty z ukraińskiego marmuru i granitu — Pryłuzki, Słowiański, Pokostiwski, gabro z Hołowyna. Pomiar, produkcja, montaż.",
-      de: "Premium-Arbeitsplatten aus ukrainischem Marmor und Granit — Pryluzkyi, Slovianskyi, Pokostivskyi, Holovyne-Gabbro. Messen, fertigen, montieren.",
-      lt: "Premium stalviršiai iš ukrainietiško marmuro ir granito — Pryluzkyi, Slovianskyi, Pokostivskyi, Holovynės gabbras. Matavimas, gamyba, montavimas.",
-    },
-    bullets: {
-      uk: ["Український камінь із власного цеху", "Замір за 24 години", "Інтеграція мийок/плит", "Догляд-гайд у подарунок"],
-      en: ["Ukrainian stone from our own workshop", "On-site measure in 24h", "Sink / hob integration", "Care guide included"],
-      pl: ["Ukraiński kamień z własnego zakładu", "Pomiar w 24h", "Integracja zlewów i płyt", "Poradnik pielęgnacji"],
-      de: ["Ukrainischer Stein aus eigener Werkstatt", "Aufmaß in 24h", "Becken- & Kochfeld-Integration", "Pflegeanleitung inklusive"],
-      lt: ["Ukrainietiškas akmuo iš mūsų dirbtuvės", "Matavimas per 24 val.", "Kriauklės ir kaitlenčių integracija", "Priežiūros gidas"],
-    },
-  },
 ]
 
 export function getService(slug: string) {

@@ -14,11 +14,13 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones } from "@/lib/store/stones"
 import { filterLabels, colorLabel, shapeLabel, finishLabel, materialLabel } from "@/lib/i18n/filters"
+import { VERTICAL_LABELS } from "@/lib/catalog-taxonomy"
+import { stoneAlt, stoneHeading } from "@/lib/stone-meta"
 import { toTelHref } from "@/lib/phone-format"
 import { cn } from "@/lib/utils"
 import type { StoneItem } from "@/lib/types"
 
-const PHONE_DISPLAY = "+38 (067) 808-02-22"
+const PHONE_DISPLAY = "+38 (068) 808-02-22"
 
 type Props = {
   /** Resolved on the server, so the markup below is in the initial HTML. */
@@ -89,6 +91,18 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   const L = filterLabels[locale]
   const isSelected = items.some((i) => i.id === stone.id)
   const displayName = stone.name || `№ ${stone.id}`
+  // Descriptive h1 and alt text — the page used to render the bare code ("001")
+  // as its only heading, which gave 60 products 60 near-identical headings with
+  // no keyword in any of them.
+  const heading = stoneHeading(stone, locale)
+  const imageAlt = stoneAlt(stone, locale)
+  // Memorial is the only vertical left, and findStoneByCode() will not resolve
+  // a `home` row to this page at all, so the trail is unconditional.
+  // Vertical name, not the category name — the category still labels the
+  // eyebrow above the h1 further down.
+  const verticalHref = "/memorial"
+  const verticalName = VERTICAL_LABELS.memorial[locale]
+  const catalogHref = "/memorial/pamyatnyky"
 
   const handleShare = async () => {
     if (typeof navigator === "undefined") return
@@ -126,8 +140,8 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   ].filter(Boolean) as [string, string][]
 
   // NOTE: Product + BreadcrumbList JSON-LD are emitted server-side in
-  // app/kameni/[id]/layout.tsx (reliably crawlable). Don't duplicate them here
-  // — duplicate structured data triggers SEO warnings.
+  // app/memorial/pamyatnyky/[slug]/layout.tsx (reliably crawlable). Don't
+  // duplicate them here — duplicate structured data triggers SEO warnings.
 
   return (
     <>
@@ -136,12 +150,13 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
         <div className="mx-auto max-w-7xl px-6">
           <Breadcrumbs
             items={[
-              { name: t.nav.catalog, href: "/kataloh" },
-              { name: displayName },
+              { name: verticalName, href: verticalHref },
+              { name: t.nav.catalog, href: catalogHref },
+              { name: `№${stone.name || stone.id}` },
             ]}
           />
 
-          <Link href="/kataloh" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+          <Link href={catalogHref} className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" strokeWidth={2} />
             {L.back}
           </Link>
@@ -160,7 +175,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                   >
                     <Image
                       src={gallery[active]}
-                      alt={displayName}
+                      alt={imageAlt}
                       fill
                       sizes="(max-width: 1024px) 100vw, 55vw"
                       className="object-cover"
@@ -199,7 +214,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                       )}
                       aria-label={`Image ${i + 1}`}
                     >
-                      <Image src={g} alt={`${displayName}, фото ${i + 1}`} fill sizes="200px" className="object-cover" />
+                      <Image src={g} alt={`${imageAlt}, фото ${i + 1}`} fill sizes="200px" className="object-cover" />
                     </button>
                   ))}
                 </div>
@@ -215,8 +230,8 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
               <div className="mt-3 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
                 {stone.category === "memorial" ? t.nav.memorial : t.nav.home}
               </div>
-              <h1 className="mt-2 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance tabular-nums">
-                {displayName}
+              <h1 className="mt-2 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
+                {heading}
               </h1>
               <p className="mt-4 text-lg md:text-xl leading-relaxed text-foreground/85 text-balance">
                 {L.descriptionBody(stone.id, stone.category)}

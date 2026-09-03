@@ -6,8 +6,10 @@ import { revalidatePath } from "next/cache"
 const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
   stones: [
     ["/", "page"],
-    ["/kataloh", "page"],
-    ["/kameni/[id]", "page"],
+    ["/memorial", "page"],
+    ["/memorial/pamyatnyky", "page"],
+    // Covers both facet and product pages — they share one dynamic segment.
+    ["/memorial/pamyatnyky/[slug]", "page"],
   ],
   services: [["/posluhy", "page"]],
   projects: [["/proekty", "page"]],
@@ -23,7 +25,7 @@ const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
   // featured stones aren't a generic resource — handled via the literal key below
   featured: [
     ["/", "page"],
-    ["/kataloh", "page"],
+    ["/memorial/pamyatnyky", "page"],
   ],
 }
 

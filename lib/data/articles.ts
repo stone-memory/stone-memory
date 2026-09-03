@@ -334,16 +334,16 @@ export const articles: Article[] = [
     },
     body: {
       uk: [
-        { heading: "Коротко: граніт виграє", text: "Граніт твердіший (шкала Мооса 6–7 проти 3–4 у мармуру), менш пористий (абсорбція 0.1–0.3% проти 0.5–1% у мармуру) і хімічно стійкіший до кислотних дощів. Для пам'ятників, стільниць на зовнішній кухні, бруківки — завжди граніт." },
+        { heading: "Коротко: граніт виграє", text: "Граніт твердіший (шкала Мооса 6–7 проти 3–4 у мармуру), менш пористий (абсорбція 0.1–0.3% проти 0.5–1% у мармуру) і хімічно стійкіший до кислотних дощів. Для пам'ятників, що стоять просто неба, — завжди граніт." },
         { heading: "Коли мармур ОК", text: "Мармур чудовий у помірному або м'якому кліматі, під накриттям, або з регулярним доглядом (1–2 рази на рік полірування і гідрофобізація). В Карпатах, наприклад, столітні мармурові надгробки виглядають дивовижно. В Рівненській області — теж, якщо клієнт готовий доглядати." },
-        { heading: "Прилузький виняток", text: "Український Прилузький мармур має одну з найнижчих абсорбцій серед мармурів (до 0.35%). Він дешевший за італійський Carrara в 3–4 рази і тримається краще, ніж більшість імпортних. Для стільниць на відкритій терасі — хороший компроміс." },
+        { heading: "Прилузький виняток", text: "Український Прилузький мармур має одну з найнижчих абсорбцій серед мармурів (до 0.35%). Він дешевший за італійський Carrara в 3–4 рази і тримається краще, ніж більшість імпортних. Для пам'ятників у місцевості з м'яким кліматом — хороший компроміс." },
         { heading: "Кислотні дощі і сіль", text: "Великий мінус мармуру: будь-який кислий дощ (а в Європі середній рН дощу 5.0–5.6) поступово роз'їдає поверхню — через 20 років ви побачите матові плями. Граніту байдуже. Біля доріг, де сіль взимку, мармур деградує ще швидше." },
         { heading: "Як вибрати: перевірочний список", text: "Чи є прямий доступ дощу? Чи буде контакт з сіллю? Чи готові ви обслуговувати раз на рік? Чи важливий саме мармуровий вигляд? Якщо дві «ні» — беріть граніт. Якщо хочете мармур будь-якою ціною — беріть Carrara або Прилузький, але з розумінням, що догляд потрібен." },
       ],
       en: [
-        { heading: "Short answer: granite wins", text: "Granite is harder (Mohs 6–7 vs 3–4 for marble), less porous (absorption 0.1–0.3% vs 0.5–1% for marble) and chemically more resistant to acid rain. For monuments, outdoor kitchen countertops, paving — always granite." },
+        { heading: "Short answer: granite wins", text: "Granite is harder (Mohs 6–7 vs 3–4 for marble), less porous (absorption 0.1–0.3% vs 0.5–1% for marble) and chemically more resistant to acid rain. For monuments standing in the open — always granite." },
         { heading: "When marble is OK", text: "Marble is beautiful in mild climates, under cover, or with regular care (polishing and hydrophobic treatment 1–2 times a year). In the Carpathians, hundred-year-old marble gravestones look stunning. In Rivne region too, if the client is ready to maintain." },
-        { heading: "The Pryluzkyi exception", text: "Ukrainian Pryluzkyi marble has one of the lowest absorption rates among marbles (up to 0.35%). It costs 3–4× less than Italian Carrara and holds up better than most imports. A good compromise for an outdoor terrace countertop." },
+        { heading: "The Pryluzkyi exception", text: "Ukrainian Pryluzkyi marble has one of the lowest absorption rates among marbles (up to 0.35%). It costs 3–4× less than Italian Carrara and holds up better than most imports. A good compromise for monuments in a mild climate." },
         { heading: "Acid rain and salt", text: "The big marble minus: any acidic rain (average EU rain pH is 5.0–5.6) gradually etches the surface — in 20 years you'll see matte patches. Granite doesn't care. Near roads with winter salt, marble degrades even faster." },
         { heading: "How to choose: checklist", text: "Direct rain exposure? Salt contact? Willing to maintain annually? Is the marble look essential? Two 'no' answers → choose granite. Set on marble → choose Carrara or Pryluzkyi, but plan for care." },
       ],

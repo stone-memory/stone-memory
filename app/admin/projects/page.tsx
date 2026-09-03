@@ -7,7 +7,7 @@ import { Plus, Trash2, RotateCcw, Pencil, Eye, EyeOff, X, Check } from "lucide-r
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
-  categoryLabels,
+  projectCategoryLabel,
   type Project,
   type ProjectCategory,
 } from "@/lib/data/projects"
@@ -19,16 +19,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 import { NAV_SETTINGS_KEY } from "@/lib/nav-settings"
 import { cn } from "@/lib/utils"
 
-const CATEGORIES: ProjectCategory[] = [
-  "monument",
-  "countertop",
-  "window-sill",
-  "stairs",
-  "fireplace",
-  "paving",
-  "facade",
-  "interior",
-]
+const CATEGORIES: ProjectCategory[] = ["monument", "complex", "engraving", "landscaping"]
 
 export default function AdminProjectsPage() {
   const items = useProjectsAdminStore((s) => s.items)
@@ -149,7 +140,7 @@ export default function AdminProjectsPage() {
                 )}
               >
                 {isHidden ? <EyeOff size={12} /> : <Eye size={12} />}
-                {categoryLabels[c].uk}
+                {projectCategoryLabel(c, "uk")}
               </button>
             )
           })}
@@ -185,7 +176,7 @@ export default function AdminProjectsPage() {
                     <div className="font-medium">{p.title.uk}</div>
                     <div className="text-xs text-muted-foreground truncate max-w-sm">{p.description.uk}</div>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{categoryLabels[p.category].uk}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{projectCategoryLabel(p.category, "uk")}</td>
                   <td className="px-4 py-3 text-muted-foreground">{p.city}</td>
                   <td className="px-4 py-3 text-muted-foreground tabular-nums">{p.year}</td>
                   <td className="px-4 py-3 text-right">
@@ -295,7 +286,7 @@ function ProjectEditor({
               className="h-10 w-full rounded-xl border border-foreground/10 bg-background px-3 text-sm"
             >
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{categoryLabels[c].uk}</option>
+                <option key={c} value={c}>{projectCategoryLabel(c, "uk")}</option>
               ))}
             </select>
           </Field>

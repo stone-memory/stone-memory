@@ -8,7 +8,7 @@ import { useAbout } from "@/lib/store/about"
 import { trackEvent } from "@/components/analytics-pixels"
 import { toTelHref } from "@/lib/phone-format"
 
-const PHONE_DISPLAY = "+380 (67) 808 02 22"
+const PHONE_DISPLAY = "+380 (68) 808 02 22"
 const EMAIL = "info@stonememory.com.ua"
 
 const contactLabels = {

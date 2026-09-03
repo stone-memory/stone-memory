@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SelectionSidebar } from "@/components/selection-sidebar"
-import { categoryLabels, type Project, type ProjectCategory } from "@/lib/data/projects"
+import { projectCategoryLabel, type Project, type ProjectCategory } from "@/lib/data/projects"
 import { useProjects, useVisibleCategories } from "@/lib/store/projects"
 import { useTranslation } from "@/lib/i18n/context"
 import type { Locale } from "@/lib/types"
@@ -18,27 +18,27 @@ type Filter = "all" | ProjectCategory
 const heading: Record<Locale, { title: string; subtitle: string; all: string }> = {
   uk: {
     title: "Портфоліо проектів",
-    subtitle: "Роботи, які ми зробили для клієнтів. Меморіали, стільниці, каміни, сходи, фасади та інтер'єри.",
+    subtitle: "Роботи, які ми зробили для родин. Одиночні пам'ятники, сімейні та військові меморіальні комплекси, гравіювання й благоустрій.",
     all: "Усі",
   },
   pl: {
     title: "Portfolio",
-    subtitle: "Realizacje dla klientów: pomniki, blaty, kominki, schody, fasady i wnętrza.",
+    subtitle: "Realizacje dla rodzin: pomniki pojedyncze, rodzinne i wojskowe kompleksy memorialne, grawerowanie i zagospodarowanie.",
     all: "Wszystkie",
   },
   en: {
     title: "Project portfolio",
-    subtitle: "Work we did for clients: memorials, countertops, fireplaces, stairs, facades and interiors.",
+    subtitle: "Work we did for families: single monuments, family and military memorial complexes, engraving and landscaping.",
     all: "All",
   },
   de: {
     title: "Projekte",
-    subtitle: "Kundenprojekte: Grabmale, Arbeitsplatten, Kamine, Treppen, Fassaden und Interieurs.",
+    subtitle: "Projekte für Familien: Einzelgrabmale, Familien- und Militär-Gedenkkomplexe, Gravur und Einfassung.",
     all: "Alle",
   },
   lt: {
     title: "Projektų portfolio",
-    subtitle: "Klientų darbai: paminklai, stalviršiai, židiniai, laiptai, fasadai ir interjerai.",
+    subtitle: "Darbai šeimoms: pavieniai paminklai, šeimos ir karių memorialiniai kompleksai, graviravimas ir sutvarkymas.",
     all: "Visi",
   },
 }
@@ -77,7 +77,7 @@ export function ProjectsPageClient({ initialProjects, initialVisibleCategories }
     { key: "all", label: H.all },
     ...visibleCats.map((c) => ({
       key: c,
-      label: categoryLabels[c][locale],
+      label: projectCategoryLabel(c, locale),
     })),
   ]
 
@@ -130,13 +130,13 @@ export function ProjectsPageClient({ initialProjects, initialVisibleCategories }
                   <div className="relative aspect-[4/3] overflow-hidden bg-foreground/5">
                     <Image
                       src={p.cover}
-                      alt={`${p.title[locale]} — ${categoryLabels[p.category][locale]}, ${p.city} ${p.year}`}
+                      alt={`${p.title[locale]} — ${projectCategoryLabel(p.category, locale)}, ${p.city} ${p.year}`}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
                     />
                     <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-medium text-foreground backdrop-blur">
-                      {categoryLabels[p.category][locale]}
+                      {projectCategoryLabel(p.category, locale)}
                     </div>
                   </div>
                   <div className="p-5 md:p-6">
@@ -172,7 +172,7 @@ export function ProjectsPageClient({ initialProjects, initialVisibleCategories }
             </h3>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/kataloh"
+                href="/memorial/pamyatnyky"
                 prefetch
                 className="inline-flex items-center gap-2 rounded-full bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-transform hover:-translate-y-[1px]"
               >
