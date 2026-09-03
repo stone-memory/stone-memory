@@ -10,12 +10,21 @@ import { usePopularityStore } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
 import { shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { stonePath } from "@/lib/catalog-taxonomy"
+import { stoneAlt } from "@/lib/stone-meta"
 import type { StoneItem, Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 interface StoneCardProps {
   item: StoneItem
   showBestseller?: boolean
+  /**
+   * Eager-load this card's image and mark it as an LCP candidate.
+   *
+   * Lighthouse identified the first card's <img> as the catalogue's LCP
+   * element while it still carried loading="lazy" — the browser was told to
+   * defer the one image that decides the score.
+   */
+  priority?: boolean
 }
 
 // Memorial only; anything else falls back to the raw value rather than being
@@ -75,7 +84,7 @@ const specLabels: Record<Locale, { size: string; weight: string; finish: string 
   lt: { size: "Dydis", weight: "Svoris", finish: "Apdaila" },
 }
 
-export function StoneCard({ item, showBestseller }: StoneCardProps) {
+export function StoneCard({ item, showBestseller, priority = false }: StoneCardProps) {
   const [showSuccess, setShowSuccess] = useState(false)
   const [imageSrc, setImageSrc] = useState(item.imagePath)
   const { addItem, items } = useSelectionStore()
@@ -119,9 +128,10 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
         <div className="relative aspect-[16/11] overflow-hidden bg-foreground/5">
           <Image
             src={imageSrc}
-            alt={item.name || `${item.category === "memorial" ? "Пам'ятник" : "Виріб з каменю"} № ${item.id}${item.material ? `, ${item.material}` : ""}`}
+            alt={stoneAlt(item, locale)}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={priority}
             onError={() => setImageSrc("/stones/memorial-01.svg")}
             className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
           />

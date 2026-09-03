@@ -163,8 +163,9 @@ export function CatalogGrid({
       ) : (
         <>
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleStones.map((stone) => (
-              <StoneCard key={stone.id} item={stone} />
+            {visibleStones.map((stone, i) => (
+              // First three are above the fold on every breakpoint (1/2/3 cols).
+              <StoneCard key={stone.id} item={stone} priority={i < 3} />
             ))}
           </div>
           {hasMore && <div ref={sentinelRef} aria-hidden className="h-12" />}
