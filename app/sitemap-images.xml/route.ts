@@ -1,5 +1,7 @@
 import { fetchStones, fetchProjects } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
+import { stonePath } from "@/lib/catalog-taxonomy"
+import { stoneAlt } from "@/lib/stone-meta"
 
 export const revalidate = 60
 export const dynamic = "force-static"
@@ -26,14 +28,19 @@ export async function GET(): Promise<Response> {
       'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
   )
 
+  // Memorial products only, and always via stonePath(). This sitemap used to
+  // emit /kameni/:id for all 60 products — every one of which now 308s, and a
+  // sitemap full of redirects is reported as "Page with redirect" and dropped.
   for (const s of stones) {
+    if (s.category !== "memorial") continue
     const images = s.gallery && s.gallery.length > 0 ? s.gallery : [s.imagePath]
     parts.push("<url>")
-    parts.push(`  <loc>${esc(absoluteUrl(`/kameni/${s.id}`))}</loc>`)
+    parts.push(`  <loc>${esc(absoluteUrl(stonePath(s)))}</loc>`)
     for (const img of images) {
       parts.push("  <image:image>")
       parts.push(`    <image:loc>${esc(img)}</image:loc>`)
-      parts.push(`    <image:title>${esc(`No. ${s.id}`)}</image:title>`)
+      // Descriptive title, not "No. 1" — this is the text Google Images reads.
+      parts.push(`    <image:title>${esc(stoneAlt(s))}</image:title>`)
       parts.push("  </image:image>")
     }
     parts.push("</url>")
