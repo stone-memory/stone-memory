@@ -7,8 +7,9 @@ import {
   facetItems,
   findFacet,
   findStoneByCode,
-  isProductCode,
+  isFacetSlug,
   stoneCode,
+  stoneSlug,
   stonePath,
   verticalLabel,
 } from "@/lib/catalog-taxonomy"
@@ -22,19 +23,20 @@ type Params = { slug: string }
 /**
  * One dynamic segment serves two entity types:
  *
- *   /memorial/pamyatnyky/hranitni  → facet page   (slug is always alphabetic)
- *   /memorial/pamyatnyky/002       → product page (code is always 2–4 digits)
+ *   /memorial/pamyatnyky/hranitni        → facet page
+ *   /memorial/pamyatnyky/anhel-skorboty  → product page
  *
- * The two namespaces cannot collide: every one of the 60 production rows
- * carries a unique zero-padded numeric code ("001"…"063"), and every facet
- * slug in MEMORIAL_FACETS is alphabetic. isProductCode() is the discriminator.
+ * Both are now word slugs, so the old digits-vs-letters test is gone. Facets
+ * are a fixed allowlist and are matched first; everything else is looked up as
+ * a product. assertNoSlugCollision() (run by the slug migration) guarantees no
+ * product can shadow a facet.
  */
 export async function generateStaticParams(): Promise<Params[]> {
   const stones = await fetchStones()
   const monuments = stones.filter((s) => s.category === "memorial")
   return [
     ...MEMORIAL_FACETS.map((f) => ({ slug: f.slug })),
-    ...monuments.map((s) => ({ slug: stoneCode(s) })),
+    ...monuments.map((s) => ({ slug: stoneSlug(s) })),
   ]
 }
 
@@ -42,9 +44,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params
   const stones = await fetchStones()
 
-  if (!isProductCode(slug)) {
-    const facet = findFacet(slug)
-    if (!facet) return { title: "Сторінку не знайдено", robots: { index: false, follow: false } }
+  if (isFacetSlug(slug)) {
+    const facet = findFacet(slug)!
     const url = absoluteUrl(`/memorial/pamyatnyky/${facet.slug}`)
     const count = facetItems(stones, facet).length
     return {
@@ -66,6 +67,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
   const stone = findStoneByCode(stones, slug)
   if (!stone) return { title: "Пам'ятник не знайдено", robots: { index: false, follow: false } }
+  // canonical always points at stonePath(), never at the requested segment —
+  // /001 is a redirect source, not an address this page should claim.
 
   const title = stoneTitle(stone)
   const description = stoneDescription(stone)
@@ -108,9 +111,9 @@ export default async function SlugLayout({
 
   const blocks: object[] = []
 
-  if (!isProductCode(slug)) {
-    const facet = findFacet(slug)
-    if (facet) {
+  if (isFacetSlug(slug)) {
+    const facet = findFacet(slug)!
+    {
       const items = facetItems(stones, facet)
       blocks.push(trail(facet.h1, `/memorial/pamyatnyky/${facet.slug}`))
       blocks.push({

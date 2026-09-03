@@ -55,6 +55,12 @@ export type StoneItem = {
   code?: string
   /** Display name ("Ангел Скорботи"). Falls back to the code when empty. */
   name?: string
+  /**
+   * URL segment ("anhel-skorboty"). Generated once from the name and then
+   * frozen: renaming a product in the admin must not silently move its page.
+   * Falls back to `code` while empty.
+   */
+  slug?: string
   category: Category
   imagePath: string
   priceFrom?: number

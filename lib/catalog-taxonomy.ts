@@ -179,33 +179,25 @@ export function publishedFacets(stones: StoneItem[]): Facet[] {
 }
 
 /**
- * Discriminates a product code from a facet slug in the shared [slug] segment.
+ * Is this [slug] segment a facet rather than a product?
  *
- * Any all-digit segment is a product: production codes are 3-digit and
- * zero-padded ("001"…"063"), while the bundled seed rows used as the
- * Supabase-outage fallback carry 6-digit ids ("001247"). Matching on "digits"
- * rather than a fixed width covers both — an earlier \d{2,4} bound made every
- * product 404 for the whole duration of a DB incident.
- *
- * Facet slugs are alphabetic by construction, so the two namespaces cannot
- * collide. assertNoFacetCollision() below keeps that true if codes ever change.
+ * Products used to be told apart by being all digits, which stopped working
+ * the moment they gained word slugs. Facets are a fixed, hand-written
+ * allowlist, so the reliable test is membership in it — anything else is a
+ * product lookup. assertNoSlugCollision() keeps a generated product slug from
+ * ever shadowing a facet.
  */
-export function isProductCode(slug: string): boolean {
-  return /^\d+$/.test(slug)
+export function isFacetSlug(slug: string): boolean {
+  return MEMORIAL_FACETS.some((f) => f.slug === slug)
 }
 
-/** Guards the invariant the [slug] route depends on. Cheap; runs on import. */
-function assertNoFacetCollision() {
-  const bad = MEMORIAL_FACETS.filter((f) => isProductCode(f.slug))
-  if (bad.length) {
-    throw new Error(
-      `Facet slug must not be all digits — it would be routed as a product code: ${bad
-        .map((f) => f.slug)
-        .join(", ")}`
-    )
+/** Throws if a product slug would shadow a facet page. Call before writing slugs. */
+export function assertNoSlugCollision(slugs: string[]): void {
+  const clashes = slugs.filter((s) => isFacetSlug(s))
+  if (clashes.length) {
+    throw new Error(`Product slug collides with a facet page: ${clashes.join(", ")}`)
   }
 }
-assertNoFacetCollision()
 
 /**
  * Resolve a URL code back to a stone.
@@ -222,9 +214,20 @@ assertNoFacetCollision()
  * any leftover `home` row would be reachable — and indexable — under a
  * monuments URL, describing a product line the business no longer sells.
  */
-export function findStoneByCode(stones: StoneItem[], code: string): StoneItem | undefined {
+/**
+ * Resolve a URL segment to a MEMORIAL product.
+ *
+ * Tries the canonical slug first, then the catalogue number, then the row id.
+ * The extra lookups are what keep the previous URL shape alive: /001 still
+ * resolves, and the page 301s it on to the slug rather than 404ing.
+ */
+export function findStoneByCode(stones: StoneItem[], param: string): StoneItem | undefined {
   const monuments = stones.filter((s) => s.category === "memorial")
-  return monuments.find((s) => stoneCode(s) === code) ?? monuments.find((s) => s.id === code)
+  return (
+    monuments.find((s) => s.slug === param) ??
+    monuments.find((s) => stoneCode(s) === param) ??
+    monuments.find((s) => s.id === param)
+  )
 }
 
 /**
@@ -248,7 +251,37 @@ export function stoneDisplayName(stone: StoneItem): string | null {
   return /^\d+$/.test(stone.name) ? null : stone.name
 }
 
+/**
+ * Ukrainian -> URL segment, following the romanisation already used for the
+ * route slugs in lib/i18n/pathnames.ts (г→h, ц→ts, soft sign dropped).
+ */
+const TRANSLIT: Record<string, string> = {
+  а:"a", б:"b", в:"v", г:"h", ґ:"g", д:"d", е:"e", є:"ie", ж:"zh", з:"z",
+  и:"y", і:"i", ї:"i", й:"i", к:"k", л:"l", м:"m", н:"n", о:"o", п:"p",
+  р:"r", с:"s", т:"t", у:"u", ф:"f", х:"kh", ц:"ts", ч:"ch", ш:"sh",
+  щ:"shch", ь:"", ю:"iu", я:"ia", "'":"", "’":"", "ʼ":"",
+}
+
+export function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .split("")
+    .map((ch) => (ch in TRANSLIT ? TRANSLIT[ch] : ch))
+    .join("")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+/**
+ * URL segment for a product: the stored slug, or the catalogue number until
+ * one is written. The fallback is what lets this ship before the data
+ * migration without moving a single URL.
+ */
+export function stoneSlug(stone: StoneItem): string {
+  return stone.slug || stoneCode(stone)
+}
+
 /** Canonical public path for a product. Only memorial products have one. */
 export function stonePath(stone: StoneItem): string {
-  return `/memorial/pamyatnyky/${stoneCode(stone)}`
+  return `/memorial/pamyatnyky/${stoneSlug(stone)}`
 }

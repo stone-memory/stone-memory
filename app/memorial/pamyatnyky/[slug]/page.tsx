@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -7,7 +7,15 @@ import { Breadcrumbs } from "@/components/breadcrumbs"
 import { CatalogGrid } from "@/components/catalog-grid"
 import { StoneDetailClient } from "@/components/stone-detail-client"
 import { fetchStones } from "@/lib/data-source"
-import { MEMORIAL_FACETS, facetItems, findFacet, findStoneByCode, isProductCode, verticalLabel } from "@/lib/catalog-taxonomy"
+import {
+  MEMORIAL_FACETS,
+  facetItems,
+  findFacet,
+  findStoneByCode,
+  isFacetSlug,
+  stonePath,
+  verticalLabel,
+} from "@/lib/catalog-taxonomy"
 
 export const revalidate = 60
 
@@ -19,9 +27,14 @@ export default async function MonumentSlugPage({ params }: { params: Promise<{ s
   const { slug } = await params
   const stones = await fetchStones()
 
-  if (isProductCode(slug)) {
+  // Facets are the fixed allowlist; anything else is looked up as a product.
+  if (!isFacetSlug(slug)) {
     const stone = findStoneByCode(stones, slug)
     if (!stone) notFound()
+    // Reached through the old numeric URL (/001) or a row id — send it on to
+    // the canonical slug rather than serving the same page at two addresses.
+    const canonical = stonePath(stone)
+    if (canonical !== `/memorial/pamyatnyky/${slug}`) permanentRedirect(canonical)
     return <StoneDetailClient initialStone={stone} initialStones={stones} />
   }
 
