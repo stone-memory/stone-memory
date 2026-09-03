@@ -383,8 +383,8 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://xxx.ngrok-free.
 
 Чат на сайті `stonememory.com.ua` ✅
 Telegram бот `@<твій_бот>` ✅
-Telefono `+380 67 808 02 22` (manual entry в CRM) ✅
-WhatsApp `+380 67 808 02 22` 🟡 (треба зробити Business + WA Cloud)
+Telefono `+380 68 808 02 22` (manual entry в CRM) ✅
+WhatsApp `+380 68 808 02 22` 🟡 (треба зробити Business + WA Cloud)
 Instagram `@sttonememory` 🟡 (треба Business + Meta App)
 Email `info@stonememory.com.ua` ✅ (outbound) / 🟡 (inbound треба Cloudflare)
 
