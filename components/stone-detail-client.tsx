@@ -230,11 +230,13 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
               <div className="mt-3 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
                 {t.nav.memorial}
               </div>
-              <h1 className="mt-2 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
+              {/* Sized for a full name — "Пам'ятник «Опівнічний Спокій» — маслав,
+                    зелений" at text-6xl ran to three lines and dwarfed the page. */}
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight-custom sm:text-3xl md:text-4xl text-balance">
                 {heading}
               </h1>
               <p className="mt-4 text-lg md:text-xl leading-relaxed text-foreground/85 text-balance">
-                {L.descriptionBody(stone.id, stone.category)}
+                {L.descriptionBody(stoneCode(stone), stone.category)}
               </p>
 
               <div className="mt-8 flex items-baseline gap-3">
