@@ -79,8 +79,13 @@ export const filterLabels: Record<Locale, {
   buyNow: string
   specifications: string
   description: string
-  /** `code` is the catalogue number shown to customers ("003"), not the row id. */
-  descriptionBody: (code: string, category: "memorial" | "home") => string
+  /**
+   * `code` is the catalogue number shown to customers ("003"), not the row id.
+   * `material` is the resolved label from the item's own data ("Габро") — the
+   * spec table is the source of truth, so the copy must not contradict it.
+   * Empty string when the row has no material recorded.
+   */
+  descriptionBody: (code: string, material: string, category: "memorial" | "home") => string
   relatedTitle: string
   back: string
   shareTitle: string
@@ -119,8 +124,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Замовити",
     specifications: "Характеристики",
     description: "Опис",
-    descriptionBody: (code, category) =>
-      `${category === "memorial" ? "Пам'ятник" : "Виріб з натурального каменю"} № ${code}. Натуральний граніт або мармур — український або імпортний (Італія, Індія, Китай, Бразилія). 7 етапів обробки у цеху в Костополі: розпил, шліфування, полірування, гравірування, герметизація, контроль. Морозостійкий, стійкий до УФ. Паспорт матеріалу, 5 років гарантії на все — фундамент, монтаж і камінь.`,
+    descriptionBody: (code, material, category) =>
+      `${category === "memorial" ? "Пам'ятник" : "Виріб з натурального каменю"} № ${code}.${material ? ` Матеріал — ${material}.` : ""} 7 етапів обробки у власному цеху в Костополі: розпил, шліфування, полірування, гравіювання, герметизація, контроль геометрії. Морозостійкий, стійкий до УФ. Паспорт матеріалу, 5 років гарантії на все — фундамент, монтаж і камінь.`,
     relatedTitle: "Схожі позиції",
     back: "Назад до каталогу",
     shareTitle: "Поділитися",
@@ -159,8 +164,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Zamów",
     specifications: "Specyfikacja",
     description: "Opis",
-    descriptionBody: (code, category) =>
-      `${category === "memorial" ? "Pomnik" : "Wyrób z kamienia naturalnego"} nr ${code}. Naturalny granit lub marmur — ukraiński albo importowany (Włochy, Indie, Chiny, Brazylia). 7 etapów obróbki: cięcie, szlifowanie, polerowanie, grawerowanie, uszczelnianie, kontrola. Odporny na mróz i UV. Paszport materiału, 5 lat gwarancji na wszystko — fundament, montaż i kamień.`,
+    descriptionBody: (code, material, category) =>
+      `${category === "memorial" ? "Pomnik" : "Wyrób z kamienia naturalnego"} nr ${code}.${material ? ` Materiał — ${material}.` : ""} 7 etapów obróbki we własnym zakładzie w Kostopolu: cięcie, szlifowanie, polerowanie, grawerowanie, uszczelnianie, kontrola. Odporny na mróz i UV. Paszport materiału, 5 lat gwarancji na wszystko — fundament, montaż i kamień.`,
     relatedTitle: "Podobne pozycje",
     back: "Powrót do katalogu",
     shareTitle: "Udostępnij",
@@ -199,8 +204,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Order",
     specifications: "Specifications",
     description: "Description",
-    descriptionBody: (code, category) =>
-      `${category === "memorial" ? "Monument" : "Natural stone piece"} No. ${code}. Natural granite or marble — Ukrainian or imported (Italy, India, China, Brazil). Seven stages of hand-finishing in our Kostopil workshop: cutting, grinding, polishing, engraving, sealing, QC. Frost- and UV-resistant. Material passport included, 5-year warranty on everything — foundation, installation and stone.`,
+    descriptionBody: (code, material, category) =>
+      `${category === "memorial" ? "Monument" : "Natural stone piece"} No. ${code}.${material ? ` Material — ${material}.` : ""} Seven stages of hand-finishing in our own Kostopil workshop: cutting, grinding, polishing, engraving, sealing, QC. Frost- and UV-resistant. Material passport included, 5-year warranty on everything — foundation, installation and stone.`,
     relatedTitle: "Related pieces",
     back: "Back to catalog",
     shareTitle: "Share",
@@ -239,8 +244,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Bestellen",
     specifications: "Spezifikation",
     description: "Beschreibung",
-    descriptionBody: (code, category) =>
-      `${category === "memorial" ? "Grabmal" : "Naturstein-Werkstück"} Nr. ${code}. Natürlicher Granit oder Marmor — ukrainisch oder importiert (Italien, Indien, China, Brasilien). Sieben Stufen in unserer Werkstatt in Kostopil: Zuschnitt, Schleifen, Polieren, Gravur, Versiegelung, QK. Frost- und UV-beständig. Material-Pass, 5 Jahre Garantie auf alles — Fundament, Montage und Stein.`,
+    descriptionBody: (code, material, category) =>
+      `${category === "memorial" ? "Grabmal" : "Naturstein-Werkstück"} Nr. ${code}.${material ? ` Material — ${material}.` : ""} Sieben Stufen in unserer eigenen Werkstatt in Kostopil: Zuschnitt, Schleifen, Polieren, Gravur, Versiegelung, QK. Frost- und UV-beständig. Material-Pass, 5 Jahre Garantie auf alles — Fundament, Montage und Stein.`,
     relatedTitle: "Ähnliche Stücke",
     back: "Zurück zum Katalog",
     shareTitle: "Teilen",
@@ -279,8 +284,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Užsakyti",
     specifications: "Specifikacija",
     description: "Aprašymas",
-    descriptionBody: (code, category) =>
-      `${category === "memorial" ? "Paminklas" : "Natūralaus akmens gaminys"} Nr. ${code}. Natūralus granitas arba marmuras — ukrainietiškas arba importuotas (Italija, Indija, Kinija, Brazilija). Septyni rankinės apdailos etapai Kostopilio dirbtuvėje: pjovimas, šlifavimas, poliravimas, graviravimas, sandarinimas, kokybės kontrolė. Atsparus šalčiui ir UV. Medžiagos pasas, 5 m. garantija viskam — pamatui, montavimui ir akmeniui.`,
+    descriptionBody: (code, material, category) =>
+      `${category === "memorial" ? "Paminklas" : "Natūralaus akmens gaminys"} Nr. ${code}.${material ? ` Medžiaga — ${material}.` : ""} Septyni rankinės apdailos etapai nuosavoje Kostopilio dirbtuvėje: pjovimas, šlifavimas, poliravimas, graviravimas, sandarinimas, kokybės kontrolė. Atsparus šalčiui ir UV. Medžiagos pasas, 5 m. garantija viskam — pamatui, montavimui ir akmeniui.`,
     relatedTitle: "Panašūs",
     back: "Atgal į katalogą",
     shareTitle: "Dalintis",

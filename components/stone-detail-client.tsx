@@ -236,7 +236,12 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                 {heading}
               </h1>
               <p className="mt-4 text-lg md:text-xl leading-relaxed text-foreground/85 text-balance">
-                {L.descriptionBody(stoneCode(stone), stone.category)}
+                {L.descriptionBody(
+                  stoneCode(stone),
+                  // Same resolver the spec table uses, so the two cannot disagree.
+                  stone.materialType ? materialLabel(stone.materialType, locale, stone.i18n?.materialType) : "",
+                  stone.category
+                )}
               </p>
 
               <div className="mt-8 flex items-baseline gap-3">
