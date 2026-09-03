@@ -1,6 +1,7 @@
 "use client"
 
 import { create } from "zustand"
+import { sanitizeAttribution } from "@/lib/attribution"
 import type { Order, OrderStatus, OrderNote, StoneItem } from "@/lib/types"
 import { authedFetch } from "@/lib/authed-fetch"
 
@@ -31,6 +32,7 @@ type Row = {
   contacted: boolean | null
   items: unknown
   notes: unknown
+  attribution: unknown
 }
 
 function normalize(row: Row): Order {
@@ -52,6 +54,7 @@ function normalize(row: Row): Order {
     status: (row.status as OrderStatus) || "new",
     contacted: !!row.contacted,
     notes,
+    attribution: sanitizeAttribution(row.attribution),
   }
 }
 

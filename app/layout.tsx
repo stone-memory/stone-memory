@@ -8,6 +8,7 @@ import { NavProgress } from "@/components/nav-progress"
 import { AnalyticsPixels } from "@/components/analytics-pixels"
 import { WebVitalsReporter } from "@/components/web-vitals"
 import { CookieConsent } from "@/components/cookie-consent"
+import { AttributionCapture } from "@/components/attribution-capture"
 import { SkipLink } from "@/components/skip-link"
 import { ErrorBoundaryClient } from "@/components/error-boundary-client"
 import { SITE_URL } from "@/lib/site-config"
@@ -273,6 +274,7 @@ export default async function RootLayout({
             <CookieConsent />
           </NavSettingsProvider>
         </LanguageProvider>
+        <AttributionCapture />
         <AnalyticsPixels />
         <WebVitalsReporter />
         {process.env.NODE_ENV === "production" && <Analytics />}
