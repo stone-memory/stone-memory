@@ -247,8 +247,11 @@ export default async function RootLayout({
   return (
     <html lang="uk" className={inter.variable} data-scroll-behavior="smooth">
       <head>
-        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        {/* No preconnect here on purpose. The hints used to point at
+            images.unsplash.com, which the site no longer requests — PSI flags
+            it as "Unused preconnect". Supabase is not a candidate either:
+            product photos are fetched server-side by /_next/image, so the
+            browser only ever talks to our own origin. */}
       </head>
       <body className="font-sans antialiased bg-background">
         <noscript>
