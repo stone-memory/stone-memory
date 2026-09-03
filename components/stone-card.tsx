@@ -17,9 +17,10 @@ interface StoneCardProps {
   showBestseller?: boolean
 }
 
-const categoryLabels: Record<"memorial" | "home", Record<Locale, string>> = {
+// Memorial only; anything else falls back to the raw value rather than being
+// mislabelled as a product line that no longer exists.
+const categoryLabels: Record<string, Record<Locale, string>> = {
   memorial: { uk: "ПАМ'ЯТНИКИ", pl: "POMNIKI", en: "MONUMENTS", de: "GRABMALE", lt: "PAMINKLAI" },
-  home: { uk: "ДЛЯ ДОМУ", pl: "DO DOMU", en: "HOME", de: "HAUS", lt: "NAMAMS" },
 }
 
 const bestsellerLabels: Record<Locale, string> = {
@@ -91,7 +92,7 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
     setTimeout(() => setShowSuccess(false), 600)
   }
 
-  const categoryLabel = categoryLabels[item.category][locale]
+  const categoryLabel = categoryLabels[item.category]?.[locale] ?? item.category
   const subLabel = item.shape
     ? shapeLabel(item.shape, locale, item.i18n?.shape).toUpperCase()
     : item.finish

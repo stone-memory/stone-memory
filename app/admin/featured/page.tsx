@@ -34,7 +34,7 @@ export default function AdminFeaturedPage() {
   }, [stones, ids, setIds])
 
   const [query, setQuery] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "memorial" | "home">("all")
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "memorial">("all")
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -150,7 +150,7 @@ export default function AdminFeaturedPage() {
       <section>
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
-            {(["all", "memorial", "home"] as const).map((c) => (
+            {(["all", "memorial"] as const).map((c) => (
               <button
                 key={c}
                 onClick={() => setCategoryFilter(c)}
@@ -161,7 +161,7 @@ export default function AdminFeaturedPage() {
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {c === "all" ? "Всі" : c === "memorial" ? "Пам'ятники" : "Дім і сад"}
+                {c === "all" ? "Всі" : "Пам'ятники"}
               </button>
             ))}
           </div>
@@ -214,7 +214,7 @@ export default function AdminFeaturedPage() {
                 <div className="p-3">
                   <div className="truncate text-sm font-medium tabular-nums">№ {stone.id}</div>
                   <div className="mt-0.5 truncate text-xs text-muted-foreground">
-                    {stone.category === "memorial" ? "Пам'ятник" : "Для дому й саду"}
+                    {stone.category === "memorial" ? "Пам'ятник" : stone.category}
                   </div>
                 </div>
               </button>

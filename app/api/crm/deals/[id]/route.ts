@@ -56,7 +56,7 @@ type PatchPayload = Partial<{
   expected_delivery: string | null
   install_address: string | null
   install_city: string | null
-  category: "memorial" | "home" | null
+  category: "memorial" | null
   /** Categorical reason for closing as cancelled/lost. See lib/crm/types.ts
    *  → LOST_REASON_OPTIONS for the canonical list (just text values, no
    *  enum constraint at the DB level so taxonomy can evolve freely). */

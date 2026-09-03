@@ -3,7 +3,6 @@ export type Locale = "uk" | "pl" | "en" | "de" | "lt"
 export type Dictionary = {
   nav: {
     memorial: string
-    home: string
     services: string
     blog: string
     catalog: string
@@ -92,7 +91,6 @@ export type Dictionary = {
 const uk: Dictionary = {
   nav: {
     memorial: "Пам'ятники",
-    home: "Для дому й саду",
     services: "Послуги",
     blog: "Блог",
     catalog: "Каталог",
@@ -181,7 +179,6 @@ const uk: Dictionary = {
 const pl: Dictionary = {
   nav: {
     memorial: "Pomniki",
-    home: "Do domu i ogrodu",
     services: "Usługi",
     blog: "Blog",
     catalog: "Katalog",
@@ -270,7 +267,6 @@ const pl: Dictionary = {
 const en: Dictionary = {
   nav: {
     memorial: "Monuments",
-    home: "Home & Garden",
     services: "Services",
     blog: "Journal",
     catalog: "Catalog",
@@ -359,7 +355,6 @@ const en: Dictionary = {
 const de: Dictionary = {
   nav: {
     memorial: "Grabmale",
-    home: "Haus & Garten",
     services: "Leistungen",
     blog: "Journal",
     catalog: "Katalog",
@@ -448,7 +443,6 @@ const de: Dictionary = {
 const lt: Dictionary = {
   nav: {
     memorial: "Paminklai",
-    home: "Namams ir sodui",
     services: "Paslaugos",
     blog: "Žurnalas",
     catalog: "Katalogas",

@@ -270,7 +270,9 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
   const [customerId, setCustomerId] = useState("")
   const [customerLabel, setCustomerLabel] = useState("")
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [category, setCategory] = useState<"memorial" | "home">("memorial")
+  // Only "memorial" — the home & garden line is discontinued and the CRM
+  // holds no deals in that category.
+  const [category, setCategory] = useState<"memorial">("memorial")
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [busy, setBusy] = useState(false)
@@ -387,7 +389,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Категорія</label>
             <div className="flex gap-1 rounded-full bg-foreground/5 p-1 w-fit">
-              {(["memorial", "home"] as const).map((c) => (
+              {(["memorial"] as const).map((c) => (
                 <button
                   key={c}
                   type="button"
@@ -397,7 +399,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
                     category === c ? "bg-card shadow-soft" : "text-muted-foreground"
                   )}
                 >
-                  {c === "memorial" ? "Памʼятники" : "Дім і сад"}
+                  Памʼятники
                 </button>
               ))}
             </div>

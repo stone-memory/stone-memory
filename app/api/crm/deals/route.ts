@@ -71,7 +71,8 @@ type CreatePayload = {
   customer_id: string
   status?: DealStatus
   priority?: DealPriority
-  category?: "memorial" | "home"
+  // Home & garden is discontinued; the CRM holds no deals in that category.
+  category?: "memorial"
   description?: string
   amount_eur?: number
   source?: string

@@ -667,7 +667,10 @@ begin
     new.source,
     new.message,
     coalesce((select sum((i->>'priceFrom')::numeric) from jsonb_array_elements(coalesce(new.items, '[]'::jsonb)) i), 0),
-    case when (new.items->0->>'category') = 'memorial' then 'memorial' else 'home' end,
+    -- Always 'memorial': the home & garden line was discontinued. The old
+    -- `else 'home'` branch also mislabelled every order that arrived without
+    -- items (a plain contact request), because items->0 is NULL there.
+    'memorial',
     'Імпортовано з orders'
   );
   return new;

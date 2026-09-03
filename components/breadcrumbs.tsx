@@ -5,8 +5,8 @@ import { ChevronRight } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
 import type { Locale } from "@/lib/types"
 
-// NB: `t.nav.home` is the "Для дому й саду" product category, not the
-// homepage — hence a dedicated label map here.
+// Dedicated label map: this is the homepage crumb, and the i18n dictionary
+// has no generic "home" string.
 const HOME_LABEL: Record<Locale, string> = {
   uk: "Головна",
   en: "Home",

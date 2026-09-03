@@ -3,7 +3,6 @@ import type { StoneItem } from "@/lib/types"
 
 const GROUP_LABEL: Record<string, string> = {
   memorial: "Пам'ятники",
-  home: "Для дому й саду",
 }
 
 /**

@@ -34,7 +34,9 @@ const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", 
 const SHAPES: StoneShape[] = ["classic", "arch", "heart", "cross", "modern", "obelisk", "natural"]
 const FINISHES: StoneFinish[] = ["polished", "honed", "flamed", "antique", "natural", "split"]
 const MATERIALS: StoneMaterial[] = ["granite", "gabbro", "marble", "labradorite", "quartzite", "limestone", "sandstone", "onyx"]
-const CATEGORIES: Category[] = ["memorial", "home"]
+// Only "memorial" — the home & garden line was discontinued. The Category
+// union still admits "home" so historic rows and CRM deals keep parsing.
+const CATEGORIES: Category[] = ["memorial"]
 
 function nextId(existing: string[]): string {
   let n = 1
@@ -93,7 +95,6 @@ export default function AdminStonesPage() {
   const totals = {
     all: items.filter((r) => !r.hidden).length,
     memorial: items.filter((r) => r.data.category === "memorial" && !r.hidden).length,
-    home: items.filter((r) => r.data.category === "home" && !r.hidden).length,
     hidden: items.filter((r) => r.hidden).length,
   }
 
@@ -130,13 +131,12 @@ export default function AdminStonesPage() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat label="Всього активних" value={totals.all} />
         <Stat label="Пам'ятники" value={totals.memorial} />
-        <Stat label="Дім і сад" value={totals.home} />
         <Stat label="Прихованих" value={totals.hidden} />
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
-          {(["all", "memorial", "home"] as const).map((c) => (
+          {(["all", "memorial"] as const).map((c) => (
             <button
               key={c}
               onClick={() => setCategoryFilter(c)}
@@ -147,7 +147,7 @@ export default function AdminStonesPage() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {c === "all" ? "Всі" : c === "memorial" ? "Пам'ятники" : "Дім і сад"}
+              {c === "all" ? "Всі" : "Пам'ятники"}
             </button>
           ))}
         </div>
@@ -320,7 +320,7 @@ function SortableStoneRow({
       <td className="px-4 py-3 font-medium tabular-nums">№ {row.id}</td>
       <td className="px-4 py-3 text-foreground/85">{s.name || <span className="text-muted-foreground/40">—</span>}</td>
       <td className="px-4 py-3 text-muted-foreground">
-        {s.category === "memorial" ? "Пам'ятник" : "Дім і сад"}
+        {s.category === "memorial" ? "Пам'ятник" : s.category}
       </td>
       <td className="px-4 py-3 text-muted-foreground">{s.materialType || "—"}</td>
       <td className="px-4 py-3 text-muted-foreground">{s.color || "—"}</td>
