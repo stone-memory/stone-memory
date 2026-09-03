@@ -19,6 +19,31 @@ import type { Locale } from "./config"
  */
 export const pathnames = {
   "/": "/",
+  // ---- Vertical hubs and their catalogues ----
+  // The `/memorial` and `/stone` segments stay English in every locale: they
+  // are the two stable namespaces the whole structure hangs off, and keeping
+  // them fixed means a locale switch never changes which vertical you are in.
+  // The segments below them are localized, because those are the ones carrying
+  // the search terms.
+  "/memorial": "/memorial",
+  "/memorial/monuments": {
+    uk: "/memorial/pamyatnyky",
+    pl: "/memorial/pomniki",
+    en: "/memorial/monuments",
+    de: "/memorial/grabmale",
+    lt: "/memorial/paminklai",
+  },
+  "/memorial/monuments/[slug]": {
+    uk: "/memorial/pamyatnyky/[slug]",
+    pl: "/memorial/pomniki/[slug]",
+    en: "/memorial/monuments/[slug]",
+    de: "/memorial/grabmale/[slug]",
+    lt: "/memorial/paminklai/[slug]",
+  },
+  // No "/stone" entries — that vertical was removed with the product line.
+  // Retired: /kataloh 308s to /memorial/pamyatnyky (see next.config.mjs).
+  // Kept in the map so a stale localized link still resolves to a known key
+  // instead of falling through to a 404.
   "/catalog": {
     uk: "/kataloh",
     pl: "/katalog",

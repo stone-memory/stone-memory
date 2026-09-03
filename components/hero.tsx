@@ -115,7 +115,7 @@ export function Hero() {
           className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           <Link
-            href="/kataloh"
+            href="/memorial/pamyatnyky"
             prefetch
             className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-transform hover:-translate-y-[1px] active:scale-[0.98]"
           >

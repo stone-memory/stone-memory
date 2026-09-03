@@ -10,9 +10,36 @@ import { usePopularity } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones } from "@/lib/store/stones"
 import { filterLabels } from "@/lib/i18n/filters"
+import { findFacet } from "@/lib/catalog-taxonomy"
 import type { Category, StoneItem } from "@/lib/types"
 
-export function CatalogGrid({ initialStones }: { initialStones: StoneItem[] }) {
+type CatalogGridProps = {
+  initialStones: StoneItem[]
+  /**
+   * Pin the grid to one vertical and hide the memorial/home switch.
+   *
+   * /memorial/pamyatnyky is a category URL, so letting the visitor flip to
+   * "Дім і сад" there would show content the URL, h1 and title all disagree
+   * with — the exact mismatch the ?cat= structure was replaced to fix.
+   */
+  lockedCategory?: Category
+  /**
+   * Facet slug from lib/catalog-taxonomy. Passed as a string, not a predicate,
+   * because props crossing the server/client boundary must be serializable —
+   * the match function is looked up from the slug on this side.
+   */
+  facetSlug?: string
+  heading?: string
+  intro?: string
+}
+
+export function CatalogGrid({
+  initialStones,
+  lockedCategory,
+  facetSlug,
+  heading,
+  intro,
+}: CatalogGridProps) {
   const storedCategory = useSelectionStore((state) => state.category)
   const setCategory = useSelectionStore((state) => state.setCategory)
   const [mounted, setMounted] = useState(false)
@@ -23,7 +50,7 @@ export function CatalogGrid({ initialStones }: { initialStones: StoneItem[] }) {
   }, [])
 
   // Use a stable "memorial" on SSR to prevent hydration mismatch from persisted category
-  const category: Category = mounted ? storedCategory : "memorial"
+  const category: Category = lockedCategory ?? (mounted ? storedCategory : "memorial")
 
   // Apply ?cat= only once on initial mount — subsequent button clicks must not
   // be overridden by the stale param still sitting in the URL.
@@ -34,13 +61,21 @@ export function CatalogGrid({ initialStones }: { initialStones: StoneItem[] }) {
   // the crawlability bug this page had. The param is only consulted on mount,
   // so window is sufficient and keeps the route prerenderable.
   useEffect(() => {
-    if (!mounted || urlParamApplied.current) return
+    if (lockedCategory || !mounted || urlParamApplied.current) return
     const cat = new URLSearchParams(window.location.search).get("cat")
     if (cat === "memorial" || cat === "home") {
       setCategory(cat)
     }
     urlParamApplied.current = true
-  }, [mounted, setCategory])
+  }, [lockedCategory, mounted, setCategory])
+
+  // Keep the persisted store in step with a pinned route, so the sidebar and
+  // any later navigation back to the open catalogue start from this vertical.
+  useEffect(() => {
+    if (lockedCategory && mounted && storedCategory !== lockedCategory) {
+      setCategory(lockedCategory)
+    }
+  }, [lockedCategory, mounted, storedCategory, setCategory])
   const { t, locale } = useTranslation()
   const L = filterLabels[locale]
   const storeStones = useStones()
@@ -48,7 +83,11 @@ export function CatalogGrid({ initialStones }: { initialStones: StoneItem[] }) {
   // takes over once it hydrates so admin edits still appear live.
   const stones = storeStones.length > 0 ? storeStones : initialStones
 
-  const baseItems = useMemo(() => stones.filter((s) => s.category === category), [category, stones])
+  const facet = facetSlug ? findFacet(facetSlug) : undefined
+  const baseItems = useMemo(
+    () => stones.filter((s) => s.category === category && (!facet || facet.match(s))),
+    [category, stones, facet]
+  )
 
   // Popularity: combine "add to cart" counts (client) + submitted order counts (global)
   const addCounts = usePopularity()
@@ -114,15 +153,15 @@ export function CatalogGrid({ initialStones }: { initialStones: StoneItem[] }) {
         {/* h1, not h2: this is the catalogue page's main heading and the route
             previously shipped no h1 at all. */}
         <h1 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
-          {t.catalog.heading}
+          {heading ?? t.catalog.heading}
         </h1>
         <p className="mt-3 max-w-2xl text-base text-muted-foreground text-balance md:text-lg">
-          {t.catalog.subheading}
+          {intro ?? t.catalog.subheading}
         </p>
       </div>
 
       <div className="mb-5 flex items-center justify-between gap-3">
-        <SegmentedControl value={category} onChange={setCategory} />
+        {lockedCategory ? <span /> : <SegmentedControl value={category} onChange={setCategory} />}
         <span className="text-sm text-muted-foreground tabular-nums">
           {filteredStones.length} {t.catalog.count}
         </span>

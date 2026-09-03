@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
 import { fetchArticles, fetchStones } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
+import { publishedFacets, stonePath } from "@/lib/catalog-taxonomy"
 
 export const revalidate = 60
 
@@ -30,7 +31,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // submitted and noindexed is a contradictory signal.
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), changeFrequency: "daily", priority: 1 },
-    { url: absoluteUrl("/kataloh"), changeFrequency: "daily", priority: 0.95 },
+    // /kataloh is gone — it 308s to /memorial/pamyatnyky. A redirecting URL
+    // must never be submitted: Google reports it as "Page with redirect" and
+    // drops it from the index anyway.
+    { url: absoluteUrl("/memorial"), changeFrequency: "weekly", priority: 0.95 },
+    { url: absoluteUrl("/memorial/pamyatnyky"), changeFrequency: "daily", priority: 0.95 },
     { url: absoluteUrl("/proekty"), changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/posluhy"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/pro-nas"), changeFrequency: "monthly", priority: 0.8 },
@@ -46,13 +51,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const stoneRoutes: MetadataRoute.Sitemap = stones.map((s) => ({
-    url: absoluteUrl(`/kameni/${s.id}`),
+    url: absoluteUrl(stonePath(s)),
     changeFrequency: "weekly",
     priority: 0.7,
   }))
 
+  // Only facets that clear MIN_FACET_ITEMS. A facet holding three monuments is
+  // rendered (the on-page filter links to it) but stays noindex and out of the
+  // sitemap — submitting it would be submitting a doorway page.
+  const facetRoutes: MetadataRoute.Sitemap = publishedFacets(stones).map((f) => ({
+    url: absoluteUrl(`/memorial/pamyatnyky/${f.slug}`),
+    changeFrequency: "weekly",
+    priority: 0.85,
+  }))
+
+
   // Service anchors (/posluhy#design …) are intentionally omitted: a URL
   // fragment is not a separate document, so search engines collapse them into
   // /posluhy and the extra entries only dilute the sitemap.
-  return [...staticRoutes, ...stoneRoutes, ...articleRoutes]
+  return [...staticRoutes, ...facetRoutes, ...stoneRoutes, ...articleRoutes]
 }
