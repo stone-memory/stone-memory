@@ -261,7 +261,7 @@ export const useCalcStore = create<CalcStore>((set) => ({
   toggle: () => set((s) => ({ isOpen: !s.isOpen })),
 }))
 
-const PHONE = "+380678080222"
+const PHONE = "+380688080222"
 const PHONE_DISPLAY = "+380 (67) 808 02 22"
 
 export function PriceCalculator() {

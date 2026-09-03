@@ -208,7 +208,7 @@ const organizationJsonLd = {
   contactPoint: [
     {
       "@type": "ContactPoint",
-      telephone: "+380678080222",
+      telephone: "+380688080222",
       contactType: "customer service",
       areaServed: ["UA", "PL", "DE", "LT", "EU"],
       availableLanguage: ["uk", "pl", "de", "lt", "en"],
@@ -223,7 +223,7 @@ const localBusinessJsonLd = {
   name: SITE_NAME,
   image: `${SITE_URL}/logo-512.png`,
   url: SITE_URL,
-  telephone: "+380678080222",
+  telephone: "+380688080222",
   priceRange: "€€–€€€€",
   address: {
     "@type": "PostalAddress",
