@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus, Trash2, RotateCcw, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,6 +25,11 @@ export default function AdminBusinessPage() {
   const removeHoliday = useBusinessProfileStore((s) => s.removeHoliday)
   const reset = useBusinessProfileStore((s) => s.reset)
   const saveProfile = useBusinessProfileStore((s) => s.saveProfile)
+  const hydrate = useBusinessProfileStore((s) => s.hydrate)
+
+  useEffect(() => {
+    hydrate()
+  }, [hydrate])
 
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle")
   const [saveErr, setSaveErr] = useState<string | null>(null)

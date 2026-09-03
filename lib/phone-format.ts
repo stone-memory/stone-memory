@@ -75,7 +75,7 @@ export function unformatPhone(formatted: string): string {
  * Build an RFC 3966 `tel:` target — "+" plus digits only.
  *
  * Stripping just whitespace left display formatting inside the URI
- * (`tel:+380(67)8080222`); parentheses are not valid there and some Android
+ * (`tel:+380(68)8080222`); parentheses are not valid there and some Android
  * dialers refuse to parse it, so the tap silently did nothing.
  */
 export function toTelHref(display: string): string {

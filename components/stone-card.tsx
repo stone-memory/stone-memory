@@ -225,7 +225,7 @@ export function StoneCard({ item, showBestseller }: StoneCardProps) {
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  window.location.href = "tel:+380678080222"
+                  window.location.href = "tel:+380688080222"
                 }}
                 whileTap={{ scale: 0.96 }}
                 className="w-full inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

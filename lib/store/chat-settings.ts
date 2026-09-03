@@ -76,11 +76,11 @@ export const defaultQuickReplies: Record<Locale, QuickReply[]> = {
 }
 
 const defaultFallback: Record<Locale, string> = {
-  uk: "Передав менеджеру — він зв'яжеться з вами найближчим часом. Якщо зручно — можете одразу подзвонити: +380 (67) 808 02 22.",
-  pl: "Przekazałem menedżerowi — odezwie się niebawem. Jeśli wygodniej, zadzwoń: +380 (67) 808 02 22.",
-  en: "Passed to a manager — they'll get back to you shortly. You can also call directly: +380 (67) 808 02 22.",
-  de: "An den Manager weitergeleitet — er meldet sich in Kürze. Oder direkt anrufen: +380 (67) 808 02 22.",
-  lt: "Perduota vadybininkui — jis netrukus susisieks. Galite ir paskambinti: +380 (67) 808 02 22.",
+  uk: "Передав менеджеру — він зв'яжеться з вами найближчим часом. Якщо зручно — можете одразу подзвонити: +380 (68) 808 02 22.",
+  pl: "Przekazałem menedżerowi — odezwie się niebawem. Jeśli wygodniej, zadzwoń: +380 (68) 808 02 22.",
+  en: "Passed to a manager — they'll get back to you shortly. You can also call directly: +380 (68) 808 02 22.",
+  de: "An den Manager weitergeleitet — er meldet sich in Kürze. Oder direkt anrufen: +380 (68) 808 02 22.",
+  lt: "Perduota vadybininkui — jis netrukus susisieks. Galite ir paskambinti: +380 (68) 808 02 22.",
 }
 
 type Overrides = Partial<Record<Locale, { quickReplies?: QuickReply[]; fallback?: string }>>

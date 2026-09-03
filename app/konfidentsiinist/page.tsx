@@ -16,7 +16,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Файли cookie", p: "Необхідні cookie завжди активні. Аналітичні та маркетингові — лише з вашої згоди через банер згоди. Ви можете змінити вибір у будь-який момент, очистивши локальне сховище." },
       { h: "Ваші права (GDPR)", p: "Доступ до даних, виправлення, видалення, обмеження обробки, перенесення, відкликання згоди. Напишіть: info@stonememory.com.ua." },
       { h: "Зберігання", p: "Дані замовлень зберігаються до 3 років (податкові вимоги). Аналітичні — до 14 місяців. Маркетингові — до 12 місяців або до відкликання згоди." },
-      { h: "Контакти", p: "Stone Memory, Костопіль, Рівненська область, Україна. Email: info@stonememory.com.ua. Тел.: +380 (67) 808 02 22." },
+      { h: "Контакти", p: "Stone Memory, Костопіль, Рівненська область, Україна. Email: info@stonememory.com.ua. Тел.: +380 (68) 808 02 22." },
     ],
   },
   pl: {
@@ -29,7 +29,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Cookies", p: "Niezbędne są zawsze aktywne. Analityczne i marketingowe — tylko za zgodą poprzez baner. Możesz zmienić wybór w dowolnym momencie." },
       { h: "Twoje prawa (RODO)", p: "Dostęp, sprostowanie, usunięcie, ograniczenie, przenoszenie, cofnięcie zgody. Kontakt: info@stonememory.com.ua." },
       { h: "Przechowywanie", p: "Dane zamówień — do 3 lat. Analityczne — do 14 miesięcy. Marketingowe — do 12 miesięcy lub do cofnięcia zgody." },
-      { h: "Kontakt", p: "Stone Memory, Kostopol, obwód rówieński, Ukraina. E-mail: info@stonememory.com.ua. Tel.: +380 (67) 808 02 22." },
+      { h: "Kontakt", p: "Stone Memory, Kostopol, obwód rówieński, Ukraina. E-mail: info@stonememory.com.ua. Tel.: +380 (68) 808 02 22." },
     ],
   },
   en: {
@@ -42,7 +42,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Cookies", p: "Necessary cookies are always on. Analytics and marketing cookies only with your consent through the banner. You can change your choice anytime." },
       { h: "Your rights (GDPR)", p: "Access, rectification, erasure, restriction, portability, withdrawal of consent. Contact: info@stonememory.com.ua." },
       { h: "Retention", p: "Order data kept up to 3 years (tax). Analytics up to 14 months. Marketing up to 12 months or until consent withdrawn." },
-      { h: "Contact", p: "Stone Memory, Kostopil, Rivne Oblast, Ukraine. Email: info@stonememory.com.ua. Phone: +380 67 808 02 22." },
+      { h: "Contact", p: "Stone Memory, Kostopil, Rivne Oblast, Ukraine. Email: info@stonememory.com.ua. Phone: +380 68 808 02 22." },
     ],
   },
   de: {
@@ -55,7 +55,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Cookies", p: "Notwendige immer aktiv. Analyse und Marketing nur mit Ihrer Zustimmung. Wahl jederzeit änderbar." },
       { h: "Ihre Rechte (DSGVO)", p: "Auskunft, Berichtigung, Löschung, Einschränkung, Portabilität, Widerruf. Kontakt: info@stonememory.com.ua." },
       { h: "Speicherung", p: "Auftragsdaten bis 3 Jahre (Steuer). Analytics bis 14 Monate. Marketing bis 12 Monate oder Widerruf." },
-      { h: "Kontakt", p: "Stone Memory, Kostopil, Oblast Riwne, Ukraine. E-Mail: info@stonememory.com.ua. Tel.: +380 67 808 02 22." },
+      { h: "Kontakt", p: "Stone Memory, Kostopil, Oblast Riwne, Ukraine. E-Mail: info@stonememory.com.ua. Tel.: +380 68 808 02 22." },
     ],
   },
   lt: {
@@ -68,7 +68,7 @@ const copy: Record<Locale, { title: string; updated: string; body: Array<{ h?: s
       { h: "Slapukai", p: "Būtini visada aktyvūs. Analitiniai ir rinkodaros — tik jūsų sutikimu per baner. Pasirinkimą galite keisti bet kada." },
       { h: "Jūsų teisės (BDAR)", p: "Susipažinimas, ištaisymas, ištrynimas, apribojimas, perkeliamumas, sutikimo atšaukimas. Kontaktas: info@stonememory.com.ua." },
       { h: "Saugojimas", p: "Užsakymų duomenys iki 3 metų. Analitikos iki 14 mėn. Rinkodaros iki 12 mėn. arba atšaukus sutikimą." },
-      { h: "Kontaktas", p: "Stone Memory, Kostopilis, Rivnės sritis, Ukraina. El. paštas: info@stonememory.com.ua. Tel.: +380 67 808 02 22." },
+      { h: "Kontaktas", p: "Stone Memory, Kostopilis, Rivnės sritis, Ukraina. El. paštas: info@stonememory.com.ua. Tel.: +380 68 808 02 22." },
     ],
   },
 }

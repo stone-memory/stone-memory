@@ -45,7 +45,7 @@ const COMPANY_INFO = {
   legalName: "ФОП «Stone Memory»",
   address: "Костопіль, Рівненська обл., Україна",
   email: "info@stonememory.com.ua",
-  phone: "+380 (67) 808 02 22",
+  phone: "+380 (68) 808 02 22",
   iban: "(введіть IBAN у Бізнес-профіль)",
   vatId: "(введіть ІПН/VAT у Бізнес-профіль)",
 }

@@ -51,7 +51,7 @@ const DEFAULT_PROFILE: BusinessProfile = {
   legalName: "ФОП Stone Memory",
   displayName: "Stone Memory",
   email: "info@stonememory.com.ua",
-  phone: "+380 (67) 808 02 22",
+  phone: "+380 (68) 808 02 22",
   address: "",
   city: "Костопіль",
   region: "Рівненська область",
