@@ -138,12 +138,91 @@
 
 ---
 
+## Адреси сторінок після переносу
+
+Назви й ціни **вже записані в базу** — вручну вносити нічого не треба.
+Разом із ними товари отримали словесні адреси замість номерів.
+
+Старі адреси не зникли: `/memorial/pamyatnyky/001` та `/kameni/1` віддають
+301 на нову. `/kameni/:id` веде одразу на кінцеву адресу, без проміжного стрибка.
+
+**Слаг заморожений.** Він згенерований один раз і не перераховується при
+перейменуванні товару в адмінці — інакше кожна правка назви ламала б живу
+сторінку. Якщо треба змінити адресу, скажіть — зробимо разом із редиректом.
+
+| Код | Назва | Адреса |
+|---|---|---|
+| 001 | Ангел Скорботи | `/memorial/pamyatnyky/anhel-skorboty` |
+| 002 | Меморіал Героя | `/memorial/pamyatnyky/memorial-heroia` |
+| 003 | Тиха Молитва | `/memorial/pamyatnyky/tykha-molytva` |
+| 004 | Коло Вічності | `/memorial/pamyatnyky/kolo-vichnosti` |
+| 006 | Світла Пам'ять | `/memorial/pamyatnyky/svitla-pamiat` |
+| 007 | Родинний Спокій | `/memorial/pamyatnyky/rodynnyi-spokii` |
+| 008 | Воїн | `/memorial/pamyatnyky/voin` |
+| 009 | Герої Не Вмирають | `/memorial/pamyatnyky/heroi-ne-vmyraiut` |
+| 011 | Варта Честі | `/memorial/pamyatnyky/varta-chesti` |
+| 012 | Хрест Звитяги | `/memorial/pamyatnyky/khrest-zvytiahy` |
+| 013 | Рідна Земля | `/memorial/pamyatnyky/ridna-zemlia` |
+| 014 | Обітниця | `/memorial/pamyatnyky/obitnytsia` |
+| 015 | Смарагдовий Спокій | `/memorial/pamyatnyky/smarahdovyi-spokii` |
+| 016 | Ранкове Світло | `/memorial/pamyatnyky/rankove-svitlo` |
+| 017 | Багряний Спокій | `/memorial/pamyatnyky/bahrianyi-spokii` |
+| 018 | Хвиля Пам'яті | `/memorial/pamyatnyky/khvylia-pamiati` |
+| 019 | Світанок | `/memorial/pamyatnyky/svitanok` |
+| 020 | Рушник | `/memorial/pamyatnyky/rushnyk` |
+| 021 | Серце Матері | `/memorial/pamyatnyky/sertse-materi` |
+| 022 | Ангел Надії | `/memorial/pamyatnyky/anhel-nadii` |
+| 023 | Багряна Хвиля | `/memorial/pamyatnyky/bahriana-khvylia` |
+| 024 | Стриманість | `/memorial/pamyatnyky/strymanist` |
+| 025 | Тиша | `/memorial/pamyatnyky/tysha` |
+| 026 | Захід Сонця | `/memorial/pamyatnyky/zakhid-sontsia` |
+| 027 | Багряний Смуток | `/memorial/pamyatnyky/bahrianyi-smutok` |
+| 028 | Стежка | `/memorial/pamyatnyky/stezhka` |
+| 030 | Арка Пам'яті | `/memorial/pamyatnyky/arka-pamiati` |
+| 031 | Два Кольори | `/memorial/pamyatnyky/dva-kolory` |
+| 032 | Стрічка Пам'яті | `/memorial/pamyatnyky/strichka-pamiati` |
+| 033 | Високий Хрест | `/memorial/pamyatnyky/vysokyi-khrest` |
+| 034 | Серце | `/memorial/pamyatnyky/sertse` |
+| 035 | Скеля | `/memorial/pamyatnyky/skelia` |
+| 036 | Портал | `/memorial/pamyatnyky/portal` |
+| 037 | Полум'я | `/memorial/pamyatnyky/polumia` |
+| 038 | Гладінь | `/memorial/pamyatnyky/hladin` |
+| 039 | Вечірня Молитва | `/memorial/pamyatnyky/vechirnia-molytva` |
+| 040 | Серце і Хрест | `/memorial/pamyatnyky/sertse-i-khrest` |
+| 041 | Червоний Хрест | `/memorial/pamyatnyky/chervonyi-khrest` |
+| 042 | Великий Хрест | `/memorial/pamyatnyky/velykyi-khrest` |
+| 043 | Сад Пам'яті | `/memorial/pamyatnyky/sad-pamiati` |
+| 044 | Тепле Серце | `/memorial/pamyatnyky/teple-sertse` |
+| 045 | Опівнічний Спокій | `/memorial/pamyatnyky/opivnichnyi-spokii` |
+| 046 | Обійми Ангела | `/memorial/pamyatnyky/obiimy-anhela` |
+| 047 | Дві Стихії | `/memorial/pamyatnyky/dvi-stykhii` |
+| 048 | Промінь | `/memorial/pamyatnyky/promin` |
+| 049 | Лілея | `/memorial/pamyatnyky/lileia` |
+| 050 | Розп'яття | `/memorial/pamyatnyky/rozpiattia` |
+| 051 | Спогад | `/memorial/pamyatnyky/spohad` |
+| 052 | Родинний Сад | `/memorial/pamyatnyky/rodynnyi-sad` |
+| 053 | Світанок над Каменем | `/memorial/pamyatnyky/svitanok-nad-kamenem` |
+| 054 | Хвиля | `/memorial/pamyatnyky/khvylia` |
+| 055 | Спокій | `/memorial/pamyatnyky/spokii` |
+| 056 | Квітник | `/memorial/pamyatnyky/kvitnyk` |
+| 057 | Ангел-Охоронець | `/memorial/pamyatnyky/anhel-okhoronets` |
+| 058 | Багряне Розп'яття | `/memorial/pamyatnyky/bahriane-rozpiattia` |
+| 059 | Червоне і Чорне | `/memorial/pamyatnyky/chervone-i-chorne` |
+| 060 | Вічна Слава | `/memorial/pamyatnyky/vichna-slava` |
+| 061 | Смуга Світла | `/memorial/pamyatnyky/smuha-svitla` |
+| 062 | Скорбота | `/memorial/pamyatnyky/skorbota` |
+| 063 | Ангел Світла | `/memorial/pamyatnyky/anhel-svitla` |
+
+---
+
 ## Що зробити далі
 
 1. Пройдіться по таблиці й виправте ціни під свою економіку — це найшвидше.
 2. Заповніть **розмір** і **обробку** в адмінці: без них ціна лишається приблизною,
    а на сайті ці поля просто не показуються.
-3. Внесіть назви в поле «Назва товару» — тоді заголовки сторінок стануть
-   «Пам'ятник «Ангел Скорботи» — габро, чорний» замість «Пам'ятник №001».
-4. Після заповнення цін у розмітці товару автоматично з'явиться блок `Offer`,
-   і **ціна почне показуватись у видачі Google**.
+3. ~~Внести назви~~ — уже записані, заголовки стали
+   «Пам'ятник «Ангел Скорботи» — габро, чорний».
+4. ~~Ціни~~ — записані, блок `Offer` у розмітці активний, ціна може
+   з'являтись у видачі Google.
+5. **Подавайте sitemap у Search Console** — тепер він містить кінцеві адреси,
+   і Google побачить один перенос замість двох.
