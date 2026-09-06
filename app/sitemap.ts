@@ -34,8 +34,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // /kataloh is gone — it 308s to /memorial/pamyatnyky. A redirecting URL
     // must never be submitted: Google reports it as "Page with redirect" and
     // drops it from the index anyway.
-    { url: absoluteUrl("/memorial"), changeFrequency: "weekly", priority: 0.95 },
     { url: absoluteUrl("/memorial/pamyatnyky"), changeFrequency: "daily", priority: 0.95 },
+    { url: absoluteUrl("/memorial/kamin"), changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/proekty"), changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/posluhy"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/pro-nas"), changeFrequency: "monthly", priority: 0.8 },

@@ -14,7 +14,6 @@ import {
   findStoneByCode,
   isFacetSlug,
   stonePath,
-  verticalLabel,
 } from "@/lib/catalog-taxonomy"
 
 export const revalidate = 60
@@ -50,7 +49,6 @@ export default async function MonumentSlugPage({ params }: { params: Promise<{ s
         <div className="mx-auto max-w-7xl px-6 pt-6">
           <Breadcrumbs
             items={[
-              { name: verticalLabel("memorial"), href: "/memorial" },
               { name: "Каталог", href: "/memorial/pamyatnyky" },
               { name: facet.h1 },
             ]}

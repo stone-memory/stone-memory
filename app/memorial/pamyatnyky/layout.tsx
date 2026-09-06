@@ -1,8 +1,5 @@
 import type { Metadata } from "next"
-import { fetchStones } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
-import { stonePath, verticalLabel } from "@/lib/catalog-taxonomy"
-import { stoneTitle } from "@/lib/stone-meta"
 
 const PATH = "/memorial/pamyatnyky"
 
@@ -33,39 +30,10 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Каталог пам'ятників — Stone Memory" },
 }
 
-export default async function MonumentsCatalogLayout({ children }: { children: React.ReactNode }) {
-  const stones = await fetchStones()
-  const monuments = stones.filter((s) => s.category === "memorial")
-
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Головна", item: absoluteUrl("/") },
-      { "@type": "ListItem", position: 2, name: verticalLabel("memorial"), item: absoluteUrl("/memorial") },
-      { "@type": "ListItem", position: 3, name: "Каталог", item: absoluteUrl(PATH) },
-    ],
-  }
-
-  const itemList = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Каталог пам'ятників Stone Memory",
-    numberOfItems: monuments.length,
-    itemListElement: monuments.slice(0, 30).map((s, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      url: absoluteUrl(stonePath(s)),
-      name: stoneTitle(s),
-      image: s.imagePath,
-    })),
-  }
-
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
-      {children}
-    </>
-  )
+// BreadcrumbList та ItemList навмисно НЕ тут. Цей layout обгортає і [slug],
+// тому кожна картка товару отримувала другий, обрізаний BreadcrumbList
+// (Головна -> Каталог, без самого товару) і чужий ItemList усього каталогу.
+// Обидва блоки живуть на ./page.tsx — там, де вони описують саме ту сторінку.
+export default function MonumentsCatalogLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
 }

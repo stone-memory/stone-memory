@@ -29,7 +29,8 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
   const addNote = useOrdersStore((state) => state.addNote)
   const markContacted = useOrdersStore((state) => state.markContacted)
 
-  const totalPrice = order.items.reduce((sum, item) => sum + (item.priceFrom ?? 0), 0)
+  // Клієнт міг обрати камінь, відмінний від того, що на фото — рахуємо його ціну.
+  const totalPrice = order.items.reduce((sum, item) => sum + (item.selectedPrice ?? item.priceFrom ?? 0), 0)
 
   const handleAddNote = () => {
     if (noteText.trim()) {
@@ -108,8 +109,15 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-mono text-sm font-medium">{stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}</p>
+                      {item.selectedMaterial ? (
+                        <p className="text-xs font-medium text-accent mt-1">
+                          Обрано камінь: {item.selectedMaterial}
+                        </p>
+                      ) : null}
                       <p className="text-xs text-muted-foreground mt-1">
-                        {item.priceFrom ? `від ${formatPrice(item.priceFrom)}` : "Ціна не вказана"}
+                        {item.selectedPrice ?? item.priceFrom
+                          ? `від ${formatPrice((item.selectedPrice ?? item.priceFrom)!)}`
+                          : "Ціна не вказана"}
                       </p>
                     </div>
                   </div>

@@ -64,6 +64,8 @@ type Props = {
   value: FiltersState
   onChange: (v: FiltersState) => void
   totalCount: number
+  /** Ховати панель — вирішує CatalogGrid, коли перша картка пішла під шапку. */
+  hidden?: boolean
 }
 
 function Popover({
@@ -161,7 +163,7 @@ function Check({
   )
 }
 
-export function CatalogFilters({ category, items, value, onChange, totalCount }: Props) {
+export function CatalogFilters({ category, items, value, onChange, totalCount, hidden = false }: Props) {
   const { locale, formatPrice, currency, currencyRate } = useTranslation()
   const L = filterLabels[locale]
 
@@ -266,7 +268,14 @@ export function CatalogFilters({ category, items, value, onChange, totalCount }:
   const clearAll = () => onChange({ ...emptyFilters, sort: value.sort })
 
   return (
-    <div className="sticky top-14 z-30 -mx-6 border-b border-foreground/5 bg-background px-6 py-3">
+    <div
+      className={cn(
+        "sticky top-14 z-30 -mx-6 border-b border-foreground/5 bg-background px-6 py-3",
+        // Тільки на мобільному: на десктопі панель не заважає, там є місце.
+        "transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:translate-y-0",
+        hidden && "-translate-y-[calc(100%_+_3.5rem)] motion-reduce:transition-none"
+      )}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[160px] md:max-w-md">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.75} />

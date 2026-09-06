@@ -38,3 +38,5 @@ next-env.d.ts
 # cache
 .turbo/
 .eslintcache
+# проміжні фото під заливку в Supabase Storage
+/public/monuments/

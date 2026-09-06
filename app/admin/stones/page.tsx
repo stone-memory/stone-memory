@@ -35,9 +35,9 @@ const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", 
 const SHAPES: StoneShape[] = ["classic", "arch", "heart", "cross", "modern", "obelisk", "natural"]
 const FINISHES: StoneFinish[] = ["polished", "honed", "flamed", "antique", "natural", "split"]
 const MATERIALS: StoneMaterial[] = ["granite", "gabbro", "marble", "labradorite", "quartzite", "limestone", "sandstone", "onyx"]
-// Only "memorial" — the home & garden line was discontinued. The Category
-// union still admits "home" so historic rows and CRM deals keep parsing.
-const CATEGORIES: Category[] = ["memorial"]
+// Обидві лінійки: пам'ятники й дім. Це один спільний кабінет на два розділи
+// сайту, які між собою не перелінковані — категорія і є тим, що їх розділяє.
+const CATEGORIES: Category[] = ["memorial", "home"]
 
 function nextId(existing: string[]): string {
   let n = 1

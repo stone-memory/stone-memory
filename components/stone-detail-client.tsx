@@ -14,7 +14,9 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones } from "@/lib/store/stones"
 import { filterLabels, colorLabel, shapeLabel, finishLabel, materialLabel } from "@/lib/i18n/filters"
-import { VERTICAL_LABELS, stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
+import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
+import { MaterialPicker, type MaterialChoice } from "@/components/material-picker"
+import { defaultStone } from "@/lib/stone-guide"
 import { stoneAlt, stoneHeading } from "@/lib/stone-meta"
 import { toTelHref } from "@/lib/phone-format"
 import { cn } from "@/lib/utils"
@@ -44,6 +46,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   const { addItem, items, openSidebar } = useSelectionStore()
   const [active, setActive] = useState(0)
   const [shared, setShared] = useState(false)
+  const [choice, setChoice] = useState<MaterialChoice | null>(null)
 
   const gallery = useMemo(
     () => (stone.gallery && stone.gallery.length > 0 ? stone.gallery : [stone.imagePath]),
@@ -88,6 +91,10 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
     return scored
   }, [stones, stone])
 
+  // Камінь із фотографії — дефолт селектора й база для перерахунку цін.
+  const defaultEntry = defaultStone(stone)
+  const shownPrice = choice?.price ?? stone.priceFrom
+
   const L = filterLabels[locale]
   const isSelected = items.some((i) => i.id === stone.id)
   const displayName = stoneDisplayName(stone) ?? `№ ${stoneCode(stone)}`
@@ -96,12 +103,8 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   // no keyword in any of them.
   const heading = stoneHeading(stone, locale)
   const imageAlt = stoneAlt(stone, locale)
-  // Memorial is the only vertical left, and findStoneByCode() will not resolve
-  // a `home` row to this page at all, so the trail is unconditional.
-  // Vertical name, not the category name — the category still labels the
-  // eyebrow above the h1 further down.
-  const verticalHref = "/memorial"
-  const verticalName = VERTICAL_LABELS.memorial[locale]
+  // Хаб /memorial прибрано: він дублював навігацію, а вертикаль лишилась одна.
+  // Тому батьком картки товару став сам каталог.
   const catalogHref = "/memorial/pamyatnyky"
 
   const handleShare = async () => {
@@ -120,23 +123,31 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
     } catch {}
   }
 
+  // У кошик кладемо копію з вибором клієнта. Рядок каталогу не чіпаємо:
+  // у базі лишається камінь із фото, вибір живе тільки в заявці.
+  const orderLine = (): StoneItem =>
+    choice && choice.material !== defaultEntry.key
+      ? { ...stone, selectedMaterial: choice.label, selectedPrice: choice.price }
+      : stone
+
   const addToSelection = () => {
-    if (!isSelected) addItem(stone)
+    if (!isSelected) addItem(orderLine())
   }
 
   const buyNow = () => {
-    if (!isSelected) addItem(stone)
+    if (!isSelected) addItem(orderLine())
     openSidebar()
   }
 
   const specs: [string, string][] = [
     ["№", stoneCode(stone)],
     stone.materialType ? [L.material, materialLabel(stone.materialType, locale, stone.i18n?.materialType)] : null,
+    stone.accentMaterial ? [L.accentMaterial, materialLabel(stone.accentMaterial, locale)] : null,
     stone.color ? [L.color, colorLabel(stone.color, locale, stone.i18n?.color)] : null,
     stone.shape ? [L.shape, shapeLabel(stone.shape, locale, stone.i18n?.shape)] : null,
     stone.finish ? [L.finish, finishLabel(stone.finish, locale, stone.i18n?.finish)] : null,
-    stone.sizeCm ? ["Size", stone.sizeCm] : null,
-    stone.weightKg ? ["Weight", `${stone.weightKg} kg`] : null,
+    stone.sizeCm ? [L.size, stone.sizeCm] : null,
+    stone.weightKg ? [L.weight, `${stone.weightKg} kg`] : null,
   ].filter(Boolean) as [string, string][]
 
   // NOTE: Product + BreadcrumbList JSON-LD are emitted server-side in
@@ -150,7 +161,6 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
         <div className="mx-auto max-w-7xl px-6">
           <Breadcrumbs
             items={[
-              { name: verticalName, href: verticalHref },
               { name: t.nav.catalog, href: catalogHref },
               { name: displayName },
             ]}
@@ -240,16 +250,17 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                   stoneCode(stone),
                   // Same resolver the spec table uses, so the two cannot disagree.
                   stone.materialType ? materialLabel(stone.materialType, locale, stone.i18n?.materialType) : "",
-                  stone.category
+                  stone.category,
+                  stone.accentMaterial ? materialLabel(stone.accentMaterial, locale) : undefined
                 )}
               </p>
 
               <div className="mt-8 flex items-baseline gap-3">
-                {stone.priceFrom ? (
+                {shownPrice ? (
                   <>
                     <span className="text-sm text-muted-foreground">{t.catalog.fromPrice}</span>
                     <span className="text-3xl font-semibold tracking-tight-custom tabular-nums md:text-4xl">
-                      {formatPrice(stone.priceFrom)}
+                      {formatPrice(shownPrice)}
                     </span>
                   </>
                 ) : (
@@ -261,6 +272,12 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                   </a>
                 )}
               </div>
+
+              <MaterialPicker
+                stone={stone}
+                defaultEntry={defaultEntry}
+                onChange={setChoice}
+              />
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <button

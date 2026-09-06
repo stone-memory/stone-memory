@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { StoneCard } from "@/components/stone-card"
 import { CatalogFilters, applyFilters, emptyFilters, type FiltersState } from "@/components/catalog-filters"
+import { CatalogPager } from "@/components/catalog-pager"
+import { useHideOnScroll, usePassedTop } from "@/lib/use-scroll-direction"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useOrdersStore } from "@/lib/store/orders"
 import { usePopularity } from "@/lib/store/popularity"
@@ -101,35 +103,46 @@ export function CatalogGrid({
     [baseItems, filters, popularity]
   )
 
-  // Render the grid in windows and grow it as the user scrolls, so the page
-  // mounts ~one screen of cards instead of all 60+ at once.
-  const PAGE_SIZE = 9
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const sentinelRef = useRef<HTMLDivElement>(null)
+  // Посторінковий вивід: 15 карток на телефоні, 30 на десктопі.
+  const pageSize = usePageSize()
+  const [page, setPage] = useState(1)
+  const sectionRef = useRef<HTMLElement>(null)
+  // Панель фільтрів ховається при прокрутці вниз — але лише після того, як
+  // перша картка пішла під шапку. Раніше під сховану панель відкривалась
+  // порожня смуга: `sticky` зберігає місце в потоці, тому контент знизу
+  // не піднімається.
+  const scrollingDown = useHideOnScroll()
+  const { ref: firstCardRef, passed: pastFirstCard } = usePassedTop(56)
 
+  const pageCount = Math.max(1, Math.ceil(filteredStones.length / pageSize))
+
+  // Новий фільтр — новий набір, тому повертаємось на першу сторінку.
   useEffect(() => {
-    setVisibleCount(PAGE_SIZE)
+    setPage(1)
   }, [category, filters])
 
-  const visibleStones = filteredStones.slice(0, visibleCount)
-  const hasMore = visibleCount < filteredStones.length
-
+  // Зміна ширини екрана міняє розмір сторінки, а з ним і їх кількість. Тут
+  // саме притискаємо номер до наявного діапазону, а не скидаємо на першу:
+  // після повороту телефона людина має лишитись приблизно там, де читала.
   useEffect(() => {
-    if (!hasMore) return
-    const el = sentinelRef.current
-    if (!el) return
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) setVisibleCount((c) => c + PAGE_SIZE)
-      },
-      { rootMargin: "600px 0px" }
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [hasMore, filteredStones.length])
+    setPage((p) => Math.min(p, pageCount))
+  }, [pageCount])
+
+  const visibleStones = filteredStones.slice((page - 1) * pageSize, page * pageSize)
+
+  const goToPage = (next: number) => {
+    setPage(next)
+    // Без цього нова сторінка відкривається на висоті, де людина натиснула
+    // перемикач, — тобто одразу в кінці списку.
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   return (
-    <section id="catalog" className="mx-auto max-w-7xl px-6 pt-6 pb-16 md:pt-8 md:pb-20 scroll-mt-14">
+    <section
+      id="catalog"
+      ref={sectionRef}
+      className="mx-auto max-w-7xl px-6 pt-6 pb-16 md:pt-8 md:pb-20 scroll-mt-14"
+    >
       <div className="mb-6 md:mb-8">
         {/* h1, not h2: this is the catalogue page's main heading and the route
             previously shipped no h1 at all. */}
@@ -154,6 +167,7 @@ export function CatalogGrid({
         value={filters}
         onChange={setFilters}
         totalCount={filteredStones.length}
+        hidden={scrollingDown && pastFirstCard}
       />
 
       {filteredStones.length === 0 ? (
@@ -162,15 +176,45 @@ export function CatalogGrid({
         </div>
       ) : (
         <>
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Вартовий на верхній межі сітки: поки він у полі зору, перша
+              картка ще не пішла під шапку, і ховати панель зарано — під нею
+              лишилась би порожня смуга. */}
+          <div ref={firstCardRef} aria-hidden className="mt-8 h-px -mb-px" />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {visibleStones.map((stone, i) => (
               // First three are above the fold on every breakpoint (1/2/3 cols).
               <StoneCard key={stone.id} item={stone} priority={i < 3} />
             ))}
           </div>
-          {hasMore && <div ref={sentinelRef} aria-hidden className="h-12" />}
+          <CatalogPager
+            page={page}
+            pageCount={pageCount}
+            onChange={goToPage}
+            labels={t.catalog}
+          />
         </>
       )}
     </section>
   )
+}
+
+/**
+ * Скільки карток на сторінці: 15 на телефоні, 30 від планшета вгору.
+ *
+ * На сервері віддаємо десктопне значення, бо ширини там немає, а 30 — це
+ * надмножина: мобільний браузер після монтування просто обріже список до 15.
+ * Зворотний порядок дав би на десктопі порожні місця в сітці до гідратації.
+ */
+function usePageSize(): number {
+  const [size, setSize] = useState(30)
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)")
+    const apply = () => setSize(mq.matches ? 30 : 15)
+    apply()
+    mq.addEventListener("change", apply)
+    return () => mq.removeEventListener("change", apply)
+  }, [])
+
+  return size
 }

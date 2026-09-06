@@ -147,8 +147,13 @@ export function SelectionSidebar() {
                             {/* Info */}
                             <div className="flex-1">
                               <p className="font-mono text-sm tabular-nums">{stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}</p>
+                              {item.selectedMaterial ? (
+                                <p className="mt-0.5 text-xs text-muted-foreground">
+                                  Камінь: {item.selectedMaterial}
+                                </p>
+                              ) : null}
                               <p className="mt-1 text-sm text-muted-foreground">
-                                {item.priceFrom ? <>{t.catalog.fromPrice} {formatPrice(item.priceFrom)}</> : t.catalog.requestQuote}
+                                {item.selectedPrice ?? item.priceFrom ? <>{t.catalog.fromPrice} {formatPrice(item.selectedPrice ?? item.priceFrom!)}</> : t.catalog.requestQuote}
                               </p>
                             </div>
 

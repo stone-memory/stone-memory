@@ -11,7 +11,6 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
 import { useNavSettings } from "@/components/nav-settings-provider"
-import { VERTICAL_LABELS } from "@/lib/catalog-taxonomy"
 import { cn } from "@/lib/utils"
 import type { Locale } from "@/lib/types"
 
@@ -50,9 +49,17 @@ export function Header({ className }: HeaderProps) {
     lt: "Darbai",
   }
 
+  const stoneLabels: Record<Locale, string> = {
+    uk: "Камені",
+    pl: "Kamienie",
+    en: "Stones",
+    de: "Steine",
+    lt: "Akmenys",
+  }
+
   const navItems = [
-    { href: "/memorial", label: VERTICAL_LABELS.memorial[locale] },
     { href: "/memorial/pamyatnyky", label: t.nav.catalog },
+    { href: "/memorial/kamin", label: stoneLabels[locale] },
     { href: "/posluhy", label: t.nav.services },
     ...(showProjects ? [{ href: "/proekty", label: projectsLabels[locale] }] : []),
     { href: "/pro-nas", label: aboutLabels[locale] },
