@@ -26,6 +26,10 @@ export type Dictionary = {
     addToSelection: string
     id: string
     viewAll: string
+    pagesLabel: string
+    page: string
+    prevPage: string
+    nextPage: string
   }
   services: {
     label: string
@@ -114,6 +118,10 @@ const uk: Dictionary = {
     addToSelection: "Додати",
     id: "ID",
     viewAll: "Дивитись усі",
+    pagesLabel: "Сторінки каталогу",
+    page: "Сторінка",
+    prevPage: "Назад",
+    nextPage: "Далі",
   },
   services: {
     label: "ПОСЛУГИ",
@@ -202,6 +210,10 @@ const pl: Dictionary = {
     addToSelection: "Dodaj",
     id: "ID",
     viewAll: "Zobacz wszystkie",
+    pagesLabel: "Strony katalogu",
+    page: "Strona",
+    prevPage: "Wstecz",
+    nextPage: "Dalej",
   },
   services: {
     label: "USŁUGI",
@@ -290,6 +302,10 @@ const en: Dictionary = {
     addToSelection: "Add",
     id: "ID",
     viewAll: "View all",
+    pagesLabel: "Catalogue pages",
+    page: "Page",
+    prevPage: "Previous",
+    nextPage: "Next",
   },
   services: {
     label: "SERVICES",
@@ -378,6 +394,10 @@ const de: Dictionary = {
     addToSelection: "Hinzufügen",
     id: "ID",
     viewAll: "Alle ansehen",
+    pagesLabel: "Katalogseiten",
+    page: "Seite",
+    prevPage: "Zurück",
+    nextPage: "Weiter",
   },
   services: {
     label: "LEISTUNGEN",
@@ -466,6 +486,10 @@ const lt: Dictionary = {
     addToSelection: "Pridėti",
     id: "ID",
     viewAll: "Žiūrėti visus",
+    pagesLabel: "Katalogo puslapiai",
+    page: "Puslapis",
+    prevPage: "Atgal",
+    nextPage: "Toliau",
   },
   services: {
     label: "PASLAUGOS",
