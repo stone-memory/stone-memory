@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useStonesAdminStore } from "@/lib/store/stones"
 import { ImageUploader } from "@/components/admin/image-uploader"
-import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category, Locale } from "@/lib/types"
+import type { StoneItem, StoneColor, StoneShape, StoneFinish, Category, Locale } from "@/lib/types"
+import { STONE_KEYS } from "@/lib/stone-guide"
 import { materialLabel, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { formatUAHDirect } from "@/lib/admin-format"
 import { stoneCode } from "@/lib/catalog-taxonomy"
@@ -34,7 +35,13 @@ import { CSS } from "@dnd-kit/utilities"
 const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", "brown", "beige", "multi"]
 const SHAPES: StoneShape[] = ["classic", "arch", "heart", "cross", "modern", "obelisk", "natural"]
 const FINISHES: StoneFinish[] = ["polished", "honed", "flamed", "antique", "natural", "split"]
-const MATERIALS: StoneMaterial[] = ["granite", "gabbro", "marble", "labradorite", "quartzite", "limestone", "sandstone", "onyx"]
+// Сім каменів із довідника, а не породи. Дефолт селектора на сторінці товару
+// шукає запис за точним значенням цього поля: узагальнене "granite" у нього не
+// потрапляє й доводиться вгадувати камінь за кольором. Кварцит, вапняк,
+// пісковик і онікс прибрані — це залишок від знятої лінійки стільниць.
+// Старі значення в наявних товарах не зникають: OptionPicker показує їх
+// у списку «вже використані».
+const MATERIALS: string[] = STONE_KEYS
 // Only "memorial" — the home & garden line was discontinued. The Category
 // union still admits "home" so historic rows and CRM deals keep parsing.
 const CATEGORIES: Category[] = ["memorial"]
@@ -550,6 +557,7 @@ function StoneEditor({
       )
     return {
       materials: collect((s) => s.materialType),
+      accents: collect((s) => s.accentMaterial),
       colors: collect((s) => s.color),
       shapes: collect((s) => s.shape),
       finishes: collect((s) => s.finish),
@@ -616,6 +624,15 @@ function StoneEditor({
               onChange={(v) => setDraft({ ...draft, materialType: v })}
               translations={draft.i18n?.materialType}
               onTranslationsChange={(t) => setI18nField("materialType", t)}
+            />
+          </Field>
+          <Field label="Контрастні елементи">
+            <OptionPicker
+              value={draft.accentMaterial}
+              canonical={MATERIALS}
+              used={used.accents}
+              resolve={(v) => materialLabel(v, "uk")}
+              onChange={(v) => setDraft({ ...draft, accentMaterial: v })}
             />
           </Field>
           <Field label="Колір">

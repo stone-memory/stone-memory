@@ -11,6 +11,7 @@ import { useTranslation } from "@/lib/i18n/context"
 import { shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { stoneCode, stoneDisplayName, stonePath } from "@/lib/catalog-taxonomy"
 import { stoneAlt } from "@/lib/stone-meta"
+import { defaultStone } from "@/lib/stone-guide"
 import type { StoneItem, Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -108,6 +109,7 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
     : item.finish
     ? finishLabel(item.finish, locale, item.i18n?.finish).toUpperCase()
     : ""
+  const stone = defaultStone(item)
   const description = buildDescription(item, locale)
   const L = specLabels[locale]
 
@@ -162,6 +164,14 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">
+            {/* Камінь із фотографії — той самий макрознімок, що в селекторі на
+                сторінці товару, щоб у каталозі було видно породу, а не лише колір. */}
+            <span className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.04] py-1 pl-1 pr-3 text-[12px] text-foreground/75">
+              <span className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full ring-1 ring-foreground/10">
+                <Image src={stone.swatch} alt="" fill sizes="20px" className="object-cover" />
+              </span>
+              {stone.name}
+            </span>
             {item.sizeCm && (
               <span className="inline-flex items-center rounded-full bg-foreground/[0.04] px-3 py-1.5 text-[12px] text-foreground/75">
                 {L.size}: {item.sizeCm}

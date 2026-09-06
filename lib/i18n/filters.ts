@@ -54,6 +54,7 @@ export const filterLabels: Record<Locale, {
   priceRange: string
   tone: string
   material: string
+  accentMaterial: string
   country: string
   sortBy: string
   clear: string
@@ -85,7 +86,12 @@ export const filterLabels: Record<Locale, {
    * spec table is the source of truth, so the copy must not contradict it.
    * Empty string when the row has no material recorded.
    */
-  descriptionBody: (code: string, material: string, category: "memorial" | "home") => string
+  descriptionBody: (
+    code: string,
+    material: string,
+    category: "memorial" | "home",
+    accent?: string
+  ) => string
   relatedTitle: string
   back: string
   shareTitle: string
@@ -99,6 +105,7 @@ export const filterLabels: Record<Locale, {
     priceRange: "Ціна",
     tone: "Тон",
     material: "Матеріал",
+    accentMaterial: "Контрастні елементи",
     country: "Країна",
     sortBy: "Сортувати",
     clear: "Скинути",
@@ -124,8 +131,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Замовити",
     specifications: "Характеристики",
     description: "Опис",
-    descriptionBody: (code, material, category) =>
-      `${category === "memorial" ? "Пам'ятник" : "Виріб з натурального каменю"} № ${code}.${material ? ` Матеріал — ${material}.` : ""} 7 етапів обробки у власному цеху в Костополі: розпил, шліфування, полірування, гравіювання, герметизація, контроль геометрії. Морозостійкий, стійкий до УФ. Паспорт матеріалу, 5 років гарантії на все — фундамент, монтаж і камінь.`,
+    descriptionBody: (code, material, category, accent) =>
+      `${category === "memorial" ? "Пам'ятник" : "Виріб з натурального каменю"} № ${code}.${material ? ` Матеріал — ${material}.` : ""}${accent ? ` Контрастні елементи — ${accent}.` : ""} 7 етапів обробки у власному цеху в Костополі: розпил, шліфування, полірування, гравіювання, герметизація, контроль геометрії. Морозостійкий, стійкий до УФ. Паспорт матеріалу, 5 років гарантії на все — фундамент, монтаж і камінь.`,
     relatedTitle: "Схожі позиції",
     back: "Назад до каталогу",
     shareTitle: "Поділитися",
@@ -138,6 +145,7 @@ export const filterLabels: Record<Locale, {
     finish: "Wykończenie",
     tone: "Ton",
     material: "Materiał",
+    accentMaterial: "Elementy kontrastowe",
     country: "Kraj",
     priceRange: "Cena",
     sortBy: "Sortuj",
@@ -164,8 +172,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Zamów",
     specifications: "Specyfikacja",
     description: "Opis",
-    descriptionBody: (code, material, category) =>
-      `${category === "memorial" ? "Pomnik" : "Wyrób z kamienia naturalnego"} nr ${code}.${material ? ` Materiał — ${material}.` : ""} 7 etapów obróbki we własnym zakładzie w Kostopolu: cięcie, szlifowanie, polerowanie, grawerowanie, uszczelnianie, kontrola. Odporny na mróz i UV. Paszport materiału, 5 lat gwarancji na wszystko — fundament, montaż i kamień.`,
+    descriptionBody: (code, material, category, accent) =>
+      `${category === "memorial" ? "Pomnik" : "Wyrób z kamienia naturalnego"} nr ${code}.${material ? ` Materiał — ${material}.` : ""}${accent ? ` Elementy kontrastowe — ${accent}.` : ""} 7 etapów obróbki we własnym zakładzie w Kostopolu: cięcie, szlifowanie, polerowanie, grawerowanie, uszczelnianie, kontrola. Odporny na mróz i UV. Paszport materiału, 5 lat gwarancji na wszystko — fundament, montaż i kamień.`,
     relatedTitle: "Podobne pozycje",
     back: "Powrót do katalogu",
     shareTitle: "Udostępnij",
@@ -178,6 +186,7 @@ export const filterLabels: Record<Locale, {
     finish: "Finish",
     tone: "Tone",
     material: "Material",
+    accentMaterial: "Contrast elements",
     country: "Country",
     priceRange: "Price",
     sortBy: "Sort",
@@ -204,8 +213,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Order",
     specifications: "Specifications",
     description: "Description",
-    descriptionBody: (code, material, category) =>
-      `${category === "memorial" ? "Monument" : "Natural stone piece"} No. ${code}.${material ? ` Material — ${material}.` : ""} Seven stages of hand-finishing in our own Kostopil workshop: cutting, grinding, polishing, engraving, sealing, QC. Frost- and UV-resistant. Material passport included, 5-year warranty on everything — foundation, installation and stone.`,
+    descriptionBody: (code, material, category, accent) =>
+      `${category === "memorial" ? "Monument" : "Natural stone piece"} No. ${code}.${material ? ` Material — ${material}.` : ""}${accent ? ` Contrast elements — ${accent}.` : ""} Seven stages of hand-finishing in our own Kostopil workshop: cutting, grinding, polishing, engraving, sealing, QC. Frost- and UV-resistant. Material passport included, 5-year warranty on everything — foundation, installation and stone.`,
     relatedTitle: "Related pieces",
     back: "Back to catalog",
     shareTitle: "Share",
@@ -218,6 +227,7 @@ export const filterLabels: Record<Locale, {
     finish: "Oberfläche",
     tone: "Ton",
     material: "Material",
+    accentMaterial: "Kontrastelemente",
     country: "Herkunft",
     priceRange: "Preis",
     sortBy: "Sortieren",
@@ -244,8 +254,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Bestellen",
     specifications: "Spezifikation",
     description: "Beschreibung",
-    descriptionBody: (code, material, category) =>
-      `${category === "memorial" ? "Grabmal" : "Naturstein-Werkstück"} Nr. ${code}.${material ? ` Material — ${material}.` : ""} Sieben Stufen in unserer eigenen Werkstatt in Kostopil: Zuschnitt, Schleifen, Polieren, Gravur, Versiegelung, QK. Frost- und UV-beständig. Material-Pass, 5 Jahre Garantie auf alles — Fundament, Montage und Stein.`,
+    descriptionBody: (code, material, category, accent) =>
+      `${category === "memorial" ? "Grabmal" : "Naturstein-Werkstück"} Nr. ${code}.${material ? ` Material — ${material}.` : ""}${accent ? ` Kontrastelemente — ${accent}.` : ""} Sieben Stufen in unserer eigenen Werkstatt in Kostopil: Zuschnitt, Schleifen, Polieren, Gravur, Versiegelung, QK. Frost- und UV-beständig. Material-Pass, 5 Jahre Garantie auf alles — Fundament, Montage und Stein.`,
     relatedTitle: "Ähnliche Stücke",
     back: "Zurück zum Katalog",
     shareTitle: "Teilen",
@@ -258,6 +268,7 @@ export const filterLabels: Record<Locale, {
     finish: "Apdaila",
     tone: "Tonas",
     material: "Medžiaga",
+    accentMaterial: "Kontrastiniai elementai",
     country: "Šalis",
     priceRange: "Kaina",
     sortBy: "Rūšiuoti",
@@ -284,8 +295,8 @@ export const filterLabels: Record<Locale, {
     buyNow: "Užsakyti",
     specifications: "Specifikacija",
     description: "Aprašymas",
-    descriptionBody: (code, material, category) =>
-      `${category === "memorial" ? "Paminklas" : "Natūralaus akmens gaminys"} Nr. ${code}.${material ? ` Medžiaga — ${material}.` : ""} Septyni rankinės apdailos etapai nuosavoje Kostopilio dirbtuvėje: pjovimas, šlifavimas, poliravimas, graviravimas, sandarinimas, kokybės kontrolė. Atsparus šalčiui ir UV. Medžiagos pasas, 5 m. garantija viskam — pamatui, montavimui ir akmeniui.`,
+    descriptionBody: (code, material, category, accent) =>
+      `${category === "memorial" ? "Paminklas" : "Natūralaus akmens gaminys"} Nr. ${code}.${material ? ` Medžiaga — ${material}.` : ""}${accent ? ` Kontrastiniai elementai — ${accent}.` : ""} Septyni rankinės apdailos etapai nuosavoje Kostopilio dirbtuvėje: pjovimas, šlifavimas, poliravimas, graviravimas, sandarinimas, kokybės kontrolė. Atsparus šalčiui ir UV. Medžiagos pasas, 5 m. garantija viskam — pamatui, montavimui ir akmeniui.`,
     relatedTitle: "Panašūs",
     back: "Atgal į katalogą",
     shareTitle: "Dalintis",
