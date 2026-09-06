@@ -11,7 +11,6 @@ import {
   stoneCode,
   stoneSlug,
   stonePath,
-  verticalLabel,
 } from "@/lib/catalog-taxonomy"
 import { stoneDescription, stoneTitle } from "@/lib/stone-meta"
 
@@ -103,9 +102,8 @@ export default async function SlugLayout({
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Головна", item: absoluteUrl("/") },
-      { "@type": "ListItem", position: 2, name: verticalLabel("memorial"), item: absoluteUrl("/memorial") },
-      { "@type": "ListItem", position: 3, name: "Каталог", item: absoluteUrl("/memorial/pamyatnyky") },
-      { "@type": "ListItem", position: 4, name, item: absoluteUrl(path) },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: absoluteUrl("/memorial/pamyatnyky") },
+      { "@type": "ListItem", position: 3, name, item: absoluteUrl(path) },
     ],
   })
 

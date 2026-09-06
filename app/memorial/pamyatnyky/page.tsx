@@ -7,7 +7,11 @@ import { Breadcrumbs } from "@/components/breadcrumbs"
 import { CatalogGrid } from "@/components/catalog-grid"
 import { CatalogIndex } from "@/components/catalog-index"
 import { fetchStones } from "@/lib/data-source"
-import { MEMORIAL_FACETS, facetItems, verticalLabel } from "@/lib/catalog-taxonomy"
+import { MEMORIAL_FACETS, facetItems, stonePath } from "@/lib/catalog-taxonomy"
+import { stoneTitle } from "@/lib/stone-meta"
+import { absoluteUrl } from "@/lib/site-config"
+
+const PATH = "/memorial/pamyatnyky"
 
 export const revalidate = 60
 
@@ -25,13 +29,39 @@ export const metadata: Metadata = {
  */
 export default async function MonumentsCatalogPage() {
   const stones = await fetchStones()
+  const monuments = stones.filter((s) => s.category === "memorial")
+
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Головна", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: absoluteUrl(PATH) },
+    ],
+  }
+
+  const itemList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Каталог пам'ятників Stone Memory",
+    numberOfItems: monuments.length,
+    itemListElement: monuments.slice(0, 30).map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: absoluteUrl(stonePath(s)),
+      name: stoneTitle(s),
+      image: s.imagePath,
+    })),
+  }
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
       <Header />
       <main id="main-content">
         <div className="mx-auto max-w-7xl px-6 pt-6">
-          <Breadcrumbs items={[{ name: verticalLabel("memorial"), href: "/memorial" }, { name: "Каталог" }]} />
+          <Breadcrumbs items={[{ name: "Каталог" }]} />
         </div>
 
         <CatalogGrid
