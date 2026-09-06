@@ -51,6 +51,8 @@ export const filterLabels: Record<Locale, {
   color: string
   shape: string
   finish: string
+  size: string
+  weight: string
   priceRange: string
   tone: string
   material: string
@@ -102,6 +104,8 @@ export const filterLabels: Record<Locale, {
     color: "Колір",
     shape: "Тип",
     finish: "Поверхня",
+    size: "Розмір",
+    weight: "Маса",
     priceRange: "Ціна",
     tone: "Тон",
     material: "Матеріал",
@@ -143,6 +147,8 @@ export const filterLabels: Record<Locale, {
     color: "Kolor",
     shape: "Typ",
     finish: "Wykończenie",
+    size: "Rozmiar",
+    weight: "Waga",
     tone: "Ton",
     material: "Materiał",
     accentMaterial: "Elementy kontrastowe",
@@ -184,6 +190,8 @@ export const filterLabels: Record<Locale, {
     color: "Colour",
     shape: "Type",
     finish: "Finish",
+    size: "Size",
+    weight: "Weight",
     tone: "Tone",
     material: "Material",
     accentMaterial: "Contrast elements",
@@ -225,6 +233,8 @@ export const filterLabels: Record<Locale, {
     color: "Farbe",
     shape: "Typ",
     finish: "Oberfläche",
+    size: "Größe",
+    weight: "Gewicht",
     tone: "Ton",
     material: "Material",
     accentMaterial: "Kontrastelemente",
@@ -266,6 +276,8 @@ export const filterLabels: Record<Locale, {
     color: "Spalva",
     shape: "Tipas",
     finish: "Apdaila",
+    size: "Dydis",
+    weight: "Svoris",
     tone: "Tonas",
     material: "Medžiaga",
     accentMaterial: "Kontrastiniai elementai",

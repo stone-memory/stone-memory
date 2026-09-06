@@ -146,8 +146,8 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
     stone.color ? [L.color, colorLabel(stone.color, locale, stone.i18n?.color)] : null,
     stone.shape ? [L.shape, shapeLabel(stone.shape, locale, stone.i18n?.shape)] : null,
     stone.finish ? [L.finish, finishLabel(stone.finish, locale, stone.i18n?.finish)] : null,
-    stone.sizeCm ? ["Size", stone.sizeCm] : null,
-    stone.weightKg ? ["Weight", `${stone.weightKg} kg`] : null,
+    stone.sizeCm ? [L.size, stone.sizeCm] : null,
+    stone.weightKg ? [L.weight, `${stone.weightKg} kg`] : null,
   ].filter(Boolean) as [string, string][]
 
   // NOTE: Product + BreadcrumbList JSON-LD are emitted server-side in

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useSelectionStore } from "@/lib/store/selection"
 import { usePopularityStore } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
-import { shapeLabel, finishLabel } from "@/lib/i18n/filters"
+import { filterLabels, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { stoneCode, stoneDisplayName, stonePath } from "@/lib/catalog-taxonomy"
 import { stoneAlt } from "@/lib/stone-meta"
 import { defaultStone } from "@/lib/stone-guide"
@@ -77,13 +77,9 @@ function buildDescription(item: StoneItem, locale: Locale): string {
   return templates[locale]
 }
 
-const specLabels: Record<Locale, { size: string; weight: string; finish: string }> = {
-  uk: { size: "Розмір", weight: "Маса", finish: "Поверхня" },
-  pl: { size: "Rozmiar", weight: "Waga", finish: "Wykończenie" },
-  en: { size: "Size", weight: "Weight", finish: "Finish" },
-  de: { size: "Größe", weight: "Gewicht", finish: "Oberfläche" },
-  lt: { size: "Dydis", weight: "Svoris", finish: "Apdaila" },
-}
+// Підписи характеристик беремо з filterLabels — того самого словника, що й
+// сторінка товару. Доки картка тримала власну копію, сторінка товару лишалась
+// без перекладу й показувала «Size» в усіх мовах.
 
 export function StoneCard({ item, showBestseller, priority = false }: StoneCardProps) {
   const [showSuccess, setShowSuccess] = useState(false)
@@ -111,7 +107,7 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
     : ""
   const stone = defaultStone(item)
   const description = buildDescription(item, locale)
-  const L = specLabels[locale]
+  const L = filterLabels[locale]
 
   return (
     <motion.article
