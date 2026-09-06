@@ -5,6 +5,8 @@ import { useChatStore } from "@/lib/store/chat"
 import { useTranslation } from "@/lib/i18n/context"
 import { useBusinessProfile } from "@/lib/store/business-profile"
 import { PhoneLink } from "@/components/phone-link"
+import { useHideOnScroll } from "@/lib/use-scroll-direction"
+import { cn } from "@/lib/utils"
 import type { Locale } from "@/lib/types"
 
 const labels: Record<Locale, { call: string; chat: string }> = {
@@ -20,9 +22,21 @@ export function StickyMobileCTA() {
   const L = labels[locale]
   const openChat = useChatStore((s) => s.open)
   const phone = useBusinessProfile().phone
+  // Ховається при прокрутці вниз і повертається вгору — панель перекривала
+  // нижній ряд карток у каталозі.
+  const hidden = useHideOnScroll()
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none">
+    <div
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none",
+        "transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        // motion-reduce: користувач просив прибрати анімації — тоді ховаємо
+        // миттєво, а не з'їжджанням.
+        hidden && "translate-y-[calc(100%_+_0.75rem)] motion-reduce:transition-none"
+      )}
+      aria-hidden={hidden}
+    >
       <div className="mx-3 mb-3 pointer-events-auto">
         <div className="grid grid-cols-2 gap-2 rounded-2xl border border-foreground/10 bg-background/95 p-2 shadow-hover backdrop-blur-md">
           <PhoneLink

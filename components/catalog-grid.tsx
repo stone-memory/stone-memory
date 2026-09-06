@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { StoneCard } from "@/components/stone-card"
 import { CatalogFilters, applyFilters, emptyFilters, type FiltersState } from "@/components/catalog-filters"
+import { useHideOnScroll, usePassedTop } from "@/lib/use-scroll-direction"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useOrdersStore } from "@/lib/store/orders"
 import { usePopularity } from "@/lib/store/popularity"
@@ -106,6 +107,12 @@ export function CatalogGrid({
   const PAGE_SIZE = 9
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const sentinelRef = useRef<HTMLDivElement>(null)
+  // Панель фільтрів ховається при прокрутці вниз — але лише після того, як
+  // перша картка пішла під шапку. Раніше під сховану панель відкривалась
+  // порожня смуга: `sticky` зберігає місце в потоці, тому контент знизу
+  // не піднімається.
+  const scrollingDown = useHideOnScroll()
+  const { ref: firstCardRef, passed: pastFirstCard } = usePassedTop(56)
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE)
@@ -154,6 +161,7 @@ export function CatalogGrid({
         value={filters}
         onChange={setFilters}
         totalCount={filteredStones.length}
+        hidden={scrollingDown && pastFirstCard}
       />
 
       {filteredStones.length === 0 ? (
@@ -162,7 +170,11 @@ export function CatalogGrid({
         </div>
       ) : (
         <>
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Вартовий на верхній межі сітки: поки він у полі зору, перша
+              картка ще не пішла під шапку, і ховати панель зарано — під нею
+              лишилась би порожня смуга. */}
+          <div ref={firstCardRef} aria-hidden className="mt-8 h-px -mb-px" />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {visibleStones.map((stone, i) => (
               // First three are above the fold on every breakpoint (1/2/3 cols).
               <StoneCard key={stone.id} item={stone} priority={i < 3} />
