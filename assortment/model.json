@@ -1,0 +1,205 @@
+{
+ "version": 2,
+ "formula": "ціна = (база/калібр) × складність × ((1-k) + k × коеф_родовища × обʼєм/40)",
+ "note": "Родовище й розмір діють лише через частку каменю k. Ринок не диференціює пам'ятники за родовищем: 3 позиції з 1385.",
+ "types": [
+  {
+   "key": "odynarnyi",
+   "label": "Пам'ятник одинарний",
+   "base": 26000,
+   "stone_share": 0.35
+  },
+  {
+   "key": "podviynyi",
+   "label": "Пам'ятник подвійний",
+   "base": 43000,
+   "stone_share": 0.3
+  },
+  {
+   "key": "yevropeyskyi",
+   "label": "Пам'ятник європейський",
+   "base": 40000,
+   "stone_share": 0.35
+  },
+  {
+   "key": "dytyachyi",
+   "label": "Дитячий пам'ятник",
+   "base": 34500,
+   "stone_share": 0.35
+  },
+  {
+   "key": "khrest",
+   "label": "Хрест гранітний",
+   "base": 35000,
+   "stone_share": 0.35
+  },
+  {
+   "key": "kompleks",
+   "label": "Меморіальний комплекс",
+   "base": 125000,
+   "stone_share": 0.15
+  },
+  {
+   "key": "viyskovyi",
+   "label": "Військовий пам'ятник",
+   "base": 190000,
+   "stone_share": 0.15
+  }
+ ],
+ "calibration": {
+  "odynarnyi": 1.0192,
+  "podviynyi": 0.9767,
+  "yevropeyskyi": 0.975,
+  "dytyachyi": 1.0,
+  "khrest": 1.0286,
+  "kompleks": 1.0,
+  "viyskovyi": 0.9711
+ },
+ "materials": [
+  {
+   "deposit": "Покостівський",
+   "material": "granite",
+   "color": "grey",
+   "coef": 0.72
+  },
+  {
+   "deposit": "Габро (Головинське)",
+   "material": "gabbro",
+   "color": "black",
+   "coef": 0.8
+  },
+  {
+   "deposit": "Лабрадорит (Добринський)",
+   "material": "labradorite",
+   "color": "black",
+   "coef": 0.92
+  },
+  {
+   "deposit": "Корнинський",
+   "material": "granite",
+   "color": "grey",
+   "coef": 0.94
+  },
+  {
+   "deposit": "Капустинський",
+   "material": "granite",
+   "color": "red",
+   "coef": 0.98
+  },
+  {
+   "deposit": "Танський",
+   "material": "granite",
+   "color": "grey",
+   "coef": 0.99
+  },
+  {
+   "deposit": "Софіївський",
+   "material": "granite",
+   "color": "grey",
+   "coef": 1.0
+  },
+  {
+   "deposit": "Межиріченський",
+   "material": "granite",
+   "color": "red",
+   "coef": 1.02
+  },
+  {
+   "deposit": "Лабрадорит (Горбулівський)",
+   "material": "labradorite",
+   "color": "black",
+   "coef": 1.03
+  },
+  {
+   "deposit": "Габро (Букинське)",
+   "material": "gabbro",
+   "color": "black",
+   "coef": 1.04
+  },
+  {
+   "deposit": "Дідковицький",
+   "material": "granite",
+   "color": "green",
+   "coef": 1.08
+  },
+  {
+   "deposit": "Токівський",
+   "material": "granite",
+   "color": "brown",
+   "coef": 1.15
+  },
+  {
+   "deposit": "Берестовецький",
+   "material": "granite",
+   "color": "black",
+   "coef": 1.18
+  },
+  {
+   "deposit": "Маславський",
+   "material": "granite",
+   "color": "green",
+   "coef": 1.28
+  },
+  {
+   "deposit": "Лезниківський",
+   "material": "granite",
+   "color": "red",
+   "coef": 1.1
+  },
+  {
+   "deposit": "Мармур білий",
+   "material": "marble",
+   "color": "white",
+   "coef": 1.35
+  }
+ ],
+ "sizes": [
+  {
+   "mm": "800x450x80",
+   "dm3": 28.8,
+   "label": "Економ"
+  },
+  {
+   "mm": "1000x500x80",
+   "dm3": 40.0,
+   "label": "Стандарт"
+  },
+  {
+   "mm": "1000x600x80",
+   "dm3": 48.0,
+   "label": "Збільшений"
+  },
+  {
+   "mm": "1200x600x80",
+   "dm3": 57.6,
+   "label": "Преміум"
+  }
+ ],
+ "complexity": [
+  {
+   "key": "prosta",
+   "label": "Проста форма, гравіювання напису",
+   "coef": 0.7
+  },
+  {
+   "key": "bazova",
+   "label": "Базова, портрет і напис",
+   "coef": 0.85
+  },
+  {
+   "key": "standartna",
+   "label": "Стандартна, портрет і орнамент",
+   "coef": 1.0
+  },
+  {
+   "key": "skladna",
+   "label": "Складна, різьблення й декор",
+   "coef": 1.2
+  },
+  {
+   "key": "elitna",
+   "label": "Елітна, скульптура й позолота",
+   "coef": 1.5
+  }
+ ]
+}

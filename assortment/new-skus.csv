@@ -1,0 +1,63 @@
+code,type_key,type_label,deposit,material,color,cx,cx_coef,mat_coef,price_from,price_std,price_max
+N001,odynarnyi,Пам'ятник одинарний,Капустинський,granite,red,prosta,0.7,0.98,16000,17500,20500
+N002,odynarnyi,Пам'ятник одинарний,Межиріченський,granite,red,bazova,0.85,1.02,19500,22000,25000
+N003,odynarnyi,Пам'ятник одинарний,Лезниківський,granite,red,standartna,1.0,1.1,23500,26500,30500
+N004,odynarnyi,Пам'ятник одинарний,Покостівський,granite,grey,skladna,1.2,0.72,25500,27500,31000
+N005,odynarnyi,Пам'ятник одинарний,Габро (Головинське),gabbro,black,elitna,1.5,0.8,32500,35500,40500
+N006,odynarnyi,Пам'ятник одинарний,Габро (Букинське),gabbro,black,prosta,0.7,1.04,16500,18000,21000
+N007,odynarnyi,Пам'ятник одинарний,Лабрадорит (Добринський),labradorite,black,bazova,0.85,0.92,19000,21000,24000
+N008,odynarnyi,Пам'ятник одинарний,Лабрадорит (Горбулівський),labradorite,black,standartna,1.0,1.03,23000,26000,30000
+N009,odynarnyi,Пам'ятник одинарний,Берестовецький,granite,black,skladna,1.2,1.18,29000,32500,38000
+N010,odynarnyi,Пам'ятник одинарний,Капустинський,granite,red,elitna,1.5,0.98,34500,38000,44000
+N011,odynarnyi,Пам'ятник одинарний,Межиріченський,granite,red,prosta,0.7,1.02,16000,18000,21000
+N012,odynarnyi,Пам'ятник одинарний,Лезниківський,granite,red,bazova,0.85,1.1,20000,22500,26000
+N013,odynarnyi,Пам'ятник одинарний,Покостівський,granite,grey,standartna,1.0,0.72,21000,23000,26000
+N014,odynarnyi,Пам'ятник одинарний,Танський,granite,grey,skladna,1.2,0.99,27500,30500,35000
+N015,odynarnyi,Пам'ятник одинарний,Софіївський,granite,grey,elitna,1.5,1.0,34500,38500,44000
+N016,odynarnyi,Пам'ятник одинарний,Корнинський,granite,grey,prosta,0.7,0.94,16000,17500,20000
+N017,podviynyi,Пам'ятник подвійний,Габро (Головинське),gabbro,black,prosta,0.7,0.8,27000,29000,32000
+N018,podviynyi,Пам'ятник подвійний,Габро (Букинське),gabbro,black,bazova,0.85,1.04,34500,38000,43000
+N019,podviynyi,Пам'ятник подвійний,Лабрадорит (Добринський),labradorite,black,standartna,1.0,0.92,39500,43000,48500
+N020,podviynyi,Пам'ятник подвійний,Лабрадорит (Горбулівський),labradorite,black,skladna,1.2,1.03,48500,53500,60500
+N021,podviynyi,Пам'ятник подвійний,Берестовецький,granite,black,elitna,1.5,1.18,63000,69500,80000
+N022,podviynyi,Пам'ятник подвійний,Дідковицький,granite,green,prosta,0.7,1.08,29000,31500,36000
+N023,podviynyi,Пам'ятник подвійний,Маславський,granite,green,bazova,0.85,1.28,36500,40500,47000
+N024,podviynyi,Пам'ятник подвійний,Капустинський,granite,red,standartna,1.0,0.98,40000,44000,49500
+N025,podviynyi,Пам'ятник подвійний,Межиріченський,granite,red,skladna,1.2,1.02,48500,53000,60500
+N026,podviynyi,Пам'ятник подвійний,Лезниківський,granite,red,elitna,1.5,1.1,62000,68000,77500
+N027,podviynyi,Пам'ятник подвійний,Покостівський,granite,grey,prosta,0.7,0.72,26500,28000,31000
+N028,podviynyi,Пам'ятник подвійний,Танський,granite,grey,bazova,0.85,0.99,34000,37500,42000
+N029,yevropeyskyi,Пам'ятник європейський,Софіївський,granite,grey,prosta,0.7,1.0,26000,28500,33000
+N030,yevropeyskyi,Пам'ятник європейський,Корнинський,granite,grey,bazova,0.85,0.94,31000,34000,39000
+N031,yevropeyskyi,Пам'ятник європейський,Мармур білий,marble,white,standartna,1.0,1.35,40500,46000,54500
+N032,yevropeyskyi,Пам'ятник європейський,Дідковицький,granite,green,skladna,1.2,1.08,45500,50500,59000
+N033,yevropeyskyi,Пам'ятник європейський,Маславський,granite,green,elitna,1.5,1.28,60000,67500,79500
+N034,yevropeyskyi,Пам'ятник європейський,Габро (Головинське),gabbro,black,prosta,0.7,0.8,24500,26500,30000
+N035,yevropeyskyi,Пам'ятник європейський,Габро (Букинське),gabbro,black,bazova,0.85,1.04,32000,35500,41000
+N036,yevropeyskyi,Пам'ятник європейський,Лабрадорит (Добринський),labradorite,black,standartna,1.0,0.92,36000,40000,45500
+N037,yevropeyskyi,Пам'ятник європейський,Лабрадорит (Горбулівський),labradorite,black,skladna,1.2,1.03,45000,49500,57500
+N038,yevropeyskyi,Пам'ятник європейський,Берестовецький,granite,black,elitna,1.5,1.18,58500,65500,76500
+N039,yevropeyskyi,Пам'ятник європейський,Мармур білий,marble,white,prosta,0.7,1.35,28500,32000,38000
+N040,yevropeyskyi,Пам'ятник європейський,Токівський,granite,brown,bazova,0.85,1.15,33000,36500,43000
+N041,khrest,Хрест гранітний,Капустинський,granite,red,prosta,0.7,0.98,21500,23500,27000
+N042,khrest,Хрест гранітний,Межиріченський,granite,red,bazova,0.85,1.02,26000,29000,33500
+N043,khrest,Хрест гранітний,Лезниківський,granite,red,standartna,1.0,1.1,31500,35000,41000
+N044,khrest,Хрест гранітний,Покостівський,granite,grey,skladna,1.2,0.72,34000,37000,41500
+N045,khrest,Хрест гранітний,Танський,granite,grey,elitna,1.5,0.99,46000,51000,58500
+N046,khrest,Хрест гранітний,Софіївський,granite,grey,prosta,0.7,1.0,21500,24000,27500
+N047,khrest,Хрест гранітний,Корнинський,granite,grey,bazova,0.85,0.94,25500,28500,32500
+N048,khrest,Хрест гранітний,Мармур білий,marble,white,standartna,1.0,1.35,33500,38000,45500
+N049,khrest,Хрест гранітний,Дідковицький,granite,green,skladna,1.2,1.08,37500,42000,49000
+N050,khrest,Хрест гранітний,Маславський,granite,green,elitna,1.5,1.28,49500,56000,66000
+N051,khrest,Хрест гранітний,Токівський,granite,brown,prosta,0.7,1.15,22500,25000,29500
+N052,khrest,Хрест гранітний,Габро (Головинське),gabbro,black,bazova,0.85,0.8,24500,27000,30500
+N053,dytyachyi,Дитячий пам'ятник,Мармур білий,marble,white,prosta,0.7,1.35,24000,27000,32000
+N054,dytyachyi,Дитячий пам'ятник,Мармур білий,marble,white,bazova,0.85,1.35,29000,33000,39000
+N055,dytyachyi,Дитячий пам'ятник,Покостівський,granite,grey,standartna,1.0,0.72,28500,31000,35000
+N056,dytyachyi,Дитячий пам'ятник,Танський,granite,grey,skladna,1.2,0.99,37000,41500,47500
+N057,dytyachyi,Дитячий пам'ятник,Софіївський,granite,grey,elitna,1.5,1.0,46500,52000,59500
+N058,dytyachyi,Дитячий пам'ятник,Корнинський,granite,grey,prosta,0.7,0.94,21500,23500,27000
+N059,dytyachyi,Дитячий пам'ятник,Капустинський,granite,red,bazova,0.85,0.98,26500,29000,33500
+N060,dytyachyi,Дитячий пам'ятник,Межиріченський,granite,red,standartna,1.0,1.02,31500,34500,40000
+N061,dytyachyi,Дитячий пам'ятник,Лезниківський,granite,red,skladna,1.2,1.1,38500,43000,50000
+N062,dytyachyi,Дитячий пам'ятник,Дідковицький,granite,green,elitna,1.5,1.08,47500,53000,62000
