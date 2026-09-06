@@ -96,6 +96,9 @@ const nextConfig = {
       // ?cat=home included: the "Дім і сад" line is discontinued, so that URL
       // now lands on the monuments catalogue rather than 404ing. It was a live,
       // linkable URL, so it must resolve to something rather than die.
+      // Хаб /memorial прибрано — він дублював навігацію, а вертикаль лишилась
+      // одна. Сегмент /memorial/* живе далі як префікс шляху.
+      { source: "/memorial", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/kataloh", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/catalog", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/services", destination: "/posluhy", permanent: true },
