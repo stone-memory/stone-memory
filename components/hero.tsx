@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { ChevronDown, ArrowRight } from "lucide-react"
-import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "@/lib/i18n/context"
 
@@ -77,20 +76,38 @@ export function Hero() {
           the poster is now a real first frame instead of an SVG placeholder, so
           something representative paints immediately.
         */}
-        {/* Poster as a real <Image>: it is the LCP element on mobile, so it
-            needs priority (which emits fetchpriority="high" — PSI flagged its
-            absence). On desktop the video paints over it once mounted. */}
-        <Image
-          src="/hero/hero-poster.jpg"
-          alt=""
-          fill
-          priority
-          // PSI's LCP audit asks for fetchpriority=high explicitly; `priority`
-          // alone emits the preload link but not this attribute in this version.
-          fetchPriority="high"
-          sizes="100vw"
-          className="object-cover"
-        />
+        {/*
+          <picture>, а не next/image — навмисно. Тут потрібна арт-дирекція:
+          на телефоні hero це h-screen, і широкий кадр 16:9 обрізався
+          object-cover до вузької смуги по центру — видно лишалось ~26 %
+          ширини, композицію вирішував випадок. Тепер під мобільний іде
+          окремий вертикальний кадр, скомпонований під цей формат.
+
+          Два <Image> з display:none тут не годяться: браузер тягне обидва
+          файли незалежно від того, який видно, а це LCP-елемент.
+
+          Обидва кадри перезняті з оригіналу 1920×1080 / 20,7 Мбіт/с — той,
+          що лежав раніше, був вирізаний із стисненої до CRF 28 копії й
+          помітно замилював фактуру каменю.
+        */}
+        <picture>
+          <source
+            media="(min-width: 768px)"
+            srcSet="/hero/hero-poster.webp"
+            type="image/webp"
+          />
+          <source media="(min-width: 768px)" srcSet="/hero/hero-poster.jpg" />
+          <source srcSet="/hero/hero-poster-mobile.webp" type="image/webp" />
+          <img
+            src="/hero/hero-poster-mobile.jpg"
+            alt=""
+            // LCP-елемент на мобільному: без цього PSI лається на відсутній
+            // пріоритет, а lazy тут узагалі неприпустимий.
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </picture>
         {showVideo && (
           <video
             ref={videoRef}
