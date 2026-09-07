@@ -33,6 +33,9 @@ type Row = {
   items: unknown
   notes: unknown
   attribution: unknown
+  source?: string | null
+  city?: string | null
+  message?: string | null
 }
 
 function normalize(row: Row): Order {
@@ -55,6 +58,9 @@ function normalize(row: Row): Order {
     contacted: !!row.contacted,
     notes,
     attribution: sanitizeAttribution(row.attribution),
+    source: row.source ?? null,
+    city: row.city ?? null,
+    message: row.message ?? null,
   }
 }
 

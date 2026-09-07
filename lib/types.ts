@@ -149,6 +149,11 @@ export type Order = {
   notes?: OrderNote[]
   /** First-touch campaign tags; null for direct traffic. See lib/attribution.ts. */
   attribution?: Attribution | null
+  /** Звідки заявка: 'stilnytsi' = сайт стільниць; null/'site' = сайт памʼятників. */
+  source?: string | null
+  city?: string | null
+  /** Текст запиту клієнта; у заявок зі стільниць першим рядком іде «Виріб: …». */
+  message?: string | null
 }
 
 export type Locale = "uk" | "pl" | "en" | "de" | "lt"

@@ -10,9 +10,12 @@ import {
   DEAL_STATUS_TO_LANE,
   DEAL_LANE_LABELS_UK,
   DEAL_STATUS_LABELS_UK,
+  DEAL_CATEGORIES,
+  DEAL_CATEGORY_LABELS_UK,
   availableTransitions,
   computeDealSLA,
   formatSLABadge,
+  type DealCategory,
   type DealLane,
   type DealStatus,
 } from "@/lib/crm/types"
@@ -42,22 +45,38 @@ export default function DealsKanbanPage() {
   const setStatus = useDealsStore((s) => s.setStatus)
   const [showCreate, setShowCreate] = useState(false)
   const [search, setSearch] = useState("")
+  // Два напрямки бізнесу в одній воронці. Угоди без категорії (старі,
+  // заведені до появи поля) показуються у «Всі» та серед памʼятників.
+  const [category, setCategory] = useState<DealCategory | "all">("all")
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     load()
   }, [load])
 
+  const countByCategory = useMemo(() => {
+    const counts: Record<DealCategory | "all", number> = { all: items.length, memorial: 0, interior: 0 }
+    for (const d of items) {
+      if (d.category === "interior") counts.interior++
+      else counts.memorial++
+    }
+    return counts
+  }, [items])
+
   const filtered = useMemo(() => {
-    if (!search) return items
+    const byCategory =
+      category === "all"
+        ? items
+        : items.filter((d) => (category === "interior" ? d.category === "interior" : d.category !== "interior"))
+    if (!search) return byCategory
     const q = search.toLowerCase()
-    return items.filter(
+    return byCategory.filter(
       (d) =>
         d.reference?.toLowerCase().includes(q) ||
         d.customers?.name?.toLowerCase().includes(q) ||
         d.customers?.phone?.toLowerCase().includes(q)
     )
-  }, [items, search])
+  }, [items, search, category])
 
   const byLane = useMemo(() => {
     const map: Record<DealLane, typeof items> = {
@@ -85,9 +104,29 @@ export default function DealsKanbanPage() {
         </Button>
       </header>
 
-      <div className="relative max-w-md">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Номер, клієнт, телефон…" className="pl-9" />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative w-full max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Номер, клієнт, телефон…" className="pl-9" />
+        </div>
+        <div className="flex gap-1 rounded-full bg-foreground/5 p-1 w-fit" role="tablist" aria-label="Напрямок">
+          {(["all", ...DEAL_CATEGORIES] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="tab"
+              aria-selected={category === c}
+              onClick={() => setCategory(c)}
+              className={cn(
+                "rounded-full px-3 py-1 text-xs font-medium tabular-nums",
+                category === c ? "bg-card shadow-soft" : "text-muted-foreground"
+              )}
+            >
+              {c === "all" ? "Всі" : DEAL_CATEGORY_LABELS_UK[c]}
+              <span className="ml-1.5 text-muted-foreground">{countByCategory[c]}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {error && (
@@ -148,6 +187,8 @@ type DealRow = {
   amount_eur: number | string
   created_at: string
   description?: string | null
+  category?: string | null
+  install_city?: string | null
   customers?: { id: string; name: string; phone: string } | null
   /** Populated by GET /api/crm/deals — used to compute SLA badge. */
   last_inbound_at?: string | null
@@ -181,9 +222,17 @@ function DealCard({
       isClosed ? "opacity-75" : "border-foreground/10"
     )}>
       <div className="flex items-start justify-between gap-2">
-        <Link href={`/admin/deals/${deal.id}`} className="font-mono text-xs font-medium hover:text-accent">
-          {deal.reference}
-        </Link>
+        <span className="flex items-center gap-1.5 min-w-0">
+          <Link href={`/admin/deals/${deal.id}`} className="font-mono text-xs font-medium hover:text-accent">
+            {deal.reference}
+          </Link>
+          {/* Позначка лише для стільниць: памʼятники — типовий випадок, чіп був би шумом. */}
+          {deal.category === "interior" && (
+            <span className="rounded-full bg-teal-500/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-teal-700 dark:text-teal-300">
+              {DEAL_CATEGORY_LABELS_UK.interior}
+            </span>
+          )}
+        </span>
         <span className="text-[10px] text-muted-foreground tabular-nums">{formatRelative(deal.created_at)}</span>
       </div>
       {deal.customers && (
@@ -270,9 +319,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
   const [customerId, setCustomerId] = useState("")
   const [customerLabel, setCustomerLabel] = useState("")
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  // Only "memorial" — the home & garden line is discontinued and the CRM
-  // holds no deals in that category.
-  const [category, setCategory] = useState<"memorial">("memorial")
+  const [category, setCategory] = useState<DealCategory>("memorial")
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [busy, setBusy] = useState(false)
@@ -389,7 +436,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
           <div>
             <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1">Категорія</label>
             <div className="flex gap-1 rounded-full bg-foreground/5 p-1 w-fit">
-              {(["memorial"] as const).map((c) => (
+              {DEAL_CATEGORIES.map((c) => (
                 <button
                   key={c}
                   type="button"
@@ -399,7 +446,7 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
                     category === c ? "bg-card shadow-soft" : "text-muted-foreground"
                   )}
                 >
-                  Памʼятники
+                  {DEAL_CATEGORY_LABELS_UK[c]}
                 </button>
               ))}
             </div>

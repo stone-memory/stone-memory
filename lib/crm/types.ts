@@ -209,6 +209,26 @@ export type Customer = {
 // =====================================================
 // DEAL
 // =====================================================
+
+/**
+ * Напрямок бізнесу, до якого належить угода.
+ *   memorial — памʼятники (сайт www.stonememory.com.ua)
+ *   interior — стільниці, підвіконня, сходи (сайт stilnytsi.stonememory.com.ua)
+ * У БД це вільний text; тут звужуємо до відомих значень.
+ */
+export type DealCategory = "memorial" | "interior"
+
+export const DEAL_CATEGORIES: DealCategory[] = ["memorial", "interior"]
+
+export const DEAL_CATEGORY_LABELS_UK: Record<DealCategory, string> = {
+  memorial: "Памʼятники",
+  interior: "Стільниці",
+}
+
+export function isDealCategory(value: unknown): value is DealCategory {
+  return value === "memorial" || value === "interior"
+}
+
 export type Deal = {
   id: string
   reference: string | null

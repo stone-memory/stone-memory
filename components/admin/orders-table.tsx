@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { StatusBadge } from "./status-badge"
+import { SourceBadge } from "./source-badge"
 import { OrderDetailSheet } from "./order-detail-sheet"
 import { formatRelative } from "@/lib/admin-format"
 import type { Order } from "@/lib/types"
@@ -74,7 +75,10 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <p className="text-sm font-medium">{order.name}</p>
+                      <p className="text-sm font-medium flex items-center gap-2">
+                        {order.name}
+                        <SourceBadge source={order.source} />
+                      </p>
                       <a
                         href={`tel:${order.phone}`}
                         className="text-xs text-accent hover:underline flex items-center gap-1 w-fit"
@@ -98,6 +102,13 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                       {moreCount > 0 && (
                         <span className="bg-black/5 rounded px-2 py-1 text-xs font-mono">
                           +{moreCount} ще
+                        </span>
+                      )}
+                      {/* Заявки зі стільниць приходять без позицій каталогу — показуємо суть запиту. */}
+                      {order.items.length === 0 && order.message && (
+                        <span className="text-xs text-muted-foreground line-clamp-1">
+                          {order.message.split("\n")[0]}
+                          {order.city ? ` · ${order.city}` : ""}
                         </span>
                       )}
                     </div>

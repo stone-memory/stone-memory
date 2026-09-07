@@ -52,6 +52,16 @@ npm run build && npm start     # продакшн-білд локально
 curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://stonememory.com.ua/api/telegram&secret_token=<WEBHOOK_SECRET>"
 ```
 
+### Заявки з сайту стільниць (stilnytsi.stonememory.com.ua)
+
+| Змінна | Що робить | Як отримати |
+|---|---|---|
+| `LEADS_INTAKE_KEY` | Спільний секрет для `POST /api/leads/intake`. Сайт стільниць шле його в заголовку `x-intake-key`. | Будь-який довгий випадковий рядок (`openssl rand -hex 32`). Той самий рядок — у проєкті стільниць як `CRM_INTAKE_KEY`. |
+
+Перед першою заявкою виконати `supabase/stilnytsi-intake-migration.sql` у SQL Editor:
+він додає `orders.city`, `deals.order_id` і вмикає тригери, які переносять
+заявку у воронку «Угоди» (категорія «Стільниці») та синхронізують статус.
+
 ### Google Reviews (автопідтяг відгуків з Google Maps)
 
 | Змінна | Призначення | Як отримати |
