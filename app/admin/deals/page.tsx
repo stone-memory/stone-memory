@@ -12,7 +12,6 @@ import {
   DEAL_STATUS_LABELS_UK,
   DEAL_CATEGORIES,
   DEAL_CATEGORY_LABELS_UK,
-  availableTransitions,
   computeDealSLA,
   formatSLABadge,
   type DealCategory,
@@ -21,6 +20,7 @@ import {
 } from "@/lib/crm/types"
 import { formatUAHDirect, formatRelative } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
+import { DealStatusSelect } from "@/components/admin/deal-status-select"
 
 // "На паузі" is an exceptional state — always shown when occupied, hidden when empty.
 const LANES: DealLane[] = ["lead", "discovery", "agreement", "production", "fulfillment", "paused", "closed"]
@@ -204,9 +204,6 @@ function DealCard({
   onStatusChange: (next: DealStatus) => void
   onReopen?: () => void
 }) {
-  const [showTransitions, setShowTransitions] = useState(false)
-  // Exclude "new" from normal transition buttons — reopen has its own dedicated button
-  const transitions = availableTransitions(deal.status).filter((s) => s !== "new")
   const sla = computeDealSLA(deal)
   const isClosed = CLOSED_STATUSES.has(deal.status)
 
@@ -241,6 +238,9 @@ function DealCard({
           {deal.customers.name}
         </Link>
       )}
+      {deal.install_city && (
+        <p className="mt-0.5 text-[11px] text-muted-foreground truncate">{deal.install_city}</p>
+      )}
       {sla && sla.status !== "ok" && (
         <span
           className={cn(
@@ -263,39 +263,18 @@ function DealCard({
       {deal.description && (
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2 break-words">{deal.description}</p>
       )}
-      {/* Статус і сума переносяться на два рядки у вузьких колонках замість вилазити за край. */}
+      {/* Статус і сума; у вузькій колонці переносяться на два рядки. */}
       <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-        {!isClosed ? (
-          <button
-            onClick={() => setShowTransitions((v) => !v)}
-            className="rounded-full border border-foreground/15 px-2 py-0.5 text-left hover:bg-foreground/5"
-          >
-            {DEAL_STATUS_LABELS_UK[deal.status]}
-          </button>
-        ) : (
-          <span className={cn("rounded-full border px-2 py-0.5 text-[11px]", statusColor)}>
-            {DEAL_STATUS_LABELS_UK[deal.status]}
-          </span>
-        )}
+        <span className={cn("rounded-full border px-2 py-0.5 text-[11px]", statusColor)}>
+          {DEAL_STATUS_LABELS_UK[deal.status]}
+        </span>
         {Number(deal.amount_eur) > 0 && (
           <span className="ml-auto font-medium tabular-nums whitespace-nowrap">{formatUAHDirect(Number(deal.amount_eur))}</span>
         )}
       </div>
-      {showTransitions && transitions.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {transitions.map((t) => (
-            <button
-              key={t}
-              onClick={() => {
-                setShowTransitions(false)
-                onStatusChange(t)
-              }}
-              className="rounded-full bg-foreground px-2 py-0.5 text-[11px] text-background hover:-translate-y-px transition-transform"
-            >
-              → {DEAL_STATUS_LABELS_UK[t]}
-            </button>
-          ))}
-        </div>
+      {/* Один список замість пігулок: з будь-якого етапу можна стрибнути далі. */}
+      {!isClosed && (
+        <DealStatusSelect status={deal.status} onChange={onStatusChange} className="mt-2 w-full" />
       )}
       {isClosed && onReopen && (
         <button

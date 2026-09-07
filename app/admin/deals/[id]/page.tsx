@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MessageSquare, Plus, Download, Hammer, Trash2 } from "lucide-react"
+import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MapPin, MessageSquare, Plus, Download, Hammer, StickyNote, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -16,7 +16,6 @@ import {
   DOCUMENT_KIND_LABELS_UK,
   REMINDER_KIND_LABELS_UK,
   COMM_CHANNEL_LABELS,
-  availableTransitions,
   lostReasonLabel,
   type DealStatus,
   type LostReason,
@@ -26,6 +25,13 @@ import {
 } from "@/lib/crm/types"
 import { LostReasonModal } from "@/components/admin/lost-reason-modal"
 import { DealFinanceModal, paidFromPayments } from "@/components/admin/deal-finance-modal"
+import { DealStatusSelect } from "@/components/admin/deal-status-select"
+
+const SOURCE_LABELS: Record<string, string> = {
+  stilnytsi: "сайт стільниць",
+  site: "сайт памʼятників",
+  "selection-form": "сайт памʼятників",
+}
 
 type Overview = NonNullable<Awaited<ReturnType<typeof fetchDealOverview>>>
 
@@ -98,7 +104,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
   const d = data.deal
   const customer = d.customers
   const isClosed = (["completed", "cancelled", "lost"] as DealStatus[]).includes(d.status)
-  const transitions = availableTransitions(d.status).filter((s) => s !== "new")
+  const sourceLabel = d.source ? SOURCE_LABELS[d.source] ?? d.source : null
   // «До сплати» = сума − усі платежі (не лише аванс, як у balance_eur в БД).
   const paid = paidFromPayments(data.payments)
   const remaining = Math.max(Number(d.amount_eur) - paid, 0)
@@ -137,6 +143,16 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
                 <Link href={`/admin/customers/${customer.id}`} className="text-accent hover:underline">→ картка клієнта</Link>
               </div>
             )}
+            {(d.install_city || sourceLabel) && (
+              <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                {d.install_city && (
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin size={12} /> {d.install_city}
+                  </span>
+                )}
+                {sourceLabel && <span>Джерело: {sourceLabel}</span>}
+              </div>
+            )}
           </div>
           {/* Клік по блоку відкриває «Фінанси угоди»: сума + платежі. */}
           <button
@@ -156,23 +172,18 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
           </button>
         </div>
 
-        {/* State machine controls */}
+        {/* State machine controls: один список замість пігулок на кожен стан. */}
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-xs uppercase tracking-wide text-muted-foreground mr-1">Статус:</span>
           <span className="rounded-full bg-foreground text-background px-3 py-1 text-sm font-medium">
             {DEAL_STATUS_LABELS_UK[d.status]}
           </span>
-          <span className="text-muted-foreground">→</span>
-          {transitions.length === 0 && !isClosed && <span className="text-xs text-muted-foreground italic">Кінцевий стан</span>}
-          {transitions.map((t) => (
-            <button
-              key={t}
-              onClick={() => changeStatus(t)}
-              className="rounded-full border border-foreground/15 bg-background px-3 py-1 text-xs font-medium hover:border-foreground hover:-translate-y-px transition-all"
-            >
-              {DEAL_STATUS_LABELS_UK[t]}
-            </button>
-          ))}
+          {!isClosed && (
+            <>
+              <span className="text-muted-foreground">→</span>
+              <DealStatusSelect status={d.status} onChange={changeStatus} className="h-8 px-3 text-sm" />
+            </>
+          )}
           {isClosed && (
             <button
               onClick={async () => { if (await patchDeal({ status: "new" })) refresh() }}
@@ -244,18 +255,44 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
               </tr>
             </thead>
             <tbody className="divide-y divide-foreground/5">
-              {data.items.map((it) => (
+              {data.items.map((it) => {
+                const meta = (it.meta ?? null) as { imagePath?: string; selectedMaterial?: string } | null
+                return (
                 <tr key={it.id}>
-                  <td className="px-4 py-2">{it.title}</td>
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-3">
+                      {meta?.imagePath && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={meta.imagePath} alt="" className="h-12 w-9 shrink-0 rounded-md object-cover bg-black/5" />
+                      )}
+                      <div className="min-w-0">
+                        <div className="font-medium">{it.title}</div>
+                        {meta?.selectedMaterial && (
+                          <div className="text-xs text-muted-foreground">Камінь: {meta.selectedMaterial}</div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
                   <td className="px-4 py-2 text-right tabular-nums">{it.qty}</td>
                   <td className="px-4 py-2 text-right tabular-nums">{formatUAHDirect(Number(it.unit_price_eur))}</td>
                   <td className="px-4 py-2 text-right tabular-nums font-medium">{formatUAHDirect(Number(it.total_eur))}</td>
                 </tr>
-              ))}
+                )
+              })}
             </tbody>
           </table>
         )}
       </Section>
+
+      {/* Team notes — internal_notes */}
+      <NotesBlock
+        value={d.internal_notes ?? null}
+        onSave={async (next) => {
+          const ok = await patchDeal({ internal_notes: next })
+          if (ok) await refresh()
+          return ok
+        }}
+      />
 
       {/* Documents — generation */}
       <DocumentsBlock dealId={id} documents={data.documents} onChanged={refresh} />
@@ -307,6 +344,58 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       </Section>
     </div>
+  )
+}
+
+/**
+ * Нотатки команди по угоді (deals.internal_notes). Клієнту не видно.
+ * Зберігається кнопкою, а не на кожен символ, щоб не сипати PATCH-ами.
+ */
+function NotesBlock({
+  value,
+  onSave,
+}: {
+  value: string | null
+  onSave: (next: string | null) => Promise<boolean>
+}) {
+  const [draft, setDraft] = useState(value ?? "")
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    setDraft(value ?? "")
+  }, [value])
+
+  const dirty = draft !== (value ?? "")
+
+  const save = async () => {
+    setSaving(true)
+    const ok = await onSave(draft.trim() ? draft.trim() : null)
+    setSaving(false)
+    setSaved(ok)
+  }
+
+  return (
+    <Section title="Нотатки команди" icon={<StickyNote size={16} />} count={value ? 1 : 0}>
+      <div className="space-y-2 p-4">
+        <textarea
+          value={draft}
+          onChange={(e) => {
+            setDraft(e.target.value)
+            setSaved(false)
+          }}
+          rows={4}
+          placeholder="Що домовились, нюанси заміру, побажання клієнта… Видно лише команді."
+          className="w-full rounded-xl border border-foreground/10 bg-background px-3 py-2 text-sm leading-relaxed outline-none focus:border-foreground/30 focus:ring-2 focus:ring-foreground/5"
+        />
+        <div className="flex items-center justify-end gap-3">
+          {saved && !dirty && <span className="text-xs text-muted-foreground">Збережено</span>}
+          <Button size="sm" onClick={save} disabled={!dirty || saving} className="rounded-xl">
+            {saving ? "Зберігаю…" : "Зберегти нотатки"}
+          </Button>
+        </div>
+      </div>
+    </Section>
   )
 }
 

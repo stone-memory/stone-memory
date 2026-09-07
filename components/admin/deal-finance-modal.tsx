@@ -37,7 +37,9 @@ export type FinancePayment = {
   paid_at: string
 }
 
-const KINDS: PaymentKind[] = ["deposit", "partial", "balance", "extra", "refund"]
+// Лише аванс і повернення: «частковий / залишок / додатково» робили те саме,
+// що й аванс, і лише плутали. Сума угоди змінюється окремим полем вище.
+const KINDS: PaymentKind[] = ["deposit", "refund"]
 const METHODS: PaymentMethod[] = ["cash", "card", "bank_transfer", "iban", "crypto", "other"]
 
 const onlyNumber = (value: string) => value.replace(/[^\d.]/g, "")

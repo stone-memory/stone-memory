@@ -88,31 +88,56 @@ export type DealStatus =
 export type DealPriority = "low" | "normal" | "high" | "urgent"
 
 /**
- * State machine: легальні переходи. Будь-який стан може йти в:
- * • on_hold (призупинити)
- * • cancelled / lost (закрити негативно)
- * Окрім цього — лінійний flow з можливістю повернення на 1 крок назад.
+ * Основний хід угоди від ліда до завершення, по порядку.
+ * Побічні стани (on_hold / cancelled / lost) сюди не входять.
  */
-export const DEAL_TRANSITIONS: Record<DealStatus, DealStatus[]> = {
-  new: ["contacted", "cancelled", "lost"],
-  contacted: ["measurement_scheduled", "sketch", "cancelled", "lost", "on_hold"],
-  measurement_scheduled: ["measurement_done", "contacted", "cancelled", "on_hold"],
-  measurement_done: ["sketch", "measurement_scheduled", "cancelled", "on_hold"],
-  sketch: ["sketch_approved", "measurement_done", "cancelled", "on_hold"],
-  sketch_approved: ["contract_signed", "sketch", "cancelled", "on_hold"],
-  contract_signed: ["deposit_paid", "sketch_approved", "cancelled"],
-  deposit_paid: ["in_production", "contract_signed", "cancelled"],
-  in_production: ["qc", "deposit_paid", "on_hold"],
-  qc: ["ready", "in_production"],
-  ready: ["delivery", "qc"],
-  delivery: ["installed", "ready"],
-  installed: ["paid", "delivery"],
-  paid: ["completed", "installed"],
-  completed: ["new"],
-  on_hold: ["new", "contacted", "sketch", "in_production"],
-  cancelled: ["new"],
-  lost: ["new"],
+export const DEAL_MAIN_FLOW: DealStatus[] = [
+  "new",
+  "contacted",
+  "measurement_scheduled",
+  "measurement_done",
+  "sketch",
+  "sketch_approved",
+  "contract_signed",
+  "deposit_paid",
+  "in_production",
+  "qc",
+  "ready",
+  "delivery",
+  "installed",
+  "paid",
+  "completed",
+]
+
+/**
+ * State machine: легальні переходи.
+ *
+ * Раніше дозволявся лише сусідній крок (Замір → Ескіз → Ескіз затверджено →
+ * Договір…), і щоб дійти до договору з заміру, треба було проклацати всі
+ * проміжні стани, яких у малому цеху часто просто немає. Тепер з будь-якого
+ * основного стану можна стрибнути на БУДЬ-ЯКИЙ наступний і на один назад.
+ * Побічні: on_hold звідусіль (крім завершених), cancelled звідусіль,
+ * lost лише до початку виробництва (після — це вже cancelled).
+ * Закриті стани повертаються лише в "new" (кнопка «Відновити»).
+ */
+function mainFlowTransitions(status: DealStatus): DealStatus[] {
+  const i = DEAL_MAIN_FLOW.indexOf(status)
+  const forward = DEAL_MAIN_FLOW.slice(i + 1)
+  const back = i > 0 ? [DEAL_MAIN_FLOW[i - 1]] : []
+  const beforeProduction = i < DEAL_MAIN_FLOW.indexOf("in_production")
+  const side: DealStatus[] = beforeProduction ? ["on_hold", "cancelled", "lost"] : ["on_hold", "cancelled"]
+  return [...forward, ...back, ...side]
 }
+
+export const DEAL_TRANSITIONS: Record<DealStatus, DealStatus[]> = (() => {
+  const map = {} as Record<DealStatus, DealStatus[]>
+  for (const s of DEAL_MAIN_FLOW) map[s] = mainFlowTransitions(s)
+  map.completed = ["new"]
+  map.on_hold = DEAL_MAIN_FLOW.filter((s) => s !== "completed").concat(["cancelled", "lost"])
+  map.cancelled = ["new"]
+  map.lost = ["new"]
+  return map
+})()
 
 /**
  * Канбан-колонки: групуємо стани, бо 18 колонок забагато.
