@@ -158,7 +158,7 @@ const uk: Dictionary = {
     continueBrowsing: "Продовжити перегляд",
   },
   footer: {
-    tagline: "Натуральний камінь для пам'яті і для дому. Власне виробництво в Костополі.",
+    tagline: "Натуральний камінь для пам'яті. Власне виробництво в Костополі.",
     copyright: "© 2026 Stone Memory. Усі права захищені.",
     privacy: "Конфіденційність",
     terms: "Умови",
@@ -202,7 +202,7 @@ const pl: Dictionary = {
   },
   catalog: {
     label: "KATALOG",
-    heading: "Kamień dla pamięci i dla domu",
+    heading: "Kamień, który przechowuje pamięć",
     subheading: "Pomniki pojedyncze i podwójne, kompleksy memorialne, krzyże i obeliski. Ukraiński granit i gabro oraz import — granit indyjski i chiński. Produkcja we własnym zakładzie.",
     count: "pozycji",
     fromPrice: "od",
@@ -250,7 +250,7 @@ const pl: Dictionary = {
     continueBrowsing: "Kontynuuj przeglądanie",
   },
   footer: {
-    tagline: "Naturalny kamień dla pamięci i dla domu. Własna produkcja w Kostopolu.",
+    tagline: "Naturalny kamień dla pamięci. Własna produkcja w Kostopolu.",
     copyright: "© 2026 Stone Memory. Wszelkie prawa zastrzeżone.",
     privacy: "Prywatność",
     terms: "Warunki",
@@ -294,7 +294,7 @@ const en: Dictionary = {
   },
   catalog: {
     label: "CATALOG",
-    heading: "Stone for memory and for home",
+    heading: "Stone that keeps memory",
     subheading: "Single and double monuments, memorial complexes, crosses and obelisks. Ukrainian granite and gabbro plus imports — Indian and Chinese granite. Made in our own workshop.",
     count: "pieces",
     fromPrice: "from",
@@ -342,7 +342,7 @@ const en: Dictionary = {
     continueBrowsing: "Continue browsing",
   },
   footer: {
-    tagline: "Natural stone for memory and for home. Crafted in our Kostopil workshop.",
+    tagline: "Natural stone for memory. Crafted in our Kostopil workshop.",
     copyright: "© 2026 Stone Memory. All rights reserved.",
     privacy: "Privacy",
     terms: "Terms",
@@ -386,7 +386,7 @@ const de: Dictionary = {
   },
   catalog: {
     label: "KATALOG",
-    heading: "Stein für Erinnerung und Zuhause",
+    heading: "Stein, der Erinnerung bewahrt",
     subheading: "Einzel- und Doppelgrabmale, Gedenkkomplexe, Kreuze und Obelisken. Ukrainischer Granit und Gabbro sowie Importe — indischer und chinesischer Granit. Gefertigt in unserer eigenen Werkstatt.",
     count: "Stücke",
     fromPrice: "ab",
@@ -434,7 +434,7 @@ const de: Dictionary = {
     continueBrowsing: "Weiter stöbern",
   },
   footer: {
-    tagline: "Naturstein für Erinnerung und Zuhause. Gefertigt in unserer Werkstatt in Kostopil.",
+    tagline: "Naturstein für Erinnerung. Gefertigt in unserer Werkstatt in Kostopil.",
     copyright: "© 2026 Stone Memory. Alle Rechte vorbehalten.",
     privacy: "Datenschutz",
     terms: "AGB",
@@ -478,7 +478,7 @@ const lt: Dictionary = {
   },
   catalog: {
     label: "KATALOGAS",
-    heading: "Akmuo atminimui ir namams",
+    heading: "Akmuo, saugantis atminimą",
     subheading: "Pavieniai ir poriniai paminklai, memorialiniai kompleksai, kryžiai ir obeliskai. Ukrainietiškas granitas ir gabbras bei importas — Indijos ir Kinijos granitas. Gaminama mūsų pačių dirbtuvėje.",
     count: "prekių",
     fromPrice: "nuo",
@@ -526,7 +526,7 @@ const lt: Dictionary = {
     continueBrowsing: "Tęsti naršymą",
   },
   footer: {
-    tagline: "Natūralus akmuo atminimui ir namams. Pagaminta mūsų dirbtuvėje Kostopilyje.",
+    tagline: "Natūralus akmuo atminimui. Pagaminta mūsų dirbtuvėje Kostopilyje.",
     copyright: "© 2026 Stone Memory. Visos teisės saugomos.",
     privacy: "Privatumas",
     terms: "Sąlygos",

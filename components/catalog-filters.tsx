@@ -300,7 +300,12 @@ export function CatalogFilters({ category, items, value, onChange, totalCount, h
 
         {/* Desktop popovers (≥lg) */}
         <div className="hidden lg:flex flex-wrap items-center gap-2">
-          {availableTones.length > 0 && (
+          {/* Фільтр показуємо лише коли є з чого вибирати. Один варіант нічого
+              не відсіює: «Поверхня → Полірована» стояла над каталогом, де всі
+              122 позиції поліровані, і лише займала місце. Умова загальна, тому
+              щойно з'явиться термооброблений чи шліфований камінь, фільтр
+              повернеться сам. */}
+          {availableTones.length > 1 && (
             <Popover label={L.tone} count={value.tones.length}>
               <div className="max-h-64 overflow-auto">
                 {availableTones.map((t) => (
@@ -316,7 +321,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount, h
             </Popover>
           )}
 
-          {availableMaterials.length > 0 && (
+          {availableMaterials.length > 1 && (
             <Popover label={L.material} count={value.materials.length}>
               <div className="max-h-64 overflow-auto">
                 {availableMaterials.map((m) => (
@@ -332,7 +337,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount, h
             </Popover>
           )}
 
-          {category === "memorial" && availableShapes.length > 0 && (
+          {category === "memorial" && availableShapes.length > 1 && (
             <Popover label={L.shape} count={value.shapes.length}>
               <div className="max-h-64 overflow-auto">
                 {availableShapes.map((s) => (
@@ -348,7 +353,7 @@ export function CatalogFilters({ category, items, value, onChange, totalCount, h
             </Popover>
           )}
 
-          {availableFinishes.length > 0 && (
+          {availableFinishes.length > 1 && (
             <Popover label={L.finish} count={value.finishes.length}>
               <div className="max-h-64 overflow-auto">
                 {availableFinishes.map((f) => (
@@ -698,7 +703,7 @@ function MobileDrawer(props: {
 
               <div className="flex-1 overflow-y-auto px-6 pb-4">
                 <div className="space-y-6">
-                  {props.available.tones.length > 0 && (
+                  {props.available.tones.length > 1 && (
                     <Section label={L.tone}>
                       <div className="flex flex-wrap gap-2">
                         {props.available.tones.map((t) => (
@@ -714,7 +719,7 @@ function MobileDrawer(props: {
                     </Section>
                   )}
 
-                  {props.available.materials.length > 0 && (
+                  {props.available.materials.length > 1 && (
                     <Section label={L.material}>
                       <div className="flex flex-wrap gap-2">
                         {props.available.materials.map((m) => (
@@ -730,7 +735,7 @@ function MobileDrawer(props: {
                     </Section>
                   )}
 
-                  {props.category === "memorial" && props.available.shapes.length > 0 && (
+                  {props.category === "memorial" && props.available.shapes.length > 1 && (
                     <Section label={L.shape}>
                       <div className="flex flex-wrap gap-2">
                         {props.available.shapes.map((s) => (
@@ -746,7 +751,7 @@ function MobileDrawer(props: {
                     </Section>
                   )}
 
-                  {props.available.finishes.length > 0 && (
+                  {props.available.finishes.length > 1 && (
                     <Section label={L.finish}>
                       <div className="flex flex-wrap gap-2">
                         {props.available.finishes.map((f) => (

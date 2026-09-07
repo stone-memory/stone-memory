@@ -141,7 +141,11 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
         </div>
 
         <div className="p-6">
-          <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          {/* Дрібніший кегль і менший трекінг, ніж решта підписів: рядок несе
+              дві назви одразу, і після появи довгих типів («Військовий
+              пам'ятник», «Пам'ятник європейський») він переносився на два рядки
+              на телефоні. Зменшення дає йому вміститись без обрізання. */}
+          <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
             <span>{categoryLabel}</span>
             {subLabel && (
               <>

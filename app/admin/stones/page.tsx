@@ -38,6 +38,12 @@ const MATERIALS: StoneMaterial[] = ["granite", "gabbro", "marble", "labradorite"
 // Обидві лінійки: пам'ятники й дім. Це один спільний кабінет на два розділи
 // сайту, які між собою не перелінковані — категорія і є тим, що їх розділяє.
 const CATEGORIES: Category[] = ["memorial", "home"]
+// Селект показував сирі значення — «memorial» і «home». Категорія «дім» була
+// в списку, але прочитати її як «Дім і сад» було неможливо.
+const CATEGORY_LABEL: Record<string, string> = {
+  memorial: "Пам'ятники",
+  home: "Дім і сад",
+}
 
 function nextId(existing: string[]): string {
   let n = 1
@@ -138,7 +144,7 @@ export default function AdminStonesPage() {
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
-          {(["all", "memorial"] as const).map((c) => (
+          {(["all", "memorial", "home"] as const).map((c) => (
             <button
               key={c}
               onClick={() => setCategoryFilter(c)}
@@ -149,7 +155,7 @@ export default function AdminStonesPage() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {c === "all" ? "Всі" : "Пам'ятники"}
+              {c === "all" ? "Всі" : CATEGORY_LABEL[c]}
             </button>
           ))}
         </div>
@@ -585,7 +591,7 @@ function StoneEditor({
               className="h-10 w-full rounded-xl bg-foreground/5 px-3"
             >
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>{CATEGORY_LABEL[c] ?? c}</option>
               ))}
             </select>
           </Field>
