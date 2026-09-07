@@ -22,6 +22,29 @@ export async function fetchStones(opts?: { includeHidden?: boolean }): Promise<S
 }
 
 /**
+ * Час останньої правки кожного товару, за адресою сторінки.
+ *
+ * Окремим запитом, а не полем у StoneItem: `updated_at` — це метадані рядка
+ * таблиці, а не характеристика виробу, і в типі товару їм не місце. Потрібні
+ * вони одному споживачу — сайтмапу, якому без справжньої дати нічого писати
+ * в `lastModified`.
+ */
+export async function fetchStoneUpdatedAt(): Promise<Map<string, Date>> {
+  const { data, error } = await supabaseAdmin
+    .from("stones")
+    .select("data, hidden, updated_at")
+
+  const out = new Map<string, Date>()
+  if (error || !data) return out
+  for (const r of data) {
+    if (r.hidden) continue
+    const slug = (r.data as StoneItem)?.slug
+    if (slug && r.updated_at) out.set(slug, new Date(r.updated_at as string))
+  }
+  return out
+}
+
+/**
  * Returns null ONLY when the row genuinely does not exist (or is hidden).
  *
  * A transport/DB error is deliberately NOT treated as "missing": callers turn

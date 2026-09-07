@@ -64,11 +64,13 @@ export type StoneItem = {
   /**
    * Попередня адреса, якщо товар уже переїжджав ("anhel-skorboty").
    *
-   * Заповнюється при зміні `slug` і далі не чіпається. `findStoneByCode`
+   * Заповнюється при кожній зміні `slug` і накопичується списком, бо товар
+   * може переїжджати не один раз, а кожна з попередніх адрес мусить
+   * лишатись робочою. `findStoneByCode`
    * шукає і за нею, тож старе посилання не падає в 404 — сторінка знаходить
    * товар і віддає 301 на його нинішню адресу.
    */
-  legacySlug?: string
+  legacySlug?: string | string[]
   category: Category
   imagePath: string
   priceFrom?: number

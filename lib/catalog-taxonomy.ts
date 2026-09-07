@@ -11,9 +11,13 @@ import { defaultStone } from "@/lib/stone-guide"
  * here, so a new facet is one entry, not seven edits.
  *
  * The former `/stone/…` B2B vertical (стільниці, підвіконня, сходи, фасади,
- * бруківка) was removed: that product line is discontinued. It never reached
- * production, so there is nothing to redirect — but /kataloh?cat=home is still
- * 308'd in next.config.mjs because that URL WAS live and may be linked.
+ * бруківка) was removed from THIS site. The product line itself lives on — as a
+ * separate site on its own subdomain, with its own repo — and the two must
+ * never link to each other. Nothing here may reference it.
+ *
+ * /kataloh?cat=home is still 308'd in next.config.mjs because that URL WAS live
+ * and may be linked; see the comment there for why it does not point at the
+ * new subdomain.
  */
 
 // ---------------------------------------------------------------------------
@@ -28,9 +32,10 @@ import { defaultStone } from "@/lib/stone-guide"
  * монтаж and благоустрій, so reusing the category label collapsed the whole
  * direction into one of its own sections.
  *
- * The `stone` vertical was removed from the site — home/countertop products
- * are no longer sold. Nothing public may reference it again; the `home`
- * Category value survives only so existing DB rows and CRM deals still parse.
+ * The `stone` vertical was removed from this site — home/countertop products
+ * are sold through the separate interior site now, and nothing public here may
+ * reference it. The `home` Category value survives so existing DB rows still
+ * parse, and because CRM deals coming in from the interior site carry it.
  */
 export const VERTICAL_LABELS: Record<"memorial", Record<Locale, string>> = {
   memorial: {
@@ -235,7 +240,10 @@ export function findStoneByCode(stones: StoneItem[], param: string): StoneItem |
     monuments.find((s) => s.id === param) ??
     // Останньою — попередня адреса товару. Сторінка далі порівняє знайдене з
     // stonePath() і віддасть 301, тому переїзд каталогу не лишає по собі 404.
-    monuments.find((s) => s.legacySlug === param)
+    monuments.find((s) => {
+      const legacy = s.legacySlug
+      return Array.isArray(legacy) ? legacy.includes(param) : legacy === param
+    })
   )
 }
 

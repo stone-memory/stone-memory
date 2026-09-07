@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next"
-import { fetchArticles, fetchStones } from "@/lib/data-source"
+import { fetchArticles, fetchStones, fetchStoneUpdatedAt } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 import { publishedFacets, stonePath } from "@/lib/catalog-taxonomy"
 
@@ -20,7 +20,11 @@ export const revalidate = 60
  * honest URL per document is the correct signal.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, stones] = await Promise.all([fetchArticles(), fetchStones()])
+  const [articles, stones, updatedAt] = await Promise.all([
+    fetchArticles(),
+    fetchStones(),
+    fetchStoneUpdatedAt(),
+  ])
 
   // No `lastModified` on routes where we have no real change signal — a
   // build-time timestamp repeated across every URL reads as noise and Google
@@ -50,8 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
+  // Тут `lastModified` є, на відміну від статичних маршрутів: у рядка товару
+  // час правки справжній і в кожного свій, а застереження вище стосується
+  // однакового штампу збірки, розтиражованого на всі адреси.
   const stoneRoutes: MetadataRoute.Sitemap = stones.map((s) => ({
     url: absoluteUrl(stonePath(s)),
+    ...(s.slug && updatedAt.has(s.slug) ? { lastModified: updatedAt.get(s.slug) } : {}),
     changeFrequency: "weekly",
     priority: 0.7,
   }))
