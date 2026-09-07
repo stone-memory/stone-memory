@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useRef, useState } from "react"
+import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MessageSquare, Plus, Download, Hammer, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,7 @@ import {
   type DocumentKind,
 } from "@/lib/crm/types"
 import { LostReasonModal } from "@/components/admin/lost-reason-modal"
+import { DealFinanceModal, paidFromPayments } from "@/components/admin/deal-finance-modal"
 
 type Overview = NonNullable<Awaited<ReturnType<typeof fetchDealOverview>>>
 
@@ -48,6 +49,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
   // capture the reason. All other status transitions go through immediately.
   const [lostModal, setLostModal] = useState<null | "cancelled" | "lost">(null)
   const [savingClose, setSavingClose] = useState(false)
+  const [financeOpen, setFinanceOpen] = useState(false)
 
   const patchDeal = async (body: Record<string, unknown>): Promise<boolean> => {
     setError(null)
@@ -97,6 +99,9 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
   const customer = d.customers
   const isClosed = (["completed", "cancelled", "lost"] as DealStatus[]).includes(d.status)
   const transitions = availableTransitions(d.status).filter((s) => s !== "new")
+  // «До сплати» = сума − усі платежі (не лише аванс, як у balance_eur в БД).
+  const paid = paidFromPayments(data.payments)
+  const remaining = Math.max(Number(d.amount_eur) - paid, 0)
 
   return (
     <div className="space-y-6">
@@ -133,16 +138,22 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             )}
           </div>
-          <div className="grid w-full grid-cols-3 gap-3 sm:w-auto sm:min-w-[380px]">
-            <EditableAmount
-              value={Number(d.amount_eur)}
-              onSave={async (next) => {
-                if (await patchDeal({ amount_eur: next })) await refresh()
-              }}
-            />
-            <Stat label="Сплачено" value={formatUAHDirect(Number(d.paid_eur))} />
-            <Stat label="Залишок" value={formatUAHDirect(Number(d.balance_eur))} highlight={Number(d.balance_eur) > 0} />
-          </div>
+          {/* Клік по блоку відкриває «Фінанси угоди»: сума + платежі. */}
+          <button
+            type="button"
+            onClick={() => setFinanceOpen(true)}
+            title="Змінити суму або внести платіж"
+            className="group w-full text-left sm:w-auto sm:min-w-[380px]"
+          >
+            <div className="grid grid-cols-3 gap-3">
+              <Stat label="Сума" value={formatUAHDirect(Number(d.amount_eur))} />
+              <Stat label="Сплачено" value={formatUAHDirect(paid)} />
+              <Stat label="До сплати" value={formatUAHDirect(remaining)} highlight={remaining > 0} />
+            </div>
+            <div className="mt-1.5 text-right text-xs text-accent opacity-80 group-hover:opacity-100 group-hover:underline">
+              Змінити суму · внести платіж
+            </div>
+          </button>
         </div>
 
         {/* State machine controls */}
@@ -193,6 +204,22 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
 
         {d.description && <p className="mt-4 text-sm text-foreground/85">{d.description}</p>}
       </div>
+
+      <DealFinanceModal
+        open={financeOpen}
+        reference={d.reference}
+        dealId={d.id}
+        customerId={d.customer_id}
+        amount={Number(d.amount_eur)}
+        payments={data.payments}
+        onSaveAmount={async (next) => {
+          const ok = await patchDeal({ amount_eur: next })
+          if (ok) await refresh()
+          return ok
+        }}
+        onChanged={refresh}
+        onClose={() => setFinanceOpen(false)}
+      />
 
       <LostReasonModal
         open={lostModal !== null}
@@ -289,76 +316,6 @@ function Stat({ label, value, hint, highlight }: { label: string; value: string;
       <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="break-words text-base font-semibold leading-tight tabular-nums">{value}</div>
       {hint && <div className="text-[10px] text-muted-foreground">{hint}</div>}
-    </div>
-  )
-}
-
-/**
- * Плитка «Сума» з редагуванням по кліку. Ціна виробу залежить від розмірів і
- * уточнюється після заміру, тому сума має мінятись прямо в угоді, а не лише
- * при створенні. Enter або клік поза полем зберігає, Escape скасовує.
- */
-function EditableAmount({ value, onSave }: { value: number; onSave: (next: number) => Promise<void> }) {
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState("")
-  const [busy, setBusy] = useState(false)
-  // Enter викликає commit і знімає поле; blur при розмонтуванні не має зберегти вдруге.
-  const committing = useRef(false)
-
-  const start = () => {
-    setDraft(value > 0 ? String(value) : "")
-    setEditing(true)
-  }
-
-  const commit = async () => {
-    if (committing.current) return
-    committing.current = true
-    try {
-      const next = Number(draft)
-      if (draft !== "" && !Number.isNaN(next) && next >= 0 && next !== value) {
-        setBusy(true)
-        await onSave(next)
-        setBusy(false)
-      }
-      setEditing(false)
-    } finally {
-      committing.current = false
-    }
-  }
-
-  if (!editing) {
-    return (
-      <button
-        type="button"
-        onClick={start}
-        title="Натисніть, щоб змінити суму"
-        className="group min-w-0 rounded-xl border border-foreground/10 p-3 text-right transition-colors hover:border-foreground/40"
-      >
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
-          Сума <span className="opacity-40 group-hover:opacity-100">✎</span>
-        </div>
-        <div className="break-words text-base font-semibold leading-tight tabular-nums">{formatUAHDirect(value)}</div>
-      </button>
-    )
-  }
-
-  return (
-    <div className="min-w-0 rounded-xl border border-accent/40 p-3">
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Сума, ₴</div>
-      <Input
-        autoFocus
-        type="text"
-        inputMode="decimal"
-        value={draft}
-        disabled={busy}
-        onChange={(e) => setDraft(e.target.value.replace(/[^\d.]/g, ""))}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") commit()
-          if (e.key === "Escape") setEditing(false)
-        }}
-        onBlur={commit}
-        className="mt-1 h-8 text-right tabular-nums"
-      />
     </div>
   )
 }
