@@ -221,20 +221,18 @@ function DealCard({
       "rounded-xl border bg-background p-3 text-sm shadow-soft hover:shadow-hover transition-shadow",
       isClosed ? "opacity-75" : "border-foreground/10"
     )}>
-      <div className="flex items-start justify-between gap-2">
-        <span className="flex items-center gap-1.5 min-w-0">
-          <Link href={`/admin/deals/${deal.id}`} className="font-mono text-xs font-medium hover:text-accent">
-            {deal.reference}
-          </Link>
-          {/* Позначка лише для стільниць: памʼятники — типовий випадок, чіп був би шумом. */}
-          {deal.category === "interior" && (
-            <span className="rounded-full bg-teal-500/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-teal-700 dark:text-teal-300">
-              {DEAL_CATEGORY_LABELS_UK.interior}
-            </span>
-          )}
-        </span>
-        <span className="text-[10px] text-muted-foreground tabular-nums">{formatRelative(deal.created_at)}</span>
+      <div className="flex items-start justify-between gap-2 min-w-0">
+        <Link href={`/admin/deals/${deal.id}`} className="font-mono text-xs font-medium hover:text-accent truncate min-w-0">
+          {deal.reference}
+        </Link>
+        <span className="shrink-0 text-[10px] text-muted-foreground tabular-nums whitespace-nowrap">{formatRelative(deal.created_at)}</span>
       </div>
+      {/* Позначка лише для стільниць: памʼятники — типовий випадок, чіп був би шумом. */}
+      {deal.category === "interior" && (
+        <span className="mt-1 inline-block rounded-full bg-teal-500/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-teal-700 dark:text-teal-300">
+          {DEAL_CATEGORY_LABELS_UK.interior}
+        </span>
+      )}
       {deal.customers && (
         <Link
           href={`/admin/customers/${deal.customers.id}`}
@@ -263,13 +261,14 @@ function DealCard({
         </span>
       )}
       {deal.description && (
-        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{deal.description}</p>
+        <p className="mt-1 text-xs text-muted-foreground line-clamp-2 break-words">{deal.description}</p>
       )}
-      <div className="mt-2 flex items-center gap-2 text-xs">
+      {/* Статус і сума переносяться на два рядки у вузьких колонках замість вилазити за край. */}
+      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         {!isClosed ? (
           <button
             onClick={() => setShowTransitions((v) => !v)}
-            className="rounded-full border border-foreground/15 px-2 py-0.5 hover:bg-foreground/5"
+            className="rounded-full border border-foreground/15 px-2 py-0.5 text-left hover:bg-foreground/5"
           >
             {DEAL_STATUS_LABELS_UK[deal.status]}
           </button>
@@ -279,7 +278,7 @@ function DealCard({
           </span>
         )}
         {Number(deal.amount_eur) > 0 && (
-          <span className="ml-auto font-medium tabular-nums">{formatUAHDirect(Number(deal.amount_eur))}</span>
+          <span className="ml-auto font-medium tabular-nums whitespace-nowrap">{formatUAHDirect(Number(deal.amount_eur))}</span>
         )}
       </div>
       {showTransitions && transitions.length > 0 && (

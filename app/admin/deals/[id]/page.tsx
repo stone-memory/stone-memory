@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { use, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MessageSquare, Plus, Download, Hammer, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { fetchDealOverview } from "@/lib/crm/store"
 import { formatUAHDirect, formatDateTime, formatRelative } from "@/lib/admin-format"
 import {
   DEAL_STATUS_LABELS_UK,
+  DEAL_CATEGORY_LABELS_UK,
   PAYMENT_KIND_LABELS_UK,
   PAYMENT_METHOD_LABELS_UK,
   DOCUMENT_KIND_LABELS_UK,
@@ -107,7 +108,14 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
       <div className="rounded-2xl border border-foreground/10 bg-card p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="font-mono text-sm text-muted-foreground">{d.reference}</div>
+            <div className="flex items-center gap-2 font-mono text-sm text-muted-foreground">
+              {d.reference}
+              {d.category === "interior" && (
+                <span className="rounded-full bg-teal-500/10 px-2 py-0.5 font-sans text-[10px] font-medium uppercase tracking-wide text-teal-700 dark:text-teal-300">
+                  {DEAL_CATEGORY_LABELS_UK.interior}
+                </span>
+              )}
+            </div>
             <h1 className="text-2xl font-semibold tracking-tight-custom mt-1">
               {customer?.name || "—"}
             </h1>
@@ -125,8 +133,13 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-3 min-w-[300px]">
-            <Stat label="Сума" value={formatUAHDirect(Number(d.amount_eur))} />
+          <div className="grid w-full grid-cols-3 gap-3 sm:w-auto sm:min-w-[380px]">
+            <EditableAmount
+              value={Number(d.amount_eur)}
+              onSave={async (next) => {
+                if (await patchDeal({ amount_eur: next })) await refresh()
+              }}
+            />
             <Stat label="Сплачено" value={formatUAHDirect(Number(d.paid_eur))} />
             <Stat label="Залишок" value={formatUAHDirect(Number(d.balance_eur))} highlight={Number(d.balance_eur) > 0} />
           </div>
@@ -272,10 +285,80 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
 
 function Stat({ label, value, hint, highlight }: { label: string; value: string; hint?: string; highlight?: boolean }) {
   return (
-    <div className={`rounded-xl border p-3 text-right ${highlight ? "border-amber-500/30 bg-amber-500/5" : "border-foreground/10"}`}>
+    <div className={`min-w-0 rounded-xl border p-3 text-right ${highlight ? "border-amber-500/30 bg-amber-500/5" : "border-foreground/10"}`}>
       <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
-      <div className="text-lg font-semibold tabular-nums">{value}</div>
+      <div className="break-words text-base font-semibold leading-tight tabular-nums">{value}</div>
       {hint && <div className="text-[10px] text-muted-foreground">{hint}</div>}
+    </div>
+  )
+}
+
+/**
+ * Плитка «Сума» з редагуванням по кліку. Ціна виробу залежить від розмірів і
+ * уточнюється після заміру, тому сума має мінятись прямо в угоді, а не лише
+ * при створенні. Enter або клік поза полем зберігає, Escape скасовує.
+ */
+function EditableAmount({ value, onSave }: { value: number; onSave: (next: number) => Promise<void> }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState("")
+  const [busy, setBusy] = useState(false)
+  // Enter викликає commit і знімає поле; blur при розмонтуванні не має зберегти вдруге.
+  const committing = useRef(false)
+
+  const start = () => {
+    setDraft(value > 0 ? String(value) : "")
+    setEditing(true)
+  }
+
+  const commit = async () => {
+    if (committing.current) return
+    committing.current = true
+    try {
+      const next = Number(draft)
+      if (draft !== "" && !Number.isNaN(next) && next >= 0 && next !== value) {
+        setBusy(true)
+        await onSave(next)
+        setBusy(false)
+      }
+      setEditing(false)
+    } finally {
+      committing.current = false
+    }
+  }
+
+  if (!editing) {
+    return (
+      <button
+        type="button"
+        onClick={start}
+        title="Натисніть, щоб змінити суму"
+        className="group min-w-0 rounded-xl border border-foreground/10 p-3 text-right transition-colors hover:border-foreground/40"
+      >
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+          Сума <span className="opacity-40 group-hover:opacity-100">✎</span>
+        </div>
+        <div className="break-words text-base font-semibold leading-tight tabular-nums">{formatUAHDirect(value)}</div>
+      </button>
+    )
+  }
+
+  return (
+    <div className="min-w-0 rounded-xl border border-accent/40 p-3">
+      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Сума, ₴</div>
+      <Input
+        autoFocus
+        type="text"
+        inputMode="decimal"
+        value={draft}
+        disabled={busy}
+        onChange={(e) => setDraft(e.target.value.replace(/[^\d.]/g, ""))}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") commit()
+          if (e.key === "Escape") setEditing(false)
+        }}
+        onBlur={commit}
+        className="mt-1 h-8 text-right tabular-nums"
+      />
     </div>
   )
 }

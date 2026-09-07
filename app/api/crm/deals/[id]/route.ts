@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
-import { canTransition, type DealStatus } from "@/lib/crm/types"
+import { canTransition, type DealCategory, type DealStatus } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
@@ -56,7 +56,7 @@ type PatchPayload = Partial<{
   expected_delivery: string | null
   install_address: string | null
   install_city: string | null
-  category: "memorial" | null
+  category: DealCategory | null
   /** Categorical reason for closing as cancelled/lost. See lib/crm/types.ts
    *  → LOST_REASON_OPTIONS for the canonical list (just text values, no
    *  enum constraint at the DB level so taxonomy can evolve freely). */
