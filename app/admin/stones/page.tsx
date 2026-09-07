@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
-import { Plus, Search, Trash2, RotateCcw, Pencil, GripVertical } from "lucide-react"
+import { Plus, Search, EyeOff, RotateCcw, Pencil, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useStonesAdminStore } from "@/lib/store/stones"
@@ -50,6 +50,21 @@ function nextId(existing: string[]): string {
   const set = new Set(existing)
   while (set.has(String(n))) n++
   return String(n)
+}
+
+/**
+ * Наступний вільний номер каталогу, три цифри.
+ *
+ * `id` для цього не годиться: він заповнює дірки від видалених рядків, тому
+ * новий товар отримував «63» посеред каталогу, що дійшов до 122. Номер має
+ * продовжувати ряд, а не latati його.
+ */
+function nextCode(existing: string[]): string {
+  const max = existing.reduce((acc, c) => {
+    const n = Number(c)
+    return Number.isInteger(n) && n > acc ? n : acc
+  }, 0)
+  return String(max + 1).padStart(3, "0")
 }
 
 export default function AdminStonesPage() {
@@ -184,6 +199,7 @@ export default function AdminStonesPage() {
         <StoneEditor
           stone={{
             id: nextId(items.map((r) => r.id)),
+            code: nextCode(items.map((r) => r.data.code ?? "")),
             category: "memorial",
             imagePath: "/logo-512.png",
             priceFrom: 0,
@@ -380,7 +396,10 @@ function SortableStoneRow({
                 className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                 title="Приховати"
               >
-                <Trash2 size={14} />
+                {/* Закреслене око, а не смітник: кнопка ховає товар із сайту,
+                    але лишає його в базі. Смітник поруч зі справжнім видаленням
+                    читався як друга кнопка знищення. */}
+                <EyeOff size={14} />
               </button>
               <button
                 onClick={onRemove}

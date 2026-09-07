@@ -49,9 +49,22 @@ function parts(s: StoneItem, locale: Locale = "uk"): Parts {
   }
 }
 
+/**
+ * Назва вже описова, якщо містить тире-роздільник: «Одинарний пам'ятник —
+ * капустинський граніт, проста форма». Такі назви самі несуть тип, камінь і
+ * оздоблення, тож обгортка й повтор характеристик у заголовку зайві.
+ */
+const isDescriptive = (name: string) => name.includes(" — ")
+
 /** "Пам'ятник №002 — граніт, червоний" (falls back gracefully as fields empty out). */
 export function stoneTitle(s: StoneItem, locale: Locale = "uk"): string {
   const p = parts(s, locale)
+
+  // Описову назву віддаємо як є. Інакше виходило «Пам'ятник «Меморіальний
+  // комплекс — головинське габро, складне різьблення» — габро, чорний»: тип
+  // названо двічі, камінь двічі, і все це на 88 символів у <title>.
+  if (p.display && isDescriptive(p.display)) return p.display
+
   const spec = [p.material, p.color].filter(Boolean).join(", ").toLowerCase()
   // A named model leads with its name — that is the memorable, searchable part.
   // Unnamed rows keep the number so the title is never just a bare noun.
@@ -76,8 +89,11 @@ export function stoneDescription(s: StoneItem, locale: Locale = "uk"): string {
   const spec = [p.type && p.type.toLowerCase(), p.material && p.material.toLowerCase(), p.color && p.color.toLowerCase()]
     .filter(Boolean)
     .join(", ")
+  // Описова назва вже містить тип, камінь і оздоблення — повторювати їх після
+  // двокрапки немає сенсу, лишається тільки номер.
+  const descriptive = Boolean(p.display && isDescriptive(p.display))
   const subject = p.display ? `${p.kind} «${p.display}» (№${p.code})` : `${p.kind} №${p.code}`
-  const lead = spec ? `${subject}: ${spec}.` : `${subject}.`
+  const lead = spec && !descriptive ? `${subject}: ${spec}.` : `${subject}.`
   const price = s.priceFrom ? ` Від ${s.priceFrom.toLocaleString("uk-UA")} ₴.` : ""
   // Tail kept short so the whole line stays under ~160 chars even for the
   // longest spec combination ("комплекс військовий, покостівський, червоний").
