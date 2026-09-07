@@ -232,7 +232,10 @@ export function findStoneByCode(stones: StoneItem[], param: string): StoneItem |
   return (
     monuments.find((s) => s.slug === param) ??
     monuments.find((s) => stoneCode(s) === param) ??
-    monuments.find((s) => s.id === param)
+    monuments.find((s) => s.id === param) ??
+    // Останньою — попередня адреса товару. Сторінка далі порівняє знайдене з
+    // stonePath() і віддасть 301, тому переїзд каталогу не лишає по собі 404.
+    monuments.find((s) => s.legacySlug === param)
   )
 }
 
