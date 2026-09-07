@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { StatusChanger } from "./status-changer"
 import { NotesLog } from "./notes-log"
 import { AttributionPanel } from "./attribution-panel"
+import { SourceBadge } from "./source-badge"
 import { useOrdersStore } from "@/lib/store/orders"
 import { formatUAHDirect, formatDateTime } from "@/lib/admin-format"
 import type { Order } from "@/lib/types"
@@ -56,7 +57,10 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
       <SheetContent className="w-full sm:w-[560px] flex flex-col p-0 [&>button]:hidden">
         <SheetHeader className="flex flex-row justify-between items-start px-6 pt-6 pb-6 border-b">
           <div className="flex-1 min-w-0 pr-4">
-            <SheetTitle className="text-xl font-semibold break-all">{order.id}</SheetTitle>
+            <SheetTitle className="text-xl font-semibold break-all flex items-center gap-2 flex-wrap">
+              {order.id}
+              <SourceBadge source={order.source} />
+            </SheetTitle>
             <SheetDescription className="text-xs text-muted-foreground mt-1">
               {formatDate(order.createdAt)}
             </SheetDescription>
@@ -83,6 +87,26 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
               </a>
               <Button className="w-full rounded-xl h-11">Зателефонувати клієнту</Button>
             </section>
+
+            {/* Текст запиту й місто. У памʼятників часто порожньо, у стільниць — завжди є. */}
+            {(order.message || order.city) && (
+              <section>
+                <h3 className="text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-4">
+                  Запит
+                </h3>
+                {order.city && (
+                  <p className="text-sm mb-2">
+                    <span className="text-muted-foreground">Місто: </span>
+                    {order.city}
+                  </p>
+                )}
+                {order.message && (
+                  <p className="text-sm whitespace-pre-wrap rounded-xl bg-black/[0.04] p-4">
+                    {order.message}
+                  </p>
+                )}
+              </section>
+            )}
 
             {/* Renders only when the lead carried campaign tags. */}
             <AttributionPanel attribution={order.attribution} />

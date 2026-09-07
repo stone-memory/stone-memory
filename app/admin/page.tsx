@@ -26,7 +26,7 @@ function exportOrdersCsv(orders: Order[]) {
     in_progress: "В роботі",
     completed: "Завершено",
   }
-  const header = ["номер", "клієнт", "телефон", "статус", "дата", "референс", "сконтактовано", "сума_₴", "товари"].join(",")
+  const header = ["номер", "клієнт", "телефон", "статус", "дата", "референс", "сконтактовано", "сума_₴", "товари", "джерело", "місто"].join(",")
   const rows = orders.map((o) => {
     const total = o.items.reduce((s, i) => s + (i.priceFrom ?? 0), 0)
     const items = o.items.map((i) => i.name || i.id).join("; ")
@@ -40,6 +40,8 @@ function exportOrdersCsv(orders: Order[]) {
       o.contacted ? "Так" : "Ні",
       total,
       esc(items),
+      esc(o.source === "stilnytsi" ? "Стільниці" : "Памʼятники"),
+      esc(o.city ?? ""),
     ].join(",")
   })
   const csv = [header, ...rows].join("\n")

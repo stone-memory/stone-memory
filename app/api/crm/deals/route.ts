@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
-import type { DealStatus, DealPriority } from "@/lib/crm/types"
+import { isDealCategory, type DealCategory, type DealStatus, type DealPriority } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
@@ -71,8 +71,7 @@ type CreatePayload = {
   customer_id: string
   status?: DealStatus
   priority?: DealPriority
-  // Home & garden is discontinued; the CRM holds no deals in that category.
-  category?: "memorial"
+  category?: DealCategory
   description?: string
   amount_eur?: number
   source?: string
@@ -122,7 +121,7 @@ export async function POST(req: Request) {
       customer_id: body.customer_id,
       status: body.status || "new",
       priority: body.priority || "normal",
-      category: body.category || null,
+      category: isDealCategory(body.category) ? body.category : null,
       description: body.description || null,
       amount_eur: body.amount_eur || 0,
       source: body.source || null,

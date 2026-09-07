@@ -64,11 +64,13 @@ export type StoneItem = {
   /**
    * Попередня адреса, якщо товар уже переїжджав ("anhel-skorboty").
    *
-   * Заповнюється при зміні `slug` і далі не чіпається. `findStoneByCode`
+   * Заповнюється при кожній зміні `slug` і накопичується списком, бо товар
+   * може переїжджати не один раз, а кожна з попередніх адрес мусить
+   * лишатись робочою. `findStoneByCode`
    * шукає і за нею, тож старе посилання не падає в 404 — сторінка знаходить
    * товар і віддає 301 на його нинішню адресу.
    */
-  legacySlug?: string
+  legacySlug?: string | string[]
   category: Category
   imagePath: string
   priceFrom?: number
@@ -147,6 +149,11 @@ export type Order = {
   notes?: OrderNote[]
   /** First-touch campaign tags; null for direct traffic. See lib/attribution.ts. */
   attribution?: Attribution | null
+  /** Звідки заявка: 'stilnytsi' = сайт стільниць; null/'site' = сайт памʼятників. */
+  source?: string | null
+  city?: string | null
+  /** Текст запиту клієнта; у заявок зі стільниць першим рядком іде «Виріб: …». */
+  message?: string | null
 }
 
 export type Locale = "uk" | "pl" | "en" | "de" | "lt"
