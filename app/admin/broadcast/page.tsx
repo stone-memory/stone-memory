@@ -38,6 +38,7 @@ export default function AdminBroadcastPage() {
   const [highlights, setHighlights] = useState<Highlight[]>([])
 
   const [scheduleAt, setScheduleAt] = useState("")
+  const [testEmail, setTestEmail] = useState("")
   const [sending, setSending] = useState(false)
   const [result, setResult] = useState<{ sent?: number; failed?: number; total?: number; scheduled?: boolean } | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -66,7 +67,13 @@ export default function AdminBroadcastPage() {
     setHighlights((h) => h.map((x, idx) => (idx === i ? { ...x, ...patch } : x)))
   const removeHighlight = (i: number) => setHighlights((h) => h.filter((_, idx) => idx !== i))
 
-  const send = async () => {
+  /**
+   * testEmails — «надіслати тест собі»: той самий лист, але лише на вказані
+   * адреси, без підтвердження і без планування. Масова відправка
+   * (підписники / клієнти) завжди йде через confirm з кількістю: одна
+   * випадкова кнопка раніше розсилала лист усій базі без запитання.
+   */
+  const send = async (testEmails?: string[]) => {
     setError(null)
     setResult(null)
 
@@ -87,7 +94,9 @@ export default function AdminBroadcastPage() {
     }
 
     let targetPayload: object
-    if (target === "specific") {
+    if (testEmails) {
+      targetPayload = { kind: "specific", emails: testEmails }
+    } else if (target === "specific") {
       const emails = specificEmails.split(/[\s,;]+/).map((e) => e.trim()).filter(Boolean)
       if (emails.length === 0) {
         setError("Введіть хоча б один email")
@@ -100,10 +109,16 @@ export default function AdminBroadcastPage() {
       targetPayload = { kind: "clients" }
     }
 
+    if (!testEmails && target !== "specific") {
+      const who = target === "subscribers" ? `${activeCount} активним підписникам` : "усім клієнтам із замовлень"
+      const when = scheduleAt ? `\nЗаплановано на: ${new Date(scheduleAt).toLocaleString("uk-UA")}` : ""
+      if (!confirm(`Відправити лист «${subject}» ${who}?${when}\n\nСкасувати після відправки неможливо.`)) return
+    }
+
     setSending(true)
     try {
       const payload: Record<string, unknown> = { subject, target: targetPayload }
-      if (scheduleAt) payload.scheduleAt = new Date(scheduleAt).toISOString()
+      if (scheduleAt && !testEmails) payload.scheduleAt = new Date(scheduleAt).toISOString()
 
       if (mode === "html") {
         payload.html = html
@@ -333,8 +348,29 @@ export default function AdminBroadcastPage() {
           <Input type="datetime-local" value={scheduleAt} onChange={(e) => setScheduleAt(e.target.value)} className="max-w-xs" />
         </div>
 
+        {/* Тест собі перед масовою відправкою: той самий лист на одну адресу. */}
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-dashed border-foreground/15 p-3">
+          <span className="text-xs text-muted-foreground">Спершу перевірте, як виглядає лист:</span>
+          <Input
+            type="email"
+            value={testEmail}
+            onChange={(e) => setTestEmail(e.target.value)}
+            placeholder="ваш@email"
+            className="h-9 max-w-xs"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={sending || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testEmail)}
+            onClick={() => send([testEmail.trim()])}
+            className="rounded-xl gap-2"
+          >
+            <Mail size={14} /> Надіслати тест
+          </Button>
+        </div>
+
         <div className="flex items-center gap-3 pt-2">
-          <Button onClick={send} disabled={sending} className="rounded-xl gap-2">
+          <Button onClick={() => send()} disabled={sending} className="rounded-xl gap-2">
             <Send size={16} />
             {sending ? (scheduleAt ? "Планую…" : "Відправляю…") : scheduleAt ? "Запланувати" : "Відправити"}
           </Button>

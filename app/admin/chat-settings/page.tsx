@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { authedFetch } from "@/lib/authed-fetch"
 import { Plus, Trash2, RotateCcw, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -105,7 +106,7 @@ export default function AdminChatSettingsPage() {
     for (const phrase of added) {
       let result: Partial<Record<Locale, string>> = {}
       try {
-        const r = await fetch("/api/translate", {
+        const r = await authedFetch("/api/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: phrase, source: sourceLocale, targets }),

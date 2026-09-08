@@ -44,6 +44,16 @@ export default function DealsKanbanPage() {
   const load = useDealsStore((s) => s.load)
   const setStatus = useDealsStore((s) => s.setStatus)
   const [showCreate, setShowCreate] = useState(false)
+  // /admin/deals?customer=<id> з картки клієнта: одразу відкриваємо форму з
+  // обраним клієнтом. Читаємо після монтування, без useSearchParams.
+  const [presetCustomer, setPresetCustomer] = useState<string | null>(null)
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("customer")
+    if (id) {
+      setPresetCustomer(id)
+      setShowCreate(true)
+    }
+  }, [])
   const [search, setSearch] = useState("")
   // Два напрямки бізнесу в одній воронці. Угоди без категорії (старі,
   // заведені до появи поля) показуються у «Всі» та серед памʼятників.
@@ -174,7 +184,13 @@ export default function DealsKanbanPage() {
       </div>
 
       {showCreate && (
-        <CreateDealDialog onClose={() => setShowCreate(false)} />
+        <CreateDealDialog
+          initialCustomerId={presetCustomer ?? undefined}
+          onClose={() => {
+            setShowCreate(false)
+            setPresetCustomer(null)
+          }}
+        />
       )}
     </div>
   )
@@ -288,7 +304,14 @@ function DealCard({
   )
 }
 
-function CreateDealDialog({ onClose }: { onClose: () => void }) {
+function CreateDealDialog({
+  onClose,
+  initialCustomerId,
+}: {
+  onClose: () => void
+  /** Клієнт, обраний наперед (перехід з картки клієнта). */
+  initialCustomerId?: string
+}) {
   const create = useDealsStore((s) => s.create)
   const allCustomers = useCustomersStore((s) => s.items)
   const customersLoading = useCustomersStore((s) => s.loading)
@@ -307,6 +330,16 @@ function CreateDealDialog({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     loadCustomers()
   }, [loadCustomers])
+
+  // Підставити клієнта з картки, щойно список завантажився.
+  useEffect(() => {
+    if (!initialCustomerId || customerId) return
+    const c = allCustomers.find((x) => x.id === initialCustomerId)
+    if (c) {
+      setCustomerId(c.id)
+      setCustomerLabel(`${c.name} · ${c.phone}`)
+    }
+  }, [initialCustomerId, allCustomers, customerId])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {

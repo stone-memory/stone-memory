@@ -148,9 +148,26 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
       </Section>
 
       {/* Deals */}
-      <Section title="Угоди" icon={<FileText size={16} />} count={data.deals.length}>
+      <Section
+        title="Угоди"
+        icon={<FileText size={16} />}
+        count={data.deals.length}
+        action={
+          <Link
+            href={`/admin/deals?customer=${c.id}`}
+            className="rounded-full border border-foreground/15 px-3 py-1 text-xs font-medium hover:border-foreground"
+          >
+            + Нова угода
+          </Link>
+        }
+      >
         {data.deals.length === 0 ? (
-          <Empty text="Угод поки немає. Створи нову вище →" />
+          <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+            Угод поки немає.{" "}
+            <Link href={`/admin/deals?customer=${c.id}`} className="text-accent hover:underline">
+              Створити угоду для цього клієнта →
+            </Link>
+          </div>
         ) : (
           <div className="divide-y divide-foreground/5">
             {data.deals.map((d) => (
@@ -254,13 +271,14 @@ function Stat({ label, value, highlight }: { label: string; value: string | numb
   )
 }
 
-function Section({ title, icon, count, children }: { title: string; icon: React.ReactNode; count: number; children: React.ReactNode }) {
+function Section({ title, icon, count, action, children }: { title: string; icon: React.ReactNode; count: number; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="rounded-2xl border border-foreground/10 bg-card overflow-hidden">
       <header className="flex items-center gap-2 px-4 py-3 border-b border-foreground/5 bg-foreground/[0.02]">
         {icon}
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{title}</h2>
         <span className="ml-auto text-xs text-muted-foreground tabular-nums">{count}</span>
+        {action}
       </header>
       {children}
     </section>

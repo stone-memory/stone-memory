@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { authedFetch } from "@/lib/authed-fetch"
 import { Globe, Check, Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -58,7 +59,7 @@ export function MultilingualField({
     setProvider(null)
     try {
       const targets = LOCALE_ORDER.filter((l) => l !== source)
-      const r = await fetch("/api/translate", {
+      const r = await authedFetch("/api/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, source, targets }),

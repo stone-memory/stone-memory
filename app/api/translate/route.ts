@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server"
 import { translateAll, ALL_LOCALES } from "@/lib/translate"
 import { rateLimit, getClientIp } from "@/lib/rate-limit"
+import { guardTeamMember } from "@/lib/auth/permissions"
 import type { Locale } from "@/lib/types"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 export async function POST(req: Request) {
+  // Викликається лише з адмінки, але платить власник (DeepL / Google): без
+  // авторизації будь-хто міг витрачати квоту перекладу з будь-якої IP.
+  const unauthorized = await guardTeamMember(req)
+  if (unauthorized) return unauthorized
+
   const ip = getClientIp(req)
   const rl = rateLimit(`translate:${ip}`, 30, 60_000)
   if (!rl.allowed) {

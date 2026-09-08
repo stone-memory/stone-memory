@@ -71,7 +71,8 @@ export async function POST(req: Request) {
       kind: body.kind,
       method: body.method,
       amount_eur: body.amount_eur,
-      currency: body.currency || "EUR",
+      // Суми в CRM показуються як гривня (formatUAHDirect); "EUR" у назві колонки — спадок.
+      currency: body.currency || "UAH",
       amount_native: body.amount_native || null,
       fx_rate: body.fx_rate || null,
       reference: body.reference || null,
@@ -87,9 +88,40 @@ export async function POST(req: Request) {
   await supabaseAdmin.from("deal_events").insert({
     deal_id: body.deal_id,
     kind: "payment",
-    message: `${body.kind} ${body.amount_eur} ${body.currency || "EUR"} (${body.method})`,
+    message: `${body.kind} ${body.amount_eur} ${body.currency || "UAH"} (${body.method})`,
     data: { payment_id: data.id, amount_eur: body.amount_eur, method: body.method },
   })
+
+  // Дзеркало у «Фінанси»: без цього дохід від угод у розділі фінансів не
+  // зʼявлявся взагалі, там був лише ручний журнал. Повернення — витрата.
+  // Помилка тут не має ламати реєстрацію платежу.
+  try {
+    const { data: deal } = await supabaseAdmin
+      .from("deals")
+      .select("reference")
+      .eq("id", body.deal_id)
+      .single()
+    const kind = body.kind === "refund" ? "expense" : "income"
+    const txId = `pay-${data.id}`
+    const tx = {
+      id: txId,
+      kind,
+      category: "order",
+      amount: Number(body.amount_eur),
+      date: new Date(body.paid_at || data.paid_at || Date.now()).getTime(),
+      note: `${body.kind === "refund" ? "Повернення" : "Оплата"} по угоді ${deal?.reference ?? body.deal_id}${body.reference ? ` · ${body.reference}` : ""}`,
+      relatedOrderId: body.deal_id,
+    }
+    await supabaseAdmin.from("transactions").upsert({
+      id: txId,
+      data: tx,
+      kind,
+      amount: tx.amount,
+      occurred_at: new Date(tx.date).toISOString(),
+    })
+  } catch (e) {
+    console.error("[payments] transactions mirror failed:", e)
+  }
 
   return NextResponse.json({ payment: data }, { status: 201 })
 }

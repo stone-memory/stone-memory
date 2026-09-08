@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { authedFetch } from "@/lib/authed-fetch"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Plus, Trash2, RotateCcw, Check, Globe, Loader2 } from "lucide-react"
@@ -89,7 +90,7 @@ export default function AdminAboutPage() {
         fields.map(async (f) => {
           if (!f.text.trim()) return { f, result: {} as Partial<Record<Locale, string>> }
           try {
-            const r = await fetch("/api/translate", {
+            const r = await authedFetch("/api/translate", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ text: f.text, source, targets }),
