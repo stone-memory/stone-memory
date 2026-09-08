@@ -1,3 +1,5 @@
+import { isStilnytsiSiteUrl } from "@/lib/stilnytsi/images"
+
 /**
  * Should this src bypass the Next.js image optimizer?
  *
@@ -13,5 +15,8 @@
  */
 export function shouldBypassOptimizer(src: string | null | undefined): boolean {
   if (!src) return false
+  // Фото з сайту стільниць уже оптимізовані там; CRM показує їх лише як
+  // мініатюри в адмінці, тож проксіювати їх через свій оптимізатор не треба.
+  if (isStilnytsiSiteUrl(src)) return true
   return src.startsWith("data:") || src.split("?")[0].toLowerCase().endsWith(".svg")
 }

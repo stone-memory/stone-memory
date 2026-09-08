@@ -195,7 +195,7 @@ export function StilnytsiCollectionPage({
             <div key={r.id} className={cn("flex flex-wrap items-center gap-3 rounded-2xl border border-foreground/10 bg-card p-3", r.hidden && "opacity-50")}>
               {s.image ? (
                 <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-foreground/5">
-                  <Image src={s.image} alt="" fill sizes="80px" className="object-cover" unoptimized={shouldBypassOptimizer(s.image) || !s.image.includes("supabase")} />
+                  <Image src={s.image} alt="" fill sizes="80px" className="object-cover" unoptimized={shouldBypassOptimizer(s.image)} />
                 </div>
               ) : (
                 <div className="h-14 w-20 shrink-0 rounded-lg bg-foreground/5" />

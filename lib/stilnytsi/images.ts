@@ -13,3 +13,8 @@ export function stilnytsiImageUrl(value: string | undefined | null): string {
   if (value.startsWith("/")) return SITE + value
   return ""
 }
+
+/** Чи це фото з сайту стільниць (його не пропускаємо через оптимізатор CRM). */
+export function isStilnytsiSiteUrl(value: string | null | undefined): boolean {
+  return Boolean(value && value.startsWith(SITE + "/"))
+}
