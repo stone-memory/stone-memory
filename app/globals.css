@@ -208,3 +208,54 @@
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+/* ------------------------------------------------------------------
+   Розділ «Архітектурний камінь» (/kamin)
+   Типографіка й контейнери перенесені разом із розділом. Кольори й радіуси
+   не дублюються: він працює на токенах сайту вище, щоб обидва напрями
+   виглядали одним брендом. `.glass` теж спільний — визначений вище.
+   ------------------------------------------------------------------ */
+.page-shell {
+  width: min(1180px, calc(100% - 48px));
+  margin-inline: auto;
+}
+.section-pad {
+  padding-block: clamp(5rem, 11vw, 9rem);
+}
+.display {
+  font-size: clamp(3rem, 8.5vw, 7.5rem);
+  line-height: 0.91;
+  letter-spacing: -0.065em;
+  font-weight: 600;
+}
+.title {
+  font-size: clamp(2.2rem, 5vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  font-weight: 600;
+}
+.eyebrow {
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+.surface {
+  border-radius: 2rem;
+  background: var(--card);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+.media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  background: var(--secondary);
+}
+.media img {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.media:hover img {
+  transform: scale(1.025);
+}

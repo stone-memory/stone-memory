@@ -98,6 +98,9 @@ const nextConfig = {
       // linkable URL, so it must resolve to something rather than die.
       // Хаб /memorial прибрано — він дублював навігацію, а вертикаль лишилась
       // одна. Сегмент /memorial/* живе далі як префікс шляху.
+      // Старий дубль сторінки керамограніту в розділі каменю: слаг матеріалу
+      // розходився зі слагом родини.
+      { source: "/kamin/materialy/keramohranit", destination: "/kamin/materialy/keramogranit", permanent: true },
       { source: "/memorial", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/kataloh", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/catalog", destination: "/memorial/pamyatnyky", permanent: true },

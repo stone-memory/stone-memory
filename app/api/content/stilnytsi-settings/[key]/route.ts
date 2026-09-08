@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
-import { notifyStilnytsi } from "@/lib/seo/revalidate"
+import { revalidateStone } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -39,6 +39,6 @@ export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> 
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  notifyStilnytsi()
+  revalidateStone()
   return NextResponse.json({ data: data?.data, updatedAt: data?.updated_at })
 }

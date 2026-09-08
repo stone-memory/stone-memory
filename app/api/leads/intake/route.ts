@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server"
 import { timingSafeEqual } from "node:crypto"
-import { supabaseAdmin } from "@/lib/supabase/admin"
+import { createLeadOrder } from "@/lib/crm/lead-intake"
 import { sanitizeAttribution } from "@/lib/attribution"
 import { rateLimit, getClientIp } from "@/lib/rate-limit"
 
 /**
- * Server-to-server приймач заявок з інших сайтів бренду.
+ * Server-to-server приймач заявок із зовнішніх джерел.
  *
- * Зараз єдиний клієнт — сайт стільниць (stilnytsi.stonememory.com.ua). Це
- * ЄДИНИЙ дозволений звʼязок між двома сайтами: жодних посилань між ними в
- * навігації чи контенті, лише цей POST з боку сервера.
+ * Розділ «Архітектурний камінь» переїхав у цей самий застосунок і пише
+ * заявки напряму через lib/crm/lead-intake.ts, тож цей ендпоінт лишається
+ * для зовнішніх інтеграцій і сумісності зі старими налаштуваннями.
  *
  * Пише в `orders` (видно на дашборді «Замовлення»), а далі тригер
  * orders_copy_to_deal (supabase/stilnytsi-intake-migration.sql) створює
@@ -67,56 +67,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid json" }, { status: 400 })
   }
 
-  const name = clip(body.name, 80)
-  const phone = clip(body.phone, 80)
-  const city = clip(body.city, 80)
-  const interest = clip(body.interest, 120)
-  const message = clip(body.message, 2000)
-  if (name.length < 2 || phone.length < 5) {
-    return NextResponse.json({ error: "name and phone required" }, { status: 400 })
+  const result = await createLeadOrder({
+    name: clip(body.name, 80),
+    phone: clip(body.phone, 80),
+    city: clip(body.city, 80),
+    interest: clip(body.interest, 120),
+    message: clip(body.message, 2000),
+    source: clip(body.source, 40) || "stilnytsi",
+    locale: clip(body.locale, 5) || "uk",
+    attribution: sanitizeAttribution(body.utm),
+  })
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: result.error === "storage failed" ? 500 : 400 })
   }
 
-  const source = clip(body.source, 40) || "stilnytsi"
-  const locale = clip(body.locale, 5) || "uk"
-  const attribution = sanitizeAttribution(body.utm)
-  // В orders одне текстове поле, тож інтерес (тип виробу) іде першим рядком.
-  const text = [interest ? `Виріб: ${interest}` : "", message].filter(Boolean).join("\n\n") || null
-
-  const base = {
-    name,
-    phone,
-    email: null,
-    message: text,
-    locale,
-    source,
-    status: "new",
-    reference: null,
-    items: null,
-    stone_id: null,
-  }
-
-  let { data, error } = await supabaseAdmin
-    .from("orders")
-    .insert({ ...base, city: city || null, attribution })
-    .select("id")
-    .single()
-
-  // 42703 = undefined_column: міграція stilnytsi-intake (city) або
-  // attribution-migration ще не виконана. Лід важливіший за колонки —
-  // пишемо без них, а місто дописуємо в текст, щоб не загубити.
-  if (error?.code === "42703") {
-    const fallbackText = [city ? `Місто: ${city}` : "", text].filter(Boolean).join("\n") || null
-    ;({ data, error } = await supabaseAdmin
-      .from("orders")
-      .insert({ ...base, message: fallbackText })
-      .select("id")
-      .single())
-  }
-
-  if (error) {
-    console.error("[leads/intake] insert failed:", error.message)
-    return NextResponse.json({ error: "storage failed" }, { status: 500 })
-  }
-
-  return NextResponse.json({ ok: true, id: data?.id ?? null }, { status: 201 })
+  return NextResponse.json({ ok: true, id: result.id }, { status: 201 })
 }

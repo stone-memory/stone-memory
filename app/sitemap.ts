@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next"
 import { fetchArticles, fetchStones, fetchStoneUpdatedAt } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 import { publishedFacets, stonePath } from "@/lib/catalog-taxonomy"
+import { getAllPaths } from "@/lib/stone/routes"
 
 export const revalidate = 60
 
@@ -20,10 +21,11 @@ export const revalidate = 60
  * honest URL per document is the correct signal.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, stones, updatedAt] = await Promise.all([
+  const [articles, stones, updatedAt, stonePaths] = await Promise.all([
     fetchArticles(),
     fetchStones(),
     fetchStoneUpdatedAt(),
+    getAllPaths(),
   ])
 
   // No `lastModified` on routes where we have no real change signal — a
@@ -77,5 +79,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Service anchors (/posluhy#design …) are intentionally omitted: a URL
   // fragment is not a separate document, so search engines collapse them into
   // /posluhy and the extra entries only dilute the sitemap.
-  return [...staticRoutes, ...facetRoutes, ...stoneRoutes, ...articleRoutes]
+  // Розділ «Архітектурний камінь» (/kamin): список збирається з тих самих
+  // даних, що й його роути, тому додана в адмінці колекція чи стаття
+  // потрапляє в мапу сайту без ручного кроку.
+  const architecturalStoneRoutes: MetadataRoute.Sitemap = stonePaths.map((path) => ({
+    url: absoluteUrl(path),
+    changeFrequency: path === "/kamin" ? "weekly" : "monthly",
+    priority: path === "/kamin" ? 0.9 : 0.6,
+  }))
+
+  return [
+    ...staticRoutes,
+    ...facetRoutes,
+    ...stoneRoutes,
+    ...articleRoutes,
+    ...architecturalStoneRoutes,
+  ]
 }

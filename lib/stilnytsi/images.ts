@@ -1,20 +1,9 @@
 /**
- * Фото контенту стільниць зберігаються або як абсолютні URL (Supabase Storage,
- * завантажені через адмінку), або як шляхи виду /materials/x.webp, що лежать у
- * репозиторії сайту стільниць. Другі адмінка може показати лише через адресу
- * того сайту: NEXT_PUBLIC_STILNYTSI_SITE_URL (до підключення піддомену —
- * Vercel-аліас проєкту).
+ * Фото контенту розділу «Архітектурний камінь» лежать або в Supabase Storage
+ * (завантажені через адмінку), або в public/ цього ж застосунку. Після
+ * обʼєднання сайтів обидва випадки — той самий домен, тож шлях віддаємо як є.
+ * Функція лишається однією точкою, якщо сховище колись переїде.
  */
-const SITE = (process.env.NEXT_PUBLIC_STILNYTSI_SITE_URL || "https://stonememory-stilnytsi.vercel.app").replace(/\/+$/, "")
-
 export function stilnytsiImageUrl(value: string | undefined | null): string {
-  if (!value) return ""
-  if (/^https?:\/\//.test(value)) return value
-  if (value.startsWith("/")) return SITE + value
-  return ""
-}
-
-/** Чи це фото з сайту стільниць (його не пропускаємо через оптимізатор CRM). */
-export function isStilnytsiSiteUrl(value: string | null | undefined): boolean {
-  return Boolean(value && value.startsWith(SITE + "/"))
+  return value || ""
 }

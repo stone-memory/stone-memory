@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { CategoriesSection } from "@/components/categories-section"
+import { StoneDirection } from "@/components/stone-direction"
 import { FeaturedStones } from "@/components/featured-stones"
 import { ReviewsSection } from "@/components/reviews-section"
 import { FaqSection } from "@/components/faq-section"
@@ -53,6 +54,7 @@ export default async function Home() {
       <main id="main-content" className="relative">
         <Hero />
         <CategoriesSection />
+        <StoneDirection />
         <FeaturedStones />
         <ReviewsSection />
         <FaqSection />

@@ -1,5 +1,5 @@
-import { revalidatePath } from "next/cache"
-import { after } from "next/server"
+import { revalidatePath, revalidateTag } from "next/cache"
+import { CMS_TAG } from "@/lib/stone/cms"
 
 // Maps an admin-editable content resource to the public routes whose ISR
 // cache must be purged when that content changes. Dynamic routes use the
@@ -35,7 +35,7 @@ const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
 // revalidation hiccup (e.g. running outside a request scope).
 export function revalidateForResource(resource: string): void {
   if (resource.startsWith("stilnytsi-")) {
-    notifyStilnytsi()
+    revalidateStone()
     return
   }
   const paths = RESOURCE_PATHS[resource]
@@ -49,31 +49,16 @@ export function revalidateForResource(resource: string): void {
 }
 
 /**
- * Контент сайту стільниць живе в цій же базі, але рендерить його інший
- * сайт. Після збереження просимо його скинути кеш: один POST із секретом на
- * /api/revalidate. Виконується після відповіді (after), щоб не гальмувати
- * адмінку; без STILNYTSI_SITE_URL нічого не робить — сайт сам перечитає
- * дані протягом години.
+ * Контент розділу «Архітектурний камінь» читається через lib/stone/cms.ts і
+ * кешується з тегом CMS_TAG. Скидаємо тег — і сторінки розділу разом із
+ * мапою сайту перебудовуються з нових даних при наступному відкритті.
  */
-export function notifyStilnytsi(): void {
-  const base = process.env.STILNYTSI_SITE_URL?.replace(/\/+$/, "")
-  const secret = process.env.STILNYTSI_REVALIDATE_SECRET
-  if (!base || !secret) return
-  const ping = async () => {
-    try {
-      const r = await fetch(`${base}/api/revalidate`, {
-        method: "POST",
-        headers: { "x-revalidate-secret": secret },
-        signal: AbortSignal.timeout(5000),
-      })
-      if (!r.ok) console.warn(`[stilnytsi] revalidate → HTTP ${r.status}`)
-    } catch (e) {
-      console.warn("[stilnytsi] revalidate failed", e)
-    }
-  }
+export function revalidateStone(): void {
   try {
-    after(ping)
+    revalidateTag(CMS_TAG, "max")
+    revalidatePath("/kamin", "layout")
+    revalidatePath("/sitemap.xml")
   } catch {
-    void ping()
+    // ignore — revalidation is an optimisation, not a correctness requirement
   }
 }
