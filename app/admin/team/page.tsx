@@ -47,9 +47,18 @@ const ROLE_DESC: Record<TeamRole, string> = {
 // pick when adding a teammate".
 
 export default function TeamPage() {
-  const members = useTeamStore((s) => s.members)
-  const loaded = useTeamStore((s) => s.loaded)
-  const load = useTeamStore((s) => s.load)
+  // Спільний стор тримає лише активних (його читають випадачки призначень),
+  // а тут потрібні всі, включно з деактивованими, щоб їх можна було відновити.
+  const [members, setMembers] = useState<TeamMember[]>([])
+  const [loaded, setLoaded] = useState(false)
+  const load = async () => {
+    const r = await authedFetch("/api/crm/team", { cache: "no-store" })
+    const j = await r.json().catch(() => ({}))
+    if (r.ok) setMembers(j.team || [])
+    setLoaded(true)
+    // Скинути кеш стору, щоб призначення в угодах побачили зміни складу.
+    useTeamStore.setState({ loaded: false })
+  }
   const { role: currentRole } = useCurrentRole()
   const canResetPasswords = isSuperAdmin(currentRole)
   const [showAdd, setShowAdd] = useState(false)
@@ -89,7 +98,8 @@ export default function TeamPage() {
   // team_members row and let the user register themselves later.
   const canSetPassword = isSuperAdmin(currentRole)
 
-  useEffect(() => { load() }, [load])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- load визначено в компоненті, один раз при монтуванні
+  useEffect(() => { void load() }, [])
 
   // When the role list hydrates and no role is selected yet, default
   // to system_manager (matches the previous behavior where new members
@@ -136,8 +146,6 @@ export default function TeamPage() {
       phone: "", phoneFormatted: "", password: "",
     })
     setSubmitError(null)
-    // Force reload
-    useTeamStore.setState({ loaded: false })
     load()
   }
 
@@ -147,14 +155,12 @@ export default function TeamPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     })
-    useTeamStore.setState({ loaded: false })
     load()
   }
 
   const removeMember = async (id: string) => {
     if (!confirm("Деактивувати цього члена команди? Історія угод збережеться.")) return
     await authedFetch(`/api/crm/team/${id}`, { method: "DELETE" })
-    useTeamStore.setState({ loaded: false })
     load()
   }
 
@@ -186,7 +192,7 @@ export default function TeamPage() {
           .filter((role) => role !== "super_admin" || members.some((m) => m.role === "super_admin"))
           .map((role) => {
             const Icon = ROLE_ICON[role]
-            const count = members.filter((m) => m.role === role).length
+            const count = members.filter((m) => m.active && m.role === role).length
             const isSuper = role === "super_admin"
             return (
               <div
@@ -229,7 +235,7 @@ export default function TeamPage() {
           <tbody className="divide-y divide-foreground/5">
             {members.map((m) => {
               return (
-                <tr key={m.id}>
+                <tr key={m.id} className={m.active ? undefined : "opacity-60"}>
                   <td className="px-4 py-3">
                     <div className="font-medium">{m.display_name || m.email.split("@")[0]}</div>
                     {m.user_id ? null : (
