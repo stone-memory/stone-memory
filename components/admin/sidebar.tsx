@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock } from "lucide-react"
+import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock, Layers, Settings2 } from "lucide-react"
 import { useNotificationCounts } from "@/lib/crm/notifications-store"
 import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
 import type { TeamRole } from "@/lib/crm/types"
@@ -40,6 +40,13 @@ const navItems: NavItem[] = [
   { href: "/admin/tasks", icon: Bell, label: "Задачі й нагадування", alwaysShow: true, section: "CRM" },
   { href: "/admin/finances", icon: Wallet, label: "Фінанси", cap: "finances.view_company", section: "CRM" },
   { href: "/admin/analytics", icon: LineChart, label: "Аналітика", cap: "finances.view_company", section: "CRM" },
+
+  // === Сайт стільниць (окремий сайт, той самий Supabase) ===
+  { href: "/admin/stilnytsi/materials", icon: Layers, label: "Матеріали й ціни", cap: "content.editorial", section: "Стільниці" },
+  { href: "/admin/stilnytsi/projects", icon: Briefcase, label: "Проєкти", cap: "content.editorial", section: "Стільниці" },
+  { href: "/admin/stilnytsi/blog", icon: BookOpen, label: "Блог", cap: "content.editorial", section: "Стільниці" },
+  { href: "/admin/stilnytsi/slabs", icon: Package, label: "Сляби й залишки", cap: "content.editorial", section: "Стільниці" },
+  { href: "/admin/stilnytsi/settings", icon: Settings2, label: "Налаштування сайту", cap: "content.editorial", section: "Стільниці" },
 
   // === Контент сайту ===
   { href: "/admin/homepage", icon: LayoutGrid, label: "Головна сторінка", cap: "content.editorial", section: "Контент" },

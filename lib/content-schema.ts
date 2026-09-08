@@ -75,6 +75,44 @@ export const collections: Record<string, CollectionConfig> = {
     selectColumns: "*",
     writeCapability: "customers.message",
   },
+
+  // === Сайт стільниць (окремий сайт, спільна база). Після запису
+  // lib/seo/revalidate.ts стукає на його /api/revalidate. ===
+  "stilnytsi-materials": {
+    table: "stilnytsi_materials",
+    idColumn: "slug",
+    orderColumn: "position",
+    selectColumns: "*",
+    writeCapability: "content.editorial",
+  },
+  "stilnytsi-projects": {
+    table: "stilnytsi_projects",
+    idColumn: "slug",
+    orderColumn: "position",
+    selectColumns: "*",
+    writeCapability: "content.editorial",
+  },
+  "stilnytsi-articles": {
+    table: "stilnytsi_articles",
+    idColumn: "slug",
+    orderColumn: "position",
+    selectColumns: "*",
+    writeCapability: "content.editorial",
+  },
+  "stilnytsi-slabs": {
+    table: "stilnytsi_slabs",
+    idColumn: "id",
+    orderColumn: "position",
+    selectColumns: "*",
+    writeCapability: "content.editorial",
+  },
+  "stilnytsi-remnants": {
+    table: "stilnytsi_remnants",
+    idColumn: "id",
+    orderColumn: "position",
+    selectColumns: "*",
+    writeCapability: "content.editorial",
+  },
 }
 
 export function getCollection(resource: string): CollectionConfig | null {

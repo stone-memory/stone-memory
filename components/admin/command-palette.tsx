@@ -40,6 +40,12 @@ const NAV_ITEMS: Item[] = [
   { id: "n-chat-set", label: "Налаштування чату", href: "/admin/chat-settings", group: "Навігація" },
   { id: "n-fin", label: "Фінанси", href: "/admin/finances", group: "Навігація" },
 
+  { id: "n-st-mat", label: "Стільниці · Матеріали й ціни", href: "/admin/stilnytsi/materials", group: "Навігація" },
+  { id: "n-st-prj", label: "Стільниці · Проєкти", href: "/admin/stilnytsi/projects", group: "Навігація" },
+  { id: "n-st-blog", label: "Стільниці · Блог", href: "/admin/stilnytsi/blog", group: "Навігація" },
+  { id: "n-st-slabs", label: "Стільниці · Сляби й залишки", href: "/admin/stilnytsi/slabs", group: "Навігація" },
+  { id: "n-st-set", label: "Стільниці · Налаштування сайту", href: "/admin/stilnytsi/settings", group: "Навігація" },
+
   { id: "a-newfaq", label: "Нове питання FAQ", hint: "додати питання", href: "/admin/faq", group: "Дії" },
   { id: "a-newsvc", label: "Нова послуга", hint: "створити картку послуги", href: "/admin/services", group: "Дії" },
   { id: "a-newprj", label: "Новий проект", hint: "додати в портфоліо", href: "/admin/projects", group: "Дії" },
