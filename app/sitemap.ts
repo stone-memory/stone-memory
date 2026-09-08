@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // must never be submitted: Google reports it as "Page with redirect" and
     // drops it from the index anyway.
     { url: absoluteUrl("/memorial/pamyatnyky"), changeFrequency: "daily", priority: 0.95 },
-    { url: absoluteUrl("/memorial/kamin"), changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/memorial/kameni"), changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/proekty"), changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/posluhy"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/pro-nas"), changeFrequency: "monthly", priority: 0.8 },
@@ -79,13 +79,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Service anchors (/posluhy#design …) are intentionally omitted: a URL
   // fragment is not a separate document, so search engines collapse them into
   // /posluhy and the extra entries only dilute the sitemap.
-  // Розділ «Архітектурний камінь» (/kamin): список збирається з тих самих
+  // Розділ «Архітектурний камінь» (/arkhitekturnyi-kamin): список збирається з тих самих
   // даних, що й його роути, тому додана в адмінці колекція чи стаття
   // потрапляє в мапу сайту без ручного кроку.
   const architecturalStoneRoutes: MetadataRoute.Sitemap = stonePaths.map((path) => ({
     url: absoluteUrl(path),
-    changeFrequency: path === "/kamin" ? "weekly" : "monthly",
-    priority: path === "/kamin" ? 0.9 : 0.6,
+    changeFrequency: path === "/arkhitekturnyi-kamin" ? "weekly" : "monthly",
+    priority: path === "/arkhitekturnyi-kamin" ? 0.9 : 0.6,
   }))
 
   return [

@@ -14,7 +14,7 @@ export async function GeoPage({ city, data: d }: { city: string; data: GeoCity }
   return (
     <main>
       <Breadcrumbs
-        items={[{ name: 'Стільниці', href: '/kamin/vyroby/stilnytsi' }, { name: d.locative }]}
+        items={[{ name: 'Стільниці', href: '/arkhitekturnyi-kamin/vyroby/stilnytsi' }, { name: d.locative }]}
       />
       <JsonLd
         data={{

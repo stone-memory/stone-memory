@@ -127,7 +127,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
       >
         <Link href="/">Головна</Link>
         <span className="px-2">/</span>
-        <Link href="/kamin/materialy">Матеріали</Link>
+        <Link href="/arkhitekturnyi-kamin/materialy">Матеріали</Link>
         <span className="px-2">/</span>
         <span>{c.name}</span>
       </nav>
@@ -188,7 +188,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
             )}
             <Link
               className="mt-8 inline-flex rounded-md bg-primary px-5 py-3 text-sm text-primary-foreground"
-              href="/kamin/kontakty"
+              href="/arkhitekturnyi-kamin/kontakty"
             >
               Замовити зразок
             </Link>
@@ -226,7 +226,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
               {c.applications.map((x) => (
                 <Link
                   className="rounded-full border px-4 py-2 text-sm"
-                  href={`/kamin/vyroby/${categorySlug[x] || 'stilnytsi'}`}
+                  href={`/arkhitekturnyi-kamin/vyroby/${categorySlug[x] || 'stilnytsi'}`}
                   key={x}
                 >
                   {x}
@@ -240,7 +240,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {related.map((x) => (
               <Link
-                href={`/kamin/materialy/${x.slug}`}
+                href={`/arkhitekturnyi-kamin/materialy/${x.slug}`}
                 className="overflow-hidden rounded-xl bg-card"
                 key={x.slug}
               >

@@ -59,7 +59,7 @@ export function Header({ className }: HeaderProps) {
 
   const navItems = [
     { href: "/memorial/pamyatnyky", label: t.nav.catalog },
-    { href: "/memorial/kamin", label: stoneLabels[locale] },
+    { href: "/memorial/kameni", label: stoneLabels[locale] },
     { href: "/posluhy", label: t.nav.services },
     ...(showProjects ? [{ href: "/proekty", label: projectsLabels[locale] }] : []),
     { href: "/pro-nas", label: aboutLabels[locale] },

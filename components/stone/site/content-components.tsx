@@ -8,7 +8,7 @@ export function JsonLd({ data }: { data: object }) {
 
 export function PrimaryCtaButton({
   label = 'Розрахувати вартість',
-  href = '/kamin/kalkulyator',
+  href = '/arkhitekturnyi-kamin/kalkulyator',
   className = '',
 }: {
   label?: string
@@ -87,7 +87,7 @@ export function AuthorCard() {
       </p>
       <div className="mt-4 flex gap-4 text-sm font-semibold">
         <Link href="/pro-nas">Про майстерню</Link>
-        <Link href="/kamin/kontakty">Контакти</Link>
+        <Link href="/arkhitekturnyi-kamin/kontakty">Контакти</Link>
       </div>
     </aside>
   )

@@ -21,4 +21,4 @@ export const familySlugs = Object.keys(families) as FamilySlug[]
 
 /** Адреса родини для слага матеріалу з data/materials.ts ('keramohranit' → /materialy/keramogranit). */
 export const familyHrefForMaterial = (materialSlug: string) =>
-  `/kamin/materialy/${materialSlug === 'keramohranit' ? 'keramogranit' : materialSlug}`
+  `/arkhitekturnyi-kamin/materialy/${materialSlug === 'keramohranit' ? 'keramogranit' : materialSlug}`

@@ -7,7 +7,7 @@ import { useTranslation } from "@/lib/i18n/context"
 import type { Locale } from "@/lib/types"
 
 /**
- * Другий напрям компанії на головній: розділ «Архітектурний камінь» (/kamin) —
+ * Другий напрям компанії на головній: розділ «Архітектурний камінь» (/arkhitekturnyi-kamin) —
  * стільниці, підвіконня, сходи, каміни, фасади, бруківка.
  *
  * Дзеркальна розкладка до блоку памʼятників вище (фото праворуч), щоб два
@@ -87,7 +87,7 @@ export function StoneDirection() {
   return (
     <section id="architectural-stone" className="mx-auto max-w-7xl px-6 pt-10 pb-2 md:pt-14">
       <article className="group overflow-hidden rounded-3xl bg-card ring-1 ring-black/[0.04] shadow-soft transition-[box-shadow,transform] duration-300 hover:shadow-hover hover:-translate-y-0.5">
-        <Link href="/kamin" prefetch className="grid grid-cols-1 lg:grid-cols-[1fr_1.05fr] lg:items-stretch">
+        <Link href="/arkhitekturnyi-kamin" prefetch className="grid grid-cols-1 lg:grid-cols-[1fr_1.05fr] lg:items-stretch">
           <div className="flex flex-col justify-center p-6 md:p-8 lg:order-1 lg:p-10">
             <h3 className="hidden text-3xl font-semibold tracking-tight-custom text-balance lg:block xl:text-4xl">
               {copy.title}

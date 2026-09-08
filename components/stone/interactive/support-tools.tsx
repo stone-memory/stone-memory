@@ -224,13 +224,13 @@ function ReservationForm({
 export function SupportLinks() {
   return (
     <div className="flex flex-wrap gap-3">
-      <Link href="/kamin/materialy/tovshchyny" className="rounded-full border px-4 py-2 text-sm">
+      <Link href="/arkhitekturnyi-kamin/materialy/tovshchyny" className="rounded-full border px-4 py-2 text-sm">
         Товщини
       </Link>
-      <Link href="/kamin/materialy/finishi" className="rounded-full border px-4 py-2 text-sm">
+      <Link href="/arkhitekturnyi-kamin/materialy/finishi" className="rounded-full border px-4 py-2 text-sm">
         Фініші
       </Link>
-      <Link href="/kamin/dohliad" className="rounded-full border px-4 py-2 text-sm">
+      <Link href="/arkhitekturnyi-kamin/dohliad" className="rounded-full border px-4 py-2 text-sm">
         Догляд
       </Link>
     </div>

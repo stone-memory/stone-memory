@@ -10,7 +10,7 @@ export async function SupportPage({ slug }: { slug: string }) {
   if (!page) notFound()
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Підтримка', href: '/kamin/faq' }, { name: page.title }]} />
+      <Breadcrumbs items={[{ name: 'Підтримка', href: '/arkhitekturnyi-kamin/faq' }, { name: page.title }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">{page.eyebrow}</p>
         <h1 className="mt-5 max-w-5xl text-balance text-6xl font-semibold tracking-[-.055em] md:text-8xl">

@@ -146,7 +146,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-[15px]">
               <li><Link href="/memorial/pamyatnyky" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.catalog}</Link></li>
               <li><Link href="/posluhy" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.services}</Link></li>
-              <li><Link href="/kamin" prefetch className="text-foreground/85 hover:text-foreground">Архітектурний камінь</Link></li>
+              <li><Link href="/arkhitekturnyi-kamin" prefetch className="text-foreground/85 hover:text-foreground">Архітектурний камінь</Link></li>
               <li><Link href="/pro-nas" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.about}</Link></li>
               <li><Link href="/blog" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.blog}</Link></li>
             </ul>

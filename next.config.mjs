@@ -100,7 +100,14 @@ const nextConfig = {
       // одна. Сегмент /memorial/* живе далі як префікс шляху.
       // Старий дубль сторінки керамограніту в розділі каменю: слаг матеріалу
       // розходився зі слагом родини.
-      { source: "/kamin/materialy/keramohranit", destination: "/kamin/materialy/keramogranit", permanent: true },
+      { source: "/arkhitekturnyi-kamin/materialy/keramohranit", destination: "/arkhitekturnyi-kamin/materialy/keramogranit", permanent: true },
+      // Розділ каменю переїхав з /kamin: адреса читалась як «камін», а всередині
+      // розділу є категорія «Каміни». Сторінка порід для памʼятників — з тієї ж
+      // причини: /memorial/kamin → /memorial/kameni.
+      { source: "/kamin/materialy/keramohranit", destination: "/arkhitekturnyi-kamin/materialy/keramogranit", permanent: true },
+      { source: "/kamin", destination: "/arkhitekturnyi-kamin", permanent: true },
+      { source: "/kamin/:path*", destination: "/arkhitekturnyi-kamin/:path*", permanent: true },
+      { source: "/memorial/kamin", destination: "/memorial/kameni", permanent: true },
       { source: "/memorial", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/kataloh", destination: "/memorial/pamyatnyky", permanent: true },
       { source: "/catalog", destination: "/memorial/pamyatnyky", permanent: true },

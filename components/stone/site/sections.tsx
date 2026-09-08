@@ -56,7 +56,7 @@ export async function Cta() {
         </div>
         <div className="flex flex-wrap gap-3">
           <Link
-            href="/kamin/kalkulyator"
+            href="/arkhitekturnyi-kamin/kalkulyator"
             className="inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold leading-5 text-foreground"
           >
             Розрахувати вартість <ArrowUpRight className="size-4" />

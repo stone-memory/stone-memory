@@ -146,7 +146,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {result.map((item) => (
                 <Link
-                  href={`/kamin/materialy/${item.slug}`}
+                  href={`/arkhitekturnyi-kamin/materialy/${item.slug}`}
                   key={item.slug}
                   className="group overflow-hidden rounded-xl border bg-card"
                 >
@@ -181,7 +181,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
                 {collections.slice(0, 3).map((item) => (
                   <Link
                     className="rounded-full border px-4 py-2 text-sm"
-                    href={`/kamin/materialy/${item.slug}`}
+                    href={`/arkhitekturnyi-kamin/materialy/${item.slug}`}
                     key={item.slug}
                   >
                     {item.name}

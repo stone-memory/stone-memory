@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { Article, Collection, Project, Remnant, SettingKey, Settings, Slab } from "@/lib/stone/cms-types"
 
 /**
- * Контент розділу «Архітектурний камінь» (/kamin) з таблиць stilnytsi_*.
+ * Контент розділу «Архітектурний камінь» (/arkhitekturnyi-kamin) з таблиць stilnytsi_*.
  *
  * Читаємо тим самим шляхом, що й решта контенту сайту (lib/data-source.ts):
  * supabaseAdmin на сервері, приховані записи відсіюємо тут. Кожен запит

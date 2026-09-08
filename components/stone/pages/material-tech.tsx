@@ -16,7 +16,7 @@ import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
 export function ThicknessPage() {
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Матеріали', href: '/kamin/materialy' }, { name: 'Товщини' }]} />
+      <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name: 'Товщини' }]} />
       <section className="page-shell py-20">
         <SectionHeading
           as="h1"
@@ -50,8 +50,8 @@ export function EdgePage() {
     <main>
       <Breadcrumbs
         items={[
-          { name: 'Вироби', href: '/kamin/vyroby' },
-          { name: 'Стільниці', href: '/kamin/vyroby/stilnytsi' },
+          { name: 'Вироби', href: '/arkhitekturnyi-kamin/vyroby' },
+          { name: 'Стільниці', href: '/arkhitekturnyi-kamin/vyroby/stilnytsi' },
           { name: 'Профілі країв' },
         ]}
       />
@@ -78,12 +78,12 @@ export function EdgePage() {
         </div>
         <div className="mt-10 flex flex-wrap gap-3">
           <Link
-            href="/kamin/kalkulyator"
+            href="/arkhitekturnyi-kamin/kalkulyator"
             className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
           >
             Оцінити вартість
           </Link>
-          <Link href="/kamin/kontakty" className="rounded-full border px-5 py-3 text-sm">
+          <Link href="/arkhitekturnyi-kamin/kontakty" className="rounded-full border px-5 py-3 text-sm">
             Погодити профіль
           </Link>
         </div>
@@ -95,7 +95,7 @@ export function EdgePage() {
 export function FinishPage() {
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Матеріали', href: '/kamin/materialy' }, { name: 'Фініші' }]} />
+      <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name: 'Фініші' }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',

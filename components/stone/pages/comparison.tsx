@@ -7,7 +7,7 @@ export async function ComparisonPage({ comparison: d }: { comparison: Comparison
   const faq = await getSetting('faq')
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Порівняння', href: '/kamin/porivnyannya' }, { name: d.title }]} />
+      <Breadcrumbs items={[{ name: 'Порівняння', href: '/arkhitekturnyi-kamin/porivnyannya' }, { name: d.title }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Висновок спочатку</p>
         <h1 className="mt-5 max-w-4xl text-6xl font-semibold tracking-[-.055em] md:text-8xl">
@@ -40,11 +40,11 @@ export async function ComparisonPage({ comparison: d }: { comparison: Comparison
           </table>
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/kamin/materialy" className="rounded-full border px-5 py-3 text-sm">
+          <Link href="/arkhitekturnyi-kamin/materialy" className="rounded-full border px-5 py-3 text-sm">
             Переглянути матеріали
           </Link>
           <Link
-            href="/kamin/kalkulyator"
+            href="/arkhitekturnyi-kamin/kalkulyator"
             className="rounded-full bg-primary px-5 py-3 text-sm text-primary-foreground"
           >
             Оцінити бюджет

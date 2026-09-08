@@ -8,7 +8,7 @@ export async function FamilyHub({ family }: { family: FamilySlug }) {
   const items = (await getCollections()).filter((item) => item.family === name)
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Матеріали', href: '/kamin/materialy' }, { name }]} />
+      <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Родина матеріалів</p>
         <h1 className="mt-5 text-balance text-6xl font-semibold tracking-[-.055em] md:text-8xl">
@@ -23,7 +23,7 @@ export async function FamilyHub({ family }: { family: FamilySlug }) {
             items={items.map((item) => ({
               name: item.name,
               copy: item.description,
-              href: `/kamin/materialy/${item.slug}`,
+              href: `/arkhitekturnyi-kamin/materialy/${item.slug}`,
               image: item.cardImage,
               alt: `Фактура ${item.name}`,
             }))}
@@ -32,13 +32,13 @@ export async function FamilyHub({ family }: { family: FamilySlug }) {
         <div className="mt-12 flex flex-wrap gap-3">
           <Link
             className="rounded-full border px-5 py-3 text-sm font-semibold"
-            href="/kamin/porivnyannya/materialiv"
+            href="/arkhitekturnyi-kamin/porivnyannya/materialiv"
           >
             Порівняти матеріали
           </Link>
           <Link
             className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
-            href="/kamin/pidbir-kamenyu"
+            href="/arkhitekturnyi-kamin/pidbir-kamenyu"
           >
             Пройти підбір
           </Link>

@@ -8,7 +8,7 @@ const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
   stones: [
     ["/", "page"],
     ["/memorial/pamyatnyky", "page"],
-    ["/memorial/kamin", "page"],
+    ["/memorial/kameni", "page"],
     // Covers both facet and product pages — they share one dynamic segment.
     ["/memorial/pamyatnyky/[slug]", "page"],
   ],
@@ -56,7 +56,7 @@ export function revalidateForResource(resource: string): void {
 export function revalidateStone(): void {
   try {
     revalidateTag(CMS_TAG, "max")
-    revalidatePath("/kamin", "layout")
+    revalidatePath("/arkhitekturnyi-kamin", "layout")
     revalidatePath("/sitemap.xml")
   } catch {
     // ignore — revalidation is an optimisation, not a correctness requirement

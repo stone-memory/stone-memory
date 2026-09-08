@@ -16,7 +16,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
   const detail = a.detailImage || `/blog/${a.slug}-detail.webp`
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Журнал', href: '/kamin/blog' }, { name: a.title }]} />
+      <Breadcrumbs items={[{ name: 'Журнал', href: '/arkhitekturnyi-kamin/blog' }, { name: a.title }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -142,7 +142,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
                   href={href}
                   className="rounded-full border px-4 py-2 text-sm font-semibold"
                 >
-                  {href === '/kamin/kalkulyator'
+                  {href === '/arkhitekturnyi-kamin/kalkulyator'
                     ? 'Розрахувати вартість'
                     : href.split('/').filter(Boolean).at(-1)?.replaceAll('-', ' ')}
                 </Link>
@@ -156,7 +156,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
             {a.materials.map((s) => (
               <Link
                 className="rounded-full border px-4 py-2 text-sm"
-                href={`/kamin/materialy/${s}`}
+                href={`/arkhitekturnyi-kamin/materialy/${s}`}
                 key={s}
               >
                 {collections.find((c) => c.slug === s)?.name || s}
@@ -165,7 +165,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
             {a.categories.map((s) => (
-              <Link className="text-sm underline" href={`/kamin/vyroby/${s}`} key={s}>
+              <Link className="text-sm underline" href={`/arkhitekturnyi-kamin/vyroby/${s}`} key={s}>
                 {categories.find((c) => c.slug === s)?.name || s}
               </Link>
             ))}

@@ -471,7 +471,7 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
       <div className="grid gap-px overflow-hidden rounded-xl bg-border md:grid-cols-2 lg:grid-cols-4">
         {shown.map((c) => (
           <Link
-            href={`/kamin/materialy/${c.slug}`}
+            href={`/arkhitekturnyi-kamin/materialy/${c.slug}`}
             key={c.slug}
             className="group overflow-hidden bg-card hover:bg-secondary"
           >
@@ -522,7 +522,7 @@ export function ProposalCatalog({ projects }: { projects: Project[] }) {
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {shown.map((p) => (
           <Link
-            href={`/kamin/proekty/${p.slug}`}
+            href={`/arkhitekturnyi-kamin/proekty/${p.slug}`}
             key={p.slug}
             className="group overflow-hidden rounded-xl bg-card"
           >

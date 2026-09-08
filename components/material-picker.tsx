@@ -52,7 +52,7 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
           Камінь
         </h2>
         <Link
-          href="/memorial/kamin"
+          href="/memorial/kameni"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
         >
           Чим відрізняються камені

@@ -165,7 +165,7 @@ export function StoneQuiz({ collections }: { collections: Collection[] }) {
           {results.map((item) => (
             <Link
               className="rounded-lg border p-4"
-              href={`/kamin/materialy/${item.slug}`}
+              href={`/arkhitekturnyi-kamin/materialy/${item.slug}`}
               key={item.slug}
             >
               <strong>{item.name}</strong>

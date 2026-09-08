@@ -116,7 +116,7 @@ const pages = new Set(htmlFiles.map(routeOf))
 pages.delete('/_not-found')
 // Перевіряємо лише розділ «Архітектурний камінь»: решта сайту має власні
 // конвенції зображень (Supabase Storage) і власні перевірки.
-const SECTION = '/kamin'
+const SECTION = '/arkhitekturnyi-kamin'
 const inSection = (route) => route === SECTION || route.startsWith(SECTION + '/')
 // Файли, які Next віддає з app/, а не з public/ (іконка з app/icon.png).
 const appServed = new Set(['/icon.png', '/favicon.ico'])

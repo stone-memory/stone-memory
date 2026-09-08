@@ -33,7 +33,7 @@ export function BlogHub({ articles }: { articles: Article[] }) {
             <p className="eyebrow text-accent">{article.category}</p>
             <div>
               <h2 className="text-2xl font-semibold">
-                <Link href={`/kamin/blog/${article.slug}`}>{article.title}</Link>
+                <Link href={`/arkhitekturnyi-kamin/blog/${article.slug}`}>{article.title}</Link>
               </h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{article.dek}</p>
               <p className="mt-5 text-xs text-muted-foreground">

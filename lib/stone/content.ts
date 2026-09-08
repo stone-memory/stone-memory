@@ -5,9 +5,9 @@
 export { categories, materials } from '@/data/stone/materials'
 
 export const nav = [
-  { href: '/kamin/vyroby', label: 'Вироби' },
-  { href: '/kamin/materialy', label: 'Матеріали' },
-  { href: '/kamin/proekty', label: 'Проєкти' },
-  { href: '/kamin/kalkulyator', label: 'Калькулятор' },
-  { href: '/kamin/b2b', label: 'B2B' },
+  { href: '/arkhitekturnyi-kamin/vyroby', label: 'Вироби' },
+  { href: '/arkhitekturnyi-kamin/materialy', label: 'Матеріали' },
+  { href: '/arkhitekturnyi-kamin/proekty', label: 'Проєкти' },
+  { href: '/arkhitekturnyi-kamin/kalkulyator', label: 'Калькулятор' },
+  { href: '/arkhitekturnyi-kamin/b2b', label: 'B2B' },
 ]

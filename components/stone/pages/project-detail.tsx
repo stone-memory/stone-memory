@@ -8,7 +8,7 @@ import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
 export function ProjectDetail({ project: x }: { project: Project }) {
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Проєктні пропозиції', href: '/kamin/proekty' }, { name: x.name }]} />
+      <Breadcrumbs items={[{ name: 'Проєктні пропозиції', href: '/arkhitekturnyi-kamin/proekty' }, { name: x.name }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -55,13 +55,13 @@ export function ProjectDetail({ project: x }: { project: Project }) {
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href={`/kamin/materialy/${x.materialSlug}`}
+              href={`/arkhitekturnyi-kamin/materialy/${x.materialSlug}`}
               className="rounded-full border px-5 py-3 text-sm font-semibold"
             >
               Дивитися матеріал
             </Link>
             <Link
-              href={`/kamin/kontakty?proposal=${x.slug}`}
+              href={`/arkhitekturnyi-kamin/kontakty?proposal=${x.slug}`}
               className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
             >
               Обговорити цю пропозицію

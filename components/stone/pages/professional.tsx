@@ -28,7 +28,7 @@ export async function ProfessionalPage({ slug }: { slug: string }) {
   const data = resolveProfessional(pro, slug)!
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Для професіоналів', href: '/kamin/b2b' }, { name: data.title }]} />
+      <Breadcrumbs items={[{ name: 'Для професіоналів', href: '/arkhitekturnyi-kamin/b2b' }, { name: data.title }]} />
       <section className="page-shell grid gap-10 py-20 lg:grid-cols-2 lg:items-center">
         <div>
           <p className="eyebrow text-accent">B2B · Stone Memory</p>

@@ -45,14 +45,14 @@ export function Header({ contacts }: { contacts: Contacts }) {
             {contacts.phone.display}
           </a>
           <Link
-            href="/kamin/kontakty"
+            href="/arkhitekturnyi-kamin/kontakty"
             className="text-xs font-medium text-muted-foreground hover:text-foreground"
           >
             Контакти
           </Link>
           <PrimaryCtaButton
             label="Замовити замір"
-            href="/kamin/kontakty#forma"
+            href="/arkhitekturnyi-kamin/kontakty#forma"
             className="min-h-9 px-4 py-2 text-xs leading-4"
           />
         </div>
@@ -70,7 +70,7 @@ export function Header({ contacts }: { contacts: Contacts }) {
           className="page-shell flex flex-col gap-1 border-t py-4 md:hidden"
           aria-label="Мобільна навігація"
         >
-          {[...nav, { href: '/kamin/kontakty', label: 'Контакти' }].map((n) => (
+          {[...nav, { href: '/arkhitekturnyi-kamin/kontakty', label: 'Контакти' }].map((n) => (
             <Link
               onClick={() => setOpen(false)}
               key={n.href}
@@ -141,7 +141,7 @@ export function Footer({ contacts }: { contacts: Contacts }) {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/kamin/kontakty#forma"
+                href="/arkhitekturnyi-kamin/kontakty#forma"
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-card px-5 text-sm font-semibold text-card-foreground"
               >
                 Залишити запит
@@ -159,19 +159,19 @@ export function Footer({ contacts }: { contacts: Contacts }) {
           <FooterGroup
             title="Дослідити"
             items={[
-              { href: '/kamin/vyroby', label: 'Каталог' },
-              { href: '/kamin/materialy', label: 'Матеріали' },
-              { href: '/kamin/proekty', label: 'Пропозиції' },
-              { href: '/kamin/blog', label: 'Блог' },
+              { href: '/arkhitekturnyi-kamin/vyroby', label: 'Каталог' },
+              { href: '/arkhitekturnyi-kamin/materialy', label: 'Матеріали' },
+              { href: '/arkhitekturnyi-kamin/proekty', label: 'Пропозиції' },
+              { href: '/arkhitekturnyi-kamin/blog', label: 'Блог' },
             ]}
           />
           <FooterGroup
             title="Підтримка"
             items={[
-              { href: '/kamin/harantiya', label: 'Гарантія' },
-              { href: '/kamin/dostavka-i-montazh', label: 'Доставка та монтаж' },
-              { href: '/kamin/faq', label: 'Питання й відповіді' },
-              { href: '/kamin/dohliad', label: 'Догляд' },
+              { href: '/arkhitekturnyi-kamin/harantiya', label: 'Гарантія' },
+              { href: '/arkhitekturnyi-kamin/dostavka-i-montazh', label: 'Доставка та монтаж' },
+              { href: '/arkhitekturnyi-kamin/faq', label: 'Питання й відповіді' },
+              { href: '/arkhitekturnyi-kamin/dohliad', label: 'Догляд' },
             ]}
           />
           <div className="flex flex-col gap-3 text-sm">
@@ -194,7 +194,7 @@ export function Footer({ contacts }: { contacts: Contacts }) {
             <Link href="/pro-nas">Про нас</Link>
             <Link href="/konfidentsiinist">Конфіденційність</Link>
             <Link href="/umovy">Умови</Link>
-            <Link href="/kamin/kontakty">Контакти</Link>
+            <Link href="/arkhitekturnyi-kamin/kontakty">Контакти</Link>
           </div>
         </div>
       </div>

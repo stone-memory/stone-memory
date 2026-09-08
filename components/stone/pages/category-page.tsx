@@ -63,7 +63,7 @@ export async function CategoryPage({ slug }: { slug: string }) {
   }
   return (
     <main>
-      <Breadcrumbs items={[{ name: 'Вироби', href: '/kamin/vyroby' }, { name: item.name }]} />
+      <Breadcrumbs items={[{ name: 'Вироби', href: '/arkhitekturnyi-kamin/vyroby' }, { name: item.name }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
