@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { guardTeamMember } from "@/lib/auth/permissions"
+import { OPEN_STATUSES, ownFilter, resolveReminderActor } from "@/lib/crm/reminders-access"
 
 export const dynamic = "force-dynamic"
 
@@ -10,17 +10,29 @@ export const dynamic = "force-dynamic"
  * Стратегія:
  *   - inbox        — communications де read_at IS NULL AND direction='inbound'
  *   - chat         — chat_sessions де останнє повідомлення user-а нове за operator-ське
- *   - reminders    — reminders pending з due_at <= now (overdue/now)
+ *   - reminders    — відкриті задачі/нагадування з due_at <= now (свої або всі — за правами)
  *   - orders       — orders зі status='new'
  *   - deals        — deals зі status='new'
  *
  * Кешу немає — викликається 1 раз на 30с з sidebar.
  */
 export async function GET(req: Request) {
-  const unauth = await guardTeamMember(req)
-  if (unauth) return unauth
+  const actor = await resolveReminderActor(req)
+  if (actor instanceof NextResponse) return actor
 
   const now = new Date().toISOString()
+
+  let remindersQ = supabaseAdmin
+    .from("reminders")
+    .select("id", { count: "exact", head: true })
+    .is("completed_at", null)
+    .in("status", [...OPEN_STATUSES])
+    .lte("due_at", now)
+  if (!actor.seesAll) {
+    remindersQ = actor.memberId
+      ? remindersQ.or(ownFilter(actor.memberId))
+      : remindersQ.eq("id", "00000000-0000-0000-0000-000000000000")
+  }
 
   // Виконуємо паралельно
   const [inboxR, remindersR, ordersR, dealsR, chatSessionsR, chatMessagesR] = await Promise.all([
@@ -31,12 +43,8 @@ export async function GET(req: Request) {
       .is("read_at", null)
       .eq("direction", "inbound"),
 
-    // 2. Overdue/due reminders
-    supabaseAdmin
-      .from("reminders")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "pending")
-      .lte("due_at", now),
+    // 2. Задачі, час яких настав
+    remindersQ,
 
     // 3. New orders
     supabaseAdmin

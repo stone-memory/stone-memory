@@ -1,221 +1,475 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { Plus, Trash2, Check, Clock, Flag, Archive, Calendar } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
+import { AlertCircle, Check, Clock, Plus, RotateCcw, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useTasksStore, useTasks, type Task, type TaskPriority, type TaskStatus } from "@/lib/store/tasks"
+import { useRemindersStore, useTeamStore } from "@/lib/crm/store"
+import { REMINDER_KIND_LABELS_UK, type ReminderKind, type ReminderRow } from "@/lib/crm/types"
+import { useCurrentRole } from "@/lib/auth/use-current-role"
+import { formatDateTime, formatRelative } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 
-const PRIORITY_COLOR: Record<TaskPriority, string> = {
-  low: "text-muted-foreground",
-  normal: "text-foreground",
-  high: "text-amber-600",
-  urgent: "text-red-600",
-}
-const PRIORITY_LABEL: Record<TaskPriority, string> = {
-  low: "низький",
-  normal: "звичайний",
-  high: "високий",
-  urgent: "терміновий",
+/**
+ * Один розділ замість «Особистих задач» і «Нагадувань».
+ *
+ * Усе живе в таблиці reminders: особиста задача — це запис без угоди
+ * (kind = custom), нагадування по угоді створюється зі сторінки угоди.
+ * Коли настає час, cron шле в Telegram (і email, якщо позначено), а запис
+ * лишається у списку, поки його не відмітять «Готово».
+ */
+
+type When = "1h" | "today" | "tomorrow" | "3d" | "1w" | "custom"
+const WHEN_OPTIONS: Array<[When, string]> = [
+  ["1h", "Через 1 год"],
+  ["today", "Сьогодні 18:00"],
+  ["tomorrow", "Завтра 9:00"],
+  ["3d", "Через 3 дні"],
+  ["1w", "Через тиждень"],
+  ["custom", "Інше…"],
+]
+
+function dueFor(when: When, custom: string): Date | null {
+  const now = new Date()
+  const at = (days: number, hour: number) => {
+    const d = new Date(now)
+    d.setDate(d.getDate() + days)
+    d.setHours(hour, 0, 0, 0)
+    return d
+  }
+  switch (when) {
+    case "1h":
+      return new Date(now.getTime() + 3600_000)
+    case "today": {
+      const d = at(0, 18)
+      return d.getTime() > now.getTime() ? d : new Date(now.getTime() + 3600_000)
+    }
+    case "tomorrow":
+      return at(1, 9)
+    case "3d":
+      return at(3, 9)
+    case "1w":
+      return at(7, 9)
+    case "custom": {
+      if (!custom) return null
+      const d = new Date(custom)
+      return Number.isNaN(d.getTime()) ? null : d
+    }
+  }
 }
 
-export default function AdminTasksPage() {
-  const tasks = useTasks()
-  const add = useTasksStore((s) => s.add)
-  const update = useTasksStore((s) => s.update)
-  const toggle = useTasksStore((s) => s.toggle)
-  const remove = useTasksStore((s) => s.remove)
-  const archive = useTasksStore((s) => s.archive)
+const KIND_OPTIONS = (Object.keys(REMINDER_KIND_LABELS_UK) as ReminderKind[]).filter(
+  (k) => k !== "sla_warning"
+)
 
-  const [filter, setFilter] = useState<"open" | "done" | "all" | "overdue">("open")
+type OpenFilter = "all" | "overdue" | "today" | "upcoming"
+
+export default function TasksPage() {
+  const items = useRemindersStore((s) => s.items)
+  const loading = useRemindersStore((s) => s.loading)
+  const loaded = useRemindersStore((s) => s.loaded)
+  const load = useRemindersStore((s) => s.load)
+  const create = useRemindersStore((s) => s.create)
+  const complete = useRemindersStore((s) => s.complete)
+  const snooze = useRemindersStore((s) => s.snooze)
+  const cancel = useRemindersStore((s) => s.cancel)
+  const reopen = useRemindersStore((s) => s.reopen)
+  const remove = useRemindersStore((s) => s.remove)
+
+  const members = useTeamStore((s) => s.members)
+  const loadTeam = useTeamStore((s) => s.load)
+  const { capabilities } = useCurrentRole()
+  const seesAll = capabilities.includes("deals.view_all")
+
+  const [view, setView] = useState<"open" | "done">("open")
+  const [scope, setScope] = useState<"mine" | "all">("mine")
+  const [filter, setFilter] = useState<OpenFilter>("all")
   const [q, setQ] = useState("")
-  const [newTitle, setNewTitle] = useState("")
-  const [newPriority, setNewPriority] = useState<TaskPriority>("normal")
-  const [newDue, setNewDue] = useState<string>("")
 
-  const now = Date.now()
-  const filtered = useMemo(() => {
-    let list = tasks.slice()
-    if (filter === "open") list = list.filter((t) => t.status === "open")
-    else if (filter === "done") list = list.filter((t) => t.status === "done")
-    else if (filter === "overdue") list = list.filter((t) => t.status === "open" && t.dueAt && t.dueAt < now)
-    if (q) list = list.filter((t) => (t.title + " " + (t.note || "") + " " + t.tags.join(" ")).toLowerCase().includes(q.toLowerCase()))
-    return list.sort((a, b) => {
-      // Overdue first, then by dueAt, then priority, then createdAt
-      const ao = a.dueAt && a.dueAt < now ? 0 : 1
-      const bo = b.dueAt && b.dueAt < now ? 0 : 1
-      if (ao !== bo) return ao - bo
-      if (a.dueAt && b.dueAt && a.dueAt !== b.dueAt) return a.dueAt - b.dueAt
-      const pOrder = { urgent: 0, high: 1, normal: 2, low: 3 }
-      if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority]
-      return b.createdAt - a.createdAt
-    })
-  }, [tasks, filter, q, now])
+  useEffect(() => {
+    void load({ status: view, scope: seesAll ? scope : "mine" })
+  }, [view, scope, seesAll, load])
+  useEffect(() => {
+    if (seesAll) void loadTeam()
+  }, [seesAll, loadTeam])
 
-  const counts = {
-    open: tasks.filter((t) => t.status === "open").length,
-    done: tasks.filter((t) => t.status === "done").length,
-    overdue: tasks.filter((t) => t.status === "open" && t.dueAt && t.dueAt < now).length,
-    all: tasks.length,
-  }
+  const memberName = useMemo(() => {
+    const m = new Map<string, string>()
+    for (const t of members) m.set(t.id, t.display_name || t.email)
+    return m
+  }, [members])
 
-  const submitNew = (e: React.FormEvent) => {
+  // Форма швидкого додавання
+  const [title, setTitle] = useState("")
+  const [details, setDetails] = useState("")
+  const [when, setWhen] = useState<When>("tomorrow")
+  const [customDate, setCustomDate] = useState("")
+  const [kind, setKind] = useState<ReminderKind>("custom")
+  const [notifyTelegram, setNotifyTelegram] = useState(true)
+  const [notifyEmail, setNotifyEmail] = useState(false)
+  const [assignee, setAssignee] = useState("")
+  const [busy, setBusy] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newTitle.trim()) return
-    add({
-      title: newTitle.trim(),
-      priority: newPriority,
-      dueAt: newDue ? new Date(newDue).getTime() : undefined,
-      tags: [],
-    })
-    setNewTitle("")
-    setNewDue("")
-    setNewPriority("normal")
+    setFormError(null)
+    if (!title.trim()) return
+    const due = dueFor(when, customDate)
+    if (!due) {
+      setFormError("Вкажіть дату і час")
+      return
+    }
+    setBusy(true)
+    try {
+      const created = await create({
+        title: title.trim(),
+        description: details.trim() || null,
+        due_at: due.toISOString(),
+        kind,
+        notify_via: [notifyTelegram ? "telegram" : "", notifyEmail ? "email" : ""].filter(Boolean),
+        assigned_to: assignee || undefined,
+      })
+      if (!created) {
+        setFormError("Не вдалось зберегти. Спробуйте ще раз.")
+        return
+      }
+      setTitle("")
+      setDetails("")
+      setCustomDate("")
+      setWhen("tomorrow")
+      setKind("custom")
+    } finally {
+      setBusy(false)
+    }
   }
+
+  const groups = useMemo(() => {
+    const now = Date.now()
+    const endOfDay = new Date()
+    endOfDay.setHours(23, 59, 59, 999)
+    const eod = endOfDay.getTime()
+    const t = (r: ReminderRow) => new Date(r.due_at).getTime()
+    return {
+      overdue: items.filter((r) => t(r) < now),
+      today: items.filter((r) => t(r) >= now && t(r) <= eod),
+      upcoming: items.filter((r) => t(r) > eod),
+    }
+  }, [items])
+
+  const visible = useMemo(() => {
+    let list = view === "done" || filter === "all" ? items : groups[filter]
+    if (q.trim()) {
+      const needle = q.trim().toLowerCase()
+      list = list.filter((r) =>
+        [r.title, r.description, r.deals?.reference, r.deals?.customers?.name]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(needle)
+      )
+    }
+    return list
+  }, [items, groups, view, filter, q])
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold tracking-tight-custom">Задачі</h1>
+        <h1 className="text-3xl font-semibold tracking-tight-custom">Задачі й нагадування</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Особисті нагадування: подзвонити клієнту, надіслати ескіз, перевірити монтаж. Прив'язуються до замовлень.
+          Особисті задачі та нагадування по угодах в одному списку. Коли настає час, cron надсилає
+          нагадування в Telegram кожні 5 хв; запис лишається тут, доки не натиснете «Готово».
         </p>
       </header>
 
       <form
-        onSubmit={submitNew}
-        className="flex flex-col gap-2 rounded-2xl border border-foreground/10 bg-card p-4 md:flex-row md:items-center"
+        onSubmit={submit}
+        className="space-y-3 rounded-2xl border border-foreground/10 bg-card p-4"
       >
+        <div className="flex flex-col gap-2 md:flex-row">
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Що зробити? Напр.: передзвонити клієнту, перевірити замір…"
+            className="flex-1"
+          />
+          <select
+            value={kind}
+            onChange={(e) => setKind(e.target.value as ReminderKind)}
+            className="h-10 rounded-xl border border-foreground/10 bg-background px-3 text-sm"
+            aria-label="Тип"
+          >
+            {KIND_OPTIONS.map((k) => (
+              <option key={k} value={k}>
+                {REMINDER_KIND_LABELS_UK[k]}
+              </option>
+            ))}
+          </select>
+          {seesAll && (
+            <select
+              value={assignee}
+              onChange={(e) => setAssignee(e.target.value)}
+              className="h-10 rounded-xl border border-foreground/10 bg-background px-3 text-sm"
+              aria-label="Кому"
+            >
+              <option value="">Собі</option>
+              {members.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.display_name || m.email}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
         <Input
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="Нова задача…"
-          className="flex-1"
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+          placeholder="Деталі (необовʼязково)"
         />
-        <select
-          value={newPriority}
-          onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
-          className="h-10 rounded-xl border border-foreground/10 bg-background px-3 text-sm"
-        >
-          <option value="low">🔵 Низький</option>
-          <option value="normal">⚪ Звичайний</option>
-          <option value="high">🟡 Високий</option>
-          <option value="urgent">🔴 Терміновий</option>
-        </select>
-        <Input
-          type="datetime-local"
-          value={newDue}
-          onChange={(e) => setNewDue(e.target.value)}
-          className="md:w-56"
-        />
-        <Button type="submit" className="rounded-xl gap-2">
-          <Plus size={16} /> Додати
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap gap-1">
+            {WHEN_OPTIONS.map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setWhen(key)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs",
+                  when === key ? "border-foreground bg-foreground text-background" : "border-foreground/15"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {when === "custom" && (
+            <Input
+              type="datetime-local"
+              value={customDate}
+              onChange={(e) => setCustomDate(e.target.value)}
+              className="w-56"
+              aria-label="Дата і час"
+            />
+          )}
+          <label className="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground">
+            <input type="checkbox" checked={notifyTelegram} onChange={(e) => setNotifyTelegram(e.target.checked)} />
+            Telegram
+          </label>
+          <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <input type="checkbox" checked={notifyEmail} onChange={(e) => setNotifyEmail(e.target.checked)} />
+            Email
+          </label>
+          <Button type="submit" disabled={busy || !title.trim()} className="rounded-xl gap-2">
+            <Plus size={16} /> Додати
+          </Button>
+        </div>
+        {formError && <p className="text-sm text-destructive">{formError}</p>}
       </form>
 
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
           {(
             [
-              ["open", `Відкриті · ${counts.open}`],
-              ["overdue", `Прострочено · ${counts.overdue}`],
-              ["done", `Виконано · ${counts.done}`],
-              ["all", `Всі · ${counts.all}`],
+              ["open", "Відкриті"],
+              ["done", "Виконані"],
             ] as const
           ).map(([key, label]) => (
             <button
               key={key}
-              onClick={() => setFilter(key as typeof filter)}
+              onClick={() => setView(key)}
               className={cn(
-                "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                filter === key ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+                "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                view === key ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
               )}
             >
               {label}
             </button>
           ))}
         </div>
-        <Input placeholder="Пошук задач…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+        {view === "open" && (
+          <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
+            {(
+              [
+                ["all", `Усі · ${items.length}`],
+                ["overdue", `Прострочені · ${groups.overdue.length}`],
+                ["today", `Сьогодні · ${groups.today.length}`],
+                ["upcoming", `Наперед · ${groups.upcoming.length}`],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  filter === key ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+        {seesAll && (
+          <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
+            {(
+              [
+                ["mine", "Мої"],
+                ["all", "Уся команда"],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setScope(key)}
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  scope === key ? "bg-card text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+        <Input placeholder="Пошук…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
       </div>
 
+      {loading && !loaded && (
+        <div className="rounded-xl border border-foreground/10 bg-card p-6 text-center text-sm text-muted-foreground">
+          Завантаження…
+        </div>
+      )}
+
+      {loaded && visible.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
+          {view === "done" ? "Виконаних задач ще немає." : "Немає задач у цій категорії."}
+        </div>
+      )}
+
       <div className="space-y-2">
-        {filtered.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
-            Немає задач
-          </div>
-        ) : (
-          filtered.map((t) => <Row key={t.id} task={t} onToggle={() => toggle(t.id)} onRemove={() => remove(t.id)} onArchive={() => archive(t.id)} onUpdate={(p) => update(t.id, p)} />)
-        )}
+        {visible.map((r) => (
+          <Row
+            key={r.id}
+            r={r}
+            done={view === "done"}
+            assigneeName={r.assigned_to ? memberName.get(r.assigned_to) : undefined}
+            showAssignee={seesAll && scope === "all"}
+            onComplete={() => complete(r.id)}
+            onSnooze={(min) => snooze(r.id, min)}
+            onCancel={() => cancel(r.id)}
+            onReopen={() => reopen(r.id)}
+            onRemove={() => {
+              if (confirm("Видалити запис назавжди?")) void remove(r.id)
+            }}
+          />
+        ))}
       </div>
     </div>
   )
 }
 
 function Row({
-  task,
-  onToggle,
+  r,
+  done,
+  assigneeName,
+  showAssignee,
+  onComplete,
+  onSnooze,
+  onCancel,
+  onReopen,
   onRemove,
-  onArchive,
-  onUpdate,
 }: {
-  task: Task
-  onToggle: () => void
+  r: ReminderRow
+  done: boolean
+  assigneeName?: string
+  showAssignee: boolean
+  onComplete: () => void
+  onSnooze: (minutes: number) => void
+  onCancel: () => void
+  onReopen: () => void
   onRemove: () => void
-  onArchive: () => void
-  onUpdate: (p: Partial<Task>) => void
 }) {
-  const overdue = task.status === "open" && task.dueAt && task.dueAt < Date.now()
+  const overdue = !done && new Date(r.due_at).getTime() < Date.now()
+  const cancelled = r.status === "cancelled"
+  const customer = r.deals?.customers
   return (
     <div
       className={cn(
-        "flex flex-wrap items-start gap-3 rounded-2xl border border-foreground/10 bg-card p-4",
-        task.status === "done" && "opacity-60"
+        "flex flex-wrap items-center gap-3 rounded-2xl border bg-card p-4",
+        overdue ? "border-amber-500/30 bg-amber-500/5" : "border-foreground/10",
+        done && "opacity-70"
       )}
     >
-      <button
-        onClick={onToggle}
-        aria-label={task.status === "done" ? "Відкрити" : "Виконати"}
-        className={cn(
-          "mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors",
-          task.status === "done" ? "border-foreground bg-foreground text-background" : "border-foreground/30 hover:border-foreground"
-        )}
-      >
-        {task.status === "done" && <Check size={12} />}
-      </button>
-      <div className="min-w-0 flex-1">
-        <div className={cn("font-medium", task.status === "done" && "line-through")}>{task.title}</div>
-        {task.note && <div className="mt-1 text-sm text-muted-foreground">{task.note}</div>}
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-          {task.dueAt && (
-            <span className={cn("inline-flex items-center gap-1 rounded-full bg-foreground/5 px-2 py-0.5", overdue && "bg-red-500/10 text-red-600")}>
-              <Calendar size={10} />
-              {new Date(task.dueAt).toLocaleString("uk-UA", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
-              {overdue && " ·прострочено"}
+      {overdue && <AlertCircle size={16} className="shrink-0 text-amber-600" />}
+      <div className="min-w-[200px] flex-1">
+        <div className="mb-1 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs">{REMINDER_KIND_LABELS_UK[r.kind]}</span>
+          <span className={cn("text-xs", overdue ? "font-medium text-amber-700" : "text-muted-foreground")}>
+            {formatDateTime(r.due_at)} · {formatRelative(r.due_at)}
+          </span>
+          {r.status === "sent" && !done && (
+            <span className="text-xs text-muted-foreground">· нагадано</span>
+          )}
+          {done && (
+            <span className="text-xs text-muted-foreground">
+              · {cancelled ? "скасовано" : "виконано"}
+              {r.completed_at ? ` ${formatRelative(r.completed_at)}` : ""}
             </span>
           )}
-          <span className={cn("inline-flex items-center gap-1 rounded-full bg-foreground/5 px-2 py-0.5", PRIORITY_COLOR[task.priority])}>
-            <Flag size={10} /> {PRIORITY_LABEL[task.priority]}
-          </span>
-          {task.tags.map((tag) => (
-            <span key={tag} className="rounded-full bg-accent/10 px-2 py-0.5 text-accent">
-              #{tag}
-            </span>
-          ))}
-          {task.link && (
-            <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-600">
-              {task.link.kind}: {task.link.label || task.link.id}
-            </span>
+          {showAssignee && assigneeName && (
+            <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-xs text-blue-700">{assigneeName}</span>
           )}
         </div>
+        <div className={cn("font-medium", done && "line-through")}>{r.title}</div>
+        {r.description && <p className="mt-1 text-sm text-muted-foreground">{r.description}</p>}
+        {r.deal_id && (
+          <Link href={`/admin/deals/${r.deal_id}`} className="mt-1 inline-block text-xs text-accent hover:underline">
+            → Угода {r.deals?.reference || ""}
+            {customer?.name ? ` · ${customer.name}` : ""}
+            {customer?.phone ? ` · ${customer.phone}` : ""}
+          </Link>
+        )}
       </div>
       <div className="flex items-center gap-1">
-        <button onClick={onArchive} aria-label="Архівувати" className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground">
-          <Archive size={14} />
-        </button>
-        <button onClick={onRemove} aria-label="Видалити" className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10">
-          <Trash2 size={14} />
-        </button>
+        {done ? (
+          <>
+            <Button size="sm" variant="outline" onClick={onReopen} className="rounded-full gap-1.5 text-xs">
+              <RotateCcw size={12} /> Повернути
+            </Button>
+            <button
+              onClick={onRemove}
+              aria-label="Видалити"
+              className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
+            >
+              <Trash2 size={14} />
+            </button>
+          </>
+        ) : (
+          <>
+            <Button size="sm" variant="outline" onClick={onComplete} className="rounded-full gap-1.5 text-xs">
+              <Check size={12} /> Готово
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => onSnooze(60)} className="rounded-full gap-1.5 text-xs">
+              <Clock size={12} /> +1 год
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                const d = new Date()
+                d.setDate(d.getDate() + 1)
+                d.setHours(9, 0, 0, 0)
+                onSnooze(Math.max(1, Math.round((d.getTime() - Date.now()) / 60_000)))
+              }}
+              className="rounded-full gap-1.5 text-xs"
+            >
+              <Clock size={12} /> Завтра 9:00
+            </Button>
+            <Button size="sm" variant="ghost" onClick={onCancel} aria-label="Скасувати" className="rounded-full text-destructive">
+              <X size={12} />
+            </Button>
+          </>
+        )}
       </div>
     </div>
   )

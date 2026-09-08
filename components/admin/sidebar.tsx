@@ -4,8 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, CheckSquare, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock } from "lucide-react"
-import { useOpenTasksCount } from "@/lib/store/tasks"
+import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock } from "lucide-react"
 import { useNotificationCounts } from "@/lib/crm/notifications-store"
 import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
 import type { TeamRole } from "@/lib/crm/types"
@@ -34,12 +33,11 @@ const navItems: NavItem[] = [
   { href: "/admin", icon: Inbox, label: "Дашборд (заявки)", cap: "deals.view_all", section: "CRM" },
   { href: "/admin/customers", icon: Users, label: "Клієнти", cap: "customers.view_all", section: "CRM" },
   { href: "/admin/deals", icon: Handshake, label: "Угоди", cap: "deals.view_all", section: "CRM" },
-  { href: "/admin/reminders", icon: Bell, label: "Нагадування", cap: "deals.edit", section: "CRM" },
   { href: "/admin/inbox", icon: InboxIcon, label: "Inbox (всі канали)", cap: "customers.message", section: "CRM" },
   { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат сайту", cap: "customers.message", section: "CRM" },
   { href: "/admin/messages", icon: MessageSquare, label: "Повідомлення (legacy)", cap: "customers.message", section: "CRM" },
   { href: "/admin/broadcast", icon: Send, label: "Розсилка", cap: "content.editorial", section: "CRM" },
-  { href: "/admin/tasks", icon: CheckSquare, label: "Особисті задачі", alwaysShow: true, section: "CRM" },
+  { href: "/admin/tasks", icon: Bell, label: "Задачі й нагадування", alwaysShow: true, section: "CRM" },
   { href: "/admin/finances", icon: Wallet, label: "Фінанси", cap: "finances.view_company", section: "CRM" },
   { href: "/admin/analytics", icon: LineChart, label: "Аналітика", cap: "finances.view_company", section: "CRM" },
 
@@ -77,7 +75,6 @@ export function AdminSidebar() {
   const { role: realRole, capabilities, loading: roleLoading } = useCurrentRole()
   const currentlySuperAdmin = isSuperAdmin(realRole)
   const roleLabel = realRole ? ROLE_LABEL_UK[realRole] : "—"
-  const openTasks = useOpenTasksCount()
   // Лічильники бейджів: Supabase Realtime по таблицях заявок/угод/нагадувань/
   // повідомлень + страховий polling. Бейдж зникає, коли справа зроблена
   // (статус змінено, прочитано), а не при відкритті розділу.
@@ -206,9 +203,8 @@ export function AdminSidebar() {
                 // Бейдж: визначаємо лічильник за href.
                 let badge = 0
                 let badgeColor = "bg-foreground text-background"
-                if (item.href === "/admin/tasks") badge = openTasks
+                if (item.href === "/admin/tasks") { badge = counts.reminders; badgeColor = "bg-red-500 text-white" }
                 else if (item.href === "/admin/inbox") { badge = counts.inbox; badgeColor = "bg-accent text-accent-foreground" }
-                else if (item.href === "/admin/reminders") { badge = counts.reminders; badgeColor = "bg-red-500 text-white" }
                 else if (item.href === "/admin") { badge = counts.orders; badgeColor = "bg-accent text-accent-foreground" }
                 else if (item.href === "/admin/deals") { badge = counts.deals; badgeColor = "bg-accent text-accent-foreground" }
                 else if (item.href === "/admin/chat") { badge = counts.chat; badgeColor = "bg-accent text-accent-foreground" }

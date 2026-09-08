@@ -1,19 +1,25 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { requireAdminOrSuperAdmin, requireSuperAdmin } from "@/lib/auth/permissions"
+import { guardTeamMember, requireAdminOrSuperAdmin, requireSuperAdmin } from "@/lib/auth/permissions"
 import type { TeamRole } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
 // GET /api/crm/team?active=true
+// Список активних колег (імʼя, email, роль) потрібен будь-якому членові
+// команди — для призначення задач і угод; повний список з деактивованими
+// і нотатками — лише адмінам.
 export async function GET(req: Request) {
-  const ctx = await requireAdminOrSuperAdmin(req)
-  if (ctx instanceof NextResponse) return ctx
-
   const url = new URL(req.url)
   const activeOnly = url.searchParams.get("active") === "true"
 
-  let q = supabaseAdmin.from("team_members").select("*").order("display_name", { ascending: true })
+  const ctx = activeOnly ? await guardTeamMember(req) : await requireAdminOrSuperAdmin(req)
+  if (ctx instanceof NextResponse) return ctx
+
+  let q = supabaseAdmin
+    .from("team_members")
+    .select(activeOnly ? "id, user_id, email, display_name, role, phone, active, custom_role_id, created_at, updated_at" : "*")
+    .order("display_name", { ascending: true })
   if (activeOnly) q = q.eq("active", true)
 
   const { data, error } = await q

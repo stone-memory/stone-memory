@@ -51,6 +51,7 @@ async function handle(req: Request): Promise<NextResponse> {
     .from("reminders")
     .select("*, deals(reference, customers(name, phone)), team_members:assigned_to(email, display_name, role)")
     .eq("status", "pending")
+    .is("completed_at", null)
     .lte("due_at", nowIso)
     .limit(20)
 

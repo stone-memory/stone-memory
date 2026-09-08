@@ -7,6 +7,7 @@ import type {
   Customer,
   Deal,
   Reminder,
+  ReminderRow,
   Communication,
   Payment,
   Document,
@@ -149,32 +150,59 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
 // =====================================================
 // REMINDERS
 // =====================================================
+export type RemindersFilter = { status?: "open" | "done"; scope?: "mine" | "all"; assigned?: string }
+
 interface RemindersState {
-  items: Reminder[]
+  items: ReminderRow[]
   loading: boolean
-  load: (filters?: { status?: string; assigned?: string }) => Promise<void>
-  create: (data: Partial<Reminder> & { title: string; due_at: string }) => Promise<Reminder | null>
+  loaded: boolean
+  filter: RemindersFilter
+  load: (filters?: RemindersFilter) => Promise<void>
+  create: (data: Partial<Reminder> & { title: string; due_at: string }) => Promise<ReminderRow | null>
+  update: (id: string, patch: Partial<Reminder>) => Promise<boolean>
   complete: (id: string) => Promise<void>
   snooze: (id: string, minutes: number) => Promise<void>
   cancel: (id: string) => Promise<void>
+  reopen: (id: string) => Promise<void>
   remove: (id: string) => Promise<void>
+}
+
+/** Одна дія над записом; список оновлюємо оптимістично, а помилку — перезавантаженням. */
+async function reminderAction(
+  get: () => RemindersState,
+  id: string,
+  body: Record<string, unknown>,
+  dropFromList: boolean
+) {
+  const r = await authedFetch(`/api/crm/reminders/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
+  if (!r.ok || !dropFromList) await get().load(get().filter)
+  refreshNotificationCounts()
+  return r.ok
 }
 
 export const useRemindersStore = create<RemindersState>()((set, get) => ({
   items: [],
   loading: false,
+  loaded: false,
+  filter: { status: "open", scope: "mine" },
   load: async (filters) => {
-    if (get().loading) return
-    set({ loading: true })
+    const filter: RemindersFilter = { ...get().filter, ...(filters || {}) }
+    set({ loading: true, filter })
     try {
       const params = new URLSearchParams()
-      if (filters?.status) params.set("status", filters.status)
-      if (filters?.assigned) params.set("assigned", filters.assigned)
+      params.set("status", filter.status || "open")
+      params.set("scope", filter.scope || "mine")
+      if (filter.assigned) params.set("assigned", filter.assigned)
       const r = await authedFetch(`/api/crm/reminders?${params}`, { cache: "no-store" })
-      const j = await r.json()
-      if (r.ok) set({ items: j.reminders || [] })
+      const j = await r.json().catch(() => ({}))
+      // Відповідь на застарілий фільтр (користувач уже перемкнув вкладку) не показуємо.
+      if (r.ok && get().filter === filter) set({ items: j.reminders || [], loaded: true })
     } finally {
-      set({ loading: false })
+      if (get().filter === filter) set({ loading: false })
     }
   },
   create: async (data) => {
@@ -183,42 +211,44 @@ export const useRemindersStore = create<RemindersState>()((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
-    const j = await r.json()
+    const j = await r.json().catch(() => ({}))
     if (!r.ok) return null
-    set((s) => ({ items: [j.reminder, ...s.items] }))
+    // Показуємо одразу, якщо запис підходить під поточну вкладку; порядок за датою.
+    if (get().filter.status !== "done") {
+      set((s) => ({
+        items: [...s.items, j.reminder as ReminderRow].sort(
+          (a, b) => new Date(a.due_at).getTime() - new Date(b.due_at).getTime()
+        ),
+      }))
+    }
     refreshNotificationCounts()
-    return j.reminder
+    return j.reminder as ReminderRow
+  },
+  update: async (id, patch) => {
+    const ok = await reminderAction(get, id, patch, false)
+    return ok
   },
   complete: async (id) => {
     set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
-    await authedFetch(`/api/crm/reminders/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "complete" }),
-    })
-    refreshNotificationCounts()
+    await reminderAction(get, id, { action: "complete" }, true)
   },
   snooze: async (id, minutes) => {
-    set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
-    await authedFetch(`/api/crm/reminders/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "snooze", snoozeMinutes: minutes }),
-    })
-    refreshNotificationCounts()
+    // Лишається у списку з новою датою — перезавантажуємо, щоб бачити її.
+    await reminderAction(get, id, { action: "snooze", snoozeMinutes: minutes }, false)
   },
   cancel: async (id) => {
     set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
-    await authedFetch(`/api/crm/reminders/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "cancel" }),
-    })
-    refreshNotificationCounts()
+    await reminderAction(get, id, { action: "cancel" }, true)
+  },
+  reopen: async (id) => {
+    set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
+    await reminderAction(get, id, { action: "reopen" }, true)
   },
   remove: async (id) => {
     set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
-    await authedFetch(`/api/crm/reminders/${id}`, { method: "DELETE" })
+    const r = await authedFetch(`/api/crm/reminders/${id}`, { method: "DELETE" })
+    if (!r.ok) await get().load(get().filter)
+    refreshNotificationCounts()
   },
 }))
 

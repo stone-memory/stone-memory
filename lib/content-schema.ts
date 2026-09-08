@@ -12,7 +12,7 @@ export type CollectionConfig = {
   // Capability required to MUTATE this collection (POST/PATCH/DELETE/
   // reorder). GET stays public — the storefront reads catalog data
   // unauthenticated. `null` = any active team member may write (used
-  // for personal tasks which aren't a role-gated resource).
+  // for resources that aren't role-gated).
   writeCapability: Capability | null
 }
 
@@ -58,15 +58,6 @@ export const collections: Record<string, CollectionConfig> = {
     orderColumn: '"order"',
     selectColumns: "*",
     writeCapability: "content.editorial",
-  },
-  tasks: {
-    table: "tasks",
-    idColumn: "id",
-    orderColumn: "updated_at",
-    orderAsc: false,
-    selectColumns: "*",
-    // Personal task board — any active team member manages their own.
-    writeCapability: null,
   },
   transactions: {
     table: "transactions",

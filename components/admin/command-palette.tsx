@@ -31,7 +31,7 @@ const NAV_ITEMS: Item[] = [
   { id: "n-faq", label: "FAQ", href: "/admin/faq", group: "Навігація" },
   { id: "n-about", label: "Сторінка «Про нас»", href: "/admin/about", group: "Навігація" },
   { id: "n-an", label: "Аналітика", href: "/admin/analytics", group: "Навігація" },
-  { id: "n-tasks", label: "Задачі", href: "/admin/tasks", group: "Навігація" },
+  { id: "n-tasks", label: "Задачі й нагадування", href: "/admin/tasks", group: "Навігація" },
   { id: "n-biz", label: "Профіль бізнесу", href: "/admin/business", group: "Навігація" },
   { id: "n-roles", label: "Ролі та доступ", href: "/admin/roles", group: "Навігація" },
   { id: "n-account", label: "Акаунт", href: "/admin/account", group: "Навігація" },
@@ -44,7 +44,7 @@ const NAV_ITEMS: Item[] = [
   { id: "a-newsvc", label: "Нова послуга", hint: "створити картку послуги", href: "/admin/services", group: "Дії" },
   { id: "a-newprj", label: "Новий проект", hint: "додати в портфоліо", href: "/admin/projects", group: "Дії" },
   { id: "a-newrev", label: "Додати відгук вручну", href: "/admin/reviews", group: "Дії" },
-  { id: "a-newtask", label: "Нова задача", href: "/admin/tasks", group: "Дії" },
+  { id: "a-newtask", label: "Нова задача або нагадування", href: "/admin/tasks", group: "Дії" },
   { id: "a-newstone", label: "Новий камінь", hint: "додати позицію в каталог", href: "/admin/stones", group: "Дії" },
   { id: "a-broadcast", label: "Створити розсилку", href: "/admin/broadcast", group: "Дії" },
 ]

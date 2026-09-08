@@ -368,7 +368,7 @@ export const REMINDER_KIND_LABELS_UK: Record<ReminderKind, string> = {
   installation: "Монтаж",
   final_payment: "Остаточна оплата",
   sla_warning: "SLA-таймер",
-  custom: "Інше",
+  custom: "Задача",
 }
 
 export type Reminder = {
@@ -388,6 +388,15 @@ export type Reminder = {
   recurrence: string | null
   created_by: string | null
   created_at: string
+}
+
+/** Рядок зі списку задач: нагадування + звʼязана угода (як віддає API). */
+export type ReminderRow = Reminder & {
+  deals?: {
+    reference: string | null
+    status: string
+    customers?: { name: string | null; phone: string | null } | null
+  } | null
 }
 
 // =====================================================

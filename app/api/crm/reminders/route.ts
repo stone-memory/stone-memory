@@ -1,28 +1,44 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { guardCapability } from "@/lib/auth/permissions"
 import type { ReminderKind } from "@/lib/crm/types"
+import { OPEN_STATUSES, ownFilter, resolveReminderActor } from "@/lib/crm/reminders-access"
 
 export const dynamic = "force-dynamic"
 
-// GET /api/crm/reminders?status=pending&assigned=...&due_before=ISO
+const NO_ROWS = "00000000-0000-0000-0000-000000000000"
+
+// GET /api/crm/reminders?status=open|done|<raw>&scope=mine|all&assigned=<member>&due_before=ISO
+//   status=open  — не виконані й не скасовані (за замовчуванням)
+//   status=done  — виконані або скасовані
+//   scope=all    — уся команда, лише з правом deals.view_all
 export async function GET(req: Request) {
-  const unauth = await guardCapability(req, "deals.edit")
-  if (unauth) return unauth
+  const actor = await resolveReminderActor(req)
+  if (actor instanceof NextResponse) return actor
 
   const url = new URL(req.url)
-  const status = url.searchParams.get("status") || "pending"
+  const status = url.searchParams.get("status") || "open"
+  const scope = url.searchParams.get("scope") || "mine"
   const assigned = url.searchParams.get("assigned")
   const dueBefore = url.searchParams.get("due_before")
-  const limit = Math.min(parseInt(url.searchParams.get("limit") || "100", 10), 500)
+  const limit = Math.min(parseInt(url.searchParams.get("limit") || "200", 10), 500)
 
   let query = supabaseAdmin
     .from("reminders")
     .select("*, deals(reference, status, customers(name, phone))")
-    .order("due_at", { ascending: true })
+    .order("due_at", { ascending: status !== "done" })
     .limit(limit)
 
-  if (status) query = query.eq("status", status)
+  if (status === "open") {
+    query = query.is("completed_at", null).in("status", [...OPEN_STATUSES])
+  } else if (status === "done") {
+    query = query.or("completed_at.not.is.null,status.eq.cancelled")
+  } else {
+    query = query.eq("status", status)
+  }
+
+  if (!actor.seesAll || scope !== "all") {
+    query = actor.memberId ? query.or(ownFilter(actor.memberId)) : query.eq("id", NO_ROWS)
+  }
   if (assigned) query = query.eq("assigned_to", assigned)
   if (dueBefore) query = query.lte("due_at", dueBefore)
 
@@ -43,40 +59,51 @@ type CreatePayload = {
   recurrence?: string
 }
 
-// POST /api/crm/reminders
+// POST /api/crm/reminders — нова задача або нагадування по угоді.
+// Без assigned_to призначається автору; призначати іншим може лише той,
+// хто бачить усю команду (deals.view_all).
 export async function POST(req: Request) {
-  const unauth = await guardCapability(req, "deals.edit")
-  if (unauth) return unauth
+  const actor = await resolveReminderActor(req)
+  if (actor instanceof NextResponse) return actor
 
   const body = (await req.json().catch(() => null)) as CreatePayload | null
-  if (!body?.title || !body?.due_at) {
+  if (!body?.title?.trim() || !body?.due_at) {
     return NextResponse.json({ error: "title і due_at обов'язкові" }, { status: 400 })
   }
+  if (Number.isNaN(new Date(body.due_at).getTime())) {
+    return NextResponse.json({ error: "due_at має бути датою" }, { status: 400 })
+  }
+
+  const assignedTo =
+    actor.seesAll && body.assigned_to ? body.assigned_to : actor.memberId
+  const notifyVia = Array.isArray(body.notify_via)
+    ? body.notify_via.filter((c) => c === "telegram" || c === "email")
+    : ["telegram"]
 
   const { data, error } = await supabaseAdmin
     .from("reminders")
     .insert({
       deal_id: body.deal_id || null,
       customer_id: body.customer_id || null,
-      assigned_to: body.assigned_to || null,
-      kind: body.kind || "follow_up",
-      title: body.title,
-      description: body.description || null,
+      assigned_to: assignedTo,
+      created_by: actor.memberId,
+      kind: body.kind || (body.deal_id ? "follow_up" : "custom"),
+      title: body.title.trim(),
+      description: body.description?.trim() || null,
       due_at: body.due_at,
-      notify_via: body.notify_via || ["telegram"],
+      notify_via: notifyVia,
       recurrence: body.recurrence || null,
     })
-    .select()
+    .select("*, deals(reference, status, customers(name, phone))")
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Записуємо подію в deal_events якщо прив'язано до угоди
   if (body.deal_id) {
     await supabaseAdmin.from("deal_events").insert({
       deal_id: body.deal_id,
       kind: "reminder_set",
-      message: body.title,
+      message: body.title.trim(),
       data: { due_at: body.due_at, reminder_id: data.id },
     })
   }
