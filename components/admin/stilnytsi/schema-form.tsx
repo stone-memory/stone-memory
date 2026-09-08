@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ImageUploader } from "@/components/admin/image-uploader"
+import { stilnytsiImageUrl } from "@/lib/stilnytsi/images"
 import { cn } from "@/lib/utils"
 
 /**
@@ -139,7 +140,7 @@ function FieldInput({
       return (
         <div>
           <Label text={f.label} help={f.help ?? "Завантажте фото або вкажіть шлях до файлу на сайті, напр. /materials/x.webp"} />
-          <ImageUploader value={asStr(value)} onChange={onChange} folder={folder} />
+          <ImageUploader value={stilnytsiImageUrl(asStr(value))} onChange={onChange} folder={folder} />
           <Input value={asStr(value)} onChange={(e) => onChange(e.target.value)} placeholder="/шлях/до/фото.webp або https://…" className="mt-2" />
         </div>
       )
@@ -205,7 +206,7 @@ function FieldInput({
           <div className="grid gap-3 sm:grid-cols-2">
             {urls.map((u, i) => (
               <div key={i} className="rounded-xl border border-foreground/10 p-2">
-                <ImageUploader value={u} onChange={(v) => onChange(urls.map((x, j) => (j === i ? v : x)))} folder={folder} />
+                <ImageUploader value={stilnytsiImageUrl(u)} onChange={(v) => onChange(urls.map((x, j) => (j === i ? v : x)))} folder={folder} />
                 <div className="mt-2 flex items-center gap-2">
                   <Input value={u} onChange={(e) => onChange(urls.map((x, j) => (j === i ? e.target.value : x)))} className="h-8 text-xs" placeholder="/шлях або https://…" />
                   <button type="button" onClick={() => onChange(urls.filter((_, j) => j !== i))} className="rounded p-1 text-destructive/70 hover:bg-destructive/10" aria-label="Видалити"><Trash2 size={12} /></button>
