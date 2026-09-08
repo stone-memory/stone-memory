@@ -1,24 +1,10 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
+import { PROD_STAGE_PIPELINE } from "@/lib/crm/production"
 
 export const dynamic = "force-dynamic"
 
-// Standard manufacturing pipeline (enum order in supabase/crm-migration.sql).
-export const PROD_STAGE_PIPELINE = [
-  "raw_material",
-  "cutting",
-  "grinding",
-  "polishing",
-  "engraving",
-  "sealing",
-  "qc",
-  "packaging",
-  "transport",
-  "foundation",
-  "installation",
-  "cleanup",
-] as const
 
 type Body = {
   deal_id: string
