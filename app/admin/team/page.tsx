@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle, Sparkles, Info, Eye, EyeOff } from "lucide-react"
+import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle, Sparkles, Info, Eye, EyeOff, RotateCcw } from "lucide-react"
 import { formatPhoneAsTyped, unformatPhone } from "@/lib/phone-format"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -309,12 +309,11 @@ export default function TeamPage() {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => updateMember(m.id, { active: !m.active })}
+                    <span
                       className={`rounded-full px-2 py-0.5 text-xs ${m.active ? "bg-success/10 text-success" : "bg-foreground/5 text-muted-foreground"}`}
                     >
                       {m.active ? "Активний" : "Деактивований"}
-                    </button>
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="inline-flex items-center gap-1">
@@ -330,13 +329,25 @@ export default function TeamPage() {
                           <Key size={14} />
                         </button>
                       )}
-                      <button
-                        onClick={() => removeMember(m.id)}
-                        className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
-                        title="Деактивувати"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      {m.active ? (
+                        <button
+                          onClick={() => removeMember(m.id)}
+                          className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
+                          title="Деактивувати"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      ) : (
+                        // Деактивація — soft-delete: рядок лишається, тому доступ
+                        // повертаємо тут, а не через «Додати учасника» заново.
+                        <button
+                          onClick={() => updateMember(m.id, { active: true })}
+                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-success hover:bg-success/10"
+                          title="Повернути доступ"
+                        >
+                          <RotateCcw size={14} /> Відновити
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

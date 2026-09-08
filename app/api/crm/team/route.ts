@@ -99,11 +99,42 @@ export async function POST(req: Request) {
     }
   }
 
+  const email = body.email.toLowerCase()
+
+  // Деактивація — це soft-delete (active=false), рядок лишається разом з
+  // user_id. Тому повторне «Додати» на той самий email раніше падало на
+  // унікальному індексі team_members_user_id_key. Тепер такого учасника
+  // відновлюємо: активуємо, оновлюємо роль/ім'я/телефон, а пароль (якщо
+  // вказали) уже перевипущено вище.
+  let existingQ = supabaseAdmin.from("team_members").select("id, active").limit(1)
+  existingQ = userId ? existingQ.or(`user_id.eq.${userId},email.ilike.${email}`) : existingQ.ilike("email", email)
+  const { data: existing } = await existingQ.maybeSingle()
+
+  if (existing) {
+    const patch: Record<string, unknown> = {
+      user_id: userId,
+      email,
+      role: body.role,
+      custom_role_id: body.custom_role_id || null,
+      active: true,
+    }
+    if (body.display_name) patch.display_name = body.display_name
+    if (body.phone) patch.phone = body.phone
+    const { data, error } = await supabaseAdmin
+      .from("team_members")
+      .update(patch)
+      .eq("id", existing.id)
+      .select()
+      .single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ member: data, restored: !existing.active }, { status: 200 })
+  }
+
   const { data, error } = await supabaseAdmin
     .from("team_members")
     .insert({
       user_id: userId,
-      email: body.email.toLowerCase(),
+      email,
       display_name: body.display_name || null,
       role: body.role,
       phone: body.phone || null,
