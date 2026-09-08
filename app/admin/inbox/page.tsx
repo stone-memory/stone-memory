@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { authedFetch } from "@/lib/authed-fetch"
+import { refreshNotificationCounts } from "@/lib/crm/notifications-store"
 import { COMM_CHANNEL_LABELS, type Communication, type CommChannel } from "@/lib/crm/types"
 import { formatRelative, formatDateTime } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
@@ -107,6 +108,7 @@ export default function InboxPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),
     })
+    refreshNotificationCounts()
     if (filter !== "unread") load()
   }
 

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { Send, RefreshCw, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { authedFetch } from "@/lib/authed-fetch"
+import { refreshNotificationCounts } from "@/lib/crm/notifications-store"
 import { getSupabase } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 
@@ -144,6 +145,7 @@ export default function AdminChatPage() {
         body: JSON.stringify({ sessionId: activeId, text }),
       })
       setDraft("")
+      refreshNotificationCounts()
       // Realtime subscription picks up the new row and appends it to state;
       // no need to re-fetch here (would cause duplicates racing with realtime).
     } finally {

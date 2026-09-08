@@ -2,6 +2,7 @@
 
 import { create } from "zustand"
 import { authedFetch } from "@/lib/authed-fetch"
+import { refreshNotificationCounts } from "@/lib/crm/notifications-store"
 import type {
   Customer,
   Deal,
@@ -114,6 +115,7 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
     const j = await r.json()
     if (!r.ok) return null
     set((s) => ({ items: [j.deal, ...s.items] }))
+    refreshNotificationCounts()
     return j.deal
   },
   update: async (id, patch) => {
@@ -129,6 +131,7 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
       set({ items: prev })
       return { ok: false, error: j.error }
     }
+    if ("status" in patch) refreshNotificationCounts()
     return { ok: true }
   },
   setStatus: async (id, status) => {
@@ -139,6 +142,7 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
     set({ items: prev.filter((d) => d.id !== id) })
     const r = await authedFetch(`/api/crm/deals/${id}`, { method: "DELETE" })
     if (!r.ok) set({ items: prev })
+    else refreshNotificationCounts()
   },
 }))
 
@@ -182,6 +186,7 @@ export const useRemindersStore = create<RemindersState>()((set, get) => ({
     const j = await r.json()
     if (!r.ok) return null
     set((s) => ({ items: [j.reminder, ...s.items] }))
+    refreshNotificationCounts()
     return j.reminder
   },
   complete: async (id) => {
@@ -191,6 +196,7 @@ export const useRemindersStore = create<RemindersState>()((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "complete" }),
     })
+    refreshNotificationCounts()
   },
   snooze: async (id, minutes) => {
     set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
@@ -199,6 +205,7 @@ export const useRemindersStore = create<RemindersState>()((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "snooze", snoozeMinutes: minutes }),
     })
+    refreshNotificationCounts()
   },
   cancel: async (id) => {
     set((s) => ({ items: s.items.filter((r) => r.id !== id) }))
@@ -207,6 +214,7 @@ export const useRemindersStore = create<RemindersState>()((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "cancel" }),
     })
+    refreshNotificationCounts()
   },
   remove: async (id) => {
     set((s) => ({ items: s.items.filter((r) => r.id !== id) }))

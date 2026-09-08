@@ -4,6 +4,7 @@ import { create } from "zustand"
 import { sanitizeAttribution } from "@/lib/attribution"
 import type { Order, OrderStatus, OrderNote, StoneItem } from "@/lib/types"
 import { authedFetch } from "@/lib/authed-fetch"
+import { refreshNotificationCounts } from "@/lib/crm/notifications-store"
 
 interface OrdersState {
   orders: Order[]
@@ -97,6 +98,7 @@ export const useOrdersStore = create<OrdersState & OrdersActions>()((set, get) =
         body: JSON.stringify({ status }),
       })
       if (!res.ok) throw new Error("patch failed")
+      refreshNotificationCounts()
     } catch {
       set({ orders: prev })
     }
@@ -140,6 +142,7 @@ export const useOrdersStore = create<OrdersState & OrdersActions>()((set, get) =
         body: JSON.stringify({ contacted: true }),
       })
       if (!res.ok) throw new Error("patch failed")
+      refreshNotificationCounts()
     } catch {
       set({ orders: prev })
     }
@@ -151,6 +154,7 @@ export const useOrdersStore = create<OrdersState & OrdersActions>()((set, get) =
     try {
       const res = await authedFetch(`/api/orders/${id}`, { method: "DELETE" })
       if (!res.ok) throw new Error("delete failed")
+      refreshNotificationCounts()
     } catch {
       set({ orders: prev })
     }

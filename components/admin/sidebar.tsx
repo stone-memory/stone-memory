@@ -78,9 +78,10 @@ export function AdminSidebar() {
   const currentlySuperAdmin = isSuperAdmin(realRole)
   const roleLabel = realRole ? ROLE_LABEL_UK[realRole] : "—"
   const openTasks = useOpenTasksCount()
-  // Real-time лічильники сповіщень для бейджів. Хук сам поллить /api/crm/notifications/counts
-  // кожні 30 с і авто-зануляє лічильник коли admin відвідав відповідний розділ.
-  const counts = useNotificationCounts(pathname || undefined)
+  // Лічильники бейджів: Supabase Realtime по таблицях заявок/угод/нагадувань/
+  // повідомлень + страховий polling. Бейдж зникає, коли справа зроблена
+  // (статус змінено, прочитано), а не при відкритті розділу.
+  const counts = useNotificationCounts()
   const totalUnread = counts.inbox + counts.reminders + counts.orders + counts.deals + counts.chat
 
   // Capability-driven visibility — mirrors the server-side API gates so
@@ -171,7 +172,7 @@ export function AdminSidebar() {
             {totalUnread > 0 && (
               <span
                 className="rounded-full bg-accent px-1.5 text-[10px] font-semibold text-accent-foreground"
-                title={`${totalUnread} непрочитаних`}
+                title={`${totalUnread} потребують уваги`}
               >
                 {totalUnread > 99 ? "99+" : totalUnread}
               </span>
