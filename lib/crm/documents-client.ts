@@ -11,7 +11,10 @@ import { authedFetch } from "@/lib/authed-fetch"
  * сервер відповість.
  */
 export async function openDocument(documentId: string): Promise<void> {
-  const win = window.open("", "_blank", "noopener")
+  // Без "noopener" у window.open: з ним Chrome повертає null, і адреса
+  // підставлялась у поточну вкладку адмінки. Розриваємо звʼязок вручну.
+  const win = window.open("", "_blank")
+  if (win) win.opener = null
   try {
     const r = await authedFetch(`/api/crm/documents/${documentId}/url`, { cache: "no-store" })
     const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string }
