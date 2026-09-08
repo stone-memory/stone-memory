@@ -120,7 +120,9 @@ function buildEntries(sources: Sources): TimelineEntry[] {
       label: `${DOCUMENT_KIND_LABELS_UK[d.kind]}${d.number ? ` · ${d.number}` : ""}`,
       detail: d.title || undefined,
       meta: d.signed_at ? "✓ підписано" : undefined,
-      link: d.public_url || dealLink(d.deal_id),
+      // Прямого посилання на файл більше нема (приватний бакет): ведемо в угоду,
+      // де документ відкривається підписаним посиланням.
+      link: dealLink(d.deal_id),
     })
   }
 

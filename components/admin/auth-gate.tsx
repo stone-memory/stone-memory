@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { getSupabase } from "@/lib/supabase/client"
-import { authedFetch } from "@/lib/authed-fetch"
+import { clearMe, fetchMe, readCachedMe } from "@/lib/auth/me-cache"
 
 interface AuthGateProps {
   children: React.ReactNode
@@ -32,6 +32,9 @@ export function AuthGate({ children }: AuthGateProps) {
       setIsAuthenticated(Boolean(data.session))
     })
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+      // Інший користувач у тій самій вкладці або вихід — кеш ролі недійсний.
+      const cached = readCachedMe()
+      if (!session || (cached?.user_id && session.user.id !== cached.user_id)) clearMe()
       setIsAuthenticated(Boolean(session))
     })
     return () => {
@@ -40,32 +43,27 @@ export function AuthGate({ children }: AuthGateProps) {
   }, [])
 
   // Once authenticated, verify active team membership via /api/auth/me.
+  // З кешу вкладки відповідь миттєва (оболонка малюється одразу), сервер
+  // перевіряє у фоні й може забрати доступ, якщо роль зняли.
   useEffect(() => {
     if (isAuthenticated !== true) {
       setAccess("checking")
       return
     }
+    const cached = readCachedMe()
+    setAccess(cached ? (cached.role && cached.active ? "ok" : "denied") : "checking")
     let cancelled = false
-    setAccess("checking")
-    authedFetch("/api/auth/me", { cache: "no-store" })
-      .then(async (r) => {
-        if (cancelled) return
-        if (!r.ok) {
-          setAccess("denied")
-          return
-        }
-        const j = (await r.json()) as { role: string | null; active: boolean }
-        setAccess(j.role && j.active ? "ok" : "denied")
-      })
-      .catch(() => {
-        if (!cancelled) setAccess("denied")
-      })
+    fetchMe().then((me) => {
+      if (cancelled) return
+      setAccess(me && me.role && me.active ? "ok" : "denied")
+    })
     return () => {
       cancelled = true
     }
   }, [isAuthenticated])
 
   const handleSignOut = async () => {
+    clearMe()
     await getSupabase().auth.signOut()
     setIsAuthenticated(false)
     setAccess("checking")

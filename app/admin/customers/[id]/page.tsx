@@ -25,6 +25,7 @@ import type {
 } from "@/lib/crm/types"
 import { ActivityTimeline } from "@/components/admin/activity-timeline"
 import { AttributionPanel } from "@/components/admin/attribution-panel"
+import { openDocument } from "@/lib/crm/documents-client"
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -227,12 +228,16 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         ) : (
           <div className="divide-y divide-foreground/5">
             {data.documents.map((d) => (
-              <a key={d.id} href={d.public_url || "#"} target="_blank" rel="noreferrer"
-                 className="flex items-center gap-4 px-4 py-3 text-sm hover:bg-foreground/[0.02]">
+              <button
+                key={d.id}
+                type="button"
+                onClick={() => openDocument(d.id)}
+                className="flex w-full items-center gap-4 px-4 py-3 text-left text-sm hover:bg-foreground/[0.02]"
+              >
                 <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs">{DOCUMENT_KIND_LABELS_UK[d.kind]}</span>
                 <span className="font-mono">{d.number}</span>
                 <span className="ml-auto text-xs text-muted-foreground">v{d.version} · {formatRelative(d.created_at)}</span>
-              </a>
+              </button>
             ))}
           </div>
         )}

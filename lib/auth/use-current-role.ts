@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { authedFetch } from "@/lib/authed-fetch"
 import type { TeamRole } from "@/lib/crm/types"
 import type { Capability } from "@/lib/permissions/capabilities"
+import { fetchMe, readCachedMe, type Me } from "@/lib/auth/me-cache"
 
 /**
  * Client hook that resolves the current user's team role + effective
@@ -14,6 +14,10 @@ import type { Capability } from "@/lib/permissions/capabilities"
  * that already filters on `active = true` and resolves custom_role
  * capabilities. Saves cluttering RLS-grant surface area for clients
  * that just want "what can I do?".
+ *
+ * Стартує з кешу вкладки (lib/auth/me-cache.ts), тому меню й роль
+ * зʼявляються одразу, а не після відповіді сервера; свіжі дані підтягуються
+ * у фоні.
  */
 export type CurrentRoleState = {
   role: TeamRole | null
@@ -25,42 +29,36 @@ export type CurrentRoleState = {
   capabilities: Capability[]
 }
 
+const EMPTY: CurrentRoleState = {
+  role: null,
+  email: null,
+  loading: true,
+  isTeamMember: false,
+  capabilities: [],
+}
+
+function fromMe(me: Me | null): CurrentRoleState {
+  if (!me) return { ...EMPTY, loading: false }
+  return {
+    role: me.role,
+    email: me.email,
+    loading: false,
+    isTeamMember: Boolean(me.role && me.active),
+    capabilities: me.capabilities,
+  }
+}
+
 export function useCurrentRole(): CurrentRoleState {
-  const [state, setState] = useState<CurrentRoleState>({
-    role: null,
-    email: null,
-    loading: true,
-    isTeamMember: false,
-    capabilities: [],
+  const [state, setState] = useState<CurrentRoleState>(() => {
+    const cached = typeof window !== "undefined" ? readCachedMe() : null
+    return cached ? fromMe(cached) : EMPTY
   })
 
   useEffect(() => {
     let cancelled = false
-    authedFetch("/api/auth/me", { cache: "no-store" })
-      .then(async (r) => {
-        if (cancelled) return
-        if (!r.ok) {
-          setState({ role: null, email: null, loading: false, isTeamMember: false, capabilities: [] })
-          return
-        }
-        const j = (await r.json()) as {
-          role: TeamRole | null
-          email: string | null
-          active: boolean
-          capabilities: Capability[]
-        }
-        setState({
-          role: j.role,
-          email: j.email,
-          loading: false,
-          isTeamMember: Boolean(j.role && j.active),
-          capabilities: Array.isArray(j.capabilities) ? j.capabilities : [],
-        })
-      })
-      .catch(() => {
-        if (cancelled) return
-        setState({ role: null, email: null, loading: false, isTeamMember: false, capabilities: [] })
-      })
+    fetchMe().then((me) => {
+      if (!cancelled) setState(fromMe(me))
+    })
     return () => {
       cancelled = true
     }

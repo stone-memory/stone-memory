@@ -86,13 +86,13 @@ export function AdminSidebar() {
   // Capability-driven visibility — mirrors the server-side API gates so
   // the menu never offers a section the backend would 403. super_admin
   // resolves to the full capability set, so it sees everything.
-  const visible = roleLoading
-    ? []
-    : navItems.filter((item) => {
-        if (item.alwaysShow) return true
-        if (!item.cap) return false
-        return capabilities.includes(item.cap)
-      })
+  // Поки роль ще не відома (перший вхід у вкладці), показуємо лише пункти без
+  // обмежень; з кешем вкладки (me-cache) roleLoading = false з першого рендеру.
+  const visible = navItems.filter((item) => {
+    if (item.alwaysShow) return true
+    if (roleLoading || !item.cap) return false
+    return capabilities.includes(item.cap)
+  })
 
   const handleSignOut = async () => {
     const { getSupabase } = await import("@/lib/supabase/client")

@@ -27,6 +27,7 @@ import {
 import { LostReasonModal } from "@/components/admin/lost-reason-modal"
 import { DealFinanceModal, paidFromPayments } from "@/components/admin/deal-finance-modal"
 import { DealStatusSelect } from "@/components/admin/deal-status-select"
+import { openDocument } from "@/lib/crm/documents-client"
 
 const SOURCE_LABELS: Record<string, string> = {
   stilnytsi: "сайт стільниць",
@@ -470,19 +471,20 @@ function DocumentsBlock({ dealId, documents, onChanged }: { dealId: string; docu
       ) : (
         <div className="divide-y divide-foreground/5">
           {documents.map((d) => (
-            <a
+            // Файл у приватному бакеті: відкривається тимчасовим підписаним
+            // посиланням, а не прямою адресою.
+            <button
               key={d.id}
-              href={d.public_url || "#"}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-foreground/[0.02]"
+              type="button"
+              onClick={() => openDocument(d.id)}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-foreground/[0.02]"
             >
               <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs">{DOCUMENT_KIND_LABELS_UK[d.kind]}</span>
               <span className="font-mono">{d.number}</span>
               <span className="text-xs text-muted-foreground">v{d.version}</span>
               <span className="ml-auto text-xs text-muted-foreground">{formatRelative(d.created_at)}</span>
               <Download size={14} className="text-muted-foreground" />
-            </a>
+            </button>
           ))}
         </div>
       )}

@@ -7,11 +7,11 @@ import {
   renderInvoiceHTML,
 } from "@/lib/crm/pdf-templates"
 import type { DocumentKind } from "@/lib/crm/types"
+import { DOCUMENTS_BUCKET, ensureDocumentsBucket } from "@/lib/crm/documents-storage"
 
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
 
-const BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "stone-images"
 
 type Payload = {
   deal_id: string
@@ -79,10 +79,13 @@ export async function POST(req: Request) {
     .eq("kind", body.kind)
   const version = (count || 0) + 1
 
-  // Завантажуємо в Storage як HTML (можна друкувати в PDF з браузера)
+  // Завантажуємо в ПРИВАТНИЙ бакет як HTML (можна друкувати в PDF з браузера).
+  // Публічного URL нема: документ відкривається підписаним посиланням через
+  // /api/crm/documents/[id]/url лише для команди.
+  await ensureDocumentsBucket()
   const filename = `documents/${body.deal_id}/${body.kind}-v${version}.html`
   const { error: upErr } = await supabaseAdmin.storage
-    .from(BUCKET)
+    .from(DOCUMENTS_BUCKET)
     .upload(filename, html, {
       contentType: "text/html; charset=utf-8",
       upsert: true,
@@ -92,7 +95,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `upload failed: ${upErr.message}` }, { status: 500 })
   }
 
-  const { data: pub } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(filename)
+  const { data: signed } = await supabaseAdmin.storage
+    .from(DOCUMENTS_BUCKET)
+    .createSignedUrl(filename, 10 * 60)
 
   const docNumber =
     body.number ||
@@ -110,12 +115,13 @@ export async function POST(req: Request) {
       number: docNumber,
       title: `${body.kind === "quote" ? "Комерційна пропозиція" : body.kind === "contract" ? "Договір" : "Рахунок-фактура"} ${docNumber}`,
       storage_path: filename,
-      public_url: pub.publicUrl,
+      public_url: null,
       size_bytes: Buffer.byteLength(html, "utf8"),
       version,
       meta: {
         amount_eur: Number(deal.amount_eur),
         items_count: items.length,
+        bucket: DOCUMENTS_BUCKET,
       },
     })
     .select()
@@ -131,5 +137,5 @@ export async function POST(req: Request) {
     data: { document_id: doc.id, kind: body.kind, version },
   })
 
-  return NextResponse.json({ document: doc, url: pub.publicUrl }, { status: 201 })
+  return NextResponse.json({ document: doc, url: signed?.signedUrl ?? null }, { status: 201 })
 }
