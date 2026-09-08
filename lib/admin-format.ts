@@ -69,13 +69,17 @@ export function formatDate(d: Date | string | number): string {
 export function formatRelative(d: Date | string | number): string {
   const t = new Date(d).getTime()
   const diff = Date.now() - t
-  const minutes = Math.floor(diff / 60_000)
-  const hours = Math.floor(diff / 3_600_000)
-  const days = Math.floor(diff / 86_400_000)
+  // Майбутні дати (нагадування, дедлайни) — «через …», а не «щойно».
+  const future = diff < -30_000
+  const abs = Math.abs(diff)
+  const minutes = Math.floor(abs / 60_000)
+  const hours = Math.floor(abs / 3_600_000)
+  const days = Math.floor(abs / 86_400_000)
+  const wrap = (s: string) => (future ? `через ${s}` : `${s} тому`)
   if (minutes < 1) return "щойно"
-  if (minutes < 60) return `${minutes} хв тому`
-  if (hours < 24) return `${hours} год тому`
-  if (days < 7) return `${days} дн тому`
+  if (minutes < 60) return wrap(`${minutes} хв`)
+  if (hours < 24) return wrap(`${hours} год`)
+  if (days < 7) return wrap(`${days} дн`)
   return new Date(t).toLocaleDateString(ADMIN_LOCALE, { month: "short", day: "numeric" })
 }
 
