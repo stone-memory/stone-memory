@@ -76,7 +76,9 @@ export function DealFinanceModal({
   const [savingAmount, setSavingAmount] = useState(false)
   const [amountSaved, setAmountSaved] = useState(false)
 
-  const [kind, setKind] = useState<PaymentKind>(payments.length ? "balance" : "deposit")
+  // Лише deposit/refund у пігулках; "balance" лишався з попередньої версії і
+  // мовчки записував платіж як «Залишок» без жодної обраної пігулки.
+  const [kind, setKind] = useState<PaymentKind>("deposit")
   const [method, setMethod] = useState<PaymentMethod>("bank_transfer")
   const [payAmount, setPayAmount] = useState("")
   const [ref, setRef] = useState("")
@@ -95,6 +97,7 @@ export function DealFinanceModal({
   const paid = useMemo(() => paidFromPayments(payments), [payments])
   const liveAmount = Number(draftAmount) || 0
   const remaining = Math.max(liveAmount - paid, 0)
+  const overpaid = Math.max(paid - liveAmount, 0)
   const amountDirty = draftAmount !== "" && Number(draftAmount) !== amount
 
   if (!open) return null
@@ -182,7 +185,11 @@ export function DealFinanceModal({
           <div className="grid grid-cols-3 gap-3">
             <Tile label="Сума" value={formatUAHDirect(liveAmount)} muted={amountDirty} />
             <Tile label="Сплачено" value={formatUAHDirect(paid)} />
-            <Tile label="До сплати" value={formatUAHDirect(remaining)} highlight={remaining > 0} />
+            {overpaid > 0 ? (
+              <Tile label="Переплата" value={formatUAHDirect(overpaid)} highlight />
+            ) : (
+              <Tile label="До сплати" value={formatUAHDirect(remaining)} highlight={remaining > 0} />
+            )}
           </div>
 
           {/* Amount */}

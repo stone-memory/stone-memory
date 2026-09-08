@@ -241,6 +241,20 @@ export type Customer = {
  *   interior — стільниці, підвіконня, сходи (сайт stilnytsi.stonememory.com.ua)
  * У БД це вільний text; тут звужуємо до відомих значень.
  */
+/** Людські назви подій у «Історії угоди» (deal_events.kind). Невідомі — як є. */
+export const DEAL_EVENT_KIND_LABELS_UK: Record<string, string> = {
+  status_change: "Статус",
+  payment: "Платіж",
+  document: "Документ",
+  reminder_set: "Нагадування",
+  reminder_done: "Нагадування виконано",
+  note: "Нотатка",
+  communication: "Повідомлення",
+  production: "Виробництво",
+  assignment: "Призначення",
+  created: "Створено",
+}
+
 export type DealCategory = "memorial" | "interior"
 
 export const DEAL_CATEGORIES: DealCategory[] = ["memorial", "interior"]

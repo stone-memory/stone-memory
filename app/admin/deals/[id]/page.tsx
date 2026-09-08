@@ -11,6 +11,7 @@ import { formatUAHDirect, formatDateTime, formatRelative } from "@/lib/admin-for
 import {
   DEAL_STATUS_LABELS_UK,
   DEAL_CATEGORY_LABELS_UK,
+  DEAL_EVENT_KIND_LABELS_UK,
   PAYMENT_KIND_LABELS_UK,
   PAYMENT_METHOD_LABELS_UK,
   DOCUMENT_KIND_LABELS_UK,
@@ -108,6 +109,8 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
   // «До сплати» = сума − усі платежі (не лише аванс, як у balance_eur в БД).
   const paid = paidFromPayments(data.payments)
   const remaining = Math.max(Number(d.amount_eur) - paid, 0)
+  // Сплачено більше за суму: показуємо переплату замість «До сплати 0», інакше її не видно.
+  const overpaid = Math.max(paid - Number(d.amount_eur), 0)
 
   return (
     <div className="space-y-6">
@@ -164,7 +167,11 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
             <div className="grid grid-cols-3 gap-3">
               <Stat label="Сума" value={formatUAHDirect(Number(d.amount_eur))} />
               <Stat label="Сплачено" value={formatUAHDirect(paid)} />
-              <Stat label="До сплати" value={formatUAHDirect(remaining)} highlight={remaining > 0} />
+              {overpaid > 0 ? (
+                <Stat label="Переплата" value={formatUAHDirect(overpaid)} highlight />
+              ) : (
+                <Stat label="До сплати" value={formatUAHDirect(remaining)} highlight={remaining > 0} />
+              )}
             </div>
             <div className="mt-1.5 text-right text-xs text-accent opacity-80 group-hover:opacity-100 group-hover:underline">
               Змінити суму · внести платіж
@@ -332,7 +339,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
         <div className="divide-y divide-foreground/5">
           {data.events.map((e) => (
             <div key={e.id} className="px-4 py-2 text-sm flex items-center gap-3">
-              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-[10px] uppercase tracking-wide">{e.kind}</span>
+              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-[10px] uppercase tracking-wide">{DEAL_EVENT_KIND_LABELS_UK[e.kind] ?? e.kind}</span>
               <span className="flex-1 text-foreground/85">
                 {e.kind === "status_change" && e.from_status && e.to_status
                   ? `${DEAL_STATUS_LABELS_UK[e.from_status]} → ${DEAL_STATUS_LABELS_UK[e.to_status]}`

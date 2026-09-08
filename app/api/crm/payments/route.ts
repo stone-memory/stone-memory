@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
-import type { PaymentKind, PaymentMethod } from "@/lib/crm/types"
+import { PAYMENT_KIND_LABELS_UK, PAYMENT_METHOD_LABELS_UK, type PaymentKind, type PaymentMethod } from "@/lib/crm/types"
 
 export const dynamic = "force-dynamic"
 
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
   await supabaseAdmin.from("deal_events").insert({
     deal_id: body.deal_id,
     kind: "payment",
-    message: `${body.kind} ${body.amount_eur} ${body.currency || "UAH"} (${body.method})`,
+    message: `${PAYMENT_KIND_LABELS_UK[body.kind] ?? body.kind} ${Number(body.amount_eur).toLocaleString("uk-UA")} ₴ · ${PAYMENT_METHOD_LABELS_UK[body.method] ?? body.method}`,
     data: { payment_id: data.id, amount_eur: body.amount_eur, method: body.method },
   })
 
