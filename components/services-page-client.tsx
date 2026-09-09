@@ -23,7 +23,14 @@ const iconMap = {
 }
 
 /** Services arrive from the server so each offering is in the initial HTML. */
-export function ServicesPageClient({ initialServices }: { initialServices: Service[] }) {
+export function ServicesPageClient({
+  initialServices,
+  details,
+}: {
+  initialServices: Service[]
+  /** Розгорнутий опис послуг (серверний), лише для української локалі. */
+  details?: React.ReactNode
+}) {
   const { t, locale } = useTranslation()
   const storeServices = useServices()
   const services = storeServices.length > 0 ? storeServices : initialServices
@@ -76,6 +83,8 @@ export function ServicesPageClient({ initialServices }: { initialServices: Servi
               )
             })}
           </div>
+
+          {locale === "uk" && details ? details : null}
 
           <div className="mt-16 rounded-3xl bg-foreground p-8 text-background md:mt-24 md:p-14">
             <h3 className="max-w-2xl text-3xl font-semibold tracking-tight-custom md:text-5xl text-balance">

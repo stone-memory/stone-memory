@@ -9,7 +9,7 @@ import {
   stonePath,
 } from "@/lib/catalog-taxonomy"
 import { getAllPaths } from "@/lib/stone/routes"
-import { CITIES } from "@/lib/site-facts"
+import { CITIES, CONTENT_UPDATED } from "@/lib/site-facts"
 
 export const revalidate = 60
 
@@ -44,30 +44,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // /umovy and /konfidentsiinist are deliberately `robots: noindex` (see their
   // layouts) and therefore must NOT be listed here — a URL that is both
   // submitted and noindexed is a contradictory signal.
+  // Інфосторінки не мають часу правки в базі, тому беруть ручну дату
+  // останньої змістовної правки (CONTENT_UPDATED), а не штамп збірки.
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/"), changeFrequency: "daily", priority: 1 },
+    { url: absoluteUrl("/"), lastModified: CONTENT_UPDATED, changeFrequency: "daily", priority: 1 },
     // /kataloh is gone — it 308s to /memorial/pamyatnyky. A redirecting URL
     // must never be submitted: Google reports it as "Page with redirect" and
     // drops it from the index anyway.
-    { url: absoluteUrl("/pamyatnyky"), changeFrequency: "weekly", priority: 0.95 },
-    { url: absoluteUrl("/memorial/pamyatnyky"), changeFrequency: "daily", priority: 0.95 },
-    { url: absoluteUrl("/memorial/kameni"), changeFrequency: "monthly", priority: 0.8 },
-    { url: absoluteUrl("/tsiny"), changeFrequency: "weekly", priority: 0.9 },
-    { url: absoluteUrl("/yak-zamovyty"), changeFrequency: "monthly", priority: 0.8 },
-    { url: absoluteUrl("/dostavka-i-oplata"), changeFrequency: "monthly", priority: 0.7 },
-    { url: absoluteUrl("/harantiya"), changeFrequency: "monthly", priority: 0.7 },
-    { url: absoluteUrl("/pytannya"), changeFrequency: "monthly", priority: 0.7 },
-    { url: absoluteUrl("/kontakty"), changeFrequency: "monthly", priority: 0.8 },
-    { url: absoluteUrl("/proekty"), changeFrequency: "weekly", priority: 0.9 },
-    { url: absoluteUrl("/posluhy"), changeFrequency: "monthly", priority: 0.9 },
-    { url: absoluteUrl("/pro-nas"), changeFrequency: "monthly", priority: 0.8 },
-    { url: absoluteUrl("/blog"), changeFrequency: "weekly", priority: 0.85 },
-    { url: absoluteUrl("/vidhuky"), changeFrequency: "weekly", priority: 0.7 },
+    { url: absoluteUrl("/pamyatnyky"), lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.95 },
+    { url: absoluteUrl("/memorial/pamyatnyky"), lastModified: CONTENT_UPDATED, changeFrequency: "daily", priority: 0.95 },
+    { url: absoluteUrl("/memorial/kameni"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/tsiny"), lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.9 },
+    { url: absoluteUrl("/yak-zamovyty"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/dostavka-i-oplata"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/harantiya"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/pytannya"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/kontakty"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/proekty"), lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.9 },
+    { url: absoluteUrl("/posluhy"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.9 },
+    { url: absoluteUrl("/pro-nas"), lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/blog"), lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.85 },
+    { url: absoluteUrl("/vidhuky"), lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.7 },
   ]
 
   // Регіональні сторінки: місто + доставка й монтаж у ньому.
   const cityRoutes: MetadataRoute.Sitemap = CITIES.map((c) => ({
     url: absoluteUrl(`/pamyatnyky/${c.slug}`),
+    lastModified: CONTENT_UPDATED,
     changeFrequency: "monthly",
     priority: 0.8,
   }))
@@ -93,8 +96,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // rendered (the on-page filter links to it) but stays noindex and out of the
   // sitemap — submitting it would be submitting a doorway page.
   const facets = publishedFacets(stones)
+  // Фасет змінюється тоді, коли змінюється будь-який товар у ньому.
   const facetRoutes: MetadataRoute.Sitemap = facets.map((f) => ({
     url: absoluteUrl(`/memorial/pamyatnyky/${f.slug}`),
+    lastModified: facetItems(stones, f).reduce<Date>((acc, s) => {
+      const t = s.slug ? updatedAt.get(s.slug) : undefined
+      return t && t > acc ? t : acc
+    }, CONTENT_UPDATED),
     changeFrequency: "weekly",
     priority: 0.85,
   }))

@@ -23,6 +23,7 @@
  * Перед перезаписом оригінал зберігається в ./backup-stone-images/<шлях>.
  */
 import { createClient } from "@supabase/supabase-js"
+import { createHash } from "node:crypto"
 import sharp from "sharp"
 import { mkdir, writeFile, readFile } from "node:fs/promises"
 import { existsSync } from "node:fs"
@@ -35,8 +36,8 @@ const flag = (name, def) => {
 }
 const DRY = args.includes("--dry-run")
 const MAX_BYTES = Number(flag("--max-bytes", 600_000))
-const MAX_PX = Number(flag("--max-px", 2000))
-const QUALITY = Number(flag("--quality", 82))
+const MAX_PX = Number(flag("--max-px", 2400))
+const QUALITY = Number(flag("--quality", 90))
 
 async function loadEnv() {
   if (existsSync(".env.local")) {
@@ -67,7 +68,7 @@ async function main() {
   for (const row of rows) {
     const urls = [row.data?.imagePath, ...(row.data?.gallery ?? [])].filter(Boolean)
     for (const u of urls) {
-      if (typeof u === "string" && u.startsWith(prefix)) targets.push({ id: row.id, objectPath: decodeURIComponent(u.slice(prefix.length)), url: u })
+      if (typeof u === "string" && u.startsWith(prefix)) targets.push({ id: row.id, data: row.data, objectPath: decodeURIComponent(u.slice(prefix.length).split("?")[0]), url: u.split("?")[0] })
     }
   }
   const unique = [...new Map(targets.map((t) => [t.objectPath, t])).values()]
@@ -76,6 +77,10 @@ async function main() {
   let saved = 0
   let touched = 0
   for (const t of unique) {
+    // Спершу лише заголовки: 206 фото по 2–4 МБ качати заради розміру довго.
+    const head = await fetch(t.url, { method: "HEAD" }).catch(() => null)
+    const len = Number(head?.headers.get("content-length") ?? 0)
+    if (head?.ok && len && len <= MAX_BYTES) continue
     const res = await fetch(t.url)
     if (!res.ok) {
       console.warn(`  ! ${t.objectPath}: HTTP ${res.status}`)
@@ -110,7 +115,17 @@ async function main() {
       contentType: "image/jpeg",
       cacheControl: "31536000",
     })
-    if (upErr) console.warn(`  ! ${t.objectPath}: ${upErr.message}`)
+    if (upErr) { console.warn(`  ! ${t.objectPath}: ${upErr.message}`); continue }
+
+    // Адреса та сама, тому версію за вмістом додаємо в query: інакше оптимізатор
+    // картинок Vercel (minimumCacheTTL 30 днів) і браузери показували б старий файл.
+    const v = createHash("sha1").update(out).digest("hex").slice(0, 8)
+    const fresh = `${t.url}?v=${v}`
+    const data = { ...t.data }
+    if (typeof data.imagePath === "string" && data.imagePath.split("?")[0] === t.url) data.imagePath = fresh
+    if (Array.isArray(data.gallery)) data.gallery = data.gallery.map((g) => (typeof g === "string" && g.split("?")[0] === t.url ? fresh : g))
+    const { error: rowErr } = await supabase.from("stones").update({ data }).eq("id", t.id)
+    if (rowErr) console.warn(`  ! рядок ${t.id}: ${rowErr.message}`)
   }
 
   console.log(`\n${DRY ? "Було б перестиснуто" : "Перестиснуто"}: ${touched} фото, економія ${(saved / 1e6).toFixed(1)} МБ.`)
