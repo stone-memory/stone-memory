@@ -9,26 +9,31 @@ import { useTranslation } from "@/lib/i18n/context"
 import { useReviewsForPlacement, type Review } from "@/lib/store/reviews"
 import type { Locale } from "@/lib/types"
 
-const copy: Record<Locale, { title: string; subtitle: string }> = {
+const copy: Record<Locale, { title: string; subtitle: string; empty: string }> = {
   uk: {
-    title: "Відгуки клієнтів з Google",
-    subtitle: "",
+    title: "Відгуки клієнтів",
+    subtitle: "Родини, для яких ми виготовили й встановили пам'ятники. Відгуки з Google та надіслані нам напряму.",
+    empty: "Ми збираємо відгуки родин, з якими працювали. Поки що подивіться виконані роботи в каталозі або напишіть нам — розповімо, кому ми вже встановили пам'ятники у вашому місті.",
   },
   pl: {
-    title: "Opinie klientów z Google",
-    subtitle: "",
+    title: "Opinie klientów",
+    subtitle: "Rodziny, dla których wykonaliśmy i zamontowaliśmy pomniki.",
+    empty: "Zbieramy opinie rodzin, z którymi pracowaliśmy. Zobacz wykonane prace w katalogu lub napisz do nas.",
   },
   en: {
-    title: "Client reviews from Google",
-    subtitle: "",
+    title: "Client reviews",
+    subtitle: "Families we made and installed monuments for.",
+    empty: "We are collecting reviews from the families we have worked with. See finished work in the catalogue or write to us.",
   },
   de: {
-    title: "Kundenbewertungen aus Google",
-    subtitle: "",
+    title: "Kundenbewertungen",
+    subtitle: "Familien, für die wir Grabmale gefertigt und montiert haben.",
+    empty: "Wir sammeln Bewertungen der Familien, mit denen wir gearbeitet haben. Sehen Sie sich fertige Arbeiten im Katalog an oder schreiben Sie uns.",
   },
   lt: {
-    title: "Klientų atsiliepimai iš Google",
-    subtitle: "",
+    title: "Klientų atsiliepimai",
+    subtitle: "Šeimos, kurioms pagaminome ir sumontavome paminklus.",
+    empty: "Renkame šeimų, su kuriomis dirbome, atsiliepimus. Peržiūrėkite atliktus darbus kataloge arba parašykite mums.",
   },
 }
 
@@ -48,7 +53,13 @@ export function ReviewsPageClient({ initialReviews }: { initialReviews: Review[]
           <h1 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
             {C.title}
           </h1>
-          <div className="mt-6 inline-flex items-center gap-3 rounded-full bg-foreground/5 px-4 py-2">
+          <p className="mt-4 max-w-2xl text-base text-muted-foreground text-balance md:text-lg">{C.subtitle}</p>
+          {reviews.length === 0 && (
+            <div className="mt-8 max-w-2xl rounded-2xl bg-secondary/60 p-6 text-[15px] leading-relaxed text-foreground/85">
+              {C.empty}
+            </div>
+          )}
+          <div className={reviews.length === 0 ? "hidden" : "mt-6 inline-flex items-center gap-3 rounded-full bg-foreground/5 px-4 py-2"}>
             <div className="flex items-center gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star

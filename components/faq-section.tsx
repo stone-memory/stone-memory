@@ -1,27 +1,36 @@
 "use client"
 
+import Link from "next/link"
 import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useTranslation } from "@/lib/i18n/context"
-import { useFaqItems } from "@/lib/store/faq"
+import { useFaqItems, type FaqItem } from "@/lib/store/faq"
 import type { Locale } from "@/lib/types"
 
-// Заголовок секції FAQ — самі питання беремо з Supabase store/faq.
-// Якщо store ще не гідратовано — нічого не показуємо (краще ніж старий
-// дубльований mock-контент який раніше тут жив).
-const sectionLabels: Record<Locale, { eyebrow: string; heading: string }> = {
-  uk: { eyebrow: "FAQ", heading: "Часті запитання" },
-  pl: { eyebrow: "FAQ", heading: "Najczęściej zadawane pytania" },
-  en: { eyebrow: "FAQ", heading: "Frequently asked questions" },
-  de: { eyebrow: "FAQ", heading: "Häufig gestellte Fragen" },
-  lt: { eyebrow: "DUK", heading: "Dažniausiai užduodami klausimai" },
+const sectionLabels: Record<Locale, { eyebrow: string; heading: string; all: string }> = {
+  uk: { eyebrow: "FAQ", heading: "Часті запитання", all: "Усі питання й відповіді" },
+  pl: { eyebrow: "FAQ", heading: "Najczęściej zadawane pytania", all: "Wszystkie pytania" },
+  en: { eyebrow: "FAQ", heading: "Frequently asked questions", all: "All questions" },
+  de: { eyebrow: "FAQ", heading: "Häufig gestellte Fragen", all: "Alle Fragen" },
+  lt: { eyebrow: "DUK", heading: "Dažniausiai užduodami klausimai", all: "Visi klausimai" },
 }
 
-export function FaqSection() {
+/**
+ * Питання приходять із сервера (`initialItems`), тому вони є в HTML одразу.
+ *
+ * Раніше секція читала лише клієнтський store і до гідратації не рендерила
+ * нічого — а FAQPage-розмітка на сторінці була. Google трактує таку
+ * розмітку без видимого тексту як порушення. Store лишається для живих правок
+ * з адмінки: щойно він гідратований і не порожній — бере гору.
+ */
+export function FaqSection({ initialItems = [], limit }: { initialItems?: FaqItem[]; limit?: number }) {
   const { locale } = useTranslation()
   const L = sectionLabels[locale] || sectionLabels.uk
   const storeItems = useFaqItems()
-  if (storeItems.length === 0) return null
+  const all = storeItems.length > 0 ? storeItems : initialItems
+  const items = limit ? all.slice(0, limit) : all
+  if (items.length === 0) return null
 
   return (
     <section id="faq" className="bg-secondary/50 py-16 md:py-20">
@@ -42,7 +51,7 @@ export function FaqSection() {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
           <Accordion type="single" collapsible className="flex flex-col gap-3">
-            {storeItems.map((item) => (
+            {items.map((item) => (
               <AccordionItem
                 key={item.id}
                 value={item.id}
@@ -58,6 +67,18 @@ export function FaqSection() {
             ))}
           </Accordion>
         </motion.div>
+
+        {limit && all.length > limit && (
+          <div className="mt-8 text-center">
+            <Link
+              href="/pytannya"
+              className="group inline-flex items-center gap-2 rounded-full border border-foreground/15 px-5 py-2.5 text-sm font-medium transition-colors hover:border-foreground/40"
+            >
+              {L.all}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   )

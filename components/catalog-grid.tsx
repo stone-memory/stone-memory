@@ -11,7 +11,7 @@ import { usePopularity } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
 import { useStones } from "@/lib/store/stones"
 import { filterLabels } from "@/lib/i18n/filters"
-import { findFacet } from "@/lib/catalog-taxonomy"
+import { CATALOG_PAGE_SIZE, catalogPagePath, findFacet } from "@/lib/catalog-taxonomy"
 import type { Category, StoneItem } from "@/lib/types"
 
 type CatalogGridProps = {
@@ -32,7 +32,30 @@ type CatalogGridProps = {
   facetSlug?: string
   heading?: string
   intro?: string
+  /** Сторінка з адреси (/storinka-2). Без фільтрів сітка показує саме її. */
+  initialPage?: number
+  /**
+   * Сторінки мають адреси (/storinka-2). Поки фільтри не чіпали, перемикач
+   * рендерить справжні посилання, і бот може пройти весь каталог, а не лише
+   * перші 24 картки. З активними фільтрами список уже не збігається з
+   * адресою, тому перемикач повертається до кнопок зі станом.
+   *
+   * Булевий прапорець, а не функція-будівник адреси: функцію не можна передати
+   * через межу сервер/клієнт, а шлях і так однозначно виводиться з facetSlug.
+   */
+  linkedPages?: boolean
 }
+
+const filtersAreEmpty = (f: FiltersState) =>
+  f.q === "" &&
+  f.tones.length === 0 &&
+  f.materials.length === 0 &&
+  f.shapes.length === 0 &&
+  f.finishes.length === 0 &&
+  f.countries.length === 0 &&
+  f.priceMin === undefined &&
+  f.priceMax === undefined &&
+  !f.featuredOnly
 
 export function CatalogGrid({
   initialStones,
@@ -40,7 +63,10 @@ export function CatalogGrid({
   facetSlug,
   heading,
   intro,
+  initialPage = 1,
+  linkedPages = false,
 }: CatalogGridProps) {
+  const pageHref = linkedPages ? (n: number) => catalogPagePath(facetSlug ?? null, n) : undefined
   const storedCategory = useSelectionStore((state) => state.category)
   const setCategory = useSelectionStore((state) => state.setCategory)
   const [mounted, setMounted] = useState(false)
@@ -103,9 +129,11 @@ export function CatalogGrid({
     [baseItems, filters, popularity]
   )
 
-  // Посторінковий вивід: 15 карток на телефоні, 30 на десктопі.
-  const pageSize = usePageSize()
-  const [page, setPage] = useState(1)
+  // Посторінковий вивід: однаковий розмір сторінки на всіх екранах, бо сторінка
+  // тепер має адресу (/storinka-2), і за нею мусить бути той самий список.
+  const pageSize = CATALOG_PAGE_SIZE
+  const [page, setPage] = useState(initialPage)
+  const unfiltered = filtersAreEmpty(filters)
   const sectionRef = useRef<HTMLElement>(null)
   // Панель фільтрів ховається при прокрутці вниз — але лише після того, як
   // перша картка пішла під шапку. Раніше під сховану панель відкривалась
@@ -116,10 +144,11 @@ export function CatalogGrid({
 
   const pageCount = Math.max(1, Math.ceil(filteredStones.length / pageSize))
 
-  // Новий фільтр — новий набір, тому повертаємось на першу сторінку.
+  // Новий фільтр — новий набір, тому повертаємось на першу сторінку. Коли
+  // фільтри знято, повертаємось до сторінки з адреси, а не до першої.
   useEffect(() => {
-    setPage(1)
-  }, [category, filters])
+    setPage(filtersAreEmpty(filters) ? initialPage : 1)
+  }, [category, filters, initialPage])
 
   // Зміна ширини екрана міняє розмір сторінки, а з ним і їх кількість. Тут
   // саме притискаємо номер до наявного діапазону, а не скидаємо на першу:
@@ -190,31 +219,11 @@ export function CatalogGrid({
             page={page}
             pageCount={pageCount}
             onChange={goToPage}
+            href={unfiltered ? pageHref : undefined}
             labels={t.catalog}
           />
         </>
       )}
     </section>
   )
-}
-
-/**
- * Скільки карток на сторінці: 15 на телефоні, 30 від планшета вгору.
- *
- * На сервері віддаємо десктопне значення, бо ширини там немає, а 30 — це
- * надмножина: мобільний браузер після монтування просто обріже список до 15.
- * Зворотний порядок дав би на десктопі порожні місця в сітці до гідратації.
- */
-function usePageSize(): number {
-  const [size, setSize] = useState(30)
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)")
-    const apply = () => setSize(mq.matches ? 30 : 15)
-    apply()
-    mq.addEventListener("change", apply)
-    return () => mq.removeEventListener("change", apply)
-  }, [])
-
-  return size
 }

@@ -261,10 +261,6 @@ export const stones: StoneItem[] = [
 
 ]
 
-export function getStonesByCategory(category: "memorial" | "home"): StoneItem[] {
-  return stones.filter((stone) => stone.category === category)
-}
-
 export function getStoneById(id: string): StoneItem | undefined {
   return stones.find((stone) => stone.id === id)
 }

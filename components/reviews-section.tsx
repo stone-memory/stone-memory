@@ -4,7 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Star, ArrowRight } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
-import { useReviewsForPlacement } from "@/lib/store/reviews"
+import { useReviewsForPlacement, type Review } from "@/lib/store/reviews"
 import type { Locale } from "@/lib/types"
 
 const labels: Record<Locale, { heading: string; all: string }> = {
@@ -15,10 +15,12 @@ const labels: Record<Locale, { heading: string; all: string }> = {
   lt: { heading: "Ką sako klientai", all: "Visi atsiliepimai" },
 }
 
-export function ReviewsSection() {
+/** Відгуки приходять із сервера, тому вони є в HTML одразу; store — для живих правок. */
+export function ReviewsSection({ initialReviews = [] }: { initialReviews?: Review[] }) {
   const { locale } = useTranslation()
   const L = labels[locale]
-  const items = useReviewsForPlacement("home")
+  const storeItems = useReviewsForPlacement("home")
+  const items = storeItems.length > 0 ? storeItems : initialReviews
   const display = items.slice(0, 6)
 
   // Hide the whole section when there are no reviews placed on "home"

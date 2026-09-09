@@ -28,6 +28,8 @@ interface BlogState {
   /** Bulk-import the static seed articles into Supabase. Idempotent —
    *  skips articles whose slug already exists in DB. */
   seedArticles: () => Promise<{ imported: number; skipped: number }>
+  /** Оновити з коду тексти статей, які вже є в базі (і додати відсутні). */
+  refreshSeedArticles: () => Promise<{ updated: number; added: number }>
 }
 
 async function putConfig(data: BlogConfig) {
@@ -153,6 +155,35 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     } catch {
       set({ articles: prev })
     }
+  },
+
+  refreshSeedArticles: async () => {
+    // Перезаписує в базі ті статті, що є в коді (за slug), і додає відсутні.
+    // Потрібно, коли тексти в lib/data/articles.ts оновили: seedArticles()
+    // пропускає наявні рядки, тож без цього нова версія ніколи не долетить.
+    // Статті, створені в адмінці (slug поза сидами), не чіпає.
+    const rows = get().articles
+    let updated = 0
+    let added = 0
+    let position = rows.length
+    for (const article of baseArticles) {
+      const existing = rows.find((r) => r.slug === article.slug)
+      const row: ArticleRow = existing
+        ? { ...existing, data: article }
+        : { slug: article.slug, data: article, hidden: false, position: position++ }
+      try {
+        await putArticle(row)
+        set({
+          articles: existing
+            ? get().articles.map((r) => (r.slug === row.slug ? row : r))
+            : [...get().articles, row],
+        })
+        existing ? updated++ : added++
+      } catch {
+        break
+      }
+    }
+    return { updated, added }
   },
 
   seedArticles: async () => {

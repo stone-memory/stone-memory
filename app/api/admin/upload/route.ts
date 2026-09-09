@@ -35,6 +35,32 @@ function extFromMime(type: string): string {
   }
 }
 
+const COMPRESS_OVER = 600 * 1024
+const MAX_PX = 2000
+
+async function compressIfLarge(
+  input: Buffer,
+  mime: string
+): Promise<{ body: Buffer; contentType: string; ext: string }> {
+  const passthrough = { body: input, contentType: mime, ext: extFromMime(mime) }
+  if (input.length <= COMPRESS_OVER) return passthrough
+  if (mime !== "image/jpeg" && mime !== "image/png") return passthrough
+  try {
+    const sharp = (await import("sharp")).default
+    const out = await sharp(input)
+      .rotate()
+      .resize({ width: MAX_PX, height: MAX_PX, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 82, progressive: true, mozjpeg: true })
+      .toBuffer()
+    // Стиснення не допомогло (уже щільний JPEG) — лишаємо оригінал.
+    if (out.length >= input.length) return passthrough
+    return { body: out, contentType: "image/jpeg", ext: "jpg" }
+  } catch {
+    // sharp недоступний у цьому середовищі — краще важке фото, ніж зламане завантаження.
+    return passthrough
+  }
+}
+
 // Sanitizes an optional folder hint to a safe segment (letters/digits/dashes).
 function sanitizeFolder(input: string | null): string {
   if (!input) return "misc"
@@ -71,16 +97,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `unsupported type: ${file.type}` }, { status: 415 })
   }
 
-  const ext = extFromMime(file.type)
+  // Фото товарів приходили з камери як є: 60 із 122 важили 2–4,5 МБ. На
+  // сторінці їх оптимізує next/image, але оригінальна адреса йде в JSON-LD,
+  // image-sitemap і og:image, звідки її тягнуть без стиснення. Тому JPEG і
+  // PNG понад COMPRESS_OVER стискаємо ще на вході: до MAX_PX по довгій
+  // стороні, JPEG q82. SVG, GIF, AVIF і WebP не чіпаємо.
+  const original = Buffer.from(await file.arrayBuffer())
+  const { body, contentType, ext } = await compressIfLarge(original, file.type)
+
   const randomName = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`
   const objectPath = `${folder}/${randomName}`
 
-  const arrayBuffer = await file.arrayBuffer()
   const { error: upErr } = await supabaseAdmin.storage
     .from(BUCKET)
-    .upload(objectPath, arrayBuffer, {
-      contentType: file.type,
+    .upload(objectPath, body, {
+      contentType,
       upsert: false,
+      cacheControl: "31536000",
     })
 
   if (upErr) {

@@ -8,6 +8,15 @@ import { useBusinessProfile } from "@/lib/store/business-profile"
 import { PhoneLink } from "@/components/phone-link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
+import type { Locale } from "@/lib/types"
+
+const SUPPORT_LABELS: Record<Locale, { prices: string; howToOrder: string }> = {
+  uk: { prices: "Ціни", howToOrder: "Як замовити" },
+  pl: { prices: "Ceny", howToOrder: "Jak zamówić" },
+  en: { prices: "Prices", howToOrder: "How to order" },
+  de: { prices: "Preise", howToOrder: "So bestellen Sie" },
+  lt: { prices: "Kainos", howToOrder: "Kaip užsakyti" },
+}
 
 export function Footer() {
   const { t, locale } = useTranslation()
@@ -157,9 +166,12 @@ export function Footer() {
               {t.footer.support}
             </h3>
             <ul className="space-y-2.5 text-[15px]">
-              <li><Link href="/posluhy#warranty" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.warranty}</Link></li>
-              <li><Link href="/posluhy#delivery" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.delivery}</Link></li>
-              <li><Link href="/#faq" className="text-foreground/85 hover:text-foreground">{t.footer.faq}</Link></li>
+              <li><Link href="/tsiny" prefetch className="text-foreground/85 hover:text-foreground">{SUPPORT_LABELS[locale].prices}</Link></li>
+              <li><Link href="/yak-zamovyty" prefetch className="text-foreground/85 hover:text-foreground">{SUPPORT_LABELS[locale].howToOrder}</Link></li>
+              <li><Link href="/harantiya" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.warranty}</Link></li>
+              <li><Link href="/dostavka-i-oplata" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.delivery}</Link></li>
+              <li><Link href="/pytannya" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.faq}</Link></li>
+              <li><Link href="/kontakty" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.contact}</Link></li>
             </ul>
           </div>
 
@@ -200,7 +212,7 @@ export function Footer() {
             <Link href="/pro-nas" prefetch className="transition-colors hover:text-foreground">{t.footer.about}</Link>
             <Link href="/konfidentsiinist" prefetch className="transition-colors hover:text-foreground">{t.footer.privacy}</Link>
             <Link href="/umovy" prefetch className="transition-colors hover:text-foreground">{t.footer.terms}</Link>
-            <a href="#contact" className="transition-colors hover:text-foreground">{t.footer.contact}</a>
+            <Link href="/kontakty" prefetch className="transition-colors hover:text-foreground">{t.footer.contact}</Link>
           </div>
         </div>
       </div>

@@ -6,21 +6,30 @@ const PATH = "/vidhuky"
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  // Brand omitted — the root title template already appends it.
-  title: "Відгуки — що кажуть наші клієнти",
-  description:
-    "Реальні відгуки клієнтів Stone Memory про гранітні пам'ятники, меморіальні комплекси, гравіювання й монтаж. Гарантія 5 років, майстерня в Костополі.",
-  alternates: {
-    canonical: absoluteUrl(PATH),
-  },
-  openGraph: {
-    title: "Stone Memory — Відгуки",
-    description: "Що кажуть про нас клієнти — гранітні пам'ятники, комплекси, гравіювання, монтаж.",
-    url: absoluteUrl(PATH),
-    type: "website",
-    images: ["/opengraph-image"],
-  },
+/**
+ * Поки відгуків немає — сторінка лишається доступною, але не подається в
+ * індекс: «Відгуки: 0» у видачі гірше за відсутню сторінку. Щойно з'явиться
+ * перший відгук, metadata перерахується (revalidate) і noindex зникне.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const rows = await fetchReviews("all")
+  return {
+    // Brand omitted — the root title template already appends it.
+    title: "Відгуки — що кажуть наші клієнти",
+    description:
+      "Реальні відгуки клієнтів Stone Memory про гранітні пам'ятники, меморіальні комплекси, гравіювання й монтаж. Гарантія 5 років, майстерня в Костополі.",
+    alternates: {
+      canonical: absoluteUrl(PATH),
+    },
+    ...(rows.length === 0 ? { robots: { index: false, follow: true } } : {}),
+    openGraph: {
+      title: "Stone Memory — Відгуки",
+      description: "Що кажуть про нас клієнти — гранітні пам'ятники, комплекси, гравіювання, монтаж.",
+      url: absoluteUrl(PATH),
+      type: "website",
+      images: ["/opengraph-image"],
+    },
+  }
 }
 
 type ReviewData = { name?: string; text?: string; rating?: number; date?: string }
