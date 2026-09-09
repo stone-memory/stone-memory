@@ -73,7 +73,10 @@ export function HomeDirections({ stones }: { stones: StoneItem[] }) {
                 alt={c.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
-                priority
+                // Без priority: картки стоять під hero на всю висоту екрана,
+                // а priority робив їм preload — 76 КБ тягнулись паралельно з
+                // LCP-зображенням hero на тому самому вузькому мобільному
+                // каналі й затримували його.
                 className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
                 unoptimized={shouldBypassOptimizer(c.image)}
               />

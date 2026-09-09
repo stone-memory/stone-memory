@@ -97,7 +97,17 @@ export function Hero() {
             type="image/webp"
           />
           <source media="(min-width: 768px)" srcSet="/hero/hero-poster.jpg" />
-          <source srcSet="/hero/hero-poster-mobile.webp" type="image/webp" />
+          {/*
+            Мобільний кадр — у чотирьох ширинах, а не одним файлом 900 px.
+            Lighthouse на Moto G (412 px, DPR 1.75) просить ~720 px і брав
+            900×1948 / 71 КБ; тепер бере 750w / 44 КБ, а вужчі екрани —
+            ще менше. Це LCP-елемент, тож кожен зайвий кілобайт тут — час.
+          */}
+          <source
+            srcSet="/hero/hero-poster-mobile-480.webp 480w, /hero/hero-poster-mobile-640.webp 640w, /hero/hero-poster-mobile-750.webp 750w, /hero/hero-poster-mobile-900.webp 900w"
+            sizes="100vw"
+            type="image/webp"
+          />
           <img
             src="/hero/hero-poster-mobile.jpg"
             alt=""
