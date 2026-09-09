@@ -49,6 +49,19 @@ async function loadEnv() {
   }
 }
 
+/** Мережа до CDN Supabase інколи обриває з'єднання; одна невдача не має валити весь прогін. */
+async function fetchRetry(url, init, attempts = 3) {
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await fetch(url, init)
+    } catch (e) {
+      if (i === attempts) { console.warn(`  ! ${url.split("/").pop()}: ${e.cause?.code ?? e.message}`); return null }
+      await new Promise((r) => setTimeout(r, 2000 * i))
+    }
+  }
+  return null
+}
+
 async function main() {
   await loadEnv()
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -78,12 +91,12 @@ async function main() {
   let touched = 0
   for (const t of unique) {
     // Спершу лише заголовки: 206 фото по 2–4 МБ качати заради розміру довго.
-    const head = await fetch(t.url, { method: "HEAD" }).catch(() => null)
+    const head = await fetchRetry(t.url, { method: "HEAD" })
     const len = Number(head?.headers.get("content-length") ?? 0)
     if (head?.ok && len && len <= MAX_BYTES) continue
-    const res = await fetch(t.url)
-    if (!res.ok) {
-      console.warn(`  ! ${t.objectPath}: HTTP ${res.status}`)
+    const res = await fetchRetry(t.url)
+    if (!res?.ok) {
+      console.warn(`  ! ${t.objectPath}: ${res ? `HTTP ${res.status}` : "не вдалося завантажити"}`)
       continue
     }
     const buf = Buffer.from(await res.arrayBuffer())
