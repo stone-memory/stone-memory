@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Скріншоти й логи Playwright MCP з локальних сесій
 .playwright-mcp/
+
+# Оригінали рендерів каталогу (PNG по 2 МБ); у сховище йдуть стиснуті JPEG
+public/memorial/

@@ -1,0 +1,1348 @@
+[
+ {
+  "file": "123.jpg",
+  "data": {
+   "id": "N063",
+   "code": "123",
+   "name": "Одинарний пам'ятник «Серце» — габро, проста форма",
+   "slug": "odynarnyi-sertse-habro-prosta-123",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "gabbro",
+   "priceFrom": 19500
+  }
+ },
+ {
+  "file": "124.jpg",
+  "data": {
+   "id": "N064",
+   "code": "124",
+   "name": "Одинарний пам'ятник «Розгорнута книга» — лабрадорит, базове оздоблення",
+   "slug": "odynarnyi-rozhornuta-knyha-labradoryt-bazova-124",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "labradorite",
+   "priceFrom": 25000
+  }
+ },
+ {
+  "file": "125.jpg",
+  "data": {
+   "id": "N065",
+   "code": "125",
+   "name": "Одинарний пам'ятник «Хвиля» — покостівський граніт, стандартне оздоблення",
+   "slug": "odynarnyi-khvylya-pokostivskyy-standartna-125",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Покостівський",
+   "priceFrom": 28000
+  }
+ },
+ {
+  "file": "126.jpg",
+  "data": {
+   "id": "N066",
+   "code": "126",
+   "name": "Одинарний пам'ятник «Арка з колонами» — танський граніт, складне різьблення",
+   "slug": "odynarnyi-arka-z-kolonamy-tanskyy-skladna-126",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Танський",
+   "priceFrom": 37500
+  }
+ },
+ {
+  "file": "127.jpg",
+  "data": {
+   "id": "N067",
+   "code": "127",
+   "name": "Одинарний пам'ятник «Скошена стела» — габро, елітне оздоблення",
+   "slug": "odynarnyi-skoshena-stela-habro-elitna-127",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "gabbro",
+   "priceFrom": 45000,
+   "accentMaterial": "Софіївський"
+  }
+ },
+ {
+  "file": "128.jpg",
+  "data": {
+   "id": "N068",
+   "code": "128",
+   "name": "Одинарний пам'ятник «З вирізом під хрест» — корнинський граніт, проста форма",
+   "slug": "odynarnyi-z-vyrizom-pid-khrest-kornynskyy-prosta-128",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Корнинський",
+   "priceFrom": 20500
+  }
+ },
+ {
+  "file": "129.jpg",
+  "data": {
+   "id": "N069",
+   "code": "129",
+   "name": "Одинарний пам'ятник «Тюльпан» — капустинський граніт, базове оздоблення",
+   "slug": "odynarnyi-tyulpan-kapustynskyy-bazova-129",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Капустинський",
+   "priceFrom": 25500
+  }
+ },
+ {
+  "file": "130.jpg",
+  "data": {
+   "id": "N070",
+   "code": "130",
+   "name": "Одинарний пам'ятник «Дубова гілка» — лезниківський граніт, стандартне оздоблення",
+   "slug": "odynarnyi-dubova-hilka-leznykivskyy-standartna-130",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Лезниківський",
+   "priceFrom": 32500
+  }
+ },
+ {
+  "file": "131.jpg",
+  "data": {
+   "id": "N071",
+   "code": "131",
+   "name": "Одинарний пам'ятник «Крапля» — межиріцький граніт, складне різьблення",
+   "slug": "odynarnyi-kraplya-mezhyritskyy-skladna-131",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Межиріцький",
+   "priceFrom": 39000
+  }
+ },
+ {
+  "file": "132.jpg",
+  "data": {
+   "id": "N072",
+   "code": "132",
+   "name": "Одинарний пам'ятник «З лампадою» — токівський граніт, елітне оздоблення",
+   "slug": "odynarnyi-z-lampadoyu-tokivskyy-elitna-132",
+   "category": "memorial",
+   "color": "brown",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Токівський",
+   "priceFrom": 51000
+  }
+ },
+ {
+  "file": "133.jpg",
+  "data": {
+   "id": "N073",
+   "code": "133",
+   "name": "Одинарний пам'ятник «Двоколірний» — дідковицький граніт, проста форма",
+   "slug": "odynarnyi-dvokolirnyy-didkovytskyy-prosta-133",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Дідковицький",
+   "priceFrom": 21500
+  }
+ },
+ {
+  "file": "134.jpg",
+  "data": {
+   "id": "N074",
+   "code": "134",
+   "name": "Одинарний пам'ятник «З ангелом» — маславський граніт, базове оздоблення",
+   "slug": "odynarnyi-z-anhelom-maslavskyy-bazova-134",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Маславський",
+   "priceFrom": 26000
+  }
+ },
+ {
+  "file": "135.jpg",
+  "data": {
+   "id": "N075",
+   "code": "135",
+   "name": "Одинарний пам'ятник «Фото на весь камінь» — берестовецький базальт, стандартне оздоблення",
+   "slug": "odynarnyi-foto-na-ves-kamin-berestovetskyy-standartna-135",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "Берестовецький",
+   "priceFrom": 29500
+  }
+ },
+ {
+  "file": "136.jpg",
+  "data": {
+   "id": "N076",
+   "code": "136",
+   "name": "Одинарний пам'ятник «З трояндою» — білий мармур, складне різьблення",
+   "slug": "odynarnyi-z-troyandoyu-bilyy-skladna-136",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 80×45×8, ділянка 200×100 см",
+   "materialType": "marble",
+   "priceFrom": 43500
+  }
+ },
+ {
+  "file": "137.jpg",
+  "data": {
+   "id": "N077",
+   "code": "137",
+   "name": "Подвійний пам'ятник «Серце подвійне» — габро, елітне оздоблення",
+   "slug": "podviynyi-sertse-podviyne-habro-elitna-137",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "gabbro",
+   "priceFrom": 75000
+  }
+ },
+ {
+  "file": "138.jpg",
+  "data": {
+   "id": "N078",
+   "code": "138",
+   "name": "Подвійний пам'ятник «Книга» — лабрадорит, проста форма",
+   "slug": "podviynyi-knyha-labradoryt-prosta-138",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "labradorite",
+   "priceFrom": 33500
+  }
+ },
+ {
+  "file": "139.jpg",
+  "data": {
+   "id": "N079",
+   "code": "139",
+   "name": "Подвійний пам'ятник «Дві стели» — покостівський граніт, базове оздоблення",
+   "slug": "podviynyi-dvi-stely-pokostivskyy-bazova-139",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Покостівський",
+   "priceFrom": 40500
+  }
+ },
+ {
+  "file": "140.jpg",
+  "data": {
+   "id": "N080",
+   "code": "140",
+   "name": "Подвійний пам'ятник «Широка з аркою» — танський граніт, стандартне оздоблення",
+   "slug": "podviynyi-shyroka-z-arkoyu-tanskyy-standartna-140",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Танський",
+   "priceFrom": 54000
+  }
+ },
+ {
+  "file": "141.jpg",
+  "data": {
+   "id": "N081",
+   "code": "141",
+   "name": "Подвійний пам'ятник «З різьбленим деревом» — софіївський граніт, складне різьблення",
+   "slug": "podviynyi-z-rizblenym-derevom-sofiyivskyy-skladna-141",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Софіївський",
+   "priceFrom": 66500
+  }
+ },
+ {
+  "file": "142.jpg",
+  "data": {
+   "id": "N082",
+   "code": "142",
+   "name": "Подвійний пам'ятник «Хвиля» — корнинський граніт, елітне оздоблення",
+   "slug": "podviynyi-khvylya-kornynskyy-elitna-142",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Корнинський",
+   "priceFrom": 79000
+  }
+ },
+ {
+  "file": "143.jpg",
+  "data": {
+   "id": "N083",
+   "code": "143",
+   "name": "Подвійний пам'ятник «З колонами» — капустинський граніт, проста форма",
+   "slug": "podviynyi-z-kolonamy-kapustynskyy-prosta-143",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Капустинський",
+   "priceFrom": 34000
+  }
+ },
+ {
+  "file": "144.jpg",
+  "data": {
+   "id": "N084",
+   "code": "144",
+   "name": "Подвійний пам'ятник «З хрестом посередині» — лезниківський граніт, базове оздоблення",
+   "slug": "podviynyi-z-khrestom-poseredyni-leznykivskyy-bazova-144",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Лезниківський",
+   "priceFrom": 46500
+  }
+ },
+ {
+  "file": "145.jpg",
+  "data": {
+   "id": "N085",
+   "code": "145",
+   "name": "Подвійний пам'ятник «Скошений верх» — межиріцький граніт, стандартне оздоблення",
+   "slug": "podviynyi-skoshenyy-verkh-mezhyritskyy-standartna-145",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Межиріцький",
+   "priceFrom": 56500
+  }
+ },
+ {
+  "file": "146.jpg",
+  "data": {
+   "id": "N086",
+   "code": "146",
+   "name": "Подвійний пам'ятник «З вазою» — токівський граніт, складне різьблення",
+   "slug": "podviynyi-z-vazoyu-tokivskyy-skladna-146",
+   "category": "memorial",
+   "color": "brown",
+   "shape": "Пам'ятник подвійний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×60×8, ділянка 200×200 см",
+   "materialType": "Токівський",
+   "priceFrom": 71500
+  }
+ },
+ {
+  "file": "147.jpg",
+  "data": {
+   "id": "N087",
+   "code": "147",
+   "name": "Хрест гранітний «Православний» — дідковицький граніт, елітне оздоблення",
+   "slug": "khrest-pravoslavnyy-didkovytskyy-elitna-147",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Дідковицький",
+   "priceFrom": 72000
+  }
+ },
+ {
+  "file": "148.jpg",
+  "data": {
+   "id": "N088",
+   "code": "148",
+   "name": "Хрест гранітний «Латинський» — маславський граніт, проста форма",
+   "slug": "khrest-latynskyy-maslavskyy-prosta-148",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Маславський",
+   "priceFrom": 28000
+  }
+ },
+ {
+  "file": "149.jpg",
+  "data": {
+   "id": "N089",
+   "code": "149",
+   "name": "Хрест гранітний «Із розп'яттям» — берестовецький базальт, базове оздоблення",
+   "slug": "khrest-iz-rozpyattyam-berestovetskyy-bazova-149",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Берестовецький",
+   "priceFrom": 32500
+  }
+ },
+ {
+  "file": "150.jpg",
+  "data": {
+   "id": "N090",
+   "code": "150",
+   "name": "Хрест гранітний «На пірамідальному постаменті» — білий мармур, стандартне оздоблення",
+   "slug": "khrest-na-piramidalnomu-postamenti-bilyy-standartna-150",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "marble",
+   "priceFrom": 47000
+  }
+ },
+ {
+  "file": "151.jpg",
+  "data": {
+   "id": "N091",
+   "code": "151",
+   "name": "Хрест гранітний «Із лозою» — габро, складне різьблення",
+   "slug": "khrest-iz-lozoyu-habro-skladna-151",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "gabbro",
+   "priceFrom": 50000
+  }
+ },
+ {
+  "file": "152.jpg",
+  "data": {
+   "id": "N092",
+   "code": "152",
+   "name": "Хрест гранітний «Стела» — лабрадорит, елітне оздоблення",
+   "slug": "khrest-stela-labradoryt-elitna-152",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "labradorite",
+   "priceFrom": 68000
+  }
+ },
+ {
+  "file": "153.jpg",
+  "data": {
+   "id": "N093",
+   "code": "153",
+   "name": "Хрест гранітний «Із трояндою» — покостівський граніт, проста форма",
+   "slug": "khrest-iz-troyandoyu-pokostivskyy-prosta-153",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Покостівський",
+   "priceFrom": 25000
+  }
+ },
+ {
+  "file": "154.jpg",
+  "data": {
+   "id": "N094",
+   "code": "154",
+   "name": "Хрест гранітний «На високій тумбі» — танський граніт, базове оздоблення",
+   "slug": "khrest-na-vysokiy-tumbi-tanskyy-bazova-154",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Танський",
+   "priceFrom": 33000
+  }
+ },
+ {
+  "file": "155.jpg",
+  "data": {
+   "id": "N095",
+   "code": "155",
+   "name": "Хрест гранітний «З ажурними кінцями» — софіївський граніт, стандартне оздоблення",
+   "slug": "khrest-z-azhurnymy-kintsyamy-sofiyivskyy-standartna-155",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Софіївський",
+   "priceFrom": 41000
+  }
+ },
+ {
+  "file": "156.jpg",
+  "data": {
+   "id": "N096",
+   "code": "156",
+   "name": "Хрест гранітний «На плиті» — корнинський граніт, складне різьблення",
+   "slug": "khrest-na-plyti-kornynskyy-skladna-156",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Хрест гранітний",
+   "finish": "Полірована",
+   "sizeCm": "хрест 100×50×8, ділянка 200×100 см",
+   "materialType": "Корнинський",
+   "priceFrom": 52500
+  }
+ },
+ {
+  "file": "157.jpg",
+  "data": {
+   "id": "N097",
+   "code": "157",
+   "name": "Дитячий пам'ятник «Ангелятко» — капустинський граніт, елітне оздоблення",
+   "slug": "dytyachyi-anhelyatko-kapustynskyy-elitna-157",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "Капустинський",
+   "priceFrom": 60000
+  }
+ },
+ {
+  "file": "158.jpg",
+  "data": {
+   "id": "N098",
+   "code": "158",
+   "name": "Дитячий пам'ятник «Ведмедик» — лезниківський граніт, проста форма",
+   "slug": "dytyachyi-vedmedyk-leznykivskyy-prosta-158",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "Лезниківський",
+   "priceFrom": 31000
+  }
+ },
+ {
+  "file": "159.jpg",
+  "data": {
+   "id": "N099",
+   "code": "159",
+   "name": "Дитячий пам'ятник «Серце з крилами» — межиріцький граніт, базове оздоблення",
+   "slug": "dytyachyi-sertse-z-krylamy-mezhyritskyy-bazova-159",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "Межиріцький",
+   "priceFrom": 35500
+  }
+ },
+ {
+  "file": "160.jpg",
+  "data": {
+   "id": "N100",
+   "code": "160",
+   "name": "Дитячий пам'ятник «Хмаринка» — токівський граніт, стандартне оздоблення",
+   "slug": "dytyachyi-khmarynka-tokivskyy-standartna-160",
+   "category": "memorial",
+   "color": "brown",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "Токівський",
+   "priceFrom": 42000
+  }
+ },
+ {
+  "file": "161.jpg",
+  "data": {
+   "id": "N101",
+   "code": "161",
+   "name": "Дитячий пам'ятник «Голуб» — дідковицький граніт, складне різьблення",
+   "slug": "dytyachyi-holub-didkovytskyy-skladna-161",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "Дідковицький",
+   "priceFrom": 49500
+  }
+ },
+ {
+  "file": "162.jpg",
+  "data": {
+   "id": "N102",
+   "code": "162",
+   "name": "Дитячий пам'ятник «Квітка» — маславський граніт, елітне оздоблення",
+   "slug": "dytyachyi-kvitka-maslavskyy-elitna-162",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "Маславський",
+   "priceFrom": 60000
+  }
+ },
+ {
+  "file": "163.jpg",
+  "data": {
+   "id": "N103",
+   "code": "163",
+   "name": "Дитячий пам'ятник «Книга» — білий мармур, проста форма",
+   "slug": "dytyachyi-knyha-bilyy-prosta-163",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "marble",
+   "priceFrom": 34000
+  }
+ },
+ {
+  "file": "164.jpg",
+  "data": {
+   "id": "N104",
+   "code": "164",
+   "name": "Дитячий пам'ятник «З ліхтариком» — білий мармур, базове оздоблення",
+   "slug": "dytyachyi-z-likhtarykom-bilyy-bazova-164",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Дитячий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 60×40×6, ділянка 150×80 см",
+   "materialType": "marble",
+   "priceFrom": 40000
+  }
+ },
+ {
+  "file": "165.jpg",
+  "data": {
+   "id": "N105",
+   "code": "165",
+   "name": "Військовий пам'ятник «Тризуб і прапор» — габро, стандартне оздоблення",
+   "slug": "viyskovyi-tryzub-i-prapor-habro-standartna-165",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "gabbro",
+   "priceFrom": 250000
+  }
+ },
+ {
+  "file": "166.jpg",
+  "data": {
+   "id": "N106",
+   "code": "166",
+   "name": "Військовий пам'ятник «Мапа України» — лабрадорит, складне різьблення",
+   "slug": "viyskovyi-mapa-ukrayiny-labradoryt-skladna-166",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "labradorite",
+   "priceFrom": 324000
+  }
+ },
+ {
+  "file": "167.jpg",
+  "data": {
+   "id": "N107",
+   "code": "167",
+   "name": "Військовий пам'ятник «Шеврон» — покостівський граніт, елітне оздоблення",
+   "slug": "viyskovyi-shevron-pokostivskyy-elitna-167",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Покостівський",
+   "priceFrom": 388000
+  }
+ },
+ {
+  "file": "168.jpg",
+  "data": {
+   "id": "N108",
+   "code": "168",
+   "name": "Військовий пам'ятник «Обеліск» — танський граніт, проста форма",
+   "slug": "viyskovyi-obelisk-tanskyy-prosta-168",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Танський",
+   "priceFrom": 176500
+  }
+ },
+ {
+  "file": "169.jpg",
+  "data": {
+   "id": "N109",
+   "code": "169",
+   "name": "Військовий пам'ятник «Фігура воїна» — софіївський граніт, базове оздоблення",
+   "slug": "viyskovyi-fihura-voyina-sofiyivskyy-bazova-169",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Софіївський",
+   "priceFrom": 222000
+  }
+ },
+ {
+  "file": "170.jpg",
+  "data": {
+   "id": "N110",
+   "code": "170",
+   "name": "Військовий пам'ятник «Флагшток» — корнинський граніт, стандартне оздоблення",
+   "slug": "viyskovyi-flahshtok-kornynskyy-standartna-170",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Корнинський",
+   "priceFrom": 263000
+  }
+ },
+ {
+  "file": "171.jpg",
+  "data": {
+   "id": "N111",
+   "code": "171",
+   "name": "Військовий пам'ятник «Розірваний край» — габро, складне різьблення",
+   "slug": "viyskovyi-rozirvanyy-kray-habro-skladna-171",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "gabbro",
+   "priceFrom": 310000
+  }
+ },
+ {
+  "file": "172.jpg",
+  "data": {
+   "id": "N112",
+   "code": "172",
+   "name": "Військовий пам'ятник «Крила» — габро, елітне оздоблення",
+   "slug": "viyskovyi-kryla-habro-elitna-172",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "gabbro",
+   "priceFrom": 400000,
+   "accentMaterial": "Лезниківський"
+  }
+ },
+ {
+  "file": "173.jpg",
+  "data": {
+   "id": "N113",
+   "code": "173",
+   "name": "Військовий пам'ятник «Подвійна плита» — габро, проста форма",
+   "slug": "viyskovyi-podviyna-plyta-habro-prosta-173",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "gabbro",
+   "priceFrom": 170000
+  }
+ },
+ {
+  "file": "174.jpg",
+  "data": {
+   "id": "N114",
+   "code": "174",
+   "name": "Військовий пам'ятник «З калиною» — токівський граніт, базове оздоблення",
+   "slug": "viyskovyi-z-kalynoyu-tokivskyy-bazova-174",
+   "category": "memorial",
+   "color": "brown",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Токівський",
+   "priceFrom": 237500
+  }
+ },
+ {
+  "file": "175.jpg",
+  "data": {
+   "id": "N115",
+   "code": "175",
+   "name": "Військовий пам'ятник «Хрест і прапор» — дідковицький граніт, стандартне оздоблення",
+   "slug": "viyskovyi-khrest-i-prapor-didkovytskyy-standartna-175",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Дідковицький",
+   "priceFrom": 276500
+  }
+ },
+ {
+  "file": "176.jpg",
+  "data": {
+   "id": "N116",
+   "code": "176",
+   "name": "Військовий пам'ятник «Комплекс» — маславський граніт, складне різьблення",
+   "slug": "viyskovyi-kompleks-maslavskyy-skladna-176",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Військовий пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "стела 120×60×8, ділянка 200×150 см",
+   "materialType": "Маславський",
+   "priceFrom": 333500
+  }
+ },
+ {
+  "file": "177.jpg",
+  "data": {
+   "id": "N117",
+   "code": "177",
+   "name": "Європейський пам'ятник «Низька стела» — берестовецький базальт, елітне оздоблення",
+   "slug": "yevropeyskyi-nyzka-stela-berestovetskyy-elitna-177",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "Берестовецький",
+   "priceFrom": 83500
+  }
+ },
+ {
+  "file": "178.jpg",
+  "data": {
+   "id": "N118",
+   "code": "178",
+   "name": "Європейський пам'ятник «Похила плита» — білий мармур, проста форма",
+   "slug": "yevropeyskyi-pokhyla-plyta-bilyy-prosta-178",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "marble",
+   "priceFrom": 46000
+  }
+ },
+ {
+  "file": "179.jpg",
+  "data": {
+   "id": "N119",
+   "code": "179",
+   "name": "Європейський пам'ятник «З вазою» — габро, базове оздоблення",
+   "slug": "yevropeyskyi-z-vazoyu-habro-bazova-179",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "gabbro",
+   "priceFrom": 48000
+  }
+ },
+ {
+  "file": "180.jpg",
+  "data": {
+   "id": "N120",
+   "code": "180",
+   "name": "Європейський пам'ятник «Рамка» — лабрадорит, стандартне оздоблення",
+   "slug": "yevropeyskyi-ramka-labradoryt-standartna-180",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "labradorite",
+   "priceFrom": 62500
+  }
+ },
+ {
+  "file": "181.jpg",
+  "data": {
+   "id": "N121",
+   "code": "181",
+   "name": "Європейський пам'ятник «Дві плити» — покостівський граніт, складне різьблення",
+   "slug": "yevropeyskyi-dvi-plyty-pokostivskyy-skladna-181",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "Покостівський",
+   "priceFrom": 68000
+  }
+ },
+ {
+  "file": "182.jpg",
+  "data": {
+   "id": "N122",
+   "code": "182",
+   "name": "Європейський пам'ятник «З хрестом» — танський граніт, елітне оздоблення",
+   "slug": "yevropeyskyi-z-khrestom-tanskyy-elitna-182",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "Танський",
+   "priceFrom": 85000
+  }
+ },
+ {
+  "file": "183.jpg",
+  "data": {
+   "id": "N123",
+   "code": "183",
+   "name": "Європейський пам'ятник «Асиметрична» — софіївський граніт, проста форма",
+   "slug": "yevropeyskyi-asymetrychna-sofiyivskyy-prosta-183",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "Софіївський",
+   "priceFrom": 40000
+  }
+ },
+ {
+  "file": "184.jpg",
+  "data": {
+   "id": "N124",
+   "code": "184",
+   "name": "Європейський пам'ятник «З лавкою» — корнинський граніт, базове оздоблення",
+   "slug": "yevropeyskyi-z-lavkoyu-kornynskyy-bazova-184",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Пам'ятник європейський",
+   "finish": "Полірована",
+   "sizeCm": "плита 100×50×5, ділянка 200×100 см",
+   "materialType": "Корнинський",
+   "priceFrom": 50500
+  }
+ },
+ {
+  "file": "185.jpg",
+  "data": {
+   "id": "N125",
+   "code": "185",
+   "name": "Меморіальний комплекс «Балясини» — капустинський граніт, стандартне оздоблення",
+   "slug": "kompleks-balyasyny-kapustynskyy-standartna-185",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Капустинський",
+   "priceFrom": 185000
+  }
+ },
+ {
+  "file": "186.jpg",
+  "data": {
+   "id": "N126",
+   "code": "186",
+   "name": "Меморіальний комплекс «Лава і стіл» — лезниківський граніт, складне різьблення",
+   "slug": "kompleks-lava-i-stil-leznykivskyy-skladna-186",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Лезниківський",
+   "priceFrom": 235500
+  }
+ },
+ {
+  "file": "187.jpg",
+  "data": {
+   "id": "N127",
+   "code": "187",
+   "name": "Меморіальний комплекс «Дві стели» — межиріцький граніт, елітне оздоблення",
+   "slug": "kompleks-dvi-stely-mezhyritskyy-elitna-187",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Межиріцький",
+   "priceFrom": 310000
+  }
+ },
+ {
+  "file": "188.jpg",
+  "data": {
+   "id": "N128",
+   "code": "188",
+   "name": "Меморіальний комплекс «Арка» — токівський граніт, проста форма",
+   "slug": "kompleks-arka-tokivskyy-prosta-188",
+   "category": "memorial",
+   "color": "brown",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Токівський",
+   "priceFrom": 126500
+  }
+ },
+ {
+  "file": "189.jpg",
+  "data": {
+   "id": "N129",
+   "code": "189",
+   "name": "Меморіальний комплекс «Кулі» — дідковицький граніт, базове оздоблення",
+   "slug": "kompleks-kuli-didkovytskyy-bazova-189",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Дідковицький",
+   "priceFrom": 156500
+  }
+ },
+ {
+  "file": "190.jpg",
+  "data": {
+   "id": "N130",
+   "code": "190",
+   "name": "Меморіальний комплекс «Ангел» — маславський граніт, стандартне оздоблення",
+   "slug": "kompleks-anhel-maslavskyy-standartna-190",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Маславський",
+   "priceFrom": 185500
+  }
+ },
+ {
+  "file": "191.jpg",
+  "data": {
+   "id": "N131",
+   "code": "191",
+   "name": "Меморіальний комплекс «Облицювання» — берестовецький базальт, складне різьблення",
+   "slug": "kompleks-oblytsyuvannya-berestovetskyy-skladna-191",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Берестовецький",
+   "priceFrom": 226500
+  }
+ },
+ {
+  "file": "192.jpg",
+  "data": {
+   "id": "N132",
+   "code": "192",
+   "name": "Меморіальний комплекс «Родинний» — білий мармур, елітне оздоблення",
+   "slug": "kompleks-rodynnyy-bilyy-elitna-192",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "marble",
+   "priceFrom": 325500
+  }
+ },
+ {
+  "file": "193.jpg",
+  "data": {
+   "id": "N133",
+   "code": "193",
+   "name": "Меморіальний комплекс «З хрестом» — габро, проста форма",
+   "slug": "kompleks-z-khrestom-habro-prosta-193",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "gabbro",
+   "priceFrom": 120000
+  }
+ },
+ {
+  "file": "194.jpg",
+  "data": {
+   "id": "N134",
+   "code": "194",
+   "name": "Меморіальний комплекс «З портретом на плиті» — лабрадорит, базове оздоблення",
+   "slug": "kompleks-z-portretom-na-plyti-labradoryt-bazova-194",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "labradorite",
+   "priceFrom": 153000
+  }
+ },
+ {
+  "file": "195.jpg",
+  "data": {
+   "id": "N135",
+   "code": "195",
+   "name": "Меморіальний комплекс «З огорожею ланцюгом» — покостівський граніт, стандартне оздоблення",
+   "slug": "kompleks-z-ohorozheyu-lantsyuhom-pokostivskyy-standartna-195",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Покостівський",
+   "priceFrom": 178000
+  }
+ },
+ {
+  "file": "196.jpg",
+  "data": {
+   "id": "N136",
+   "code": "196",
+   "name": "Меморіальний комплекс «Ступінчастий» — танський граніт, складне різьблення",
+   "slug": "kompleks-stupinchastyy-tanskyy-skladna-196",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Меморіальний комплекс",
+   "finish": "Полірована",
+   "sizeCm": "ділянка 200×150 см",
+   "materialType": "Танський",
+   "priceFrom": 228500
+  }
+ },
+ {
+  "file": "197.jpg",
+  "data": {
+   "id": "N137",
+   "code": "197",
+   "name": "Скульптура ангела — софіївський граніт, елітне оздоблення",
+   "slug": "skulptura-anhela-sofiyivskyy-elitna-197",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Скульптура",
+   "finish": "Полірована",
+   "sizeCm": "фігура 120 см, ділянка 200×100 см",
+   "materialType": "Софіївський",
+   "priceFrom": 127000
+  }
+ },
+ {
+  "file": "198.jpg",
+  "data": {
+   "id": "N138",
+   "code": "198",
+   "name": "Надгробна плита — корнинський граніт, проста форма",
+   "slug": "nadhrobna-plyta-kornynskyy-prosta-198",
+   "category": "memorial",
+   "color": "grey",
+   "shape": "Надгробна плита",
+   "finish": "Полірована",
+   "sizeCm": "плита 180×80×8 см",
+   "materialType": "Корнинський",
+   "priceFrom": 47500
+  }
+ },
+ {
+  "file": "199.jpg",
+  "data": {
+   "id": "N139",
+   "code": "199",
+   "name": "Обеліск — капустинський граніт, базове оздоблення",
+   "slug": "obelisk-kapustynskyy-bazova-199",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Обеліск",
+   "finish": "Полірована",
+   "sizeCm": "обеліск 150×40×40 см",
+   "materialType": "Капустинський",
+   "priceFrom": 91000
+  }
+ },
+ {
+  "file": "200.jpg",
+  "data": {
+   "id": "N140",
+   "code": "200",
+   "name": "Колумбарна плита — лезниківський граніт, стандартне оздоблення",
+   "slug": "kolumbarna-plyta-leznykivskyy-standartna-200",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Колумбарна плита",
+   "finish": "Полірована",
+   "sizeCm": "плита 40×50×3 см",
+   "materialType": "Лезниківський",
+   "priceFrom": 13500
+  }
+ },
+ {
+  "file": "201.jpg",
+  "data": {
+   "id": "N141",
+   "code": "201",
+   "name": "Стела з барельєфом — межиріцький граніт, складне різьблення",
+   "slug": "stela-z-barelyefom-mezhyritskyy-skladna-201",
+   "category": "memorial",
+   "color": "red",
+   "shape": "Стела з барельєфом",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×50×8, ділянка 200×100 см",
+   "materialType": "Межиріцький",
+   "priceFrom": 76000
+  }
+ },
+ {
+  "file": "202.jpg",
+  "data": {
+   "id": "N142",
+   "code": "202",
+   "name": "Урна-пам'ятник — токівський граніт, елітне оздоблення",
+   "slug": "urna-pamyatnyk-tokivskyy-elitna-202",
+   "category": "memorial",
+   "color": "brown",
+   "shape": "Урна-пам'ятник",
+   "finish": "Полірована",
+   "sizeCm": "куб 40×40×40 см",
+   "materialType": "Токівський",
+   "priceFrom": 34000
+  }
+ },
+ {
+  "file": "203.jpg",
+  "data": {
+   "id": "N143",
+   "code": "203",
+   "name": "Валун — дідковицький граніт, проста форма",
+   "slug": "valun-didkovytskyy-prosta-203",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Валун",
+   "finish": "Полірована",
+   "sizeCm": "валун 90×60 см",
+   "materialType": "Дідковицький",
+   "priceFrom": 44000
+  }
+ },
+ {
+  "file": "204.jpg",
+  "data": {
+   "id": "N144",
+   "code": "204",
+   "name": "Скульптура Богородиці — маславський граніт, базове оздоблення",
+   "slug": "skulptura-bohorodytsi-maslavskyy-bazova-204",
+   "category": "memorial",
+   "color": "green",
+   "shape": "Скульптура",
+   "finish": "Полірована",
+   "sizeCm": "фігура 120 см, ділянка 200×100 см",
+   "materialType": "Маславський",
+   "priceFrom": 140000
+  }
+ },
+ {
+  "file": "205.jpg",
+  "data": {
+   "id": "N145",
+   "code": "205",
+   "name": "Плита з розкритою книгою — берестовецький базальт, стандартне оздоблення",
+   "slug": "plyta-z-rozkrytoyu-knyhoyu-berestovetskyy-standartna-205",
+   "category": "memorial",
+   "color": "black",
+   "shape": "Надгробна плита",
+   "finish": "Полірована",
+   "sizeCm": "плита 180×80×8 см",
+   "materialType": "Берестовецький",
+   "priceFrom": 56000
+  }
+ },
+ {
+  "file": "206.jpg",
+  "data": {
+   "id": "N146",
+   "code": "206",
+   "name": "Стела-дерево — білий мармур, складне різьблення",
+   "slug": "stela-derevo-bilyy-skladna-206",
+   "category": "memorial",
+   "color": "white",
+   "shape": "Пам'ятник одинарний",
+   "finish": "Полірована",
+   "sizeCm": "стела 100×50×10, ділянка 200×100 см",
+   "materialType": "marble",
+   "priceFrom": 72500
+  }
+ }
+]
