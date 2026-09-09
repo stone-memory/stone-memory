@@ -789,16 +789,16 @@
   "data": {
    "id": "N112",
    "code": "172",
-   "name": "Військовий пам'ятник «Крила» — габро, елітне оздоблення",
-   "slug": "viyskovyi-kryla-habro-elitna-172",
+   "name": "Військовий пам'ятник «Крила» — лезниківський граніт, елітне оздоблення",
+   "slug": "viyskovyi-kryla-leznykivskyy-elitna-172",
    "category": "memorial",
-   "color": "black",
+   "color": "red",
    "shape": "Військовий пам'ятник",
    "finish": "Полірована",
    "sizeCm": "стела 120×60×8, ділянка 200×150 см",
-   "materialType": "gabbro",
-   "priceFrom": 400000,
-   "accentMaterial": "Лезниківський"
+   "materialType": "Лезниківський",
+   "priceFrom": 445000,
+   "legacySlug": "viyskovyi-kryla-habro-elitna-172"
   }
  },
  {
