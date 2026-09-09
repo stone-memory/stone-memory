@@ -16,6 +16,7 @@
 import { readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import sharp from "sharp"
+import { createHash } from "node:crypto"
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -42,7 +43,10 @@ async function upload(item: Item): Promise<string> {
     body,
   })
   if (!res.ok) throw new Error(`upload ${item.file}: ${res.status} ${await res.text()}`)
-  return `${url}/storage/v1/object/public/${bucket}/${objectPath}`
+  // Ім'я файлу стале, тому версія за вмістом іде в query: інакше оптимізатор
+  // картинок Vercel (minimumCacheTTL 30 днів) показував би старий рендер.
+  const v = createHash("sha1").update(body).digest("hex").slice(0, 8)
+  return `${url}/storage/v1/object/public/${bucket}/${objectPath}?v=${v}`
 }
 
 async function main() {
