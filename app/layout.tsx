@@ -29,9 +29,12 @@ const SITE_NAME = "Stone Memory"
 // copy promised "стільниці, підвіконня, сходи, бруківка" in the <title> of
 // every page on the site — the single most visible place to advertise a
 // product range that no longer exists.
-const TITLE_DEFAULT = "Stone Memory — пам'ятники з граніту та мармуру від виробника"
+// Два напрями відкрито: сайт веде і пам'ятники, і архітектурний камінь, і
+// заголовок сайту має це казати — інакше головна, яка розгалужує на обидва,
+// суперечила б власному <title>.
+const TITLE_DEFAULT = "Stone Memory — пам'ятники та архітектурний камінь з Костополя"
 const DESCRIPTION =
-  "Пам'ятники, меморіальні комплекси й надгробки з граніту, габро та мармуру. Власна майстерня в Костополі: дизайн, гравіювання, монтаж, гарантія 5 років."
+  "Майстерня натурального каменю в Костополі: пам'ятники й меморіальні комплекси з граніту, габро та мармуру, а також стільниці, підвіконня, сходи й фасади. Власний цех, монтаж по Україні."
 
 // Countertop / window-sill / paving / fireplace terms removed across every
 // locale — that product line is discontinued, and keywords describing goods

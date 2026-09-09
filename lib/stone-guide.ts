@@ -12,6 +12,21 @@ import kapustynskyiImg from "@/public/stone/kapustynskyi.jpg"
 import leznykivskyiImg from "@/public/stone/leznykivskyi.jpg"
 import didkovytskyiImg from "@/public/stone/didkovytskyi.jpg"
 import marbleImg from "@/public/stone/marble.jpg"
+// Родовища, що вже фігурували в назвах товарів, але не мали запису в довіднику.
+// Свотчі вирізані з рендерів каталогу (074, 075, 083, 069) до появи макрознімків.
+import tanskyiImg from "@/public/stone/tanskyi.jpg"
+import sofiyivskyiImg from "@/public/stone/sofiyivskyi.jpg"
+import maslavskyiImg from "@/public/stone/maslavskyi.jpg"
+import berestovetskyiImg from "@/public/stone/berestovetskyi.jpg"
+// Камені, що прийшли з розділу «Архітектурний камінь»: ті самі українські
+// родовища й імпортний мармур, які ми ріжемо на стільниці, годяться й на
+// пам'ятники. Свотчі беремо з його бібліотеки, щоб не тримати два комплекти.
+import tokivskyiImg from "@/public/materials/carpazi.webp"
+import mezhyritskyiImg from "@/public/materials/flower-of-ukraine.webp"
+import kornynskyiImg from "@/public/materials/leopard.webp"
+import neroMarquinaImg from "@/public/materials/nero-marquina.webp"
+import emperadorImg from "@/public/materials/emperador-dark.webp"
+import cremaMarfilImg from "@/public/materials/crema-marfil.webp"
 
 /**
  * Довідник каменю — єдине джерело правди про те, між чим обирає клієнт.
@@ -34,7 +49,7 @@ export type StoneGuideEntry = {
   /** Як це називається в селекторі та в заголовку картки. */
   name: string
   /** Порода — що це за камінь геологічно. */
-  rock: "Граніт" | "Габро" | "Лабрадорит" | "Мармур"
+  rock: "Граніт" | "Габро" | "Лабрадорит" | "Мармур" | "Базальт"
   /** Канонічний колір для фасетів каталогу. */
   color: StoneColor
   /** Як виглядає — зерно, відтінок, поведінка на світлі. */
@@ -59,6 +74,12 @@ export type StoneGuideEntry = {
   exampleCode: string
   /** Фасет каталогу, якщо для цього кольору він існує. */
   facet?: string
+  /**
+   * Слаг тієї самої колекції в розділі «Архітектурний камінь»
+   * (/arkhitekturnyi-kamin/materialy/<slug>) — щоб з довідника пам'ятників можна
+   * було перейти до того ж каменю для дому, і навпаки.
+   */
+  interiorSlug?: string
 }
 
 export const STONE_GUIDE: StoneGuideEntry[] = [
@@ -72,7 +93,8 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     priceLevel: "Найдоступніший",
     coef: 0.72,
     swatch: pokostivskyiImg,
-    exampleCode: "016",
+    exampleCode: "073",
+    interiorSlug: "grey-ukraine",
   },
   {
     key: "gabbro",
@@ -86,6 +108,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: gabbroImg,
     exampleCode: "003",
     facet: "chorni",
+    interiorSlug: "kometa-black",
   },
   {
     key: "labradorite",
@@ -99,6 +122,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: labradoriteImg,
     exampleCode: "045",
     facet: "chorni",
+    interiorSlug: "volga-blue",
   },
   {
     key: "Капустинський",
@@ -112,6 +136,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: kapustynskyiImg,
     exampleCode: "019",
     facet: "chervoni",
+    interiorSlug: "rosso-santiago",
   },
   {
     key: "Лезниківський",
@@ -125,6 +150,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: leznykivskyiImg,
     exampleCode: "004",
     facet: "chervoni",
+    interiorSlug: "maple-red",
   },
   {
     key: "Дідковицький",
@@ -136,7 +162,8 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     priceLevel: "Вищий",
     coef: 1.08,
     swatch: didkovytskyiImg,
-    exampleCode: "015",
+    exampleCode: "013",
+    interiorSlug: "star-of-ukraine",
   },
   {
     key: "marble",
@@ -148,7 +175,139 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     priceLevel: "Преміум",
     coef: 1.35,
     swatch: marbleImg,
-    exampleCode: "012",
+    exampleCode: "091",
+    interiorSlug: "bianco-carrara",
+  },
+  {
+    key: "Танський",
+    name: "Танський граніт",
+    rock: "Граніт",
+    color: "grey",
+    look: "Світло-сірий із дрібним зерном і ледь помітними темними цятками, рівномірний по всій плиті.",
+    why: "Найближчий за виглядом до покостівського, але трохи світліший. Беруть, коли поруч уже стоїть світлий пам'ятник і потрібно потрапити в тон.",
+    priceLevel: "Найдоступніший",
+    coef: 0.9,
+    swatch: tanskyiImg,
+    exampleCode: "074",
+    facet: "siri",
+  },
+  {
+    key: "Софіївський",
+    name: "Софіївський граніт",
+    rock: "Граніт",
+    color: "grey",
+    look: "Сіро-бежевий, теплий, із середнім зерном. На сонці виглядає майже білим.",
+    why: "Найтепліший зі світлих українських гранітів. Підходить для дитячих пам'ятників і європейських форм, де білий мармур надто холодний, а догляду за ним не хочеться.",
+    priceLevel: "Середній",
+    coef: 0.95,
+    swatch: sofiyivskyiImg,
+    exampleCode: "075",
+    facet: "siri",
+  },
+  {
+    key: "Маславський",
+    name: "Маславський граніт",
+    rock: "Граніт",
+    color: "green",
+    look: "Темно-зелений із сірими прожилками й дрібним зерном, спокійніший за дідковицький.",
+    why: "Зелений камінь без різкого малюнка. Добре тримає полірування й читається під золотим гравіюванням; на ділянках під деревами виглядає природніше за чорний.",
+    priceLevel: "Середній",
+    coef: 1.0,
+    swatch: maslavskyiImg,
+    exampleCode: "083",
+  },
+  {
+    key: "Берестовецький",
+    name: "Берестовецький базальт",
+    rock: "Базальт",
+    color: "black",
+    look: "Темно-сірий до чорного, дуже дрібне однорідне зерно, матовіший за габро після полірування.",
+    why: "Наш місцевий камінь: кар'єр у Берестовці за 15 км від цеху в Костополі. Це базальт, а не граніт: щільніший, не боїться морозу, і доставка каменю в ціну майже не входить.",
+    priceLevel: "Середній",
+    coef: 0.85,
+    swatch: berestovetskyiImg,
+    exampleCode: "069",
+    facet: "chorni",
+  },
+  {
+    key: "Токівський",
+    name: "Токівський граніт",
+    rock: "Граніт",
+    color: "brown",
+    look: "Червоно-коричневий із темними вкрапленнями, середнє зерно. У розділі каменю для дому — Carpazi.",
+    why: "Тепліший і спокійніший за яскраво-червоний лезниківський. Добре поєднується з чорною тумбою й підходить для ділянок під деревами, де червоний виглядав би різко.",
+    priceLevel: "Вищий",
+    coef: 1.15,
+    swatch: tokivskyiImg,
+    exampleCode: "100",
+    interiorSlug: "carpazi",
+  },
+  {
+    key: "Межиріцький",
+    name: "Межиріцький граніт",
+    rock: "Граніт",
+    color: "red",
+    look: "Червоно-рожевий із сірими «квітами» — великими світлими вкрапленнями. У розділі каменю для дому — Flower of Ukraine.",
+    why: "Найвиразніший рисунок серед українських гранітів: підходить для стел без портрета, де камінь сам є декором. Гравіювання читається на ньому гірше, тому портрет робимо на чорній вставці.",
+    priceLevel: "Середній",
+    coef: 1.02,
+    swatch: mezhyritskyiImg,
+    exampleCode: "062",
+    interiorSlug: "flower-of-ukraine",
+    facet: "chervoni",
+  },
+  {
+    key: "Корнинський",
+    name: "Корнинський граніт",
+    rock: "Граніт",
+    color: "grey",
+    look: "Сіро-рожевий із плямистим рисунком, за який його називають Leopard. Зерно велике.",
+    why: "Світлий і теплий, м'якший за покостівський. Обирають для облицювання ділянки й тумби в парі з чорною стелою, а також для хрестів без портрета.",
+    priceLevel: "Середній",
+    coef: 0.94,
+    swatch: kornynskyiImg,
+    exampleCode: "076",
+    interiorSlug: "leopard",
+    facet: "siri",
+  },
+  {
+    key: "Nero Marquina",
+    name: "Мармур Nero Marquina",
+    rock: "Мармур",
+    color: "black",
+    look: "Глибокий чорний мармур із білими прожилками. Іспанія.",
+    why: "Для тих, хто хоче чорний камінь із малюнком, а не рівне габро. Це мармур: під портрет його не беремо, але на хрест, плиту й скульптурні елементи він виглядає дорого. Потребує просочення.",
+    priceLevel: "Преміум",
+    coef: 1.4,
+    swatch: neroMarquinaImg,
+    exampleCode: "112",
+    interiorSlug: "nero-marquina",
+  },
+  {
+    key: "Emperador Dark",
+    name: "Мармур Emperador Dark",
+    rock: "Мармур",
+    color: "brown",
+    look: "Темно-коричневий мармур із світлими прожилками. Іспанія.",
+    why: "Рідкісний для кладовищ теплий темний колір. Беремо на плити, вази й акценти в комплексах, де хочеться відійти від чорного, не переходячи на червоне.",
+    priceLevel: "Преміум",
+    coef: 1.4,
+    swatch: emperadorImg,
+    exampleCode: "111",
+    interiorSlug: "emperador-dark",
+  },
+  {
+    key: "Crema Marfil",
+    name: "Мармур Crema Marfil",
+    rock: "Мармур",
+    color: "beige",
+    look: "Кремово-бежевий, майже однорідний мармур. Іспанія.",
+    why: "Найспокійніший світлий камінь: без різких прожилок, як у Carrara. Для дитячих пам'ятників і скульптури, коли білий здається надто холодним. Потребує просочення й догляду.",
+    priceLevel: "Преміум",
+    coef: 1.35,
+    swatch: cremaMarfilImg,
+    exampleCode: "113",
+    interiorSlug: "crema-marfil",
   },
 ]
 
@@ -163,6 +322,11 @@ export const ROCK_TYPES = [
     rock: "Лабрадорит" as const,
     colorRule: "Чорний із синіми переливами",
     note: "Родовище на вигляд майже не впливає.",
+  },
+  {
+    rock: "Базальт" as const,
+    colorRule: "Темно-сірий, майже чорний",
+    note: "Місцевий камінь Костопільщини; щільніший за граніт.",
   },
   {
     rock: "Мармур" as const,

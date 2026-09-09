@@ -40,3 +40,6 @@ next-env.d.ts
 .eslintcache
 # проміжні фото під заливку в Supabase Storage
 /public/monuments/
+
+# Скріншоти й логи Playwright MCP з локальних сесій
+.playwright-mcp/

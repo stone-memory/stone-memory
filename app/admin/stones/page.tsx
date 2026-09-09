@@ -35,11 +35,13 @@ const COLORS: StoneColor[] = ["black", "grey", "white", "red", "green", "blue", 
 const SHAPES: StoneShape[] = ["classic", "arch", "heart", "cross", "modern", "obelisk", "natural"]
 const FINISHES: StoneFinish[] = ["polished", "honed", "flamed", "antique", "natural", "split"]
 const MATERIALS: StoneMaterial[] = ["granite", "gabbro", "marble", "labradorite", "quartzite", "limestone", "sandstone", "onyx"]
-// Обидві лінійки: пам'ятники й дім. Це один спільний кабінет на два розділи
-// сайту, які між собою не перелінковані — категорія і є тим, що їх розділяє.
-const CATEGORIES: Category[] = ["memorial", "home"]
-// Селект показував сирі значення — «memorial» і «home». Категорія «дім» була
-// в списку, але прочитати її як «Дім і сад» було неможливо.
+// Лише меморіальна лінійка. Напрямок «Дім і сад» тепер живе окремим сайтом на
+// власному піддомені, зі своїм репозиторієм і своєю адмінкою — заводити його
+// товари тут більше нікуди, тож селект їх і не пропонує.
+const CATEGORIES: Category[] = ["memorial"]
+// Лейбл для «home» лишається: тип Category зберігає це значення заради
+// сумісності зі старими рядками БД, і такий рядок має читатись, а не показувати
+// сире «home». Див. коментар у lib/catalog-taxonomy.ts.
 const CATEGORY_LABEL: Record<string, string> = {
   memorial: "Пам'ятники",
   home: "Дім і сад",
@@ -87,23 +89,21 @@ export default function AdminStonesPage() {
   )
 
   const [query, setQuery] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState<"all" | Category>("all")
   const [showHidden, setShowHidden] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
 
-  const isDragMode = query === "" && categoryFilter === "all"
+  const isDragMode = query === ""
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return items.filter((r) => {
       if (!showHidden && r.hidden) return false
-      if (categoryFilter !== "all" && r.data.category !== categoryFilter) return false
       const hay = `${r.id} ${stoneCode(r.data)} ${r.data.name || ""}`.toLowerCase()
       if (q && !hay.includes(q)) return false
       return true
     })
-  }, [items, query, categoryFilter, showHidden])
+  }, [items, query, showHidden])
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -157,23 +157,11 @@ export default function AdminStonesPage() {
         <Stat label="Прихованих" value={totals.hidden} />
       </div>
 
+      {/* Перемикач категорій прибрано разом із лінійкою «Дім і сад»: категорія
+          лишилась одна, тож «Всі» і «Пам'ятники» показували б один і той самий
+          список. Старий рядок БД із category='home', якщо такий колись
+          зʼявиться, тепер видно в загальному списку, а не за окремою вкладкою. */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
-          {(["all", "memorial", "home"] as const).map((c) => (
-            <button
-              key={c}
-              onClick={() => setCategoryFilter(c)}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-                categoryFilter === c
-                  ? "bg-card text-foreground shadow-soft"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {c === "all" ? "Всі" : CATEGORY_LABEL[c]}
-            </button>
-          ))}
-        </div>
         <div className="relative max-w-sm flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.75} />
           <Input

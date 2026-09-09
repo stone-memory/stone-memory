@@ -57,14 +57,44 @@ export function Header({ className }: HeaderProps) {
     lt: "Akmenys",
   }
 
-  const navItems = [
-    { href: "/memorial/pamyatnyky", label: t.nav.catalog },
-    { href: "/memorial/kameni", label: stoneLabels[locale] },
-    { href: "/posluhy", label: t.nav.services },
-    ...(showProjects ? [{ href: "/proekty", label: projectsLabels[locale] }] : []),
-    { href: "/pro-nas", label: aboutLabels[locale] },
-    { href: "/blog", label: t.nav.blog },
-  ]
+  const pricesLabels: Record<Locale, string> = {
+    uk: "Ціни",
+    pl: "Ceny",
+    en: "Prices",
+    de: "Preise",
+    lt: "Kainos",
+  }
+
+  const directionLabels: Record<Locale, { memorial: string; stone: string }> = {
+    uk: { memorial: "Пам'ятники", stone: "Архітектурний камінь" },
+    pl: { memorial: "Pomniki", stone: "Kamień architektoniczny" },
+    en: { memorial: "Monuments", stone: "Architectural stone" },
+    de: { memorial: "Grabmale", stone: "Architekturstein" },
+    lt: { memorial: "Paminklai", stone: "Architektūrinis akmuo" },
+  }
+
+  // Головна — про майстерню загалом і розгалуження на два напрями, тому в її
+  // шапці лише напрями й загальні сторінки. Каталог, ціни, камені й послуги
+  // стосуються самих пам'ятників і з'являються, щойно людина обрала напрям.
+  const isHome = pathname === "/"
+  const navItems = isHome
+    ? [
+        { href: "/pamyatnyky", label: directionLabels[locale].memorial },
+        { href: "/arkhitekturnyi-kamin", label: directionLabels[locale].stone },
+        { href: "/pro-nas", label: aboutLabels[locale] },
+        { href: "/blog", label: t.nav.blog },
+        { href: "/kontakty", label: t.nav.contact },
+      ]
+    : [
+        { href: "/memorial/pamyatnyky", label: t.nav.catalog },
+        { href: "/tsiny", label: pricesLabels[locale] },
+        { href: "/memorial/kameni", label: stoneLabels[locale] },
+        { href: "/posluhy", label: t.nav.services },
+        ...(showProjects ? [{ href: "/proekty", label: projectsLabels[locale] }] : []),
+        { href: "/pro-nas", label: aboutLabels[locale] },
+        { href: "/blog", label: t.nav.blog },
+        { href: "/kontakty", label: t.nav.contact },
+      ]
 
   return (
     <header

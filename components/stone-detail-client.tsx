@@ -18,11 +18,23 @@ import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { MaterialPicker, type MaterialChoice } from "@/components/material-picker"
 import { defaultStone } from "@/lib/stone-guide"
 import { stoneAlt, stoneHeading } from "@/lib/stone-meta"
+import { productStory } from "@/lib/product-copy"
+import { WARRANTY_YEARS } from "@/lib/site-facts"
 import { toTelHref } from "@/lib/phone-format"
 import { cn } from "@/lib/utils"
 import type { StoneItem } from "@/lib/types"
 
 const PHONE_DISPLAY = "+38 (068) 808-02-22"
+
+// Раніше бралось із t.hero.badge — але бейдж hero тепер про майстерню, а не
+// про гарантію, і чіп довіри на картці має казати саме про гарантію.
+const WARRANTY_LABEL: Record<string, string> = {
+  uk: `${WARRANTY_YEARS} років гарантії`,
+  pl: `${WARRANTY_YEARS} lat gwarancji`,
+  en: `${WARRANTY_YEARS}-year warranty`,
+  de: `${WARRANTY_YEARS} Jahre Garantie`,
+  lt: `${WARRANTY_YEARS} metų garantija`,
+}
 
 type Props = {
   /** Resolved on the server, so the markup below is in the initial HTML. */
@@ -103,6 +115,13 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   // no keyword in any of them.
   const heading = stoneHeading(stone, locale)
   const imageAlt = stoneAlt(stone, locale)
+  // Змістовний опис замість одного шаблону на всі картки: тип виробу, камінь
+  // з довідника й рівень оздоблення дають кожній моделі власний текст,
+  // комплектацію та розміри. Українською; інші локалі лишаються на короткому
+  // шаблоні з filters.ts.
+  const story = productStory(stone)
+  const showStory = locale === "uk"
+  const [storyLead, ...storyRest] = story.intro.split("\n\n")
   // Хаб /memorial прибрано: він дублював навігацію, а вертикаль лишилась одна.
   // Тому батьком картки товару став сам каталог.
   const catalogHref = "/memorial/pamyatnyky"
@@ -246,13 +265,15 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                 {heading}
               </h1>
               <p className="mt-4 text-lg md:text-xl leading-relaxed text-foreground/85 text-balance">
-                {L.descriptionBody(
-                  stoneCode(stone),
-                  // Same resolver the spec table uses, so the two cannot disagree.
-                  stone.materialType ? materialLabel(stone.materialType, locale, stone.i18n?.materialType) : "",
-                  stone.category,
-                  stone.accentMaterial ? materialLabel(stone.accentMaterial, locale) : undefined
-                )}
+                {showStory
+                  ? storyLead
+                  : L.descriptionBody(
+                      stoneCode(stone),
+                      // Same resolver the spec table uses, so the two cannot disagree.
+                      stone.materialType ? materialLabel(stone.materialType, locale, stone.i18n?.materialType) : "",
+                      stone.category,
+                      stone.accentMaterial ? materialLabel(stone.accentMaterial, locale) : undefined
+                    )}
               </p>
 
               <div className="mt-8 flex items-baseline gap-3">
@@ -304,7 +325,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-3">
-                <Trust icon={<Award className="h-4 w-4" strokeWidth={1.75} />} text={t.hero.badge.replace(/\d+\s*/, (m) => m.trim() + " ")} />
+                <Trust icon={<Award className="h-4 w-4" strokeWidth={1.75} />} text={WARRANTY_LABEL[locale]} />
                 <Trust icon={<Truck className="h-4 w-4" strokeWidth={1.75} />} text={t.footer.delivery} />
               </div>
 
@@ -319,10 +340,79 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                       <dd className="font-medium text-foreground tabular-nums">{v}</dd>
                     </div>
                   ))}
+                  {showStory && (
+                    <>
+                      <div className="flex items-center justify-between py-2.5 text-[15px]">
+                        <dt className="text-muted-foreground">Виготовлення</dt>
+                        <dd className="font-medium text-foreground tabular-nums">{story.leadTime}</dd>
+                      </div>
+                      <div className="flex items-center justify-between py-2.5 text-[15px]">
+                        <dt className="text-muted-foreground">Гарантія</dt>
+                        <dd className="font-medium text-foreground tabular-nums">{WARRANTY_YEARS} років</dd>
+                      </div>
+                    </>
+                  )}
                 </dl>
               </div>
             </div>
           </div>
+
+          {showStory && (
+            <section className="mt-16 grid gap-10 md:mt-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight-custom md:text-3xl">Про цю модель</h2>
+                <div className="mt-5 max-w-2xl space-y-4 text-base leading-relaxed text-foreground/85 md:text-[17px]">
+                  {storyRest.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+
+                <h3 className="mt-10 text-lg font-semibold tracking-tight-custom md:text-xl">Розміри елементів</h3>
+                <dl className="mt-3 max-w-2xl divide-y divide-foreground/5 rounded-2xl border border-foreground/10 px-5">
+                  {story.sizes.map((s) => (
+                    <div key={s.part} className="flex items-baseline justify-between gap-6 py-2.5 text-[15px]">
+                      <dt className="text-muted-foreground">{s.part}</dt>
+                      <dd className="text-right font-medium tabular-nums">{s.size}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+                  Розміри типові для цієї моделі. Ріжемо під вашу ділянку — на замірі уточнюємо кожен елемент.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="rounded-2xl bg-card p-6 ring-1 ring-black/[0.06] shadow-soft">
+                  <h3 className="text-lg font-semibold tracking-tight-custom">
+                    Що входить у ціну{shownPrice ? ` від ${formatPrice(shownPrice)}` : ""}
+                  </h3>
+                  <ul className="mt-4 space-y-2 text-[15px] text-foreground/85">
+                    {story.included.map((it) => (
+                      <li key={it} className="flex items-start gap-2.5">
+                        <Check className="mt-1 h-4 w-4 shrink-0 text-success" strokeWidth={2} />
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-2xl bg-secondary/60 p-6">
+                  <h3 className="text-lg font-semibold tracking-tight-custom">Від чого залежить остаточна ціна</h3>
+                  <ul className="mt-4 space-y-2 text-[15px] text-foreground/85">
+                    {story.priceFactors.map((it) => (
+                      <li key={it} className="flex items-start gap-2.5">
+                        <span className="mt-[0.6rem] inline-block h-1 w-1 shrink-0 rounded-full bg-foreground/40" />
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    Можна додати окремо: {story.extras.join(", ")}.
+                  </p>
+                </div>
+              </div>
+            </section>
+          )}
 
           {related.length > 0 && (
             <section className="mt-24 md:mt-32">

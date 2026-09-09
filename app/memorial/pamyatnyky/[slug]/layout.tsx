@@ -4,15 +4,20 @@ import { absoluteUrl } from "@/lib/site-config"
 import {
   MEMORIAL_FACETS,
   MIN_FACET_ITEMS,
+  catalogPageCount,
+  catalogPagePath,
   facetItems,
   findFacet,
   findStoneByCode,
   isFacetSlug,
+  parsePageSegment,
   stoneCode,
   stoneSlug,
   stonePath,
 } from "@/lib/catalog-taxonomy"
 import { stoneDescription, stoneTitle } from "@/lib/stone-meta"
+import { defaultStone } from "@/lib/stone-guide"
+import { productStory } from "@/lib/product-copy"
 
 export const revalidate = 60
 export const dynamicParams = true
@@ -42,6 +47,20 @@ export async function generateStaticParams(): Promise<Params[]> {
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params
   const stones = await fetchStones()
+
+  // /storinka-N кореневого каталогу: та сама підбірка, інша сторінка.
+  const page = parsePageSegment(slug)
+  if (page) {
+    const count = catalogPageCount(stones.filter((s) => s.category === "memorial").length)
+    if (page > count) return { title: "Сторінку не знайдено", robots: { index: false, follow: false } }
+    const url = absoluteUrl(catalogPagePath(null, page))
+    return {
+      title: `Пам'ятники — каталог, сторінка ${page}`,
+      description: `Каталог пам'ятників із граніту, габро й лабрадориту, сторінка ${page} з ${count}. Одиночні, подвійні, хрести, комплекси. Виробництво в Костополі, монтаж по Україні.`,
+      alternates: { canonical: url },
+      openGraph: { title: `Каталог пам'ятників — сторінка ${page} — Stone Memory`, url, type: "website" },
+    }
+  }
 
   if (isFacetSlug(slug)) {
     const facet = findFacet(slug)!
@@ -129,9 +148,10 @@ export default async function SlugLayout({
       })
     }
   } else {
-    const stone = findStoneByCode(stones, slug)
+    const stone = parsePageSegment(slug) ? undefined : findStoneByCode(stones, slug)
     if (stone) {
       const code = stoneCode(stone)
+      const story = productStory(stone)
       blocks.push(trail(`Пам'ятник №${code}`, stonePath(stone)))
       blocks.push({
         "@context": "https://schema.org",
@@ -142,9 +162,16 @@ export default async function SlugLayout({
         image: stone.gallery && stone.gallery.length ? stone.gallery : [stone.imagePath],
         description: stoneDescription(stone),
         brand: { "@type": "Brand", name: "Stone Memory" },
-        category: "Пам'ятники",
-        ...(stone.materialType ? { material: stone.materialType } : {}),
+        category: `Пам'ятники > ${story.typeLabel}`,
+        // Порода з довідника, а не сире поле: у базі там і "gabbro", і
+        // "Покостівський" упереміш, а розмітці потрібна одна назва каменю.
+        material: defaultStone(stone).name,
         ...(stone.color ? { color: stone.color } : {}),
+        additionalProperty: story.sizes.map((s) => ({
+          "@type": "PropertyValue",
+          name: s.part,
+          value: s.size,
+        })),
         // priceFrom is UAH and is 0 on every production row. `"price": 0` is
         // invalid for an Offer and makes Google discard the whole Product, so
         // the offer is omitted rather than zeroed.

@@ -107,8 +107,10 @@ export default async function StoneGuidePage() {
               Крок 3. Між чим ви обираєте
             </h2>
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
-              Сім варіантів. Будь-яку модель із каталогу можна виконати в кожному з них —
-              форма й камінь не пов'язані.
+              {STONE_GUIDE.length} варіантів — українські граніти, габро, лабрадорит та імпортний
+              мармур. Будь-яку модель із каталогу можна виконати в кожному з них — форма й камінь
+              не пов'язані. Той самий камінь ми ріжемо й на стільниці та сходи: у кожного є
+              посилання на його сторінку в розділі архітектурного каменю.
             </p>
 
             <div className="mt-6 space-y-4">
@@ -151,6 +153,14 @@ export default async function StoneGuidePage() {
                         {example ? (
                           <Link href={stonePath(example)} className="text-muted-foreground underline-offset-2 hover:underline">
                             Приклад: {example.name || `№ ${s.exampleCode}`}
+                          </Link>
+                        ) : null}
+                        {s.interiorSlug ? (
+                          <Link
+                            href={`/arkhitekturnyi-kamin/materialy/${s.interiorSlug}`}
+                            className="text-muted-foreground underline-offset-2 hover:underline"
+                          >
+                            Той самий камінь для дому
                           </Link>
                         ) : null}
                       </div>

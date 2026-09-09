@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       url,
       type: "article",
       publishedTime: a.date,
-      images: [{ url: a.cover, width: 1600, height: 1000, alt: title }],
+      images: [{ url: a.cover, width: 1024, height: 640, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
@@ -60,7 +60,8 @@ export default async function Layout({
         "@type": "Article",
         headline: a.title.uk || a.title.en,
         description: a.excerpt.uk || a.excerpt.en,
-        image: [a.cover],
+        // Обкладинки тепер локальні (/blog/…): JSON-LD вимагає абсолютних адрес.
+        image: [a.cover.startsWith("http") ? a.cover : absoluteUrl(a.cover)],
         datePublished: a.date,
         dateModified: a.date,
         author: { "@type": "Organization", name: "Stone Memory" },

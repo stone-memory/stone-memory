@@ -93,9 +93,14 @@ const nextConfig = {
   async redirects() {
     return [
       // ---- Catalogue moved to /memorial/pamyatnyky ----
-      // ?cat=home included: the "Дім і сад" line is discontinued, so that URL
-      // now lands on the monuments catalogue rather than 404ing. It was a live,
-      // linkable URL, so it must resolve to something rather than die.
+      // ?cat=home included: that URL was live and linkable, so it must resolve
+      // to something rather than 404.
+      //
+      // The "Дім і сад" direction is NOT dead — it now runs as a separate site
+      // on its own subdomain, with its own repo. This redirect deliberately
+      // does NOT point there: a 308 passes ranking signal and would tie the two
+      // sites together in search, which is exactly what the split avoids. The
+      // interior site earns its own traffic; this legacy URL stays here.
       // Хаб /memorial прибрано — він дублював навігацію, а вертикаль лишилась
       // одна. Сегмент /memorial/* живе далі як префікс шляху.
       // Старий дубль сторінки керамограніту в розділі каменю: слаг матеріалу

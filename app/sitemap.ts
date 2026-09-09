@@ -1,8 +1,15 @@
 import type { MetadataRoute } from "next"
 import { fetchArticles, fetchStones, fetchStoneUpdatedAt } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
-import { publishedFacets, stonePath } from "@/lib/catalog-taxonomy"
+import {
+  catalogPageCount,
+  catalogPagePath,
+  facetItems,
+  publishedFacets,
+  stonePath,
+} from "@/lib/catalog-taxonomy"
 import { getAllPaths } from "@/lib/stone/routes"
+import { CITIES } from "@/lib/site-facts"
 
 export const revalidate = 60
 
@@ -28,6 +35,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getAllPaths(),
   ])
 
+  const monuments = stones.filter((s) => s.category === "memorial")
+
   // No `lastModified` on routes where we have no real change signal — a
   // build-time timestamp repeated across every URL reads as noise and Google
   // discards the whole signal. Articles carry a genuine date, so they keep it.
@@ -40,14 +49,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // /kataloh is gone — it 308s to /memorial/pamyatnyky. A redirecting URL
     // must never be submitted: Google reports it as "Page with redirect" and
     // drops it from the index anyway.
+    { url: absoluteUrl("/pamyatnyky"), changeFrequency: "weekly", priority: 0.95 },
     { url: absoluteUrl("/memorial/pamyatnyky"), changeFrequency: "daily", priority: 0.95 },
     { url: absoluteUrl("/memorial/kameni"), changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/tsiny"), changeFrequency: "weekly", priority: 0.9 },
+    { url: absoluteUrl("/yak-zamovyty"), changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/dostavka-i-oplata"), changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/harantiya"), changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/pytannya"), changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/kontakty"), changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/proekty"), changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/posluhy"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/pro-nas"), changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/blog"), changeFrequency: "weekly", priority: 0.85 },
     { url: absoluteUrl("/vidhuky"), changeFrequency: "weekly", priority: 0.7 },
   ]
+
+  // Регіональні сторінки: місто + доставка й монтаж у ньому.
+  const cityRoutes: MetadataRoute.Sitemap = CITIES.map((c) => ({
+    url: absoluteUrl(`/pamyatnyky/${c.slug}`),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }))
 
   const articleRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
     url: absoluteUrl(`/blog/${a.slug}`),
@@ -69,12 +92,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Only facets that clear MIN_FACET_ITEMS. A facet holding three monuments is
   // rendered (the on-page filter links to it) but stays noindex and out of the
   // sitemap — submitting it would be submitting a doorway page.
-  const facetRoutes: MetadataRoute.Sitemap = publishedFacets(stones).map((f) => ({
+  const facets = publishedFacets(stones)
+  const facetRoutes: MetadataRoute.Sitemap = facets.map((f) => ({
     url: absoluteUrl(`/memorial/pamyatnyky/${f.slug}`),
     changeFrequency: "weekly",
     priority: 0.85,
   }))
 
+  // Сторінки пагінації — і кореневого каталогу, і кожного фасета. Перша
+  // сторінка вже подана вище, тому тут від другої.
+  const pageRoutes: MetadataRoute.Sitemap = []
+  const pushPages = (slug: string | null, count: number) => {
+    for (let p = 2; p <= catalogPageCount(count); p++) {
+      pageRoutes.push({ url: absoluteUrl(catalogPagePath(slug, p)), changeFrequency: "weekly", priority: 0.5 })
+    }
+  }
+  pushPages(null, monuments.length)
+  for (const f of facets) pushPages(f.slug, facetItems(stones, f).length)
 
   // Service anchors (/posluhy#design …) are intentionally omitted: a URL
   // fragment is not a separate document, so search engines collapse them into
@@ -90,7 +124,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...cityRoutes,
     ...facetRoutes,
+    ...pageRoutes,
     ...stoneRoutes,
     ...articleRoutes,
     ...architecturalStoneRoutes,

@@ -34,6 +34,7 @@ export default function AdminBlogPage() {
   const restoreArticle = useBlogStore((s) => s.restoreArticle)
   const removeArticle = useBlogStore((s) => s.removeArticle)
   const seedArticles = useBlogStore((s) => s.seedArticles)
+  const refreshSeedArticles = useBlogStore((s) => s.refreshSeedArticles)
 
   useEffect(() => {
     hydrate()
@@ -75,6 +76,22 @@ export default function AdminBlogPage() {
     try {
       const result = await seedArticles()
       alert(`Імпортовано: ${result.imported}, пропущено: ${result.skipped}`)
+    } finally {
+      setSeeding(false)
+    }
+  }
+
+  const handleRefresh = async () => {
+    if (
+      !confirm(
+        "Перезаписати тексти початкових статей версією з коду? Ваші правки в цих статтях буде втрачено. Статті, створені вручну, не чіпаються."
+      )
+    )
+      return
+    setSeeding(true)
+    try {
+      const result = await refreshSeedArticles()
+      alert(`Оновлено: ${result.updated}, додано нових: ${result.added}`)
     } finally {
       setSeeding(false)
     }
@@ -128,7 +145,23 @@ export default function AdminBlogPage() {
             disabled={seeding}
             className="mt-3 rounded-xl gap-2"
           >
-            <Download size={16} /> {seeding ? "Імпортую…" : "Імпортувати 10 початкових статей"}
+            <Download size={16} /> {seeding ? "Імпортую…" : "Імпортувати початкові статті"}
+          </Button>
+        </section>
+      )}
+
+      {/* Оновлення текстів із коду: після редакторської правки в
+          lib/data/articles.ts нові версії треба долити в базу, бо сайт читає
+          саме її. Кнопка показується лише коли база вже не порожня. */}
+      {hasHydrated && articles.length > 0 && (
+        <section className="rounded-2xl border border-foreground/10 bg-card p-5">
+          <h2 className="text-sm font-semibold">Початкові статті з коду</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Перезаписати тексти початкових статей їхньою версією з коду сайту й додати нові, яких у базі ще немає.
+            Статті, створені тут вручну, не чіпаються.
+          </p>
+          <Button onClick={handleRefresh} disabled={seeding} variant="outline" className="mt-3 rounded-xl gap-2">
+            <RotateCcw size={16} /> {seeding ? "Оновлюю…" : "Оновити тексти з коду"}
           </Button>
         </section>
       )}
