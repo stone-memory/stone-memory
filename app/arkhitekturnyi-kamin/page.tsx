@@ -6,6 +6,16 @@ import { Cta, WorkSteps } from '@/components/stone/site/sections'
 import { categories, materials } from '@/lib/stone/content'
 import { familyHrefForMaterial } from '@/data/stone/families'
 import { getProjects } from '@/lib/stone/cms'
+import { pageMetadata } from '@/lib/stone/seo'
+
+// Без власних метаданих сторінка успадковує canonical кореневого layout, тобто
+// головну сайту, і Bing/Google вважають її дублем головної та не індексують.
+export const metadata = pageMetadata('/arkhitekturnyi-kamin', {
+  title: 'Архітектурний камінь: стільниці, підвіконня, сходи на замовлення',
+  description:
+    'Кам’яні стільниці, підвіконня, сходи, фасади й бруківка з граніту, мармуру та кварцу. Власне виробництво в Костополі, замір, доставка й монтаж по Україні.',
+  image: '/stone-hero.webp',
+})
 export default async function Home() {
   const projects = await getProjects()
   return (
