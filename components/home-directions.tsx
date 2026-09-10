@@ -98,7 +98,7 @@ export function HomeDirections({ stones }: { stones: StoneItem[] }) {
                   </li>
                 ))}
               </ul>
-              <span className="mt-auto inline-flex w-fit items-center gap-2 rounded-full bg-foreground px-5 py-2.5 pt-2.5 text-sm font-medium text-background transition-transform group-hover:-translate-y-[1px] md:mt-8">
+              <span className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform group-hover:-translate-y-[1px] md:mt-8">
                 {c.cta}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
               </span>

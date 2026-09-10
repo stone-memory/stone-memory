@@ -62,7 +62,7 @@ export function PageHero({
     <main>
       <section className="page-shell py-20 md:py-28">
         <p className="eyebrow text-accent">{eyebrow}</p>
-        <h1 className="mt-5 max-w-5xl text-balance text-6xl font-semibold leading-[.95] tracking-[-.055em] md:text-8xl">
+        <h1 className="mt-5 max-w-5xl text-balance text-4xl font-semibold leading-[.95] tracking-[-.055em] sm:text-5xl md:text-7xl lg:text-8xl">
           {title}
         </h1>
         <p className="mt-8 max-w-xl text-pretty text-base leading-7 text-muted-foreground">
