@@ -105,7 +105,7 @@ export default async function MemorialHubPage() {
             >
               Ціни
             </Link>
-            <ConsultButton variant="secondary">Отримати розрахунок</ConsultButton>
+            <ConsultButton variant="secondary" topic="Хаб пам'ятників">Отримати розрахунок</ConsultButton>
           </div>
         </section>
 

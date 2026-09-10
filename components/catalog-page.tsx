@@ -134,7 +134,7 @@ export function CatalogPage({ stones, facet, page }: Props) {
                 будь-якому з наших каменів.
               </p>
             </div>
-            <ConsultButton>Отримати розрахунок</ConsultButton>
+            <ConsultButton topic="Не знайшли свою модель?">Надіслати фото або ескіз</ConsultButton>
           </div>
         </section>
 

@@ -188,9 +188,12 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
 export function CtaBand({
   title = "Порахуємо вартість за фото ділянки",
   text = "Надішліть фото місця і побажання — протягом робочого дня повернемось з ескізом і ціною. Це безкоштовно й ні до чого не зобов'язує.",
+  cta = "Надіслати фото ділянки",
 }: {
   title?: string
   text?: string
+  /** Текст кнопки; стає заголовком модалки заявки. */
+  cta?: string
 }) {
   return (
     <section className="mx-auto max-w-7xl px-6 pt-14 pb-20 md:pt-20 md:pb-28">
@@ -201,7 +204,7 @@ export function CtaBand({
             <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-background/75 md:text-base">{text}</p>
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end">
-            <ConsultButton className="bg-background text-foreground">Отримати розрахунок</ConsultButton>
+            <ConsultButton className="bg-background text-foreground" topic={title}>{cta}</ConsultButton>
             <a
               href={CONTACT.phoneHref}
               className="inline-flex items-center gap-2 text-sm font-medium text-background/85 hover:text-background"
