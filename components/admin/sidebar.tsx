@@ -247,7 +247,10 @@ export function AdminSidebar() {
                     >
                       <Icon size={16} />
                       <span className="flex-1 text-left">{item.label}</span>
-                      {badge > 0 && !isActive && (
+                      {/* Показуємо й на активному пункті: раніше бейдж ховався
+                          при відкритті розділу і «повертався» після переходу далі,
+                          хоча цифра не мінялась — це читалось як збій. */}
+                      {badge > 0 && (
                         <span className={`rounded-full px-1.5 text-[10px] font-semibold tabular-nums min-w-[18px] text-center ${badgeColor}`}>
                           {badge > 99 ? "99+" : badge}
                         </span>
