@@ -13,6 +13,7 @@ import type { Attribution } from "@/lib/attribution"
 export type LeadInput = {
   name: string
   phone: string
+  email?: string | null
   city?: string
   interest?: string
   message?: string
@@ -37,7 +38,7 @@ export async function createLeadOrder(input: LeadInput): Promise<LeadResult> {
   const base = {
     name,
     phone,
-    email: null,
+    email: (input.email ?? "").trim().slice(0, 120) || null,
     message: text,
     locale: (input.locale ?? "uk").slice(0, 5),
     source: (input.source ?? "stilnytsi").slice(0, 40),

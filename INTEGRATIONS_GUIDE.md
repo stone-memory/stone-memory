@@ -36,6 +36,13 @@ INSTAGRAM_PAGE_ACCESS_TOKEN=EAAG...             # Long-lived Page Access Token
 INSTAGRAM_PAGE_ID=10208012345                   # Facebook Page ID
 INSTAGRAM_VERIFY_TOKEN=stonememory-ig-verify-2026
 
+# ===== Meta App Secret (спільний для WhatsApp та Instagram) =====
+# Meta App → Settings → Basic → App Secret. Коли задано, кожен вхідний
+# webhook перевіряється за підписом X-Hub-Signature-256; без нього
+# ендпоінти /api/whatsapp/webhook і /api/instagram/webhook приймають
+# будь-який POST і лише пишуть попередження в лог.
+META_APP_SECRET=abc123...
+
 # ===== Email Inbound (опціональний secret) =====
 INBOUND_EMAIL_SECRET=$(openssl rand -hex 32)
 

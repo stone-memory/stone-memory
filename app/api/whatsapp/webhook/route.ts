@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { recordIncoming } from "@/lib/crm/comms"
+import { readSignedMetaBody } from "@/lib/integrations/meta-signature"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -19,6 +20,8 @@ export const dynamic = "force-dynamic"
  *   WHATSAPP_VERIFY_TOKEN — будь-який secret для верифікації webhook
  *   WHATSAPP_TOKEN — Permanent access token (System User)
  *   WHATSAPP_PHONE_NUMBER_ID — ID номера від Meta
+ *   META_APP_SECRET — App Secret Meta App; коли задано, кожен POST
+ *   перевіряється за X-Hub-Signature-256 (lib/integrations/meta-signature.ts)
  */
 
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN
@@ -65,12 +68,9 @@ type WhatsAppWebhookBody = {
 
 // POST — приходить нове повідомлення
 export async function POST(req: Request) {
-  let body: WhatsAppWebhookBody
-  try {
-    body = (await req.json()) as WhatsAppWebhookBody
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 400 })
-  }
+  const read = await readSignedMetaBody<WhatsAppWebhookBody>(req, "whatsapp")
+  if ("response" in read) return read.response
+  const body = read.body
 
   if (body.object !== "whatsapp_business_account") {
     return NextResponse.json({ ok: true, ignored: "not_whatsapp" })

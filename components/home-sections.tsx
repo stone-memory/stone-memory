@@ -146,7 +146,7 @@ export function HomeProcess() {
             Приїхати треба лише якщо хочете побачити камінь наживо.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <ConsultButton>Отримати розрахунок</ConsultButton>
+            <ConsultButton topic="Головна: як це відбувається">Отримати розрахунок</ConsultButton>
             <Link
               href="/yak-zamovyty"
               className="inline-flex items-center gap-2 rounded-full border border-foreground/15 px-6 py-3 text-sm font-medium transition-colors hover:bg-foreground/5"

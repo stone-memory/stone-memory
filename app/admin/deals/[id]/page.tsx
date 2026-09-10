@@ -28,6 +28,7 @@ import { LostReasonModal } from "@/components/admin/lost-reason-modal"
 import { DealFinanceModal, paidFromPayments } from "@/components/admin/deal-finance-modal"
 import { DealStatusSelect } from "@/components/admin/deal-status-select"
 import { openDocument } from "@/lib/crm/documents-client"
+import { LeadAttachments, isLeadAttachment } from "@/components/admin/lead-attachments"
 
 const SOURCE_LABELS: Record<string, string> = {
   stilnytsi: "сайт стільниць",
@@ -450,8 +451,16 @@ function DocumentsBlock({ dealId, documents, onChanged }: { dealId: string; docu
       setBusy(null)
     }
   }
+  // Вкладення з форми сайту (фото ділянки, ескізи) — галереєю, а не рядком.
+  const attachments = documents.filter(isLeadAttachment)
+  const generated = documents.filter((d) => !isLeadAttachment(d))
   return (
     <Section title="Документи" icon={<FileText size={16} />} count={documents.length}>
+      {attachments.length > 0 && (
+        <div className="border-b border-foreground/5 px-4 py-3">
+          <LeadAttachments documents={attachments} />
+        </div>
+      )}
       <div className="px-4 py-3 flex flex-wrap gap-2 border-b border-foreground/5">
         {(["quote", "contract", "invoice"] as const).map((kind) => (
           <Button
@@ -466,11 +475,11 @@ function DocumentsBlock({ dealId, documents, onChanged }: { dealId: string; docu
           </Button>
         ))}
       </div>
-      {documents.length === 0 ? (
+      {generated.length === 0 ? (
         <Empty text="Поки немає документів. Згенеруй вище." />
       ) : (
         <div className="divide-y divide-foreground/5">
-          {documents.map((d) => (
+          {generated.map((d) => (
             // Файл у приватному бакеті: відкривається тимчасовим підписаним
             // посиланням, а не прямою адресою.
             <button

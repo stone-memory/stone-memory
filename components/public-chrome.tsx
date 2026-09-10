@@ -1,9 +1,18 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { usePathname } from "next/navigation"
-import { ChatWidget } from "@/components/chat-widget"
 import { FloatingCallButton } from "@/components/floating-call-button"
 import { StickyMobileCTA } from "@/components/sticky-mobile-cta"
+
+// Чат — без SSR і окремим чанком: до кліку він показує лише кнопку, а його
+// код (бот, стор, налаштування з API) інакше входив у перший пакет скриптів
+// кожної сторінки й змагався за канал із LCP-зображенням на мобільному.
+// Кнопка з'являється після гідратації — на пів секунди пізніше, ніж решта.
+const ChatWidget = dynamic(() => import("@/components/chat-widget").then((m) => m.ChatWidget), { ssr: false })
+// Модалка заявки з вкладеннями — так само окремим чанком: до кліку на
+// «Отримати розрахунок» її код не потрібен.
+const ConsultModal = dynamic(() => import("@/components/consult-modal").then((m) => m.ConsultModal), { ssr: false })
 
 // Wraps every floating widget aimed at site visitors (chat, call button,
 // mobile CTA). Hidden on /admin so the CRM UI stays clean.
@@ -19,6 +28,7 @@ export function PublicChrome() {
   return (
     <>
       <ChatWidget />
+      <ConsultModal />
       <FloatingCallButton />
       <StickyMobileCTA />
     </>

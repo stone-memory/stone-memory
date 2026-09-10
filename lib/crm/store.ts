@@ -89,7 +89,7 @@ interface DealsState {
   create: (data: Partial<Deal> & { customer_id: string }) => Promise<Deal | null>
   update: (id: string, patch: Partial<Deal>) => Promise<{ ok: boolean; error?: string }>
   setStatus: (id: string, status: DealStatus) => Promise<{ ok: boolean; error?: string }>
-  remove: (id: string) => Promise<void>
+  remove: (id: string) => Promise<{ ok: boolean; error?: string }>
 }
 
 export const useDealsStore = create<DealsState>()((set, get) => ({
@@ -142,8 +142,13 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
     const prev = get().items
     set({ items: prev.filter((d) => d.id !== id) })
     const r = await authedFetch(`/api/crm/deals/${id}`, { method: "DELETE" })
-    if (!r.ok) set({ items: prev })
-    else refreshNotificationCounts()
+    if (!r.ok) {
+      const j = (await r.json().catch(() => ({}))) as { error?: string }
+      set({ items: prev })
+      return { ok: false, error: j.error }
+    }
+    refreshNotificationCounts()
+    return { ok: true }
   },
 }))
 

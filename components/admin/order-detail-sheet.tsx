@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { StatusChanger } from "./status-changer"
 import { NotesLog } from "./notes-log"
 import { AttributionPanel } from "./attribution-panel"
+import { OrderAttachments } from "@/components/admin/lead-attachments"
 import { SourceBadge } from "./source-badge"
 import { useOrdersStore } from "@/lib/store/orders"
 import { formatUAHDirect, formatDateTime } from "@/lib/admin-format"
@@ -107,6 +108,9 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
                 )}
               </section>
             )}
+
+            {/* Фото ділянки / ескізи з модалки сайту; порожньо — нічого не рендерить. */}
+            <OrderAttachments orderId={order.id} />
 
             {/* Renders only when the lead carried campaign tags. */}
             <AttributionPanel attribution={order.attribution} />

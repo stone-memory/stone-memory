@@ -19,11 +19,15 @@ export const REPLY_TO = process.env.EMAIL_REPLY_TO || "info@stonememory.com.ua"
 // Re-export normalized SITE_URL — many email templates already import from here.
 export const SITE_URL = NORMALIZED_SITE_URL
 
+export type EmailAttachment = { filename: string; content: Buffer }
+
 type CommonArgs = {
   to: string
   subject: string
   scope?: "broadcast" | "individual" | "transactional"
   unsubscribeToken?: string | null
+  /** Файли в лист (фото ділянки, PDF із заявки). Resend приймає до 40 МБ разом. */
+  attachments?: EmailAttachment[]
 }
 
 type SendArgs = CommonArgs & (
@@ -87,6 +91,7 @@ export async function sendOne(args: SendArgs): Promise<{ ok: boolean; id?: strin
         "List-Unsubscribe": `<${unsubscribeUrl}>, <${unsubscribeMailto}>`,
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
+      ...(args.attachments?.length ? { attachments: args.attachments } : {}),
     })
     if (error) throw new Error(error.message)
     await supabaseAdmin.from("email_log").insert({

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { Plus, AlertTriangle, Search } from "lucide-react"
+import { Plus, AlertTriangle, Search, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useDealsStore, useCustomersStore } from "@/lib/crm/store"
@@ -21,6 +21,7 @@ import {
 import { formatUAHDirect, formatRelative } from "@/lib/admin-format"
 import { cn } from "@/lib/utils"
 import { DealStatusSelect } from "@/components/admin/deal-status-select"
+import { useCurrentRole, hasCapability } from "@/lib/auth/use-current-role"
 
 // "На паузі" is an exceptional state — always shown when occupied, hidden when empty.
 const LANES: DealLane[] = ["lead", "discovery", "agreement", "production", "fulfillment", "paused", "closed"]
@@ -37,12 +38,18 @@ const LANE_COLOR: Record<DealLane, string> = {
 }
 
 const CLOSED_STATUSES = new Set<DealStatus>(["completed", "cancelled", "lost"])
+/** Видаляти з канбану можна лише те, що вже не в роботі і не принесло грошей. */
+const DELETABLE_STATUSES = new Set<DealStatus>(["cancelled", "lost"])
 
 export default function DealsKanbanPage() {
   const items = useDealsStore((s) => s.items)
   const loading = useDealsStore((s) => s.loading)
   const load = useDealsStore((s) => s.load)
   const setStatus = useDealsStore((s) => s.setStatus)
+  const removeDeal = useDealsStore((s) => s.remove)
+  const { capabilities } = useCurrentRole()
+  const canDelete = hasCapability(capabilities, "deals.delete_permanent")
+  const [purging, setPurging] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
   // /admin/deals?customer=<id> з картки клієнта: одразу відкриваємо форму з
   // обраним клієнтом. Читаємо після монтування, без useSearchParams.
@@ -100,6 +107,31 @@ export default function DealsKanbanPage() {
     return map
   }, [filtered])
 
+  // Видалення безповоротне: разом з угодою каскадом ідуть позиції, нагадування,
+  // платежі й документи. Тому лише скасовані/програні, лише з правом
+  // deals.delete_permanent і лише після підтвердження.
+  const deleteOne = async (d: DealRow) => {
+    const who = d.customers?.name ? ` (${d.customers.name})` : ""
+    if (!confirm(`Видалити угоду ${d.reference ?? ""}${who} назавжди? Відновити буде неможливо.`)) return
+    setError(null)
+    const r = await removeDeal(d.id)
+    if (!r.ok) setError(r.error || "Не вдалось видалити угоду")
+  }
+  const purgeClosed = async (deals: DealRow[]) => {
+    const victims = deals.filter((d) => DELETABLE_STATUSES.has(d.status))
+    if (victims.length === 0) return
+    if (!confirm(`Видалити ${victims.length} скасованих і програних угод назавжди? Завершені лишаться.`)) return
+    setError(null)
+    setPurging(true)
+    let failed = 0
+    for (const d of victims) {
+      const r = await removeDeal(d.id)
+      if (!r.ok) failed++
+    }
+    setPurging(false)
+    if (failed) setError(`Не вдалось видалити ${failed} з ${victims.length}`)
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
@@ -151,9 +183,23 @@ export default function DealsKanbanPage() {
           const dealsInLane = byLane[lane]
           return (
             <div key={lane} className={cn("rounded-2xl border bg-card", LANE_COLOR[lane])}>
-              <div className="px-3 py-2 border-b border-foreground/5 flex items-center justify-between">
+              <div className="px-3 py-2 border-b border-foreground/5 flex items-center justify-between gap-2">
                 <h2 className="text-xs font-semibold uppercase tracking-wide">{DEAL_LANE_LABELS_UK[lane]}</h2>
-                <span className="text-xs text-muted-foreground tabular-nums">{dealsInLane.length}</span>
+                <span className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums">
+                  {lane === "closed" && canDelete && dealsInLane.some((d) => DELETABLE_STATUSES.has(d.status)) && (
+                    <button
+                      type="button"
+                      onClick={() => purgeClosed(dealsInLane)}
+                      disabled={purging}
+                      title="Видалити всі скасовані та програні угоди в цій колонці"
+                      className="inline-flex items-center gap-1 rounded-full border border-foreground/15 px-2 py-0.5 text-[10px] font-medium hover:border-destructive/40 hover:text-destructive disabled:opacity-50 transition-colors"
+                    >
+                      <Trash2 size={11} />
+                      {purging ? "Видаляємо…" : `Очистити (${dealsInLane.filter((d) => DELETABLE_STATUSES.has(d.status)).length})`}
+                    </button>
+                  )}
+                  {dealsInLane.length}
+                </span>
               </div>
               <div className="space-y-2 p-2 max-h-[70vh] overflow-y-auto">
                 {dealsInLane.length === 0 && (
@@ -175,6 +221,7 @@ export default function DealsKanbanPage() {
                       const r = await setStatus(d.id, "new")
                       if (!r.ok) setError(r.error || "Не вдалось відновити угоду")
                     } : undefined}
+                    onDelete={canDelete && DELETABLE_STATUSES.has(d.status) ? () => deleteOne(d) : undefined}
                   />
                 ))}
               </div>
@@ -215,10 +262,13 @@ function DealCard({
   deal,
   onStatusChange,
   onReopen,
+  onDelete,
 }: {
   deal: DealRow
   onStatusChange: (next: DealStatus) => void
   onReopen?: () => void
+  /** Лише для скасованих/програних і лише з правом видаляти; інакше undefined. */
+  onDelete?: () => void
 }) {
   const sla = computeDealSLA(deal)
   const isClosed = CLOSED_STATUSES.has(deal.status)
@@ -292,13 +342,27 @@ function DealCard({
       {!isClosed && (
         <DealStatusSelect status={deal.status} onChange={onStatusChange} className="mt-2 w-full" />
       )}
-      {isClosed && onReopen && (
-        <button
-          onClick={onReopen}
-          className="mt-2 w-full rounded-lg border border-foreground/15 py-1 text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-colors"
-        >
-          ↩ Відновити угоду
-        </button>
+      {isClosed && (onReopen || onDelete) && (
+        <div className="mt-2 flex gap-1.5">
+          {onReopen && (
+            <button
+              onClick={onReopen}
+              className="min-w-0 flex-1 rounded-lg border border-foreground/15 py-1 text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-colors"
+            >
+              ↩ Відновити
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              title="Видалити угоду назавжди"
+              aria-label="Видалити угоду назавжди"
+              className="inline-flex items-center justify-center rounded-lg border border-foreground/15 px-2 py-1 text-muted-foreground hover:border-destructive/40 hover:text-destructive transition-colors"
+            >
+              <Trash2 size={12} />
+            </button>
+          )}
+        </div>
       )}
     </div>
   )

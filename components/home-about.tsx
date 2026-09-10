@@ -108,7 +108,7 @@ export function HomeAbout() {
             </p>
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end">
-            <ConsultButton className="bg-background text-foreground">Отримати розрахунок</ConsultButton>
+            <ConsultButton className="bg-background text-foreground" topic="Головна: не знаєте, з чого почати">Написати майстру</ConsultButton>
             <a href={CONTACT.phoneHref} className="text-sm font-medium text-background/85 hover:text-background">
               {CONTACT.phoneDisplay}
             </a>
