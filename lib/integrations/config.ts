@@ -39,11 +39,14 @@ const ENV_MAP: Record<IntegrationId, Record<string, string>> = {
     token: "WHATSAPP_TOKEN",
     phone_number_id: "WHATSAPP_PHONE_NUMBER_ID",
     verify_token: "WHATSAPP_VERIFY_TOKEN",
+    // App Secret того ж Meta App — для перевірки X-Hub-Signature-256.
+    app_secret: "META_APP_SECRET",
   },
   instagram: {
     page_access_token: "INSTAGRAM_PAGE_ACCESS_TOKEN",
     page_id: "INSTAGRAM_PAGE_ID",
     verify_token: "INSTAGRAM_VERIFY_TOKEN",
+    app_secret: "META_APP_SECRET",
   },
   viber: {
     auth_token: "VIBER_AUTH_TOKEN",

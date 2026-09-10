@@ -56,6 +56,7 @@ const SCHEMAS: Record<string, ChannelSchema> = {
       { key: "token", label: "Access token", kind: "secret", placeholder: "EAAB…" },
       { key: "phone_number_id", label: "Phone Number ID", kind: "text", placeholder: "10-15 цифр" },
       { key: "verify_token", label: "Verify token", kind: "secret", placeholder: "будь-який рядок", helper: "Те саме значення впиши у webhook налаштуваннях Meta" },
+      { key: "app_secret", label: "App Secret", kind: "secret", placeholder: "Meta App → Settings → Basic → App Secret", helper: "Коли задано, кожен вхідний webhook перевіряється за підписом X-Hub-Signature-256. Спільний для WhatsApp та Instagram." },
     ],
   },
   instagram: {
@@ -68,6 +69,7 @@ const SCHEMAS: Record<string, ChannelSchema> = {
       { key: "page_access_token", label: "Page Access Token", kind: "secret", placeholder: "EAAB…" },
       { key: "page_id", label: "Page ID", kind: "text", placeholder: "ID Facebook-сторінки, до якої під'єднано IG" },
       { key: "verify_token", label: "Verify token", kind: "secret", placeholder: "будь-який рядок" },
+      { key: "app_secret", label: "App Secret", kind: "secret", placeholder: "Meta App → Settings → Basic → App Secret", helper: "Той самий App Secret, що й для WhatsApp — перевірка підпису вхідних webhook'ів." },
     ],
   },
   viber: {

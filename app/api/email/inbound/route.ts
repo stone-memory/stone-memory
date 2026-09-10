@@ -62,12 +62,15 @@ function pickEmail(s: string | undefined | { email?: string; name?: string } | A
 }
 
 export async function POST(req: Request) {
-  // Перевірка secret (опціонально)
+  // Перевірка secret (опціонально). Без INBOUND_EMAIL_SECRET ендпоінт
+  // відкритий для будь-кого — попереджаємо в лог, щоб це не лишилось непоміченим.
   if (SHARED_SECRET) {
     const provided = req.headers.get("x-webhook-secret")
     if (provided !== SHARED_SECRET) {
       return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 })
     }
+  } else {
+    console.warn("[email/inbound] INBOUND_EMAIL_SECRET not set — inbound webhook is unauthenticated")
   }
 
   // Читаємо body — може бути JSON або form-data
