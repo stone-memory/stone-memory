@@ -117,7 +117,7 @@ export function CatalogPage({ stones, facet, page }: Props) {
             </p>
             <div className="mt-4 flex flex-wrap gap-2.5">
               {CITIES.map((c) => (
-                <Pill key={c.slug} href={`/pamyatnyky/${c.slug}`} label={`Пам'ятники ${c.inCity.replace(/^у /, "")}`} />
+                <Pill key={c.slug} href={`/pamyatnyky/${c.slug}`} label={`Пам'ятники ${c.name}`} />
               ))}
               <Pill href="/dostavka-i-oplata" label="Умови доставки й оплати" />
               <Pill href="/tsiny" label="Ціни" />

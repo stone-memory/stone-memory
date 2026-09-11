@@ -7,6 +7,8 @@ import { useTranslation } from "@/lib/i18n/context"
 import { useAbout } from "@/lib/store/about"
 import { trackEvent } from "@/components/analytics-pixels"
 import { toTelHref } from "@/lib/phone-format"
+import { CONTACT } from "@/lib/site-facts"
+import type { AboutOverrides } from "@/lib/store/about"
 
 const PHONE_DISPLAY = "+380 (68) 808 02 22"
 const EMAIL = "info@stonememory.com.ua"
@@ -26,9 +28,21 @@ const badgeIconMap = {
   truck: Truck,
 } as const
 
-export function AboutSection() {
+/** Рамка мапи навколо цеху: ±0.01° по довготі, ±0.01° по широті. */
+const MAP_BBOX = [CONTACT.geo.lng - 0.01, CONTACT.geo.lat - 0.01, CONTACT.geo.lng + 0.01, CONTACT.geo.lat + 0.01]
+  .map((n) => n.toFixed(4))
+  .join("%2C")
+const MAP_SRC = `https://www.openstreetmap.org/export/embed.html?bbox=${MAP_BBOX}&layer=mapnik&marker=${CONTACT.geo.lat}%2C${CONTACT.geo.lng}`
+const MAP_LINK = `https://www.openstreetmap.org/?mlat=${CONTACT.geo.lat}&mlon=${CONTACT.geo.lng}#map=17/${CONTACT.geo.lat}/${CONTACT.geo.lng}`
+
+/**
+ * `initialOverrides` — те, що зберегли в адмінці, прочитане на сервері.
+ * Без нього перший рендер показував текст за замовчуванням, а адмінський
+ * підтягувався вже в браузері: користувач бачив «не той» абзац.
+ */
+export function AboutSection({ initialOverrides }: { initialOverrides?: AboutOverrides | null }) {
   const { locale, t } = useTranslation()
-  const content = useAbout(locale)
+  const content = useAbout(locale, initialOverrides)
   const C = contactLabels[locale]
   const addressValue = t.footer.addressValue
 
@@ -125,7 +139,7 @@ export function AboutSection() {
           <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
             <iframe
               title="Stone Memory — Костопіль, провулок Білий, 20"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=26.4439%2C50.8550%2C26.4639%2C50.8750&layer=mapnik&marker=50.8650090%2C26.4539213`}
+              src={MAP_SRC}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="absolute inset-0 h-full w-full border-0"
@@ -136,7 +150,7 @@ export function AboutSection() {
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-background/90 px-3 py-1.5 text-[10px] text-muted-foreground backdrop-blur">
               <span>Костопіль, провулок Білий, 20 · Рівненська область</span>
               <a
-                href="https://www.openstreetmap.org/?mlat=50.8650090&mlon=26.4539213#map=17/50.8650090/26.4539213"
+                href={MAP_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-foreground"

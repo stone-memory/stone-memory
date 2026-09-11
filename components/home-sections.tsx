@@ -21,7 +21,7 @@ function minPriceOf(stones: StoneItem[]): number | null {
   return prices.length ? Math.min(...prices) : null
 }
 
-const fmt = (n: number) => `${n.toLocaleString("uk-UA")} ₴`
+const fmt = (n: number) => `${n.toLocaleString("uk-UA")}\u00A0₴`
 
 export function HomeNumbers({ stones }: { stones: StoneItem[] }) {
   const monuments = stones.filter((s) => s.category === "memorial")

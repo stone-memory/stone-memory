@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 function fmt(n: number) {
-  return `${n.toLocaleString("uk-UA")} ₴`
+  return `${n.toLocaleString("uk-UA")}\u00A0₴`
 }
 
 function minPrice(items: StoneItem[]) {
