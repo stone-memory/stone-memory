@@ -381,21 +381,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <div className="rounded-2xl bg-card p-6 ring-1 ring-black/[0.06] shadow-soft">
-                  <h3 className="text-lg font-semibold tracking-tight-custom">
-                    Що входить у ціну{shownPrice ? ` від ${formatPrice(shownPrice)}` : ""}
-                  </h3>
-                  <ul className="mt-4 space-y-2 text-[15px] text-foreground/85">
-                    {story.included.map((it) => (
-                      <li key={it} className="flex items-start gap-2.5">
-                        <Check className="mt-1 h-4 w-4 shrink-0 text-success" strokeWidth={2} />
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
+              <div>
                 <div className="rounded-2xl bg-secondary/60 p-6">
                   <h3 className="text-lg font-semibold tracking-tight-custom">Від чого залежить остаточна ціна</h3>
                   <ul className="mt-4 space-y-2 text-[15px] text-foreground/85">
