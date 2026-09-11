@@ -60,7 +60,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
         <p className="eyebrow text-accent">
           {a.category} · Оновлено: {a.dateModified} · {a.readingTime}
         </p>
-        <h1 className="mt-5 text-balance text-5xl font-semibold tracking-[-.055em] md:text-7xl">
+        <h1 className="mt-5 text-balance text-3xl font-semibold tracking-[-.055em] sm:text-5xl md:text-7xl">
           {a.h1}
         </h1>
         <p className="mt-8 text-xl leading-8">{a.intro}</p>

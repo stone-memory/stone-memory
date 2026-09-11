@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import * as Dialog from "@radix-ui/react-dialog"
@@ -42,6 +42,7 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
   const [open, setOpen] = useState(false)
   /** Камінь, який зараз показано великим у модалці (ще не обраний). */
   const [preview, setPreview] = useState<StoneGuideEntry>(defaultEntry)
+  const previewRef = useRef<HTMLDivElement>(null)
 
   const base = stone.priceFrom
   const priceFor = (e: StoneGuideEntry) =>
@@ -69,6 +70,20 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
     setPreview(e)
     setOpen(true)
   }
+
+  const ConfirmButton = () => (
+    <button
+      type="button"
+      onClick={() => {
+        pick(preview)
+        setOpen(false)
+      }}
+      className="inline-flex shrink-0 items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:-translate-y-[1px] active:scale-[0.98]"
+    >
+      <Check className="h-4 w-4" strokeWidth={2.5} />
+      {preview.key === selected ? "Залишити" : "Обрати цей камінь"}
+    </button>
+  )
 
   const groups = ROCK_ORDER.map((rock) => ({
     rock,
@@ -180,10 +195,10 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
               "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
             )}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-foreground/10 px-5 py-4 md:px-6">
+            <div className="flex items-start justify-between gap-4 border-b border-foreground/10 px-4 py-3 md:px-6 md:py-4">
               <div>
-                <Dialog.Title className="text-lg font-semibold tracking-tight-custom md:text-xl">Оберіть камінь</Dialog.Title>
-                <Dialog.Description className="mt-0.5 text-sm text-muted-foreground">
+                <Dialog.Title className="text-base font-semibold tracking-tight-custom md:text-xl">Оберіть камінь</Dialog.Title>
+                <Dialog.Description className="mt-0.5 text-xs text-muted-foreground md:text-sm">
                   {STONE_GUIDE.length} каменів. Натисніть на зразок, щоб роздивитись, і підтвердіть вибір.
                 </Dialog.Description>
               </div>
@@ -195,10 +210,11 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
               </Dialog.Close>
             </div>
 
-            <div className="grid min-h-0 flex-1 md:grid-cols-[1.05fr_1fr]">
-              {/* Велике прев'ю */}
-              <div className="flex flex-col gap-4 overflow-y-auto border-b border-foreground/10 p-5 md:border-b-0 md:border-r md:p-6">
-                <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-foreground/5 ring-1 ring-foreground/10">
+            {/* Мобільний: один скрол (прев'ю зверху, сітка під ним) і закріплена
+                кнопка знизу. Десктоп: дві колонки з незалежним скролом. */}
+            <div className="min-h-0 flex-1 overflow-y-auto md:grid md:grid-cols-[1.05fr_1fr] md:overflow-hidden">
+              <div ref={previewRef} className="flex flex-col gap-3 p-4 md:gap-4 md:overflow-y-auto md:border-r md:border-foreground/10 md:p-6">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-foreground/5 ring-1 ring-foreground/10 md:aspect-square">
                   <Image
                     key={preview.key}
                     src={preview.swatch}
@@ -210,31 +226,21 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
                   />
                 </div>
                 <div>
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <h3 className="text-lg font-semibold tracking-tight-custom md:text-xl">{preview.name}</h3>
-                    <span className="rounded-full bg-foreground/5 px-2.5 py-0.5 text-xs text-muted-foreground">{preview.rock}</span>
-                    <span className="text-xs text-muted-foreground">{preview.priceLevel}</span>
+                  <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                    <h3 className="text-base font-semibold tracking-tight-custom md:text-xl">{preview.name}</h3>
+                    <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-[11px] text-muted-foreground md:text-xs">{preview.rock}</span>
+                    <span className="text-[11px] text-muted-foreground md:text-xs">{preview.priceLevel}</span>
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/85">{preview.look}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{preview.why}</p>
+                  <p className="mt-1.5 text-sm leading-snug text-foreground/85 md:leading-relaxed">{preview.look}</p>
+                  <p className="mt-1 hidden text-sm leading-relaxed text-muted-foreground md:block">{preview.why}</p>
                   {priceFor(preview) ? (
-                    <p className="mt-3 text-base font-semibold tracking-tight-custom">
+                    <p className="mt-2 text-base font-semibold tracking-tight-custom">
                       {formatPrice(priceFor(preview)!)}
                       <span className="ml-2 text-xs font-normal text-muted-foreground">ця модель у цьому камені</span>
                     </p>
                   ) : null}
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        pick(preview)
-                        setOpen(false)
-                      }}
-                      className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:-translate-y-[1px] active:scale-[0.98]"
-                    >
-                      <Check className="h-4 w-4" strokeWidth={2.5} />
-                      {preview.key === selected ? "Залишити цей камінь" : "Обрати цей камінь"}
-                    </button>
+                  <div className="mt-3 hidden flex-wrap items-center gap-3 md:flex">
+                    <ConfirmButton />
                     {preview.interiorSlug ? (
                       <Link
                         href={`/arkhitekturnyi-kamin/materialy/${preview.interiorSlug}`}
@@ -249,7 +255,7 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
               </div>
 
               {/* Сітка зразків за породою */}
-              <div role="radiogroup" aria-label="Камінь" className="min-h-0 overflow-y-auto p-5 md:p-6">
+              <div role="radiogroup" aria-label="Камінь" className="border-t border-foreground/10 p-4 md:min-h-0 md:overflow-y-auto md:border-t-0 md:p-6">
                 {groups.map((g) => (
                   <div key={g.rock} className="mb-5 last:mb-0">
                     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -265,7 +271,13 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
                             type="button"
                             role="radio"
                             aria-checked={isSelected}
-                            onClick={() => setPreview(e)}
+                            onClick={() => {
+                              setPreview(e)
+                              // на телефоні прев'ю вгорі, повертаємо користувача до нього
+                              if (window.innerWidth < 768) {
+                                previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                              }
+                            }}
                             onDoubleClick={() => {
                               pick(e)
                               setOpen(false)
@@ -278,7 +290,7 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
                             <span className="relative block aspect-square w-full bg-foreground/5">
                               <Image src={e.swatch} alt="" fill sizes="(max-width: 640px) 33vw, 160px" className="object-cover" />
                             </span>
-                            <span className="block px-2 py-1.5 text-[11px] font-medium leading-tight text-balance">
+                            <span className="block px-1.5 py-1 text-[11px] font-medium leading-tight text-balance md:px-2 md:py-1.5">
                               {e.name.replace(/\s*\(.*\)$/, "")}
                             </span>
                             {isSelected ? (
@@ -298,6 +310,15 @@ export function MaterialPicker({ stone, defaultEntry, onChange }: Props) {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Закріплена кнопка на телефоні */}
+            <div className="flex items-center gap-3 border-t border-foreground/10 bg-background px-4 py-3 md:hidden" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{preview.name}</p>
+                {priceFor(preview) ? <p className="text-xs text-muted-foreground">{formatPrice(priceFor(preview)!)}</p> : null}
+              </div>
+              <ConfirmButton />
             </div>
           </Dialog.Content>
         </Dialog.Portal>

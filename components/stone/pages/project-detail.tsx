@@ -27,7 +27,7 @@ export function ProjectDetail({ project: x }: { project: Project }) {
             <p className="eyebrow opacity-70">
               Проєктна пропозиція · {x.type} · {x.location}
             </p>
-            <h1 className="mt-4 text-6xl font-semibold tracking-[-.055em] md:text-8xl">{x.name}</h1>
+            <h1 className="mt-4 text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">{x.name}</h1>
           </div>
         </div>
       </section>

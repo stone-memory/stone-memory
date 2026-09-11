@@ -11,7 +11,7 @@ export async function FamilyHub({ family }: { family: FamilySlug }) {
       <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Родина матеріалів</p>
-        <h1 className="mt-5 text-balance text-6xl font-semibold tracking-[-.055em] md:text-8xl">
+        <h1 className="mt-5 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
           {name}
         </h1>
         <p className="mt-7 max-w-xl leading-7 text-muted-foreground">

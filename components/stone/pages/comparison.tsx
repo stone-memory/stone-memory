@@ -10,7 +10,7 @@ export async function ComparisonPage({ comparison: d }: { comparison: Comparison
       <Breadcrumbs items={[{ name: 'Порівняння', href: '/arkhitekturnyi-kamin/porivnyannya' }, { name: d.title }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Висновок спочатку</p>
-        <h1 className="mt-5 max-w-4xl text-6xl font-semibold tracking-[-.055em] md:text-8xl">
+        <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
           {d.title}
         </h1>
         <p className="mt-8 max-w-2xl text-xl leading-8">{d.verdict}</p>

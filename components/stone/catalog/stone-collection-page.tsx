@@ -163,7 +163,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
             <p className="eyebrow text-accent">
               {c.family} · {c.tone}
             </p>
-            <h1 className="mt-5 text-balance text-5xl font-semibold tracking-[-.05em] md:text-7xl">
+            <h1 className="mt-5 text-balance text-3xl font-semibold tracking-[-.05em] sm:text-5xl md:text-7xl">
               {c.name}
             </h1>
             <p className="mt-6 leading-7 text-muted-foreground">{c.description}</p>
