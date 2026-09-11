@@ -27,6 +27,21 @@ import kornynskyiImg from "@/public/materials/leopard.webp"
 import neroMarquinaImg from "@/public/materials/nero-marquina.webp"
 import emperadorImg from "@/public/materials/emperador-dark.webp"
 import cremaMarfilImg from "@/public/materials/crema-marfil.webp"
+// Розширення довідника (вересень 2026): родовища, які ринок продає окремо, а в нас
+// ховались за узагальненими «Габро» й «Лабрадорит», плюс сусідні танські й сірі.
+import bukynskeImg from "@/public/stone/bukynske.jpg"
+import antikNeroImg from "@/public/stone/antik-nero.jpg"
+import volgaBlueExtraImg from "@/public/stone/volga-blue-extra.jpg"
+import blackIceImg from "@/public/stone/black-ice.jpg"
+import kostopilskyiImg from "@/public/stone/kostopilskyi.jpg"
+import khustovskyiImg from "@/public/stone/khustovskyi.jpg"
+import greenishTanskyImg from "@/public/stone/greenish-tansky.jpg"
+import eveningWarsawImg from "@/public/stone/evening-warsaw.jpg"
+import realGreyImg from "@/public/stone/real-grey.jpg"
+import cardinalGreyImg from "@/public/stone/cardinal-grey.jpg"
+import greyQuoinImg from "@/public/stone/grey-quoin.jpg"
+import kostyantynivskyImg from "@/public/stone/kostyantynivsky.jpg"
+import boguslavskyImg from "@/public/stone/boguslavsky.jpg"
 
 /**
  * Довідник каменю — єдине джерело правди про те, між чим обирає клієнт.
@@ -98,7 +113,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
   },
   {
     key: "gabbro",
-    name: "Габро",
+    name: "Головинське габро",
     rock: "Габро",
     color: "black",
     look: "Глибокий чорний, майже без вкраплень. Після полірування — дзеркальна поверхня.",
@@ -112,7 +127,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
   },
   {
     key: "labradorite",
-    name: "Лабрадорит",
+    name: "Добринський лабрадорит (Extra Blue Ukraine)",
     rock: "Лабрадорит",
     color: "black",
     look: "Темний камінь із синіми та зеленими переливами, які спалахують під кутом до сонця.",
@@ -167,7 +182,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
   },
   {
     key: "marble",
-    name: "Мармур білий",
+    name: "Мармур Bianco Carrara",
     rock: "Мармур",
     color: "white",
     look: "Світлий, майже білий, із характерними прожилками. Кожна плита унікальна.",
@@ -309,6 +324,175 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     exampleCode: "113",
     interiorSlug: "crema-marfil",
   },
+  {
+    key: "Букинське",
+    name: "Букинське габро",
+    rock: "Габро",
+    color: "black",
+    look: "Насичений чорний із дуже дрібним зерном; після полірування майже дзеркальний, без сірих плям.",
+    why: "Найщільніше з габро: водопоглинання до 0,1 %, тому не темніє від вологи. Портрет тримає так само, як Головинське.",
+    priceLevel: "Вищий",
+    coef: 1.12,
+    swatch: bukynskeImg,
+    exampleCode: "003",
+    interiorSlug: "bukynske",
+  },
+  {
+    key: "Лугове",
+    name: "Лугове габро (Antik Nero)",
+    rock: "Габро",
+    color: "black",
+    look: "Чорний із ледь помітним сіро-зеленим відтінком, середнє зерно; менш дзеркальний за Головинське.",
+    why: "Найдоступніший чорний камінь довідника: на облицювання, цоколь і плитку, де потрібен чорний без преміальної ціни.",
+    priceLevel: "Найдоступніший",
+    coef: 0.72,
+    swatch: antikNeroImg,
+    exampleCode: "003",
+    interiorSlug: "antik-nero",
+  },
+  {
+    key: "Горбулівський",
+    name: "Горбулівський лабрадорит (Volga Blue Extra)",
+    rock: "Лабрадорит",
+    color: "black",
+    look: "Чорно-сіре тло з великими кристалами, які під кутом спалахують синім і зеленим.",
+    why: "Найбільші кристали серед українських лабрадоритів: перелив видно з відстані, тому його беруть на стелу, а не на дрібні елементи.",
+    priceLevel: "Вищий",
+    coef: 1.1,
+    swatch: volgaBlueExtraImg,
+    exampleCode: "045",
+    interiorSlug: "volga-blue-extra",
+  },
+  {
+    key: "Невирівський",
+    name: "Невирівський лабрадорит (Black Ice)",
+    rock: "Лабрадорит",
+    color: "black",
+    look: "Графітово-чорний, майже без переливу; лише зрідка сріблясто-фіолетовий спалах.",
+    why: "Для тих, кому потрібен глибокий чорний, але щільніший за габро: тримає гравіювання й не боїться морозу.",
+    priceLevel: "Найдоступніший",
+    coef: 0.83,
+    swatch: blackIceImg,
+    exampleCode: "045",
+    interiorSlug: "black-ice",
+  },
+  {
+    key: "Костопільський",
+    name: "Костопільський базальт",
+    rock: "Базальт",
+    color: "black",
+    look: "Темно-сірий, майже чорний, дуже дрібне зерно; поверхня матовіша за габро.",
+    why: "Місцевий камінь із сусіднього кар'єру: найкоротша доставка й стабільні партії. На цоколь, плитку й бруківку навколо ділянки.",
+    priceLevel: "Середній",
+    coef: 0.85,
+    swatch: kostopilskyiImg,
+    exampleCode: "069",
+    interiorSlug: "kostopilskyi",
+  },
+  {
+    key: "Хустовський",
+    name: "Хустовський базальт",
+    rock: "Базальт",
+    color: "black",
+    look: "Сіро-чорний, дрібнозернистий, зрідка з дрібними порами.",
+    why: "Закарпатський базальт із теплішим тоном, ніж берестовецький. Годиться на колоту бруківку та облицювання.",
+    priceLevel: "Середній",
+    coef: 0.85,
+    swatch: khustovskyiImg,
+    exampleCode: "069",
+    interiorSlug: "khustovskyi",
+  },
+  {
+    key: "Північно-Танський",
+    name: "Північно-Танський граніт (Greenish Tansky)",
+    rock: "Граніт",
+    color: "grey",
+    look: "Сірий з оливковим відтінком, середнє зерно, рівномірний.",
+    why: "Єдиний сіро-зелений серед сірих гранітів: коли Покостівський здається надто холодним, а Маславський надто темним.",
+    priceLevel: "Середній",
+    coef: 0.92,
+    swatch: greenishTanskyImg,
+    exampleCode: "074",
+    interiorSlug: "greenish-tansky",
+  },
+  {
+    key: "Західно-Танський",
+    name: "Західно-Танський граніт (Evening Warsaw)",
+    rock: "Граніт",
+    color: "grey",
+    look: "Темно-сірий із дрібними чорними вкрапленнями, рівний тон без плям.",
+    why: "Темніший за Танський, тому портрет читається краще. Один із найпоширеніших гранітів у виробників пам'ятників.",
+    priceLevel: "Середній",
+    coef: 0.9,
+    swatch: eveningWarsawImg,
+    exampleCode: "074",
+    interiorSlug: "evening-warsaw",
+  },
+  {
+    key: "Янцівський",
+    name: "Янцівський граніт (Real Grey)",
+    rock: "Граніт",
+    color: "grey",
+    look: "Світло-сірий, дрібнозернистий, дуже однорідний; світліший за Покостівський.",
+    why: "Найрівніший світло-сірий: без плям і жил, добре тримає геометрію на великих плитах облицювання.",
+    priceLevel: "Вищий",
+    coef: 1.08,
+    swatch: realGreyImg,
+    exampleCode: "073",
+    interiorSlug: "real-grey",
+  },
+  {
+    key: "Жежелівський",
+    name: "Жежелівський граніт (Cardinal Grey)",
+    rock: "Граніт",
+    color: "grey",
+    look: "Сірий із легким блакитним відтінком, середнє зерно, дрібні чорні цятки.",
+    why: "Холодний сірий для сучасних форм і європейських пам'ятників, де потрібен світлий камінь без теплого підтону.",
+    priceLevel: "Вищий",
+    coef: 1.05,
+    swatch: cardinalGreyImg,
+    exampleCode: "075",
+    interiorSlug: "cardinal-grey",
+  },
+  {
+    key: "Старобабанський",
+    name: "Старобабанський граніт (Grey Quoin)",
+    rock: "Граніт",
+    color: "grey",
+    look: "Сіре тло з рожевими вкрапленнями польового шпату, середнє зерно.",
+    why: "Сірий із теплим рожевим відтінком: м'якший за Покостівський і добре виглядає поруч із червоним каменем у двоколірних роботах.",
+    priceLevel: "Середній",
+    coef: 1.0,
+    swatch: greyQuoinImg,
+    exampleCode: "076",
+    interiorSlug: "grey-quoin",
+  },
+  {
+    key: "Костянтинівський",
+    name: "Костянтинівський граніт",
+    rock: "Граніт",
+    color: "grey",
+    look: "Дрібнозернистий холодний сірий із темними вкрапленнями.",
+    why: "Дрібне зерно дає чіткий контур гравіювання на світлому камені, коли чорний не підходить.",
+    priceLevel: "Вищий",
+    coef: 1.1,
+    swatch: kostyantynivskyImg,
+    exampleCode: "073",
+    interiorSlug: "kostyantynivsky",
+  },
+  {
+    key: "Богуславський",
+    name: "Богуславський граніт",
+    rock: "Граніт",
+    color: "grey",
+    look: "Сіро-рожевий, середньо-крупне зерно, помітні рожеві та чорні кристали.",
+    why: "Виразне зерно й теплий відтінок для тих, хто хоче живішу поверхню, ніж у рівних сірих гранітів.",
+    priceLevel: "Середній",
+    coef: 1.0,
+    swatch: boguslavskyImg,
+    exampleCode: "076",
+    interiorSlug: "boguslavsky",
+  },
 ]
 
 /** Породи в порядку, у якому їх пояснює сторінка-довідник. */
@@ -316,12 +500,12 @@ export const ROCK_TYPES = [
   {
     rock: "Габро" as const,
     colorRule: "Завжди чорний, з якого б родовища не був",
-    note: "Родовище на вигляд майже не впливає.",
+    note: "Родовище дає глибину чорного й зерно: Головинське найтемніше, Букинське найдрібніше, Лугове з сіро-зеленим відтінком.",
   },
   {
     rock: "Лабрадорит" as const,
     colorRule: "Чорний із синіми переливами",
-    note: "Родовище на вигляд майже не впливає.",
+    note: "Родовище визначає перелив: синій у Добринського, синьо-зелений у Горбулівського, майже без переливу в Невирівського.",
   },
   {
     rock: "Базальт" as const,

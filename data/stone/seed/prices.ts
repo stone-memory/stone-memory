@@ -9,7 +9,7 @@ export const knownPrices: Record<string, Price> = {
   'rosso-santiago': { value: 2030, unit: 'м²', currency: 'грн' },
   'maple-red': { value: 2200, unit: 'м²', currency: 'грн' },
   'star-of-ukraine': { value: 2620, unit: 'пог.м', currency: 'грн' },
-  sofiyivsky: { value: 2400, unit: 'пог.м', currency: 'грн' },
+  sophiyvsky: { value: 2400, unit: 'пог.м', currency: 'грн' },
   'bianco-carrara': { value: 240, unit: 'м²', currency: '€' },
   'taj-mahal': { value: 650, unit: 'м²', currency: '€' },
   'caesarstone-calacatta-nuvo': { value: 20148, unit: 'м²', currency: 'грн' },

@@ -46,6 +46,7 @@ next-env.d.ts
 
 # Оригінали рендерів каталогу (PNG по 2 МБ); у сховище йдуть стиснуті JPEG
 public/memorial/
+public/test-fav
 
 # Оригінали фото каталогу до перестискання
 backup-stone-images/
