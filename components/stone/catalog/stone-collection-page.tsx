@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { SITE_URL } from '@/lib/site-config'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -92,11 +94,14 @@ function schemaOffer(c: Collection) {
 }
 export async function StoneCollectionPage({ collection: c }: { collection: Collection }) {
   const collections = await getCollections()
+  // Показуємо лише ті знімки, які реально є: для частини каменів сцени сляба
+  // й застосування ще не згенеровані, і три однакові текстури виглядали гірше,
+  // ніж одна. Файли перевіряються на сервері, у public/.
   const gallery = [
       `/collections/${c.slug}-macro.webp`,
       `/collections/${c.slug}-slab.webp`,
       `/collections/${c.slug}-application.webp`,
-    ],
+    ].filter((src, i) => i === 0 || existsSync(join(process.cwd(), 'public', src))),
     isUaGranite =
       (c.family === 'Граніт' || c.family === 'Лабрадорит') && c.origin.includes('Україна'),
     specs = [
@@ -149,14 +154,13 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
       <section className="page-shell py-12">
         <div className="grid gap-5 lg:grid-cols-2">
           <GalleryLightbox
-            items={gallery.map((src, i) => ({
+            items={gallery.map((src) => ({
               src,
-              alt:
-                i === 0
-                  ? `Макрофактура ${c.name}`
-                  : i === 1
-                    ? `Повний сляб ${c.name} на складі`
-                    : `Застосування ${c.name} в інтер’єрі`,
+              alt: src.endsWith('-macro.webp')
+                ? `Макрофактура ${c.name}`
+                : src.endsWith('-slab.webp')
+                  ? `Повний сляб ${c.name} на складі`
+                  : `Застосування ${c.name} в інтер’єрі`,
             }))}
           />
           <div className="rounded-xl bg-card p-8 md:p-12">

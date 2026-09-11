@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useStonesAdminStore } from "@/lib/store/stones"
 import { ImageUploader } from "@/components/admin/image-uploader"
+import { Pagination, usePagination } from "@/components/admin/pagination"
 import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category, Locale } from "@/lib/types"
 import { materialLabel, colorLabel, shapeLabel, finishLabel } from "@/lib/i18n/filters"
 import { formatUAHDirect } from "@/lib/admin-format"
@@ -105,14 +106,20 @@ export default function AdminStonesPage() {
     })
   }, [items, query, showHidden])
 
+  // Пошук іде по всьому списку, у DOM лише поточна сторінка.
+  const pager = usePagination(filtered, `${query}|${showHidden}`)
+  const pageItems = pager.pageItems
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
-    const oldIndex = filtered.findIndex((r) => r.id === active.id)
-    const newIndex = filtered.findIndex((r) => r.id === over.id)
+    // Перетягування в межах сторінки; новий порядок сторінки вклеюємо в повний список.
+    const oldIndex = pageItems.findIndex((r) => r.id === active.id)
+    const newIndex = pageItems.findIndex((r) => r.id === over.id)
     if (oldIndex === -1 || newIndex === -1) return
-    const reordered = arrayMove(filtered, oldIndex, newIndex)
-    reorder(reordered.map((r) => r.id))
+    const reorderedPage = arrayMove(pageItems, oldIndex, newIndex)
+    const full = [...filtered.slice(0, pager.from), ...reorderedPage, ...filtered.slice(pager.to)]
+    reorder(full.map((r) => r.id))
   }
 
   const totals = {
@@ -211,6 +218,8 @@ export default function AdminStonesPage() {
           client tree no longer matched the server tree — that was the
           "<div> cannot be a child of <table>" hydration error.
           SortableContext renders no DOM of its own and can stay inside. */}
+      {hasHydrated && <Pagination {...pager} onChange={pager.setPage} />}
+
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-card">
           <table className="w-full text-sm">
@@ -229,9 +238,9 @@ export default function AdminStonesPage() {
                 <th className="px-4 py-3 text-right">Дії</th>
               </tr>
             </thead>
-            <SortableContext items={filtered.map((r) => r.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext items={pageItems.map((r) => r.id)} strategy={verticalListSortingStrategy}>
               <tbody className="divide-y divide-foreground/5">
-                {filtered.map((row) => (
+                {pageItems.map((row) => (
                   <SortableStoneRow
                     key={row.id}
                     row={row}
@@ -255,6 +264,8 @@ export default function AdminStonesPage() {
           </table>
         </div>
       </DndContext>
+
+      {hasHydrated && filtered.length > 0 && <Pagination {...pager} onChange={pager.setPage} />}
 
       {editingId && (
         <StoneEditor
