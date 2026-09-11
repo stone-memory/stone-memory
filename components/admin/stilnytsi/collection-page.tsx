@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ArrowDown, ArrowUp, Eye, EyeOff, Pencil, Plus, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Pagination, usePagination } from "@/components/admin/pagination"
 import { authedFetch } from "@/lib/authed-fetch"
 import { shouldBypassOptimizer } from "@/lib/image-source"
 import { stilnytsiImageUrl } from "@/lib/stilnytsi/images"
@@ -128,6 +129,9 @@ export function StilnytsiCollectionPage({
     return list
   }, [col.rows, q, showHidden, searchKeys])
 
+  // Пошук по всіх записах, у DOM лише поточна сторінка.
+  const pager = usePagination(visible, `${q}|${showHidden}`)
+
   const submit = async () => {
     if (!editing) return
     setFormError(null)
@@ -187,8 +191,10 @@ export function StilnytsiCollectionPage({
         </div>
       )}
 
+      {col.loaded && <Pagination {...pager} onChange={pager.setPage} />}
+
       <div className="space-y-2">
-        {visible.map((r) => {
+        {pager.pageItems.map((r) => {
           const s = { ...summary(r.data), image: stilnytsiImageUrl(summary(r.data).image) }
           const i = col.rows.findIndex((x) => x.id === r.id)
           return (
@@ -221,6 +227,8 @@ export function StilnytsiCollectionPage({
           )
         })}
       </div>
+
+      {col.loaded && visible.length > 0 && <Pagination {...pager} onChange={pager.setPage} />}
 
       {editing && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4" onClick={() => setEditing(null)}>
