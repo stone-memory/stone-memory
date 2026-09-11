@@ -13,7 +13,7 @@ export async function SupportPage({ slug }: { slug: string }) {
       <Breadcrumbs items={[{ name: 'Підтримка', href: '/arkhitekturnyi-kamin/faq' }, { name: page.title }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">{page.eyebrow}</p>
-        <h1 className="mt-5 max-w-5xl text-balance text-6xl font-semibold tracking-[-.055em] md:text-8xl">
+        <h1 className="mt-5 max-w-5xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
           {page.title}
         </h1>
         <p className="mt-8 max-w-xl leading-7 text-muted-foreground">{page.copy}</p>

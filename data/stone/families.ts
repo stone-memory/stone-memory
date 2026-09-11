@@ -14,6 +14,9 @@ export const families = {
   keramogranit: 'Керамограніт',
   kvarcyt: 'Кварцит',
   labradoryt: 'Лабрадорит',
+  oniks: 'Онікс',
+  travertyn: 'Травертин',
+  vapnyak: 'Вапняк',
 } as const
 
 export type FamilySlug = keyof typeof families

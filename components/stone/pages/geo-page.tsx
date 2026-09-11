@@ -28,7 +28,7 @@ export async function GeoPage({ city, data: d }: { city: string; data: GeoCity }
       />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Локальний сервіс</p>
-        <h1 className="mt-5 max-w-5xl text-6xl font-semibold tracking-[-.055em] md:text-8xl">
+        <h1 className="mt-5 max-w-5xl text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
           Кам’яні стільниці у {d.locative}.
         </h1>
         <p className="mt-8 max-w-xl leading-7 text-muted-foreground">

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { Collection } from '@/lib/stone/cms-types'
 import { getCollections } from '@/lib/stone/cms'
 import { formatPrice } from '@/lib/stone/prices'
+import { GalleryLightbox } from '@/components/stone/catalog/gallery-lightbox'
 
 // Застосування з даних колекцій → категорія виробів (data/materials.ts → categories).
 // Категорій «ванна», «підлога», «меблі» в каталозі немає: ведемо на найближчий виріб.
@@ -147,34 +148,22 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
       />
       <section className="page-shell py-12">
         <div className="grid gap-5 lg:grid-cols-2">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {gallery.map((src, i) => (
-              <div
-                key={src}
-                className={`relative overflow-hidden rounded-xl ${i === 0 ? 'aspect-square sm:col-span-2' : 'aspect-[4/3]'}`}
-              >
-                <Image
-                  src={src}
-                  alt={
-                    i === 0
-                      ? `Макрофактура ${c.name}`
-                      : i === 1
-                        ? `Повний сляб ${c.name} на складі`
-                        : `Застосування ${c.name} в інтер’єрі`
-                  }
-                  fill
-                  priority={i === 0}
-                  sizes="(max-width:1024px) 100vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+          <GalleryLightbox
+            items={gallery.map((src, i) => ({
+              src,
+              alt:
+                i === 0
+                  ? `Макрофактура ${c.name}`
+                  : i === 1
+                    ? `Повний сляб ${c.name} на складі`
+                    : `Застосування ${c.name} в інтер’єрі`,
+            }))}
+          />
           <div className="rounded-xl bg-card p-8 md:p-12">
             <p className="eyebrow text-accent">
               {c.family} · {c.tone}
             </p>
-            <h1 className="mt-5 text-balance text-5xl font-semibold tracking-[-.05em] md:text-7xl">
+            <h1 className="mt-5 text-balance text-3xl font-semibold tracking-[-.05em] sm:text-5xl md:text-7xl">
               {c.name}
             </h1>
             <p className="mt-6 leading-7 text-muted-foreground">{c.description}</p>

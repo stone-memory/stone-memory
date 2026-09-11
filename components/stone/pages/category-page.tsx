@@ -89,7 +89,7 @@ export async function CategoryPage({ slug }: { slug: string }) {
       <section className="page-shell grid gap-10 py-20 lg:grid-cols-2 lg:items-end">
         <div>
           <p className="eyebrow text-accent">Вироби</p>
-          <h1 className="mt-5 text-7xl font-semibold tracking-[-.055em] md:text-8xl">
+          <h1 className="mt-5 text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
             {item.name}
           </h1>
           <p className="mt-6 max-w-lg leading-7 text-muted-foreground">

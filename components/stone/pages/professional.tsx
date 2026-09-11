@@ -32,7 +32,7 @@ export async function ProfessionalPage({ slug }: { slug: string }) {
       <section className="page-shell grid gap-10 py-20 lg:grid-cols-2 lg:items-center">
         <div>
           <p className="eyebrow text-accent">B2B · Stone Memory</p>
-          <h1 className="mt-5 text-balance text-6xl font-semibold tracking-[-.055em] md:text-8xl">
+          <h1 className="mt-5 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
             {data.title}
           </h1>
           <p className="mt-7 max-w-xl leading-7 text-muted-foreground">{data.copy}</p>

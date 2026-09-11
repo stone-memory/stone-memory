@@ -11,7 +11,7 @@ export default async function Page() {
       <Breadcrumbs items={[{ name: 'Каталог каменю' }]} />
       <section className="page-shell pt-16">
         <p className="eyebrow text-accent">{collections.length} колекцій</p>
-        <h1 className="mt-5 max-w-4xl text-balance text-6xl font-semibold tracking-[-.055em] md:text-8xl">
+        <h1 className="mt-5 max-w-4xl text-balance text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
           Каталог каменю
         </h1>
         <p className="mt-7 max-w-xl leading-7 text-muted-foreground">
