@@ -223,7 +223,9 @@
   padding-block: clamp(5rem, 11vw, 9rem);
 }
 .display {
-  font-size: clamp(3rem, 8.5vw, 7.5rem);
+  /* Нижня межа 2.25rem, а не 3rem: на телефоні 48px для трирядкового
+     заголовка забагато, 36px читається комфортно. */
+  font-size: clamp(2.25rem, 8.5vw, 7.5rem);
   line-height: 0.91;
   letter-spacing: -0.065em;
   font-weight: 600;

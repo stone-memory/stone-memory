@@ -173,7 +173,7 @@ export function ConsultModal() {
             <div>
               <Dialog.Title className="text-2xl font-semibold tracking-tight-custom">{title}</Dialog.Title>
               <Dialog.Description className="mt-1 text-sm text-muted-foreground">
-                Відповідає майстер, а не бот. Фото ділянки чи ескіз можна прикріпити одразу.
+                Фото ділянки чи ескіз можна прикріпити одразу.
               </Dialog.Description>
             </div>
             <Dialog.Close

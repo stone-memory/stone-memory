@@ -81,8 +81,7 @@ export function AboutDetails({ modelCount }: { modelCount: number }) {
             </li>
           </ol>
           <p>
-            Оплата трьома частинами: {PAYMENT.steps.map((s) => `${s.share} ${s.when}`).join(", ")}. Авансу «за повітря»
-            немає: більшу частину ви платите, коли камінь готовий і ви його побачили.
+            Оплата трьома частинами: {PAYMENT.steps.map((s) => `${s.share} ${s.when}`).join(", ")}.
           </p>
         </Block>
 
