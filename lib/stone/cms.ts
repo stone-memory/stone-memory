@@ -17,7 +17,9 @@ import type { Article, Collection, Project, Remnant, SettingKey, Settings, Slab 
  * коректний контент замість помилки.
  */
 export const CMS_TAG = "stilnytsi"
-const TTL = 3600
+// 5 хвилин, а не година: правки, зроблені прямо в базі (SQL-імпорт), не
+// скидають тег, і різні інстанси сервера показували різний набір колекцій.
+const TTL = 300
 
 type Row<T> = { data: T; hidden: boolean }
 

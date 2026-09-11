@@ -1,7 +1,7 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { STONE_GUIDE } from "@/lib/stone-guide"
+import { HomeStoneFamily } from "@/components/home-stone-family"
 import type { Collection } from "@/lib/stone/cms-types"
 
 /**
@@ -84,47 +84,17 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
                 <h3 className="text-2xl font-semibold tracking-tight-custom md:text-3xl">{family}</h3>
                 <p className="max-w-2xl text-[15px] text-muted-foreground">{FAMILY_NOTE[family]}</p>
               </div>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-                {items.map((c) => {
-                  const memorial = memorialHref(c.slug)
-                  return (
-                    <article
-                      key={c.slug}
-                      className="group overflow-hidden rounded-2xl bg-card ring-1 ring-black/[0.05] shadow-soft transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-hover"
-                    >
-                      <Link href={`/arkhitekturnyi-kamin/materialy/${c.slug}`} className="relative block aspect-square overflow-hidden bg-foreground/5">
-                        <Image
-                          src={c.cardImage || c.image}
-                          alt={`${c.name} — ${c.tone}`}
-                          fill
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                          className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.05]"
-                        />
-                      </Link>
-                      <div className="p-4">
-                        <h4 className="text-[15px] font-semibold leading-snug tracking-tight-custom">{c.name.replace(/^(Граніт|Мармур|Лабрадорит|Кварцит)\s+/, "")}</h4>
-                        <p className="mt-1 text-xs text-muted-foreground">{c.origin.split(",")[0]} · {c.tone}</p>
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {memorial && (
-                            <Link
-                              href={memorial}
-                              className="rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium text-background transition-transform hover:-translate-y-[1px]"
-                            >
-                              Пам'ятники
-                            </Link>
-                          )}
-                          <Link
-                            href={`/arkhitekturnyi-kamin/materialy/${c.slug}`}
-                            className="rounded-full border border-foreground/15 px-2.5 py-1 text-[11px] font-medium transition-colors hover:border-foreground/40"
-                          >
-                            Для дому
-                          </Link>
-                        </div>
-                      </div>
-                    </article>
-                  )
-                })}
-              </div>
+              <HomeStoneFamily
+                family={family}
+                items={items.map((c) => ({
+                  slug: c.slug,
+                  name: c.name,
+                  origin: c.origin,
+                  tone: c.tone,
+                  image: c.cardImage || c.image,
+                  memorialHref: memorialHref(c.slug),
+                }))}
+              />
               <div className="mt-4">
                 <Link
                   href={FAMILY_HREF[family] ?? "/arkhitekturnyi-kamin/materialy"}
