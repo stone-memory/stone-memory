@@ -13,15 +13,9 @@ export function Header({ contacts }: { contacts: Contacts }) {
   return (
     <header className="glass sticky top-0 z-40 border-b border-border/70">
       <div className="page-shell flex h-14 items-center justify-between">
-        <Link href="/" aria-label="Stone Memory — головна">
-          <Image
-            src="/logo-stone-memory.svg"
-            alt="Stone Memory"
-            width={3000}
-            height={714}
-            priority
-            className="h-auto w-32 md:w-36"
-          />
+        <Link href="/" aria-label="Stone Memory — головна" className="flex items-center gap-2 text-foreground">
+          <Image src="/logo-mark.png" alt="" width={28} height={28} priority className="h-7 w-7 select-none" />
+          <span className="text-[17px] font-semibold tracking-tight-custom">Stone Memory</span>
         </Link>
         <nav className="hidden items-center gap-7 md:flex" aria-label="Головна навігація">
           {nav.map((n) => (
@@ -117,13 +111,10 @@ export function Footer({ contacts }: { contacts: Contacts }) {
       <div className="page-shell py-16 md:py-20">
         <div className="grid gap-14 lg:grid-cols-2">
           <div>
-            <Image
-              src="/logo-stone-memory.svg"
-              alt="Stone Memory"
-              width={3000}
-              height={714}
-              className="h-auto w-48 invert"
-            />
+            <Link href="/" aria-label="Stone Memory" className="flex items-center gap-2 text-primary-foreground">
+              <Image src="/logo-mark.png" alt="" width={36} height={36} className="h-9 w-9 select-none invert" />
+              <span className="text-xl font-semibold tracking-tight-custom">Stone Memory</span>
+            </Link>
             <p className="mt-7 max-w-lg text-lg leading-7">
               Натуральний камінь для дому й архітектури. Власне виробництво в Костополі.
             </p>

@@ -160,7 +160,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
         </Section>
 
         {picks.length > 0 && (
-          <Section eyebrow="З каталогу" title={`Що замовляють ${city.inCity} найчастіше`}>
+          <Section eyebrow="З каталогу" title="Що замовляють">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {picks.map((s, i) => (
                 <StoneCard key={s.id} item={s} priority={i < 3} />
