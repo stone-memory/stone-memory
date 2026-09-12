@@ -4,7 +4,7 @@ import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
 const PATH = "/vidhuky"
 
-export const revalidate = 60
+export const revalidate = 3600
 
 /**
  * Поки відгуків немає — сторінка лишається доступною, але не подається в

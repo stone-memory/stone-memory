@@ -10,7 +10,7 @@ import { CITIES, CONTACT, DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, cityByS
 import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 import type { StoneItem } from "@/lib/types"
 
-export const revalidate = 60
+export const revalidate = 3600
 export const dynamicParams = false
 
 type Params = { city: string }

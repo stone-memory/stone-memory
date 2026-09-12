@@ -10,7 +10,7 @@ import { absoluteUrl } from "@/lib/site-config"
 import { stoneCode, stonePath } from "@/lib/catalog-taxonomy"
 import { STONE_GUIDE, ROCK_TYPES } from "@/lib/stone-guide"
 
-export const revalidate = 60
+export const revalidate = 3600
 
 const PATH = "/memorial/kameni"
 

@@ -4,7 +4,7 @@ import { absoluteUrl } from "@/lib/site-config"
 
 const PATH = "/proekty"
 
-export const revalidate = 60
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: "Проєкти — виконані пам'ятники та меморіальні комплекси",

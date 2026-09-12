@@ -11,7 +11,7 @@ import {
   stonePath,
 } from "@/lib/catalog-taxonomy"
 
-export const revalidate = 60
+export const revalidate = 3600
 
 /**
  * Один сегмент — три види адрес:
