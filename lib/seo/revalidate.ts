@@ -11,10 +11,18 @@ const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
     ["/memorial/kameni", "page"],
     // Covers both facet and product pages — they share one dynamic segment.
     ["/memorial/pamyatnyky/[slug]", "page"],
+    ["/memorial/pamyatnyky/[slug]/[page]", "page"],
+    // Ціни, хаб пам'ятників, сторінки міст і «Про нас» рахують медіани й
+    // кількість моделей із каталогу, тому теж залежать від товарів.
+    ["/tsiny", "page"],
+    ["/pamyatnyky", "page"],
+    ["/pamyatnyky/[city]", "page"],
+    ["/pro-nas", "page"],
   ],
   services: [["/posluhy", "page"]],
   projects: [["/proekty", "page"]],
   articles: [
+    ["/", "page"],
     ["/blog", "page"],
     ["/blog/[slug]", "page"],
   ],
@@ -22,7 +30,10 @@ const RESOURCE_PATHS: Record<string, Array<[string, "page" | "layout"]>> = {
     ["/", "page"],
     ["/vidhuky", "page"],
   ],
-  "faq-items": [["/", "page"]],
+  "faq-items": [
+    ["/", "page"],
+    ["/pytannya", "page"],
+  ],
   // featured stones aren't a generic resource — handled via the literal key below
   featured: [
     ["/", "page"],

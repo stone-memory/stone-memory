@@ -45,7 +45,9 @@ const nextConfig = {
   },
   // Let Next.js optimise remote images — huge LCP + bandwidth win
   images: {
-    formats: ["image/avif", "image/webp"],
+    // Лише webp: кожен формат — окрема трансформація в лічильнику Vercel
+    // (5 тис. на місяць на Hobby), а avif до того ж повільніший у кодуванні.
+    formats: ["image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },

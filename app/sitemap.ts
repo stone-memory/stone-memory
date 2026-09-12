@@ -11,7 +11,7 @@ import {
 import { getAllPaths } from "@/lib/stone/routes"
 import { CITIES, CONTENT_UPDATED } from "@/lib/site-facts"
 
-export const revalidate = 60
+export const revalidate = 3600
 
 /**
  * No `hreflang` alternates here (and none in page metadata either).

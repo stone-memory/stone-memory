@@ -40,12 +40,12 @@ export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> 
 
   // The nav toggle is read in the root layout (shared by every page), so
   // re-render all pages' layout to apply it promptly.
-  if (key === NAV_SETTINGS_KEY) {
-    try {
-      revalidatePath("/", "layout")
-    } catch {
-      // best-effort — revalidation is an optimisation, not correctness
-    }
+  try {
+    if (key === NAV_SETTINGS_KEY) revalidatePath("/", "layout")
+    // Текст «Про нас» читається на сервері сторінки, кеш якої живе годину.
+    if (key === "about_overrides") revalidatePath("/pro-nas", "page")
+  } catch {
+    // best-effort — revalidation is an optimisation, not correctness
   }
 
   return NextResponse.json({ data: data?.data, updatedAt: data?.updated_at })
