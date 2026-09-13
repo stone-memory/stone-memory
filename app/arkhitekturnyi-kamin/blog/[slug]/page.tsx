@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/stone/seo'
 import { getArticle, getArticles } from '@/lib/stone/cms'
+import { versioned } from '@/lib/stone/asset-url'
 import { ArticlePage } from '@/components/stone/pages/article-page'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: Props) {
   return pageMetadata(`/arkhitekturnyi-kamin/blog/${slug}`, {
     title: a.title,
     description: a.description,
-    image: a.image || `/blog/${a.slug}.webp`,
+    image: a.image || versioned(`/blog/${a.slug}.webp`),
   })
 }
 export default async function Page({ params }: Props) {

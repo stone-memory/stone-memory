@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { SITE_URL } from '@/lib/site-config'
+import { versioned } from '@/lib/stone/asset-url'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Collection } from '@/lib/stone/cms-types'
@@ -97,11 +98,15 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
   // Показуємо лише ті знімки, які реально є: для частини каменів сцени сляба
   // й застосування ще не згенеровані, і три однакові текстури виглядали гірше,
   // ніж одна. Файли перевіряються на сервері, у public/.
+  // Версія ?v= додається вже після перевірки, бо existsSync шукає файл за
+  // чистим шляхом.
   const gallery = [
       `/collections/${c.slug}-macro.webp`,
       `/collections/${c.slug}-slab.webp`,
       `/collections/${c.slug}-application.webp`,
-    ].filter((src, i) => i === 0 || existsSync(join(process.cwd(), 'public', src))),
+    ]
+      .filter((src, i) => i === 0 || existsSync(join(process.cwd(), 'public', src)))
+      .map(versioned),
     isUaGranite =
       (c.family === 'Граніт' || c.family === 'Лабрадорит') && c.origin.includes('Україна'),
     specs = [
@@ -156,9 +161,9 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
           <GalleryLightbox
             items={gallery.map((src) => ({
               src,
-              alt: src.endsWith('-macro.webp')
+              alt: src.includes('-macro.webp')
                 ? `Макрофактура ${c.name}`
-                : src.endsWith('-slab.webp')
+                : src.includes('-slab.webp')
                   ? `Повний сляб ${c.name} на складі`
                   : `Застосування ${c.name} в інтер’єрі`,
             }))}
@@ -239,7 +244,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
               >
                 <div className="relative aspect-[4/3]">
                   <Image
-                    src={`/collections/${x.slug}-macro.webp`}
+                    src={versioned(`/collections/${x.slug}-macro.webp`)}
                     alt={`Фактура ${x.name}`}
                     fill
                     className="object-cover"

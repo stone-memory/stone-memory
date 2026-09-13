@@ -5,8 +5,6 @@ import { dirname } from "node:path"
 const isDev = process.env.NODE_ENV !== "production"
 const projectRoot = dirname(fileURLToPath(import.meta.url))
 
-// Strict CSP — we allow inline style (Tailwind/Framer) + Next.js inline scripts via nonces in production.
-// In dev, Next.js Turbopack needs unsafe-eval, so we relax there.
 const cspDirectives = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -48,6 +46,19 @@ const nextConfig = {
     // Лише webp: кожен формат — окрема трансформація в лічильнику Vercel
     // (5 тис. на місяць на Hobby), а avif до того ж повільніший у кодуванні.
     formats: ["image/webp"],
+    // Next 16 забороняє query в локальних src, поки шлях не дозволено тут.
+    // Фото каменю отримують ?v=<хеш вмісту> (scripts/asset-manifest.mjs +
+    // lib/stone/asset-url.ts), щоб заміна файлу під тією ж адресою не
+    // застрягала на 7 днів у кеші браузера й CDN. Точний ?v= на кожен файл
+    // дозволити не можна: ліміт 25 записів, тож для чотирьох тек із фото
+    // допускається будь-який query, для решти — жодного.
+    localPatterns: [
+      { pathname: "/**", search: "" },
+      { pathname: "/materials/**" },
+      { pathname: "/collections/**" },
+      { pathname: "/blog/**" },
+      { pathname: "/stone/**" },
+    ],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
