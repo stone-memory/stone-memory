@@ -53,6 +53,11 @@ import rosaKyshynImg from "@/public/stone/rosa-kyshyn.jpg"
 import calacattaOroImg from "@/public/stone/calacatta-oro.jpg"
 import statuarioImg from "@/public/stone/statuario.jpg"
 import marmaraWhiteImg from "@/public/stone/marmara-white.jpg"
+// Лабрадорити й габро, що вже є в архітектурному розділі з фото, але не були
+// в селекторі пам'ятників, хоча лабрадорит — другий за попитом камінь каталогу.
+import irinaBlueImg from "@/public/materials/irina-blue.webp"
+import volgaBlueImg from "@/public/materials/volga-blue.webp"
+import kometaBlackImg from "@/public/materials/kometa-black.webp"
 
 /**
  * Довідник каменю — єдине джерело правди про те, між чим обирає клієнт.
@@ -129,12 +134,13 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     color: "black",
     look: "Глибокий чорний, майже без вкраплень. Після полірування — дзеркальна поверхня.",
     why: "Дає найбільший контраст під гравіювання: портрет на габро виглядає майже фотографічно. Саме тому це найпоширеніший вибір для пам'ятника з портретом.",
-    priceLevel: "Середній",
+    priceLevel: "Найдоступніший",
     coef: 0.8,
     swatch: gabbroImg,
     exampleCode: "003",
     facet: "chorni",
-    interiorSlug: "kometa-black",
+    // Своя колекція в архітектурному розділі; kometa-black — це Сліпчицьке.
+    interiorSlug: "holovynske",
   },
   {
     key: "labradorite",
@@ -148,7 +154,8 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: labradoriteImg,
     exampleCode: "045",
     facet: "chorni",
-    interiorSlug: "volga-blue",
+    // volga-blue в архітектурному розділі — Кам'янобрідський, інший камінь.
+    interiorSlug: "extra-blue-ukraine",
   },
   {
     key: "Капустинський",
@@ -211,11 +218,12 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     color: "grey",
     look: "Світло-сірий із дрібним зерном і ледь помітними темними цятками, рівномірний по всій плиті.",
     why: "Найближчий за виглядом до покостівського, але трохи світліший. Беруть, коли поруч уже стоїть світлий пам'ятник і потрібно потрапити в тон.",
-    priceLevel: "Найдоступніший",
+    priceLevel: "Середній",
     coef: 0.9,
     swatch: tanskyiImg,
     exampleCode: "074",
     facet: "siri",
+    interiorSlug: "tansky",
   },
   {
     key: "Софіївський",
@@ -229,6 +237,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: sofiyivskyiImg,
     exampleCode: "075",
     facet: "siri",
+    interiorSlug: "sophiyvsky",
   },
   {
     key: "Маславський",
@@ -241,6 +250,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     coef: 1.0,
     swatch: maslavskyiImg,
     exampleCode: "083",
+    interiorSlug: "verde-oliva",
   },
   {
     key: "Берестовецький",
@@ -249,11 +259,12 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     color: "black",
     look: "Темно-сірий до чорного, дуже дрібне однорідне зерно, матовіший за габро після полірування.",
     why: "Наш місцевий камінь: кар'єр у Берестовці за 15 км від цеху в Костополі. Це базальт, а не граніт: щільніший, не боїться морозу, і доставка каменю в ціну майже не входить.",
-    priceLevel: "Середній",
+    priceLevel: "Найдоступніший",
     coef: 0.85,
     swatch: berestovetskyiImg,
     exampleCode: "069",
     facet: "chorni",
+    interiorSlug: "berestovetskyi",
   },
   {
     key: "Токівський",
@@ -362,6 +373,20 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     interiorSlug: "antik-nero",
   },
   {
+    key: "Сліпчицьке",
+    name: "Сліпчицьке габро (Kometa Black)",
+    rock: "Габро",
+    color: "black",
+    look: "Майже чорний із ледь помітними сірими зернами; полірований трохи «м'якший» за Головинське, термооброблений — глибокий сірий.",
+    why: "Щільний і без рудих вкраплень, як Головинське, але з власного кар'єру з великими блоками: підходить на довгі елементи, цоколі й огорожі без стиків.",
+    priceLevel: "Найдоступніший",
+    coef: 0.82,
+    swatch: kometaBlackImg,
+    exampleCode: "003",
+    facet: "chorni",
+    interiorSlug: "kometa-black",
+  },
+  {
     key: "Горбулівський",
     name: "Горбулівський лабрадорит (Volga Blue Extra)",
     rock: "Лабрадорит",
@@ -373,6 +398,34 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     swatch: volgaBlueExtraImg,
     exampleCode: "045",
     interiorSlug: "volga-blue-extra",
+  },
+  {
+    key: "Кам'янобрідський",
+    name: "Кам'янобрідський лабрадорит (Volga Blue)",
+    rock: "Лабрадорит",
+    color: "black",
+    look: "Чорне тло з великими кристалами, які спалахують синім, зеленим і золотим під кутом до світла.",
+    why: "Найвідоміший на ринку лабрадорит: перелив яскравий і видно його з відстані, тому беруть на стелу, коли пам'ятник має вирізнятися серед чорних.",
+    priceLevel: "Вищий",
+    coef: 1.05,
+    swatch: volgaBlueImg,
+    exampleCode: "045",
+    facet: "chorni",
+    interiorSlug: "volga-blue",
+  },
+  {
+    key: "Осниківський",
+    name: "Осниківський лабрадорит (Irina Blue)",
+    rock: "Лабрадорит",
+    color: "black",
+    look: "Темніший і спокійніший за Volga Blue: дрібніші кристали, рівномірний синій відблиск без золотого.",
+    why: "Коли хочеться живого каменю, але без контрастних спалахів: перелив м'який, портрет читається як на габро.",
+    priceLevel: "Середній",
+    coef: 0.95,
+    swatch: irinaBlueImg,
+    exampleCode: "045",
+    facet: "chorni",
+    interiorSlug: "irina-blue",
   },
   {
     key: "Невирівський",
@@ -394,7 +447,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     color: "black",
     look: "Темно-сірий, майже чорний, дуже дрібне зерно; поверхня матовіша за габро.",
     why: "Місцевий камінь із сусіднього кар'єру: найкоротша доставка й стабільні партії. На цоколь, плитку й бруківку навколо ділянки.",
-    priceLevel: "Середній",
+    priceLevel: "Найдоступніший",
     coef: 0.85,
     swatch: kostopilskyiImg,
     exampleCode: "069",
@@ -407,7 +460,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     color: "black",
     look: "Сіро-чорний, дрібнозернистий, зрідка з дрібними порами.",
     why: "Закарпатський базальт із теплішим тоном, ніж берестовецький. Годиться на колоту бруківку та облицювання.",
-    priceLevel: "Середній",
+    priceLevel: "Найдоступніший",
     coef: 0.85,
     swatch: khustovskyiImg,
     exampleCode: "069",
