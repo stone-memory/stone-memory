@@ -111,7 +111,11 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 10 }}
+      // Картки з priority — це перший екран каталогу, серед них LCP-елемент.
+      // З initial={{opacity:0}} вони приходили в HTML невидимими і чекали на
+      // гідратацію framer-motion (на телефоні ~0,8 с «element render delay»
+      // у Lighthouse), тож для них анімацію появи вимкнено.
+      initial={priority ? false : { opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.01 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
@@ -130,6 +134,9 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={priority}
+            // Next 16 з priority додає лише <link rel=preload>; без явного
+            // fetchpriority браузер тягне LCP-картинку зі звичайним пріоритетом.
+            fetchPriority={priority ? "high" : undefined}
             onError={() => setImageSrc("/stones/memorial-01.svg")}
             className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
           />

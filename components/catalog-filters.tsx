@@ -688,7 +688,7 @@ function MobileDrawer(props: {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", stiffness: 350, damping: 36 }}
-              className="fixed inset-x-0 bottom-0 z-[100] flex max-h-[90vh] flex-col rounded-t-3xl bg-card"
+              className="fixed inset-x-0 bottom-0 z-[100] flex max-h-[90dvh] flex-col rounded-t-3xl bg-card"
               style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             >
               <div className="px-6 pt-4 pb-2">
