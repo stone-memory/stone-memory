@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { versioned } from '@/lib/stone/asset-url'
 import { SITE_URL } from '@/lib/site-config'
 import { getKnownPaths } from '@/lib/stone/routes'
 import { stoneHref } from '@/lib/stone/config'
@@ -12,8 +13,8 @@ import { Breadcrumbs, Faq, JsonLd } from '@/components/stone/pages/primitives'
 
 export async function ArticlePage({ article: a }: { article: Article }) {
   const [collections, known] = await Promise.all([getCollections(), getKnownPaths()])
-  const cover = a.image || `/blog/${a.slug}.webp`
-  const detail = a.detailImage || `/blog/${a.slug}-detail.webp`
+  const cover = a.image || versioned(`/blog/${a.slug}.webp`)
+  const detail = a.detailImage || versioned(`/blog/${a.slug}-detail.webp`)
   return (
     <main>
       <Breadcrumbs items={[{ name: 'Журнал', href: '/arkhitekturnyi-kamin/blog' }, { name: a.title }]} />

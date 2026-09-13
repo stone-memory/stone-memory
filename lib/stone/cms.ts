@@ -2,6 +2,7 @@ import "server-only"
 import { unstable_cache } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { Article, Collection, Project, Remnant, SettingKey, Settings, Slab } from "@/lib/stone/cms-types"
+import { versioned, versionedAll } from "@/lib/stone/asset-url"
 
 /**
  * Контент розділу «Архітектурний камінь» (/arkhitekturnyi-kamin) з таблиць stilnytsi_*.
@@ -40,17 +41,33 @@ async function list<T>(table: string, seed: () => Promise<T[]>): Promise<T[]> {
 const cached = <T>(key: string, fn: () => Promise<T>) =>
   unstable_cache(fn, [`stone-${key}`], { tags: [CMS_TAG], revalidate: TTL })()
 
+// Адреси фото з public/ отримують ?v=<хеш вмісту> тут, на рівні даних, тож
+// кожне місце рендеру (каталог, картка, галерея, головна, sitemap-images)
+// бачить уже версійовану адресу. Див. lib/stone/asset-url.ts.
 export const getCollections = () =>
-  cached("materials", () =>
-    list<Collection>("stilnytsi_materials", async () => (await import("@/data/stone/seed/collections")).collections)
+  cached("materials", async () =>
+    (
+      await list<Collection>(
+        "stilnytsi_materials",
+        async () => (await import("@/data/stone/seed/collections")).collections
+      )
+    ).map((c) => ({ ...c, image: versioned(c.image), cardImage: versioned(c.cardImage) }))
   )
 export const getProjects = () =>
-  cached("projects", () =>
-    list<Project>("stilnytsi_projects", async () => (await import("@/data/stone/seed/projects")).projects)
+  cached("projects", async () =>
+    (
+      await list<Project>("stilnytsi_projects", async () => (await import("@/data/stone/seed/projects")).projects)
+    ).map((p) => ({ ...p, image: versioned(p.image), gallery: versionedAll(p.gallery ?? []) }))
   )
 export const getArticles = () =>
-  cached("articles", () =>
-    list<Article>("stilnytsi_articles", async () => (await import("@/data/stone/seed/articles")).articles)
+  cached("articles", async () =>
+    (
+      await list<Article>("stilnytsi_articles", async () => (await import("@/data/stone/seed/articles")).articles)
+    ).map((a) => ({
+      ...a,
+      image: a.image ? versioned(a.image) : a.image,
+      detailImage: a.detailImage ? versioned(a.detailImage) : a.detailImage,
+    }))
   )
 export const getSlabs = () =>
   cached("slabs", () => list<Slab>("stilnytsi_slabs", async () => (await import("@/data/stone/seed/slabs")).slabs))
