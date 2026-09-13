@@ -182,17 +182,21 @@ export function CookieConsent() {
           animate={prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
           exit={prefersReduced ? { opacity: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-x-4 bottom-4 z-[90] mx-auto max-w-2xl rounded-2xl border border-foreground/10 bg-card p-5 shadow-hover md:inset-x-auto md:left-4 md:right-4 md:p-6"
+          // На телефоні банер займав 375 px із 844 — 44 % екрана: три кнопки
+          // ставали одна під одною, а панель «Подзвонити / Чат» ховалась за
+          // ним. Тепер дві головні кнопки в один ряд, «Налаштувати» —
+          // текстовим посиланням, менші відступи й кегль: ~230 px (28 %).
+          className="fixed inset-x-3 bottom-3 z-[90] mx-auto max-w-2xl rounded-2xl border border-foreground/10 bg-card p-4 shadow-hover sm:inset-x-4 sm:bottom-4 sm:p-5 md:inset-x-auto md:left-4 md:right-4 md:p-6"
         >
           <div className="flex items-start gap-4">
             <div className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/5 sm:flex">
               <Cookie size={20} strokeWidth={1.75} />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 id="cookie-consent-title" className="text-base font-semibold tracking-tight-custom">
+              <h2 id="cookie-consent-title" className="text-[15px] font-semibold tracking-tight-custom sm:text-base">
                 {L.title}
               </h2>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground sm:text-sm">
                 {L.body}{" "}
                 <Link href="/konfidentsiinist" className="underline-offset-2 hover:underline">
                   {L.privacyLink}
@@ -200,7 +204,7 @@ export function CookieConsent() {
                 .
               </p>
               {showDetails && (
-                <div className="mt-4 space-y-2 rounded-xl bg-foreground/[0.03] p-3">
+                <div className="mt-3 max-h-[40dvh] space-y-2 overflow-y-auto rounded-xl bg-foreground/[0.03] p-3 sm:mt-4">
                   <Row title={L.necessary} desc={L.necessaryDesc} checked disabled />
                   <Row
                     title={L.analytics}
@@ -217,41 +221,42 @@ export function CookieConsent() {
                 </div>
               )}
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                {!showDetails && (
-                  <button
-                    onClick={() => setShowDetails(true)}
-                    className="rounded-full border border-foreground/15 bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/5"
-                  >
-                    {L.customize}
-                  </button>
-                )}
-                {showDetails && (
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:flex sm:flex-wrap sm:items-center">
+                {showDetails ? (
                   <button
                     onClick={() => save("customized", analytics, marketing)}
-                    className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background hover:-translate-y-[1px]"
+                    className="whitespace-nowrap rounded-full bg-foreground px-3 py-2.5 text-[13px] font-medium text-background hover:-translate-y-[1px] sm:px-4 sm:py-2 sm:text-sm"
                   >
                     {L.save}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => save("accepted", true, true)}
+                    className="whitespace-nowrap rounded-full bg-foreground px-3 py-2.5 text-[13px] font-medium text-background hover:-translate-y-[1px] sm:px-4 sm:py-2 sm:text-sm"
+                  >
+                    {L.accept}
                   </button>
                 )}
                 <button
                   onClick={() => save("rejected", false, false)}
-                  className="rounded-full border border-foreground/15 bg-background px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                  className="whitespace-nowrap rounded-full border border-foreground/15 bg-background px-3 py-2.5 text-[13px] font-medium text-muted-foreground hover:bg-foreground/5 hover:text-foreground sm:px-4 sm:py-2 sm:text-sm"
                 >
                   {L.reject}
                 </button>
-                <button
-                  onClick={() => save("accepted", true, true)}
-                  className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background hover:-translate-y-[1px]"
-                >
-                  {L.accept}
-                </button>
+                {!showDetails && (
+                  <button
+                    onClick={() => setShowDetails(true)}
+                    className="col-span-2 justify-self-start py-1 text-[13px] font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground sm:ml-1"
+                  >
+                    {L.customize}
+                  </button>
+                )}
               </div>
             </div>
             <button
               onClick={() => save("rejected", false, false)}
               aria-label={L.close}
-              className="rounded-full p-2 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+              className="-mr-2 -mt-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-foreground/5 hover:text-foreground sm:flex"
             >
               <X size={16} strokeWidth={1.75} />
             </button>

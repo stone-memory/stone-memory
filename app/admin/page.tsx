@@ -154,7 +154,7 @@ export default function AdminPage() {
               className="h-10 rounded-xl pl-10 border-black/10"
             />
           </div>
-          <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
+          <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as typeof statusFilter)}>
             <SelectTrigger className="w-32 h-10 rounded-xl border-black/10">
               <SelectValue />
             </SelectTrigger>

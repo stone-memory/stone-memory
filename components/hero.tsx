@@ -6,8 +6,6 @@ import { ChevronDown, ArrowRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "@/lib/i18n/context"
 
-const EASE = [0.22, 1, 0.36, 1] as const
-
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -62,7 +60,7 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative h-screen min-h-[720px] w-full overflow-hidden bg-black"
+      className="relative h-svh min-h-[720px] w-full overflow-hidden bg-black"
     >
       <motion.div
         style={{ y: mediaY, scale: mediaScale }}
@@ -144,38 +142,32 @@ export function Hero() {
         style={{ opacity: contentOpacity, y: contentY }}
         className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.05, ease: EASE }}
-          className="rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white/95 backdrop-blur-md"
+        {/*
+          Поява тексту — CSS-анімацією (tw-animate-css), а не framer initial/
+          animate: із framer серверний HTML приходив із opacity:0, і заголовок
+          лишався невидимим до гідратації — на телефоні це секунда-дві голого
+          постера. CSS стартує з першого кадру й не потребує JS.
+        */}
+        <div
+          className="animate-in fade-in slide-in-from-bottom-3 fill-mode-both duration-500 delay-75 ease-out rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white/95 backdrop-blur-md"
         >
           {t.hero.badge}
-        </motion.div>
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1, ease: EASE }}
-          className="mt-6 max-w-[18ch] text-[clamp(36px,8vw,104px)] font-semibold leading-[1.02] tracking-tight-custom text-balance text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)]"
+        <h1
+          className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-500 delay-100 ease-out mt-6 max-w-[18ch] text-[clamp(36px,8vw,104px)] font-semibold leading-[1.02] tracking-tight-custom text-balance text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)]"
         >
           {t.hero.title}
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.18, ease: EASE }}
-          className="mt-6 max-w-xl text-balance text-lg md:text-xl text-white/85 drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]"
+        <p
+          className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-500 delay-200 ease-out mt-6 max-w-xl text-balance text-lg md:text-xl text-white/85 drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]"
         >
           {t.hero.subtitle}
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.25, ease: EASE }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-3"
+        <div
+          className="animate-in fade-in slide-in-from-bottom-3 fill-mode-both duration-500 delay-300 ease-out mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           <Link
             href="/pamyatnyky"
@@ -192,20 +184,15 @@ export function Hero() {
           >
             {t.hero.ctaSecondary}
           </Link>
-        </motion.div>
+        </div>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.7 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
+      <div className="animate-in fade-in fill-mode-both duration-500 delay-500 absolute bottom-8 left-1/2 -translate-x-1/2 opacity-70">
         <ChevronDown
           className="h-8 w-8 animate-bounce-gentle text-white"
           strokeWidth={1.25}
         />
-      </motion.div>
+      </div>
     </section>
   )
 }

@@ -23,7 +23,7 @@ export default async function Home() {
 
   return (
     <>
-      <Header />
+      <Header variant="home" />
       <main id="main-content" className="relative">
         <Hero />
         <HomeDirections stones={stones} />

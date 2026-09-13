@@ -16,6 +16,18 @@ import type { Locale } from "@/lib/types"
 
 interface HeaderProps {
   className?: string
+  /**
+   * «home» — шапка головної: лише напрями й загальні сторінки.
+   *
+   * Раніше це вирішував `usePathname() === "/"`. На Vercel під час
+   * ISR-регенерації головної pathname на сервері не дорівнює "/", тому HTML
+   * приходив із навігацією розділу, а клієнт одразу перемальовував її на
+   * домашню: React кидав помилку гідрації #418 і перерендерював усе дерево
+   * з нуля — на телефоні це ~1 с зайвої роботи головного потоку і миготіння
+   * меню. Сторінка сама знає, хто вона, тож варіант передається пропом і
+   * збігається на сервері й клієнті.
+   */
+  variant?: "home" | "section"
 }
 
 const aboutLabels: Record<Locale, string> = {
@@ -26,7 +38,7 @@ const aboutLabels: Record<Locale, string> = {
   lt: "Apie mus",
 }
 
-export function Header({ className }: HeaderProps) {
+export function Header({ className, variant = "section" }: HeaderProps) {
   const { items, openSidebar } = useSelectionStore()
   const { t, locale } = useTranslation()
   const { showProjects } = useNavSettings()
@@ -76,7 +88,7 @@ export function Header({ className }: HeaderProps) {
   // Головна — про майстерню загалом і розгалуження на два напрями, тому в її
   // шапці лише напрями й загальні сторінки. Каталог, ціни, камені й послуги
   // стосуються самих пам'ятників і з'являються, щойно людина обрала напрям.
-  const isHome = pathname === "/"
+  const isHome = variant === "home"
   const navItems = isHome
     ? [
         { href: "/pamyatnyky", label: directionLabels[locale].memorial },

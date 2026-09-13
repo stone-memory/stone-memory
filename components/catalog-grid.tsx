@@ -9,7 +9,6 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useOrdersStore } from "@/lib/store/orders"
 import { usePopularity } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
-import { useStones } from "@/lib/store/stones"
 import { filterLabels } from "@/lib/i18n/filters"
 import { CATALOG_PAGE_SIZE, catalogPagePath, findFacet } from "@/lib/catalog-taxonomy"
 import type { Category, StoneItem } from "@/lib/types"
@@ -87,10 +86,11 @@ export function CatalogGrid({
   }, [lockedCategory, mounted, storedCategory, setCategory])
   const { t, locale } = useTranslation()
   const L = filterLabels[locale]
-  const storeStones = useStones()
-  // Server-provided list is the source of truth for the first paint; the store
-  // takes over once it hydrates so admin edits still appear live.
-  const stones = storeStones.length > 0 ? storeStones : initialStones
+  // Список із сервера — єдине джерело. Раніше після гідратації грід ще раз
+  // тягнув /api/content/stones (145 КБ, без кешу) на кожному перегляді, щоб
+  // показати правки з адмінки без перезавантаження; тепер їх доносить
+  // скидання ISR-кешу з адмінки, а телефон не платить за це на кожній сторінці.
+  const stones = initialStones
 
   const facet = facetSlug ? findFacet(facetSlug) : undefined
   const baseItems = useMemo(

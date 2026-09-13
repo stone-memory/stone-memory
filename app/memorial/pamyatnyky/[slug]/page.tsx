@@ -1,6 +1,9 @@
 import { notFound, permanentRedirect } from "next/navigation"
 import { CatalogPage } from "@/components/catalog-page"
 import { StoneDetailClient } from "@/components/stone-detail-client"
+import { StoneStory } from "@/components/stone-story"
+import { productStory } from "@/lib/product-copy"
+import { relatedStones } from "@/lib/related-stones"
 import { fetchStones } from "@/lib/data-source"
 import {
   catalogPageCount,
@@ -42,7 +45,18 @@ export default async function MonumentSlugPage({ params }: { params: Promise<{ s
     // the canonical slug rather than serving the same page at two addresses.
     const canonical = stonePath(stone)
     if (canonical !== `/memorial/pamyatnyky/${slug}`) permanentRedirect(canonical)
-    return <StoneDetailClient initialStone={stone} initialStones={stones} />
+    // Клієнту йде лише те, що йому справді потрібно: сам товар, шість схожих
+    // і термін виготовлення. Прозу про модель рендеримо тут, на сервері.
+    const story = productStory(stone)
+    return (
+      <StoneDetailClient
+        stone={stone}
+        related={relatedStones(stone, stones)}
+        leadTime={story.leadTime}
+        storyLead={story.intro.split("\n\n")[0]}
+        story={<StoneStory stone={stone} />}
+      />
+    )
   }
 
   const facet = findFacet(slug)

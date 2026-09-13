@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState, type ReactNode } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
@@ -12,13 +12,11 @@ import { SelectionSidebar } from "@/components/selection-sidebar"
 import { StoneCard } from "@/components/stone-card"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
-import { useStones } from "@/lib/store/stones"
 import { filterLabels, colorLabel, shapeLabel, finishLabel, materialLabel } from "@/lib/i18n/filters"
 import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { MaterialPicker, type MaterialChoice } from "@/components/material-picker"
 import { defaultStone } from "@/lib/stone-guide"
 import { stoneAlt, stoneHeading } from "@/lib/stone-meta"
-import { productStory } from "@/lib/product-copy"
 import { WARRANTY_YEARS } from "@/lib/site-facts"
 import { toTelHref } from "@/lib/phone-format"
 import { cn } from "@/lib/utils"
@@ -38,70 +36,41 @@ const WARRANTY_LABEL: Record<string, string> = {
 
 type Props = {
   /** Resolved on the server, so the markup below is in the initial HTML. */
-  initialStone: StoneItem
-  initialStones: StoneItem[]
+  stone: StoneItem
+  /** «Схожі моделі», відібрані на сервері (lib/related-stones.ts). */
+  related: StoneItem[]
+  /** Термін виготовлення з product-copy — рядок у характеристиках (лише uk). */
+  leadTime: string
+  /** Перший абзац опису моделі — підзаголовок під h1 (лише uk). */
+  storyLead: string
+  /**
+   * Серверний блок «Про цю модель» (components/stone-story.tsx). Приходить
+   * готовим HTML; тут лише вирішуємо, чи показувати його для поточної локалі.
+   */
+  story?: ReactNode
 }
 
 /**
  * The page used to be a client component that read everything from the zustand
  * store and rendered `null` until it hydrated — which meant crawlers received a
  * document with no h1, no copy and no links. Data now arrives as props from the
- * server component, and the store is consulted only to keep admin live-edits
- * reflected without a reload.
+ * server component.
+ *
+ * Клієнтом лишається тільки інтерактив: галерея, вибір каменю, кошик,
+ * «поділитись». Раніше сюди приходив увесь каталог (200+ позицій, ~150 КБ у
+ * RSC-навантаженні) заради шести схожих карток, а після гідратації сторінка
+ * ще й тягнула /api/content/stones (145 КБ) для «живих» правок з адмінки —
+ * їх тепер покриває скидання ISR-кешу з адмінки.
  */
-export function StoneDetailClient({ initialStone, initialStones }: Props) {
-  const storeStones = useStones()
-  const stones = storeStones.length > 0 ? storeStones : initialStones
-  const stone = stones.find((s) => s.id === initialStone.id) ?? initialStone
-
+export function StoneDetailClient({ stone, related, leadTime, storyLead, story }: Props) {
   const { t, locale, formatPrice } = useTranslation()
   const { addItem, items, openSidebar } = useSelectionStore()
   const [active, setActive] = useState(0)
   const [shared, setShared] = useState(false)
   const [choice, setChoice] = useState<MaterialChoice | null>(null)
 
-  const gallery = useMemo(
-    () => (stone.gallery && stone.gallery.length > 0 ? stone.gallery : [stone.imagePath]),
-    [stone]
-  )
+  const gallery = stone.gallery && stone.gallery.length > 0 ? stone.gallery : [stone.imagePath]
 
-  // "Схоже" — multi-criteria scoring замість простого фільтра.
-  // Кожен співпадаючий атрибут додає бали; найвищі — у блок related.
-  // Це гарантує що клієнт бачить дійсно близькі позиції,
-  // а не випадкові з тієї ж категорії і кольору.
-  const related = useMemo(() => {
-    const PRICE_TOLERANCE = 0.35 // ±35% від ціни поточного каменю — "близько"
-    const minPrice = stone.priceFrom ? stone.priceFrom * (1 - PRICE_TOLERANCE) : undefined
-    const maxPrice = stone.priceFrom ? stone.priceFrom * (1 + PRICE_TOLERANCE) : undefined
-
-    const scored = stones
-      .filter((s) => s.id !== stone.id && s.category === stone.category)
-      .map((s) => {
-        let score = 0
-        if (s.color && s.color === stone.color) score += 4
-        if (s.materialType && s.materialType === stone.materialType) score += 4
-        if (s.shape && s.shape === stone.shape) score += 3
-        if (s.finish && s.finish === stone.finish) score += 2
-        if (s.priceFrom && minPrice && maxPrice && s.priceFrom >= minPrice && s.priceFrom <= maxPrice) score += 2
-        if (s.origin && stone.origin && s.origin.split(",")[0] === stone.origin.split(",")[0]) score += 1
-        if (s.isFeatured) score += 1
-        return { s, score }
-      })
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6) // більше "схоже" — щоб був повноцінний скрол вниз
-      .map(({ s }) => s)
-
-    // Fallback: якщо нічого не співпало (рідкісний камінь), показуємо
-    // просто з тієї ж категорії, відсортовані за ціною біля поточного.
-    if (scored.length === 0) {
-      return stones
-        .filter((s) => s.id !== stone.id && s.category === stone.category)
-        .sort((a, b) => Math.abs((a.priceFrom ?? 0) - (stone.priceFrom ?? 0)) - Math.abs((b.priceFrom ?? 0) - (stone.priceFrom ?? 0)))
-        .slice(0, 6)
-    }
-    return scored
-  }, [stones, stone])
 
   // Камінь із фотографії — дефолт селектора й база для перерахунку цін.
   const defaultEntry = defaultStone(stone)
@@ -119,9 +88,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
   // з довідника й рівень оздоблення дають кожній моделі власний текст,
   // комплектацію та розміри. Українською; інші локалі лишаються на короткому
   // шаблоні з filters.ts.
-  const story = productStory(stone)
   const showStory = locale === "uk"
-  const [storyLead, ...storyRest] = story.intro.split("\n\n")
   // Хаб /memorial прибрано: він дублював навігацію, а вертикаль лишилась одна.
   // Тому батьком картки товару став сам каталог.
   const catalogHref = "/memorial/pamyatnyky"
@@ -193,7 +160,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
           <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
             <div>
               <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-foreground/5 ring-1 ring-black/[0.04] shadow-soft">
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={active}
                     initial={{ opacity: 0 }}
@@ -209,6 +176,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                       sizes="(max-width: 1024px) 100vw, 55vw"
                       className="object-cover"
                       priority
+                      fetchPriority="high"
                     />
                   </motion.div>
                 </AnimatePresence>
@@ -344,7 +312,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
                     <>
                       <div className="flex items-center justify-between py-2.5 text-[15px]">
                         <dt className="text-muted-foreground">Виготовлення</dt>
-                        <dd className="font-medium text-foreground tabular-nums">{story.leadTime}</dd>
+                        <dd className="font-medium text-foreground tabular-nums">{leadTime}</dd>
                       </div>
                       <div className="flex items-center justify-between py-2.5 text-[15px]">
                         <dt className="text-muted-foreground">Гарантія</dt>
@@ -357,48 +325,7 @@ export function StoneDetailClient({ initialStone, initialStones }: Props) {
             </div>
           </div>
 
-          {showStory && (
-            <section className="mt-16 grid gap-10 md:mt-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
-              <div>
-                <h2 className="text-2xl font-semibold tracking-tight-custom md:text-3xl">Про цю модель</h2>
-                <div className="mt-5 max-w-2xl space-y-4 text-base leading-relaxed text-foreground/85 md:text-[17px]">
-                  {storyRest.map((p, i) => (
-                    <p key={i}>{p}</p>
-                  ))}
-                </div>
-
-                <h3 className="mt-10 text-lg font-semibold tracking-tight-custom md:text-xl">Розміри елементів</h3>
-                <dl className="mt-3 max-w-2xl divide-y divide-foreground/5 rounded-2xl border border-foreground/10 px-5">
-                  {story.sizes.map((s) => (
-                    <div key={s.part} className="flex items-baseline justify-between gap-6 py-2.5 text-[15px]">
-                      <dt className="text-muted-foreground">{s.part}</dt>
-                      <dd className="text-right font-medium tabular-nums">{s.size}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-                  Розміри типові для цієї моделі. Ріжемо під вашу ділянку — на замірі уточнюємо кожен елемент.
-                </p>
-              </div>
-
-              <div>
-                <div className="rounded-2xl bg-secondary/60 p-6">
-                  <h3 className="text-lg font-semibold tracking-tight-custom">Від чого залежить остаточна ціна</h3>
-                  <ul className="mt-4 space-y-2 text-[15px] text-foreground/85">
-                    {story.priceFactors.map((it) => (
-                      <li key={it} className="flex items-start gap-2.5">
-                        <span className="mt-[0.6rem] inline-block h-1 w-1 shrink-0 rounded-full bg-foreground/40" />
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-4 text-sm text-muted-foreground">
-                    Можна додати окремо: {story.extras.join(", ")}.
-                  </p>
-                </div>
-              </div>
-            </section>
-          )}
+          {showStory && story}
 
           {related.length > 0 && (
             <section className="mt-24 md:mt-32">
