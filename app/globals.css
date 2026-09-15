@@ -16,8 +16,13 @@
   --secondary: #F5F5F7;
   --secondary-foreground: #1D1D1F;
   --muted: #F5F5F7;
-  --muted-foreground: #86868B;
-  --accent: #0071E3;
+  /* #86868B давав 3,3:1 на фоні #F5F5F7 — нижче за AA (4,5:1) для звичайного
+     тексту, і Lighthouse валив контраст на кожній сторінці. #636368 — 5,5:1 на
+     фоні сторінки і 4,75:1 на сірих чипах (#E5E5E7) у селекторі матеріалу. */
+  --muted-foreground: #636368;
+  /* #0071E3 як текст на #F5F5F7 давав 4,3:1; #0062C4 — 5,4:1, а білий на
+     ньому (кнопки) — 5,9:1 замість 4,7:1. */
+  --accent: #0062C4;
   --accent-foreground: #FFFFFF;
   --success: #30D158;
   --success-foreground: #FFFFFF;
@@ -45,7 +50,7 @@
   --secondary: #2D2D2F;
   --secondary-foreground: #F5F5F7;
   --muted: #2D2D2F;
-  --muted-foreground: #86868B;
+  --muted-foreground: #A1A1A6;
   --accent: #0A84FF;
   --accent-foreground: #FFFFFF;
   --success: #30D158;
@@ -142,6 +147,46 @@
   }
 }
 
+/*
+  Знак гривні (U+20B4) в Inter лежить у підмножині latin-ext, і сама лише ціна
+  «від 19 500 ₴» на картці змушувала телефон тягнути ще 84 КБ шрифту — більше,
+  ніж важить LCP-фото каталогу. Для цього одного символу підставляємо системний
+  шрифт: ця @font-face оголошена після next/font, тож для U+20B4 вона має
+  пріоритет; якщо жодного local() немає, браузер піде до latin-ext як раніше.
+*/
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  /* Той самий діапазон ваги, що й у гранях next/font: Chrome групує грані за
+     діапазоном, і між групами з однаковою відстанню обирає довільно; в одній
+     групі для символу береться остання оголошена — тобто ця. Жирний для цін
+     браузер синтезує з regular. */
+  font-weight: 100 900;
+  src: local("Arial"), local("Roboto"), local("Helvetica Neue"), local("Segoe UI"),
+    local("Liberation Sans"), local("DejaVu Sans");
+  unicode-range: U+20B4;
+}
+
+/*
+  Поява карток каталогу під час прокрутки — CSS-анімацією за scroll timeline
+  замість framer-motion whileInView: 24 motion.article на сторінці каталогу
+  коштували гідратації (спостерігачі перетину, motion values) на телефоні.
+  Де scroll-driven animations не підтримуються, картки просто видно одразу.
+*/
+@supports (animation-timeline: view()) {
+  .card-reveal {
+    animation: card-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 20%;
+  }
+}
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
 /* Scroll indicator bounce animation */
 @keyframes bounce-gentle {
   0%, 100% {
@@ -184,7 +229,8 @@
     scroll-behavior: auto !important;
   }
   .animate-bounce-gentle,
-  .animate-scale-in {
+  .animate-scale-in,
+  .card-reveal {
     animation: none !important;
   }
 }
@@ -236,13 +282,18 @@
   letter-spacing: -0.055em;
   font-weight: 600;
 }
-.eyebrow {
-  font-size: 0.72rem;
-  line-height: 1;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--muted-foreground);
+/* У шарі components, а не поза шарами: інакше правило било утиліти, і
+   «eyebrow text-primary-foreground/70» на темному блоці чи «eyebrow text-accent»
+   на кроках процесу лишались сірими — на #1D1D1F це 3,3:1. */
+@layer components {
+  .eyebrow {
+    font-size: 0.72rem;
+    line-height: 1;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted-foreground);
+  }
 }
 .surface {
   border-radius: 2rem;

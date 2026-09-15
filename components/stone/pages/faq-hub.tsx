@@ -8,7 +8,7 @@ export async function FaqHub() {
     (x, i, a) => a.findIndex((y) => y.question === x.question) === i
   )
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Питання й відповіді' }]} />
       <JsonLd
         data={{

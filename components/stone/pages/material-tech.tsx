@@ -15,7 +15,7 @@ import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
 
 export function ThicknessPage() {
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name: 'Товщини' }]} />
       <section className="page-shell py-20">
         <SectionHeading
@@ -47,7 +47,7 @@ export function ThicknessPage() {
 
 export function EdgePage() {
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs
         items={[
           { name: 'Вироби', href: '/arkhitekturnyi-kamin/vyroby' },
@@ -94,7 +94,7 @@ export function EdgePage() {
 
 export function FinishPage() {
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name: 'Фініші' }]} />
       <JsonLd
         data={{
@@ -126,7 +126,7 @@ export function FinishPage() {
 export async function RemnantsPage() {
   const remnants = await getRemnants()
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Залишки слябів' }]} />
       <JsonLd
         data={{

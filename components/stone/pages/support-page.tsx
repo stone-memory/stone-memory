@@ -9,7 +9,7 @@ export async function SupportPage({ slug }: { slug: string }) {
   const page = (await getSetting('support'))[slug]
   if (!page) notFound()
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Підтримка', href: '/arkhitekturnyi-kamin/faq' }, { name: page.title }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">{page.eyebrow}</p>

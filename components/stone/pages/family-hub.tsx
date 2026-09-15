@@ -7,7 +7,7 @@ export async function FamilyHub({ family }: { family: FamilySlug }) {
   const name = families[family]
   const items = (await getCollections()).filter((item) => item.family === name)
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Родина матеріалів</p>

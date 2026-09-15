@@ -27,7 +27,7 @@ export async function ProfessionalPage({ slug }: { slug: string }) {
   const [pro, projects] = await Promise.all([getSetting('professional'), getProjects()])
   const data = resolveProfessional(pro, slug)!
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Для професіоналів', href: '/arkhitekturnyi-kamin/b2b' }, { name: data.title }]} />
       <section className="page-shell grid gap-10 py-20 lg:grid-cols-2 lg:items-center">
         <div>

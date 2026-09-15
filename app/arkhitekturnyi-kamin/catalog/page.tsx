@@ -7,7 +7,7 @@ export const metadata = pageMetadata('/arkhitekturnyi-kamin/catalog', { title: '
 export default async function Page() {
   const collections = await getCollections()
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Каталог каменю' }]} />
       <section className="page-shell pt-16">
         <p className="eyebrow text-accent">{collections.length} колекцій</p>

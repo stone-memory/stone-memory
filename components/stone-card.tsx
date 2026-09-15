@@ -4,7 +4,6 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Check } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 import { useSelectionStore } from "@/lib/store/selection"
 import { usePopularityStore } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
@@ -26,6 +25,12 @@ interface StoneCardProps {
    * defer the one image that decides the score.
    */
   priority?: boolean
+  /**
+   * Рівень заголовка картки. У каталозі над сіткою стоїть лише h1, і h3 у
+   * картках рвав порядок заголовків (Lighthouse heading-order); там — h2.
+   * У блоках «схожі моделі» під власним h2 лишається h3.
+   */
+  headingTag?: "h2" | "h3"
 }
 
 // Memorial only; anything else falls back to the raw value rather than being
@@ -81,7 +86,7 @@ function buildDescription(item: StoneItem, locale: Locale): string {
 // сторінка товару. Доки картка тримала власну копію, сторінка товару лишалась
 // без перекладу й показувала «Size» в усіх мовах.
 
-export function StoneCard({ item, showBestseller, priority = false }: StoneCardProps) {
+export function StoneCard({ item, showBestseller, priority = false, headingTag: Heading = "h3" }: StoneCardProps) {
   const [showSuccess, setShowSuccess] = useState(false)
   const [imageSrc, setImageSrc] = useState(item.imagePath)
   const { addItem, items } = useSelectionStore()
@@ -110,29 +115,34 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
   const L = filterLabels[locale]
 
   return (
-    <motion.article
-      // Картки з priority — це перший екран каталогу, серед них LCP-елемент.
-      // З initial={{opacity:0}} вони приходили в HTML невидимими і чекали на
-      // гідратацію framer-motion (на телефоні ~0,8 с «element render delay»
-      // у Lighthouse), тож для них анімацію появи вимкнено.
-      initial={priority ? false : { opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.01 }}
-      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative"
+    <article
+      // Картки з priority — це перший екран каталогу, серед них LCP-елемент:
+      // вони приходять в HTML одразу видимими. Решта з'являється CSS-анімацією
+      // .card-reveal (globals.css) під час прокрутки, без JS і без
+      // framer-motion: 24 motion.article на сторінці коштували гідратації.
+      className={cn("group relative h-full", !priority && "card-reveal")}
     >
       <Link
         href={stonePath(item)}
         prefetch
-        className="block h-full overflow-hidden rounded-2xl bg-card shadow-soft ring-1 ring-black/[0.04] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-hover hover:-translate-y-0.5"
-        aria-label={stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}
+        // Без aria-label: він містив лише назву, а видимий текст посилання — уся
+        // картка, і читач екрана отримував ім'я, що не збігається з написом
+        // (Lighthouse label-content-name-mismatch). Ім'я тепер із вмісту.
+        className="flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-soft ring-1 ring-black/[0.04] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-hover hover:-translate-y-0.5"
       >
         <div className="relative aspect-[16/11] overflow-hidden bg-foreground/5">
           <Image
             src={imageSrc}
             alt={stoneAlt(item, locale)}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            // На телефоні картка займає ширину екрана мінус відступи px-6, а
+            // 100vw змушувало брати 750 px замість 640 — зайві 27 % пікселів
+            // на кожному з 24 фото сторінки.
+            sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) 50vw, 33vw"
+            // Фото каменю в картці — найважчий ресурс каталогу (до 106 КБ при
+            // q75); q65 у webp на розмірі мініатюри візуально не відрізнити,
+            // а важить на чверть менше. Значення має бути в images.qualities.
+            quality={65}
             priority={priority}
             // Next 16 з priority додає лише <link rel=preload>; без явного
             // fetchpriority браузер тягне LCP-картинку зі звичайним пріоритетом.
@@ -147,7 +157,7 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
           )}
         </div>
 
-        <div className="p-6">
+        <div className="flex flex-1 flex-col p-6">
           {/* Дрібніший кегль і менший трекінг, ніж решта підписів: рядок несе
               дві назви одразу, і після появи довгих типів («Військовий
               пам'ятник», «Пам'ятник європейський») він переносився на два рядки
@@ -162,9 +172,9 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
             )}
           </div>
 
-          <h3 className="mt-3 text-xl font-semibold tracking-tight-custom tabular-nums">
+          <Heading className="mt-3 text-xl font-semibold tracking-tight-custom tabular-nums">
             {stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}
-          </h3>
+          </Heading>
 
           <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground line-clamp-2">
             {description}
@@ -196,7 +206,7 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
             )}
           </div>
 
-          <div className="mt-6 flex items-center justify-between gap-3">
+          <div className="mt-auto flex items-center justify-between gap-3 pt-6">
             {item.priceFrom ? (
               <>
                 <div className="flex flex-col">
@@ -207,13 +217,12 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
                     {formatPrice(item.priceFrom)}
                   </span>
                 </div>
-                <motion.button
+                <button
                   type="button"
                   onClick={handleAdd}
                   disabled={isSelected}
-                  whileTap={{ scale: 0.96 }}
                   className={cn(
-                    "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all",
+                    "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all active:scale-[0.96]",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     isSelected
                       ? "bg-success/10 text-success"
@@ -221,50 +230,35 @@ export function StoneCard({ item, showBestseller, priority = false }: StoneCardP
                   )}
                   aria-label={isSelected ? inCartLabels[locale] : addToCartLabels[locale]}
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {showSuccess || isSelected ? (
-                      <motion.span
-                        key="check"
-                        initial={{ scale: 0.6, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.6, opacity: 0 }}
-                        transition={{ duration: 0.18 }}
-                        className="inline-flex items-center gap-2"
-                      >
-                        <Check className="h-4 w-4" strokeWidth={2.25} />
-                        {inCartLabels[locale]}
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="add"
-                        initial={{ scale: 0.6, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.6, opacity: 0 }}
-                        transition={{ duration: 0.18 }}
-                      >
-                        {addToCartLabels[locale]}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
+                  {showSuccess || isSelected ? (
+                    <span
+                      key="check"
+                      className="inline-flex items-center gap-2 animate-in fade-in zoom-in-75 duration-200"
+                    >
+                      <Check className="h-4 w-4" strokeWidth={2.25} />
+                      {inCartLabels[locale]}
+                    </span>
+                  ) : (
+                    <span key="add">{addToCartLabels[locale]}</span>
+                  )}
+                </button>
               </>
             ) : (
-              <motion.button
+              <button
                 type="button"
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
                   window.location.href = "tel:+380688080222"
                 }}
-                whileTap={{ scale: 0.96 }}
-                className="w-full inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="w-full inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:-translate-y-[1px] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {t.catalog.requestQuote}
-              </motion.button>
+              </button>
             )}
           </div>
         </div>
       </Link>
-    </motion.article>
+    </article>
   )
 }
