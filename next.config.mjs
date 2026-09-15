@@ -46,6 +46,10 @@ const nextConfig = {
     // Лише webp: кожен формат — окрема трансформація в лічильнику Vercel
     // (5 тис. на місяць на Hobby), а avif до того ж повільніший у кодуванні.
     formats: ["image/webp"],
+    // Next 16 дозволяє лише q=75, поки інше не перелічено тут. 65 — для
+    // карток каталогу (components/stone-card.tsx): мініатюри, де q75 давав
+    // до 106 КБ на фото.
+    qualities: [65, 75],
     // Next 16 забороняє query в локальних src, поки шлях не дозволено тут.
     // Фото каменю отримують ?v=<хеш вмісту> (scripts/asset-manifest.mjs +
     // lib/stone/asset-url.ts), щоб заміна файлу під тією ж адресою не
@@ -75,6 +79,10 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    // Без experimental.inlineCss: перевірено 2026-09-15 — Next 16 кладе 150 КБ
+    // CSS не лише в <style>, а ще й у RSC-payload кожного сегмента, і HTML
+    // каталогу росте з 52 до 125 КБ gzip. Виграш ~100 мс на render-blocking
+    // стилях цього не вартий.
   },
   async headers() {
     const securityHeaders = [

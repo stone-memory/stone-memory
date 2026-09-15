@@ -7,7 +7,7 @@ import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
 
 export function ProjectDetail({ project: x }: { project: Project }) {
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Проєктні пропозиції', href: '/arkhitekturnyi-kamin/proekty' }, { name: x.name }]} />
       <JsonLd
         data={{

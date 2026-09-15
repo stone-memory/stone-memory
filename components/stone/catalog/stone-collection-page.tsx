@@ -131,7 +131,7 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
       .slice(0, 3),
     faqs = familyFaq[c.family] ?? familyFaq.Граніт
   return (
-    <main>
+    <main id="main-content">
       <nav
         className="page-shell pt-8 text-xs text-muted-foreground"
         aria-label="Навігаційний ланцюжок"

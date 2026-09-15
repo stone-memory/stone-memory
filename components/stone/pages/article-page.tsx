@@ -16,7 +16,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
   const cover = a.image || versioned(`/blog/${a.slug}.webp`)
   const detail = a.detailImage || versioned(`/blog/${a.slug}-detail.webp`)
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Журнал', href: '/arkhitekturnyi-kamin/blog' }, { name: a.title }]} />
       <JsonLd
         data={{

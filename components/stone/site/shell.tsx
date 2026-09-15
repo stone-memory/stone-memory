@@ -179,7 +179,7 @@ export function Footer({ contacts }: { contacts: Contacts }) {
             </span>
           </div>
         </div>
-        <div className="mt-12 flex flex-wrap justify-between gap-5 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/45">
+        <div className="mt-12 flex flex-wrap justify-between gap-5 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/55">
           <span>© 2026 Stone Memory</span>
           <div className="flex flex-wrap gap-5">
             <Link href="/pro-nas">Про нас</Link>

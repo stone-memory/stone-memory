@@ -12,7 +12,7 @@ export async function GeoPage({ city, data: d }: { city: string; data: GeoCity }
     getCollections(),
   ])
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs
         items={[{ name: 'Стільниці', href: '/arkhitekturnyi-kamin/vyroby/stilnytsi' }, { name: d.locative }]}
       />

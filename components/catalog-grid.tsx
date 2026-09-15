@@ -212,7 +212,7 @@ export function CatalogGrid({
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {visibleStones.map((stone, i) => (
               // First three are above the fold on every breakpoint (1/2/3 cols).
-              <StoneCard key={stone.id} item={stone} priority={i < 3} />
+              <StoneCard key={stone.id} item={stone} priority={i < 3} headingTag="h2" />
             ))}
           </div>
           <CatalogPager

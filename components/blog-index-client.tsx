@@ -52,7 +52,7 @@ export function BlogIndexClient({ initialArticles }: { initialArticles: Article[
   return (
     <>
       <Header />
-      <main className="pt-10 md:pt-16">
+      <main id="main-content" className="pt-10 md:pt-16">
         <div className="mx-auto max-w-7xl px-6 pb-10 md:pb-16">
           <h1 className="text-5xl font-semibold tracking-tight-custom md:text-7xl text-balance">
             {t.blog.heading}

@@ -62,7 +62,7 @@ export async function CategoryPage({ slug }: { slug: string }) {
     'dekoratyvnyi-kamin': '/proposal-pool.webp',
   }
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Вироби', href: '/arkhitekturnyi-kamin/vyroby' }, { name: item.name }]} />
       <JsonLd
         data={{

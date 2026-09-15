@@ -120,6 +120,11 @@ export function Header({ className, variant = "section" }: HeaderProps) {
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
         <Link
           href="/"
+          // Логотип видно на кожній сторінці, і Link за замовчуванням тягнув
+          // RSC-payload головної (≈15 КБ) після кожного завантаження — на
+          // телефоні це зайвий трафік і розбір, а на головну з шапки
+          // переходять рідко.
+          prefetch={false}
           className="flex items-center gap-2 text-foreground"
           aria-label="Stone Memory — home"
           onClick={handleLogoClick}

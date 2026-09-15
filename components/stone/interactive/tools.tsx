@@ -473,7 +473,7 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
           <Link
             href={`/arkhitekturnyi-kamin/materialy/${c.slug}`}
             key={c.slug}
-            className="group overflow-hidden bg-card hover:bg-secondary"
+            className="group flex flex-col overflow-hidden bg-card hover:bg-secondary"
           >
             <div className="relative aspect-[4/3]">
               <Image
@@ -484,13 +484,13 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
               />
             </div>
-            <div className="p-6">
+            <div className="flex flex-1 flex-col p-6">
               <p className="text-xs text-muted-foreground">
                 {c.family} · {c.tone}
               </p>
               <h3 className="mt-4 text-2xl font-semibold">{c.name}</h3>
               <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{c.description}</p>
-              <p className="mt-5 text-sm font-semibold">{formatPrice(c.price)}</p>
+              <p className="mt-auto pt-5 text-sm font-semibold">{formatPrice(c.price)}</p>
             </div>
           </Link>
         ))}

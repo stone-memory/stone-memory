@@ -3,7 +3,6 @@
 import { useEffect } from "react"
 import { create } from "zustand"
 import { authedFetch } from "@/lib/authed-fetch"
-import { getSupabase } from "@/lib/supabase/client"
 
 type Counts = {
   inbox: number
@@ -109,22 +108,35 @@ export function useNotificationCounts(): Counts {
     void store.fetch()
 
     let realtimeUp = false
-    const supabase = getSupabase()
-    const channel = supabase.channel("crm-notification-counts")
-    for (const table of WATCHED_TABLES) {
-      channel.on("postgres_changes", { event: "*", schema: "public", table }, () =>
-        refreshNotificationCounts(400)
-      )
-    }
+    let cancelled = false
+    // Клієнт Supabase — динамічним імпортом, як в authed-fetch. Цей модуль
+    // тягне lib/store/orders, а той — картку каталогу й сторінку товару, тож
+    // статичний імпорт клав supabase-js (≈57 КБ gzip, з них ~55 не
+    // виконувались) у перший пакет скриптів публічних сторінок. Хук викликає
+    // лише бічна панель адмінки — там і довантажуємо.
+    let cleanupRealtime: (() => void) | null = null
     void (async () => {
+      const { getSupabase } = await import("@/lib/supabase/client")
+      if (cancelled) return
+      const supabase = getSupabase()
+      const channel = supabase.channel("crm-notification-counts")
+      for (const table of WATCHED_TABLES) {
+        channel.on("postgres_changes", { event: "*", schema: "public", table }, () =>
+          refreshNotificationCounts(400)
+        )
+      }
       // Явно передаємо токен сесії: без нього RLS не пропустить жодної події.
       const { data } = await supabase.auth.getSession()
+      if (cancelled) return
       if (data.session?.access_token) supabase.realtime.setAuth(data.session.access_token)
       channel.subscribe((status) => {
         realtimeUp = status === "SUBSCRIBED"
         useNotificationsStore.setState({ transport: realtimeUp ? "realtime" : "polling" })
         if (realtimeUp) refreshNotificationCounts(0)
       })
+      cleanupRealtime = () => {
+        void supabase.removeChannel(channel)
+      }
     })()
 
     let lastPoll = Date.now()
@@ -143,10 +155,11 @@ export function useNotificationCounts(): Counts {
     window.addEventListener("focus", onVisible)
 
     return () => {
+      cancelled = true
       clearInterval(tick)
       document.removeEventListener("visibilitychange", onVisible)
       window.removeEventListener("focus", onVisible)
-      void supabase.removeChannel(channel)
+      cleanupRealtime?.()
     }
   }, [])
 

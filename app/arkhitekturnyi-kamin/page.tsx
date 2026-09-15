@@ -19,7 +19,7 @@ export const metadata = pageMetadata('/arkhitekturnyi-kamin', {
 export default async function Home() {
   const projects = await getProjects()
   return (
-    <main>
+    <main id="main-content">
       <section className="page-shell flex min-h-[58vh] flex-col items-center justify-center py-10 text-center md:min-h-[72vh] md:py-20">
         <p className="eyebrow">Камінь. У своїй найточнішій формі.</p>
         <h1 className="display mt-7 max-w-full text-balance md:!text-7xl">
@@ -106,7 +106,7 @@ export default async function Home() {
                   <Link
                     key={m.slug}
                     href={familyHrefForMaterial(m.slug)}
-                    className="flex items-center justify-between border-t py-4 font-semibold"
+                    className="flex flex-col gap-1 border-t py-4 font-semibold sm:flex-row sm:items-center sm:justify-between"
                   >
                     <span>{m.name}</span>
                     <span className="text-sm font-normal text-muted-foreground">{m.note}</span>

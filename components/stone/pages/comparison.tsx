@@ -6,7 +6,7 @@ import { Breadcrumbs, Faq } from '@/components/stone/pages/primitives'
 export async function ComparisonPage({ comparison: d }: { comparison: Comparison }) {
   const faq = await getSetting('faq')
   return (
-    <main>
+    <main id="main-content">
       <Breadcrumbs items={[{ name: 'Порівняння', href: '/arkhitekturnyi-kamin/porivnyannya' }, { name: d.title }]} />
       <section className="page-shell py-20">
         <p className="eyebrow text-accent">Висновок спочатку</p>
