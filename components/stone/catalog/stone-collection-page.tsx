@@ -247,6 +247,8 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
                     src={versioned(`/collections/${x.slug}-macro.webp`)}
                     alt={`Фактура ${x.name}`}
                     fill
+                    // Без sizes телефон брав 1200 px на картку 342 px завширшки.
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover"
                   />
                 </div>

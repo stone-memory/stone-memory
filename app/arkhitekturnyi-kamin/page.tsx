@@ -54,6 +54,7 @@ export default async function Home() {
             src="/stone-hero.webp"
             alt="Кухонний острів із природного кварциту"
             fill
+            sizes="(max-width: 1280px) 100vw, 1200px"
             priority
             className="object-cover"
           />
@@ -92,6 +93,7 @@ export default async function Home() {
                 src="/stone-slabs.webp"
                 alt="Сляби природного каменю у консультаційній зоні"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
@@ -142,7 +144,7 @@ export default async function Home() {
           {projects.slice(0, 9).map((p) => (
             <Link href={`/arkhitekturnyi-kamin/proekty/${p.slug}`} key={p.slug} className="group">
               <div className="media aspect-[4/5]">
-                <Image src={p.image} alt={p.alt} fill className="object-cover" />
+                <Image src={p.image} alt={p.alt} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
               </div>
               <div className="flex items-start justify-between gap-4 py-5">
                 <div>

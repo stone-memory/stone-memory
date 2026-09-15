@@ -21,7 +21,7 @@ export function ProjectDetail({ project: x }: { project: Project }) {
       />
       <section className="page-shell py-10">
         <div className="relative min-h-[68vh] overflow-hidden rounded-xl">
-          <Image src={x.image} alt={x.alt} fill priority className="object-cover" />
+          <Image src={x.image} alt={x.alt} fill priority sizes="(max-width: 1280px) 100vw, 1200px" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent" />
           <div className="absolute bottom-0 p-8 text-primary-foreground md:p-12">
             <p className="eyebrow opacity-70">
