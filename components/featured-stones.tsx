@@ -10,11 +10,11 @@ import { useFeaturedStore } from "@/lib/store/featured"
 import type { Locale, StoneItem } from "@/lib/types"
 
 const labels: Record<Locale, { heading: string; cta: string }> = {
-  uk: { heading: "Що купують найчастіше", cta: "Весь каталог" },
-  pl: { heading: "Najczęściej kupowane", cta: "Cały katalog" },
-  en: { heading: "Most ordered this month", cta: "Full catalog" },
-  de: { heading: "Am häufigsten bestellt", cta: "Ganzer Katalog" },
-  lt: { heading: "Perkamiausi šį mėnesį", cta: "Visas katalogas" },
+  uk: { heading: "Що купують", cta: "Весь каталог" },
+  pl: { heading: "Co wybierają klienci", cta: "Cały katalog" },
+  en: { heading: "What people order", cta: "Full catalog" },
+  de: { heading: "Was bestellt wird", cta: "Ganzer Katalog" },
+  lt: { heading: "Ką užsako", cta: "Visas katalogas" },
 }
 
 function pickFallback(stones: StoneItem[]): StoneItem[] {

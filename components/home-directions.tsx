@@ -54,8 +54,7 @@ export function HomeDirections({ stones }: { stones: StoneItem[] }) {
           Один цех, один камінь — два призначення
         </h2>
         <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
-          Той самий український граніт, габро, лабрадорит і мармур ми ріжемо і на стели для пам'яті, і на
-          поверхні для життя. Оберіть, що вам потрібно сьогодні.
+          Два напрями роботи, одна майстерня.
         </p>
       </div>
 
