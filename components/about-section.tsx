@@ -153,7 +153,9 @@ export function AboutSection({ initialOverrides }: { initialOverrides?: AboutOve
                 href={MAP_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-foreground"
+                // На телефоні підпис ділив ширину з адресою й ламався на два
+                // рядки; хай переноситься адреса, а атрибуція лишається одним рядком.
+                className="shrink-0 whitespace-nowrap hover:text-foreground"
               >
                 © OpenStreetMap
               </a>

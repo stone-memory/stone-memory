@@ -93,6 +93,7 @@ export function CardGrid({
                 src={x.image}
                 alt={x.alt || x.name}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
               />
             </div>
