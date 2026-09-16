@@ -66,7 +66,7 @@ export default function AdminReviewsPage() {
           rating: g.rating || 5,
           date: g.date || new Date().toLocaleDateString("uk-UA"),
           source: "google",
-          placement: "all",
+          placement: "hidden",
         })
       }
     } finally {
@@ -82,7 +82,7 @@ export default function AdminReviewsPage() {
       rating: draft.rating || 5,
       date: new Date().toLocaleDateString("uk-UA"),
       source: "manual",
-      placement: "all",
+      placement: "hidden",
     })
     setDraft({ name: "", text: "", rating: 5 })
     setShowAdd(false)
@@ -94,7 +94,7 @@ export default function AdminReviewsPage() {
         <div>
           <h1 className="text-3xl font-semibold tracking-tight-custom">Відгуки</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Відгуки з Google підтягуються автоматично (через /api/reviews). Ви обираєте які показувати на головній, які на /reviews, а які приховати.
+            Нові відгуки (з Google або додані вручну) потрапляють у «Приховано» і на сайті не показуються. Ви вирішуєте, які показати на головній, а які на сторінці всіх відгуків.
           </p>
         </div>
         <div className="flex gap-2">
