@@ -107,7 +107,7 @@ export const remnantFields: Field[] = [
   { type: "text", key: "size", label: "Розмір", placeholder: "1380 × 620 мм" },
   { type: "text", key: "thickness", label: "Товщина", placeholder: "20 мм" },
   { type: "text", key: "finish", label: "Фініш" },
-  { type: "text", key: "price", label: "Ціна (текст)", placeholder: "від 8 900 грн" },
+  { type: "text", key: "price", label: "Ціна (текст)", placeholder: "від 8 900 грн" },
   { type: "select", key: "status", label: "Статус", options: ["Доступний", "На уточненні", "Продано"] },
   { type: "image", key: "image", label: "Фото" },
 ]
@@ -152,7 +152,7 @@ export const settingsSchemas: Record<string, { title: string; help: string; fiel
   },
   calculator: {
     title: "Калькулятор",
-    help: "Орієнтовні ставки для онлайн-розрахунку на /kalkulyator. Підсумок округлюється до 100 грн і не менший за мінімальне замовлення.",
+    help: "Орієнтовні ставки для онлайн-розрахунку на /kalkulyator. Підсумок округлюється до 100 грн і не менший за мінімальне замовлення.",
     fields: [
       { type: "numberMap", key: "productRates", label: "Тип виробу → грн за м²" },
       { type: "numberMap", key: "materialRates", label: "Рівень матеріалу → множник", help: "Рівні: Базовий, Середній, Преміальний" },

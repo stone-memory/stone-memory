@@ -14,7 +14,7 @@ export function EdgeProfiles() {
       {edgeProfiles.map(([name, copy, tier], i) => (
         <article key={name} className="rounded-xl bg-card p-6">
           <svg
-            viewBox="0 0 160 80"
+            viewBox="0 0 160 80"
             role="img"
             aria-label={`Переріз профілю ${name}`}
             className="h-24 w-full text-foreground"
@@ -24,8 +24,8 @@ export function EdgeProfiles() {
                 i % 3 === 0
                   ? 'M18 20H142V60H18Z'
                   : i % 3 === 1
-                    ? 'M18 20H126Q142 20 142 36V60H18Z'
-                    : 'M18 20H130Q142 26 142 40Q142 54 130 60H18Z'
+                    ? 'M18 20H126Q142 20 142 36V60H18Z'
+                    : 'M18 20H130Q142 26 142 40Q142 54 130 60H18Z'
               }
               fill="none"
               stroke="currentColor"

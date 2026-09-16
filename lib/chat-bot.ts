@@ -71,7 +71,7 @@ export const botCopy: Record<Locale, BotCopy> = {
     quickReplies: [
       {
         q: "ціна|вартість|скільки коштує|бюджет",
-        a: "Ціна «від» у каталозі — за базову комплектацію з фундаментом і монтажем: одинарний пам'ятник від 19 500 ₴, хрест від 25 000 ₴, дитячий від 27 500 ₴, подвійний від 30 000 ₴, європейський від 35 500 ₴, меморіальний комплекс від 113 500 ₴, військовий від 170 000 ₴. Точну суму назвемо після ескізу або фото ділянки.",
+        a: "Ціна «від» у каталозі — за базову комплектацію з фундаментом і монтажем: одинарний пам'ятник від 19 500 ₴, хрест від 25 000 ₴, дитячий від 27 500 ₴, подвійний від 30 000 ₴, європейський від 35 500 ₴, меморіальний комплекс від 113 500 ₴, військовий від 170 000 ₴. Точну суму назвемо після ескізу або фото ділянки.",
       },
       {
         q: "термін|як довго|коли готово|коли буде|скільки часу",
@@ -79,7 +79,7 @@ export const botCopy: Record<Locale, BotCopy> = {
       },
       {
         q: "монтаж|встановлення|доставка|привезення",
-        a: "Доставка й монтаж по всій Україні: Рівненська та Волинська області безкоштовно, далі 3–5 ₴/км. Возимо і в ЄС — Польща, Німеччина, Литва, Чехія. Пакуємо в дерев'яну обрешітку, вантаж застрахований. На місці робимо фундамент, виставляємо по нівеліру, герметизуємо шви: одинарний пам'ятник за один день, комплекс за 1–3 дні.",
+        a: "Доставка й монтаж по всій Україні: Рівненська та Волинська області безкоштовно, далі 3–5 ₴/км. Возимо і в ЄС — Польща, Німеччина, Литва, Чехія. Пакуємо в дерев'яну обрешітку, вантаж застрахований. На місці робимо фундамент, виставляємо по нівеліру, герметизуємо шви: одинарний пам'ятник за один день, комплекс за 1–3 дні.",
       },
       {
         q: "гарантія|warranty",
@@ -120,9 +120,9 @@ export const botCopy: Record<Locale, BotCopy> = {
     didntUnderstand: "Nie jestem pewien, czy zrozumiałem. Menedżer wkrótce dołączy. Poniżej typowe pytania:",
     managerNotified: "Przekazałem Twoją wiadomość menedżerowi. Odezwie się za chwilę.",
     quickReplies: [
-      { q: "cena|koszt|wycena|budżet", a: "Cena „od” w katalogu obejmuje komplet bazowy z fundamentem i montażem: pomnik pojedynczy od 19 500 ₴ (≈ 430 €), krzyż od 25 000 ₴ (≈ 550 €), dziecięcy od 27 500 ₴ (≈ 610 €), podwójny od 30 000 ₴ (≈ 670 €), europejski od 35 500 ₴ (≈ 790 €), kompleks memorialny od 113 500 ₴ (≈ 2 500 €), wojskowy od 170 000 ₴ (≈ 3 800 €). Dokładną kwotę podamy po szkicu lub zdjęciu miejsca." },
+      { q: "cena|koszt|wycena|budżet", a: "Cena „od” w katalogu obejmuje komplet bazowy z fundamentem i montażem: pomnik pojedynczy od 19 500 ₴ (≈ 430 €), krzyż od 25 000 ₴ (≈ 550 €), dziecięcy od 27 500 ₴ (≈ 610 €), podwójny od 30 000 ₴ (≈ 670 €), europejski od 35 500 ₴ (≈ 790 €), kompleks memorialny od 113 500 ₴ (≈ 2 500 €), wojskowy od 170 000 ₴ (≈ 3 800 €). Dokładną kwotę podamy po szkicu lub zdjęciu miejsca." },
       { q: "termin|ile czasu|kiedy gotowe|kiedy będzie", a: "Pomnik pojedynczy, krzyż, dziecięcy — 5–7 tygodni od zatwierdzenia szkicu do montażu. Podwójny, kompleks memorialny, wojskowy — 7–10 tygodni. Grawer portretu na gotowym kamieniu — 7–10 dni. W sezonie (kwiecień–czerwiec, sierpień–październik) kolejka może być o 2 tygodnie dłuższa." },
-      { q: "montaż|instalacja|dostawa", a: "Dostawa i montaż w całej Ukrainie: obwód rówieński i wołyński bezpłatnie, dalej 3–5 ₴/km. Jeździmy też do UE — Polska, Niemcy, Litwa, Czechy. Pakujemy w drewnianą skrzynię, ładunek ubezpieczony. Na miejscu fundament, poziomowanie, uszczelnienie: pomnik pojedynczy w jeden dzień, kompleks 1–3 dni." },
+      { q: "montaż|instalacja|dostawa", a: "Dostawa i montaż w całej Ukrainie: obwód rówieński i wołyński bezpłatnie, dalej 3–5 ₴/km. Jeździmy też do UE — Polska, Niemcy, Litwa, Czechy. Pakujemy w drewnianą skrzynię, ładunek ubezpieczony. Na miejscu fundament, poziomowanie, uszczelnienie: pomnik pojedynczy w jeden dzień, kompleks 1–3 dni." },
       { q: "gwarancja|warranty", a: "5 lat gwarancji na kamień, fundament i montaż — zapisane w umowie. Pęknięcie, osiadanie lub wada polerowania w tym czasie — usuwamy bezpłatnie." },
       { q: "materiał|granit|marmur|kamień", a: "44 kamienie do wyboru: granit ukraiński (Pokostiwski, Łeznykowski, Kapustyński, Tokiwski i inne), gabro (Gołowyńskie, Bukińskie), labradoryt (Volga Blue, Irina Blue, Black Ice), bazalt i marmur (Carrara, Nero Marquina, Emperador). Na każdej karcie produktu można przełączyć kamień i od razu zobaczyć cenę." },
       { q: "grawer|portret|epitafium", a: "Grawerujemy portrety, epitafia i ornamenty — ręcznie i laserem. Odtwarzamy nawet ze starych lub małych zdjęć. Złocenie i srebrzenie liter, fotoceramika." },
@@ -162,9 +162,9 @@ export const botCopy: Record<Locale, BotCopy> = {
     didntUnderstand: "Nicht ganz sicher. Ein Manager meldet sich gleich. Häufige Fragen:",
     managerNotified: "An den Manager weitergeleitet. Antwort in wenigen Minuten.",
     quickReplies: [
-      { q: "preis|kosten|angebot|budget", a: "Katalogpreise „ab“ gelten für die Grundausstattung mit Fundament und Montage: Einzelgrabmal ab 19 500 ₴ (≈ 430 €), Kreuz ab 25 000 ₴ (≈ 550 €), Kindergrabmal ab 27 500 ₴ (≈ 610 €), Doppelgrabmal ab 30 000 ₴ (≈ 670 €), europäischer Stil ab 35 500 ₴ (≈ 790 €), Gedenkkomplex ab 113 500 ₴ (≈ 2 500 €), Soldatengrabmal ab 170 000 ₴ (≈ 3 800 €). Genaues Angebot nach Entwurf oder Foto der Grabstelle." },
+      { q: "preis|kosten|angebot|budget", a: "Katalogpreise „ab“ gelten für die Grundausstattung mit Fundament und Montage: Einzelgrabmal ab 19 500 ₴ (≈ 430 €), Kreuz ab 25 000 ₴ (≈ 550 €), Kindergrabmal ab 27 500 ₴ (≈ 610 €), Doppelgrabmal ab 30 000 ₴ (≈ 670 €), europäischer Stil ab 35 500 ₴ (≈ 790 €), Gedenkkomplex ab 113 500 ₴ (≈ 2 500 €), Soldatengrabmal ab 170 000 ₴ (≈ 3 800 €). Genaues Angebot nach Entwurf oder Foto der Grabstelle." },
       { q: "dauer|zeit|wann fertig", a: "Einzelgrabmal, Kreuz, Kindergrabmal — 5–7 Wochen von der Entwurfsfreigabe bis zur Montage. Doppelgrabmal, Gedenkkomplex, Soldatengrabmal — 7–10 Wochen. Porträtgravur auf vorhandenem Stein — 7–10 Tage. In der Saison (April–Juni, August–Oktober) kann die Wartezeit 2 Wochen länger sein." },
-      { q: "montage|lieferung", a: "Lieferung und Montage in der ganzen Ukraine: Gebiete Riwne und Wolyn kostenlos, darüber hinaus 3–5 ₴/km. Auch in die EU — Polen, Deutschland, Litauen, Tschechien. Verpackung in Holzverschlag, Fracht versichert. Vor Ort Fundament, Nivellierung, Fugenabdichtung: Einzelgrabmal an einem Tag, Komplex in 1–3 Tagen." },
+      { q: "montage|lieferung", a: "Lieferung und Montage in der ganzen Ukraine: Gebiete Riwne und Wolyn kostenlos, darüber hinaus 3–5 ₴/km. Auch in die EU — Polen, Deutschland, Litauen, Tschechien. Verpackung in Holzverschlag, Fracht versichert. Vor Ort Fundament, Nivellierung, Fugenabdichtung: Einzelgrabmal an einem Tag, Komplex in 1–3 Tagen." },
       { q: "garantie", a: "5 Jahre Garantie auf Stein, Fundament und Montage — im Vertrag festgehalten. Riss, Setzung oder Polierfehler in dieser Zeit beheben wir kostenlos." },
       { q: "material|granit|marmor|stein", a: "44 Steine zur Auswahl: ukrainischer Granit (Pokostiwka, Lesnyky, Kapustyne, Tokiwske u. a.), Gabbro (Holowyne, Bukynske), Labradorit (Volga Blue, Irina Blue, Black Ice), Basalt und Marmor (Carrara, Nero Marquina, Emperador). Auf jeder Produktseite lässt sich der Stein wechseln, der Preis wird sofort angezeigt." },
       { q: "gravur|porträt|epitaph", a: "Porträts, Epitaphe und Ornamente — von Hand und mit Laser. Wir restaurieren auch alte oder kleine Fotos. Vergoldete und versilberte Schrift, Fotokeramik." },
@@ -183,9 +183,9 @@ export const botCopy: Record<Locale, BotCopy> = {
     didntUnderstand: "Nesu tikras, ar supratau. Vadybininkas greitai prisijungs. Dažni klausimai:",
     managerNotified: "Perdaviau vadybininkui. Atsakys per kelias minutes.",
     quickReplies: [
-      { q: "kaina|kiek kainuoja|biudž", a: "Katalogo kainos „nuo“ — bazinis komplektas su pamatu ir montavimu: vienvietis paminklas nuo 19 500 ₴ (≈ 430 €), kryžius nuo 25 000 ₴ (≈ 550 €), vaikiškas nuo 27 500 ₴ (≈ 610 €), dvivietis nuo 30 000 ₴ (≈ 670 €), europietiško stiliaus nuo 35 500 ₴ (≈ 790 €), memorialinis kompleksas nuo 113 500 ₴ (≈ 2 500 €), karinis nuo 170 000 ₴ (≈ 3 800 €). Tikslią sumą pasakysime po eskizo ar vietos nuotraukos." },
+      { q: "kaina|kiek kainuoja|biudž", a: "Katalogo kainos „nuo“ — bazinis komplektas su pamatu ir montavimu: vienvietis paminklas nuo 19 500 ₴ (≈ 430 €), kryžius nuo 25 000 ₴ (≈ 550 €), vaikiškas nuo 27 500 ₴ (≈ 610 €), dvivietis nuo 30 000 ₴ (≈ 670 €), europietiško stiliaus nuo 35 500 ₴ (≈ 790 €), memorialinis kompleksas nuo 113 500 ₴ (≈ 2 500 €), karinis nuo 170 000 ₴ (≈ 3 800 €). Tikslią sumą pasakysime po eskizo ar vietos nuotraukos." },
       { q: "terminas|kiek laiko|kada", a: "Vienvietis paminklas, kryžius, vaikiškas — 5–7 savaitės nuo eskizo patvirtinimo iki montavimo. Dvivietis, memorialinis kompleksas, karinis — 7–10 savaičių. Portreto graviravimas ant esamo akmens — 7–10 dienų. Sezono metu (balandis–birželis, rugpjūtis–spalis) eilė gali būti 2 savaitėmis ilgesnė." },
-      { q: "montav|pristatym", a: "Pristatymas ir montavimas visoje Ukrainoje: Rivnės ir Volynės sritys nemokamai, toliau 3–5 ₴/km. Vežame ir į ES — Lenkiją, Vokietiją, Lietuvą, Čekiją. Pakuojame į medinį karkasą, krovinys apdraustas. Vietoje pamatas, lygiavimas, siūlių sandarinimas: vienvietis paminklas per dieną, kompleksas per 1–3 dienas." },
+      { q: "montav|pristatym", a: "Pristatymas ir montavimas visoje Ukrainoje: Rivnės ir Volynės sritys nemokamai, toliau 3–5 ₴/km. Vežame ir į ES — Lenkiją, Vokietiją, Lietuvą, Čekiją. Pakuojame į medinį karkasą, krovinys apdraustas. Vietoje pamatas, lygiavimas, siūlių sandarinimas: vienvietis paminklas per dieną, kompleksas per 1–3 dienas." },
       { q: "garantij", a: "5 metų garantija akmeniui, pamatui ir montavimui — įrašyta sutartyje. Įtrūkimą, nusėdimą ar poliravimo defektą per šį laiką šaliname nemokamai." },
       { q: "medžiag|granitas|marmuras|akmuo", a: "44 akmenys pasirinkimui: ukrainietiškas granitas (Pokostivka, Leznyky, Kapustyne, Tokivske ir kt.), gabras (Holovyne, Bukynske), labradoritas (Volga Blue, Irina Blue, Black Ice), bazaltas ir marmuras (Carrara, Nero Marquina, Emperador). Kiekvienoje prekės kortelėje galima perjungti akmenį ir iš karto matyti kainą." },
       { q: "gravir|portret|epitaf", a: "Graviruojame portretus, epitafijas ir ornamentus — rankomis ir lazeriu. Atkuriame net iš senų ar mažų nuotraukų. Auksuotos ir sidabruotos raidės, fotokeramika." },
