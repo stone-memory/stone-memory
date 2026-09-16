@@ -14,7 +14,7 @@ export function EdgeProfiles() {
       {edgeProfiles.map(([name, copy, tier], i) => (
         <article key={name} className="rounded-xl bg-card p-6">
           <svg
-            viewBox="0 0 160 80"
+            viewBox="0 0 160 80"
             role="img"
             aria-label={`Переріз профілю ${name}`}
             className="h-24 w-full text-foreground"

@@ -75,7 +75,7 @@ export default function TeamPage() {
     custom_role_id: string | null
     role: TeamRole
     phone: string
-    /** Phone in display form ("+380 67 123 45 67"); persisted to DB
+    /** Phone in display form ("+380 67 123 45 67"); persisted to DB
      *  as digits-only via unformatPhone() in submit(). */
     phoneFormatted: string
     /** Optional initial password — only visible / sendable to
