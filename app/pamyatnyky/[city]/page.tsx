@@ -143,7 +143,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
               { value: minPrice(single) ? `від ${fmt(minPrice(single)!)}` : "—", label: "одинарний пам'ятник з монтажем" },
               { value: minPrice(complex) ? `від ${fmt(minPrice(complex)!)}` : "—", label: "меморіальний комплекс" },
               { value: city.distanceKm ? `${city.distanceKm} км` : "цех тут", label: city.distanceKm ? `від цеху, ${city.travel}` : city.name },
-              { value: city.freeTravel ? "0 ₴" : DELIVERY.perKm, label: city.freeTravel ? "виїзд і монтаж" : "доставка, за пробігом" },
+              { value: city.freeTravel ? "0 ₴" : DELIVERY.perKm, label: city.freeTravel ? "виїзд і монтаж" : "доставка, за пробігом" },
             ]}
           />
         </Section>

@@ -31,7 +31,7 @@ export default function WarrantyPage() {
           <Facts
             items={[
               { value: `${WARRANTY_YEARS} років`, label: "на камінь, гравіювання, фундамент, монтаж" },
-              { value: "0 ₴", label: "виїзд і роботи за гарантією" },
+              { value: "0 ₴", label: "виїзд і роботи за гарантією" },
               { value: "7 днів", label: "на реакцію після звернення" },
               { value: "за собівартістю", label: "негарантійні випадки" },
             ]}
