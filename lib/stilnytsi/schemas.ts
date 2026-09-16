@@ -32,6 +32,13 @@ export const materialFields: Field[] = [
     { type: "select", key: "unit", label: "Одиниця", options: ["м²", "пог.м"] },
     { type: "select", key: "currency", label: "Валюта", options: ["грн", "€"] },
   ] },
+  { type: "group", key: "specs", label: "Технічні характеристики", fields: [
+    { type: "text", key: "density", label: "Щільність, кг/м³", placeholder: "2650" },
+    { type: "text", key: "absorption", label: "Водопоглинання, %", placeholder: "0,13" },
+    { type: "text", key: "compressive", label: "Міцність на стиск, МПа", placeholder: "180–200" },
+    { type: "text", key: "frost", label: "Морозостійкість, циклів", placeholder: "300" },
+    { type: "text", key: "radiation", label: "Клас радіації", placeholder: "I клас" },
+  ] },
   { type: "textarea", key: "description", label: "Опис", required: true },
   { type: "textarea", key: "care", label: "Догляд" },
   { type: "image", key: "image", label: "Головне фото" },
