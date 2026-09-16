@@ -4,6 +4,7 @@ import { SITE_URL } from '@/lib/site-config'
 import { versioned } from '@/lib/stone/asset-url'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 import type { Collection } from '@/lib/stone/cms-types'
 import { getCollections } from '@/lib/stone/cms'
 import { specs as seedSpecs } from '@/data/stone/seed/specs'
@@ -255,8 +256,14 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
           <h2 className="text-3xl font-semibold">Питання про {c.family.toLowerCase()}</h2>
           <div className="mt-6 rounded-xl border">
             {faqs.map(([q, a]) => (
-              <details className="border-b p-5 last:border-0" key={q}>
-                <summary className="cursor-pointer font-semibold">{q}</summary>
+              <details className="group border-b p-5 last:border-0" key={q}>
+                <summary className="faq-summary flex cursor-pointer list-none items-start justify-between gap-4 font-semibold">
+                  <span>{q}</span>
+                  <ChevronDown
+                    className="mt-0.5 size-5 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
+                    aria-hidden="true"
+                  />
+                </summary>
                 <p className="mt-3 leading-7 text-muted-foreground">{a}</p>
               </details>
             ))}
