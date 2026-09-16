@@ -303,20 +303,29 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story }
                 </div>
                 <dl className="mt-4 divide-y divide-foreground/5">
                   {specs.map(([k, v]) => (
-                    <div key={k} className="flex items-center justify-between py-2.5 text-[15px]">
-                      <dt className="text-muted-foreground">{k}</dt>
-                      <dd className="font-medium text-foreground tabular-nums">{v}</dd>
+                    <div
+                      key={k}
+                      // Довге значення (Розмір: стела, тумба, квітник, ділянка) на телефоні
+                      // не вміщалось поруч із підписом і налазило на нього. Такі значення
+                      // йдуть окремим рядком під підписом, короткі — як і раніше, праворуч.
+                      className={cn(
+                        "py-2.5 text-[15px]",
+                        String(v).length > 28 ? "flex flex-col gap-1" : "flex items-center justify-between gap-4"
+                      )}
+                    >
+                      <dt className="shrink-0 text-muted-foreground">{k}</dt>
+                      <dd className={cn("font-medium text-foreground tabular-nums", String(v).length > 28 ? "leading-snug" : "text-right")}>{v}</dd>
                     </div>
                   ))}
                   {showStory && (
                     <>
-                      <div className="flex items-center justify-between py-2.5 text-[15px]">
+                      <div className="flex items-center justify-between gap-4 py-2.5 text-[15px]">
                         <dt className="text-muted-foreground">Виготовлення</dt>
-                        <dd className="font-medium text-foreground tabular-nums">{leadTime}</dd>
+                        <dd className="text-right font-medium text-foreground tabular-nums">{leadTime}</dd>
                       </div>
-                      <div className="flex items-center justify-between py-2.5 text-[15px]">
+                      <div className="flex items-center justify-between gap-4 py-2.5 text-[15px]">
                         <dt className="text-muted-foreground">Гарантія</dt>
-                        <dd className="font-medium text-foreground tabular-nums">{WARRANTY_YEARS} років</dd>
+                        <dd className="text-right font-medium text-foreground tabular-nums">{WARRANTY_YEARS} років</dd>
                       </div>
                     </>
                   )}
