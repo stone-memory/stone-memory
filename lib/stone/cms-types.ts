@@ -29,6 +29,21 @@ export type Collection = {
   relatedCategories: string[]
   /** Без ціни (value 0) на сайті пишемо «ціна за запитом». */
   price?: Price
+  /** Технічні характеристики; порожнє поле — рядок на сайті не показується. */
+  specs?: CollectionSpecs
+}
+
+export type CollectionSpecs = {
+  /** Щільність, кг/м³ */
+  density?: string
+  /** Водопоглинання, % */
+  absorption?: string
+  /** Міцність на стиск, МПа */
+  compressive?: string
+  /** Морозостійкість, циклів */
+  frost?: string
+  /** Клас радіації */
+  radiation?: string
 }
 
 export type Project = {

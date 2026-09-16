@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Collection } from '@/lib/stone/cms-types'
 import { getCollections } from '@/lib/stone/cms'
+import { specs as seedSpecs } from '@/data/stone/seed/specs'
 import { formatPrice } from '@/lib/stone/prices'
 import { GalleryLightbox } from '@/components/stone/catalog/gallery-lightbox'
 
@@ -107,25 +108,22 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
     ]
       .filter((src, i) => i === 0 || existsSync(join(process.cwd(), 'public', src)))
       .map(versioned),
-    isUaGranite =
-      (c.family === 'Граніт' || c.family === 'Лабрадорит') && c.origin.includes('Україна'),
-    specs = [
-      ['Порода', c.family],
-      ['Країна/родовище', c.origin],
-      ['Щільність (кг/м³)', isUaGranite ? '2500–2700' : 'за запитом'],
-      ['Водопоглинання (%)', isUaGranite ? '0,05–0,17' : 'за запитом'],
-      ['Міцність на стиск (МПа)', isUaGranite ? '180–210' : 'за запитом'],
-      ['Морозостійкість (циклів)', isUaGranite ? 'близько 300' : 'за запитом'],
+    // Характеристики з картки матеріалу в адмінці (c.specs); якщо в базі їх ще
+    // немає — з довідкового сіду. Порожній рядок не показуємо, а не пишемо
+    // «за запитом»: 73 зі 110 сторінок мали п'ять таких рядків поспіль.
+    sp = c.specs ?? seedSpecs[c.slug] ?? {},
+    specs = (
       [
-        'Клас радіації',
-        c.slug === 'carpazi'
-          ? 'II клас — лише зовнішнє застосування'
-          : isUaGranite
-            ? 'I клас'
-            : 'за запитом',
-      ],
-      ['Фініші', c.finishes.join(', ')],
-    ],
+        ['Порода', c.family],
+        ['Країна/родовище', c.origin],
+        ['Щільність (кг/м³)', sp.density],
+        ['Водопоглинання (%)', sp.absorption],
+        ['Міцність на стиск (МПа)', sp.compressive],
+        ['Морозостійкість (циклів)', sp.frost],
+        ['Клас радіації', sp.radiation],
+        ['Фініші', c.finishes.join(', ')],
+      ] as [string, string | undefined][]
+    ).filter((row): row is [string, string] => Boolean(row[1] && row[1].trim())),
     related = collections
       .filter((x) => x.slug !== c.slug && (x.family === c.family || x.tone === c.tone))
       .slice(0, 3),
@@ -195,10 +193,6 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
         <section className="mt-20 grid gap-8 lg:grid-cols-2">
           <div>
             <h2 className="text-3xl font-semibold">Технічні характеристики</h2>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Довідкові діапазони для українських гранітів потребують підтвердження для конкретної
-              партії.
-            </p>
             <div className="mt-6 overflow-hidden rounded-xl border">
               {specs.map(([a, b]) => (
                 <div className="grid grid-cols-2 gap-4 border-b p-4 last:border-0" key={a}>

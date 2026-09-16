@@ -1,6 +1,7 @@
 import type { Collection } from '@/lib/stone/cms-types'
 import { knownPrices } from '@/data/stone/seed/prices'
 import { descriptions } from '@/data/stone/seed/descriptions'
+import { specs } from '@/data/stone/seed/specs'
 
 const slugify = (value: string) =>
   value
@@ -55,6 +56,7 @@ const make = (
     relatedArticles: ['yak-vybraty-kamin-dlya-kukhni', 'yak-doglyadaty-za-granitnoyu-stilnytseyu'],
     relatedCategories: ['stilnytsi', 'fasady'],
     price: knownPrices[slug] ?? { value: 0, unit: 'м²', currency: 'грн' },
+    specs: specs[slug],
     ...extra,
   }
 }
