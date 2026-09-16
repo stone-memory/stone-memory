@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 
 export function JsonLd({ data }: { data: object }) {
   return (
@@ -49,11 +50,15 @@ export function FaqSection({
       <div className="mt-8 max-w-4xl rounded-xl border">
         {items.map((item) => (
           <details key={item.question} className="group border-b p-5 last:border-0">
-            <summary className="cursor-pointer list-none font-semibold">
-              {item.question}
-              <span className="float-right" aria-hidden="true">
-                +
-              </span>
+            {/* Один індикатор на всі браузери: стрілка, що обертається при
+                розкритті. Рідний трикутник Safari прибирає faq-summary у
+                globals.css, «плюсик» поруч із ним дублював індикатор. */}
+            <summary className="faq-summary flex cursor-pointer list-none items-start justify-between gap-4 font-semibold">
+              <span>{item.question}</span>
+              <ChevronDown
+                className="mt-0.5 size-5 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
+                aria-hidden="true"
+              />
             </summary>
             <p className="mt-4 max-w-3xl text-sm leading-6 text-muted-foreground">{item.answer}</p>
           </details>

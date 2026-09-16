@@ -187,6 +187,15 @@
   }
 }
 
+/* Safari ігнорує list-none на <summary> і малює свій трикутник поруч із нашою
+   стрілкою; ховаємо рідний маркер там, де індикатор наш. */
+summary.faq-summary::-webkit-details-marker {
+  display: none;
+}
+summary.faq-summary::marker {
+  content: "";
+}
+
 /* Scroll indicator bounce animation */
 @keyframes bounce-gentle {
   0%, 100% {
