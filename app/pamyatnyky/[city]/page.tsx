@@ -4,10 +4,10 @@ import { notFound } from "next/navigation"
 import { InfoPage, Section, Prose, Facts, Faq, CtaBand, LinkPills } from "@/components/info-page"
 import { StoneCard } from "@/components/stone-card"
 import { fetchBusinessProfile, fetchStones } from "@/lib/data-source"
-import { phoneE164 } from "@/lib/business-profile"
+import { phoneE164, telHref } from "@/lib/business-profile"
 import { MEMORIAL_FACETS, facetItems } from "@/lib/catalog-taxonomy"
 import { productType } from "@/lib/product-copy"
-import { CITIES, CONTACT, DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, cityBySlug, type City } from "@/lib/site-facts"
+import { CITIES, DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, cityBySlug, type City } from "@/lib/site-facts"
 import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 import type { StoneItem } from "@/lib/types"
 
@@ -209,7 +209,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
           <LinkPills items={others.map((c) => ({ href: `/pamyatnyky/${c.slug}`, label: c.name }))} />
           <p className="mt-4 text-sm text-muted-foreground">
             Немає вашого міста? Працюємо по всій Україні — подзвоніть{" "}
-            <a href={CONTACT.phoneHref} className="underline underline-offset-4 hover:text-foreground">{CONTACT.phoneDisplay}</a>, скажемо вартість доставки за хвилину.
+            <a href={telHref(profile)} className="underline underline-offset-4 hover:text-foreground">{profile.phone}</a>, скажемо вартість доставки за хвилину.
           </p>
         </Section>
 

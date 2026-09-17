@@ -159,10 +159,10 @@ export default async function ContactsPage() {
 
         <Section title="Соцмережі" eyebrow="Роботи щотижня">
           <div className="flex flex-wrap gap-3">
-            <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background">
+            <a href={profile.instagram || CONTACT.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background">
               Instagram
             </a>
-            <a href={CONTACT.facebook} target="_blank" rel="noopener noreferrer" className="rounded-full border border-foreground/15 px-5 py-2.5 text-sm font-medium hover:bg-foreground/5">
+            <a href={profile.facebook || CONTACT.facebook} target="_blank" rel="noopener noreferrer" className="rounded-full border border-foreground/15 px-5 py-2.5 text-sm font-medium hover:bg-foreground/5">
               Facebook
             </a>
           </div>
