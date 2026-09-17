@@ -124,37 +124,14 @@ const linkField = (key: string, label: string): Field => ({ type: "text", key, l
 export const settingsSchemas: Record<string, { title: string; help: string; fields: Field[] }> = {
   contacts: {
     title: "Контакти",
-    help: "Телефон, email, адреса та графік у шапці, футері, на сторінці контактів і в розмітці для Google.",
+    help: "Телефон, email, адреса, графік і соцмережі керуються в розділі «Бізнес-профіль» і спільні для всього сайту. Тут лише те, що є тільки в архітектурному розділі.",
     fields: [
       { type: "text", key: "brand", label: "Бренд" },
-      { type: "text", key: "legalName", label: "Назва для розмітки" },
-      { type: "text", key: "company", label: "Юридична назва", span: 2 },
-      { type: "group", key: "phone", label: "Телефон", fields: [
-        { type: "text", key: "display", label: "Як показувати", placeholder: "+380 (68) 808 02 22" },
-        { type: "text", key: "href", label: "Посилання", placeholder: "tel:+380688080222" },
-      ] },
-      { type: "group", key: "email", label: "Email", fields: [
-        { type: "text", key: "display", label: "Як показувати" },
-        { type: "text", key: "href", label: "Посилання", placeholder: "mailto:…" },
-      ] },
-      { type: "group", key: "address", label: "Адреса", fields: [
-        { type: "text", key: "street", label: "Вулиця, будинок" },
-        { type: "text", key: "postalCode", label: "Індекс" },
-        { type: "text", key: "city", label: "Місто" },
-        { type: "text", key: "region", label: "Область" },
-        { type: "text", key: "country", label: "Країна" },
+      { type: "group", key: "address", label: "Координати цеху для мапи", fields: [
         { type: "number", key: "lat", label: "Широта" },
         { type: "number", key: "lng", label: "Довгота" },
       ] },
-      { type: "group", key: "hours", label: "Графік", fields: [
-        { type: "text", key: "weekdays", label: "Будні" },
-        { type: "text", key: "saturday", label: "Субота" },
-        { type: "text", key: "sunday", label: "Неділя" },
-      ] },
-      { type: "group", key: "chat", label: "Месенджери", fields: [
-        linkField("viber", "Viber"), linkField("telegram", "Telegram"), linkField("whatsapp", "WhatsApp"),
-      ] },
-      { type: "group", key: "social", label: "Соцмережі", fields: [linkField("instagram", "Instagram"), linkField("facebook", "Facebook")] },
+      { type: "group", key: "chat", label: "Месенджери", fields: [linkField("whatsapp", "WhatsApp")] },
     ],
   },
   calculator: {

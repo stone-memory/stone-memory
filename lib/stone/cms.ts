@@ -1,7 +1,9 @@
 import "server-only"
 import { unstable_cache } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import type { Article, Collection, Project, Remnant, SettingKey, Settings, Slab } from "@/lib/stone/cms-types"
+import type { Article, Collection, Contacts, Project, Remnant, SettingKey, Settings, Slab } from "@/lib/stone/cms-types"
+import { fetchBusinessProfile } from "@/lib/data-source"
+import { hoursRows, telHref, telegramHref, viberHref } from "@/lib/business-profile"
 import { versioned, versionedAll } from "@/lib/stone/asset-url"
 
 /**
@@ -107,4 +109,42 @@ export async function getSetting<K extends SettingKey>(k: K): Promise<Settings[K
   return (await getSettings())[k]
 }
 
-export const getContacts = async () => (await getSettings()).contacts
+/**
+ * Контакти розділу: телефон, пошта, адреса, графік і соцмережі беруться з
+ * бізнес-профілю (одна адмінка на весь сайт); з налаштувань стільниць
+ * лишаються бренд, координати цеху для мапи й посилання WhatsApp.
+ */
+export const getContacts = async (): Promise<Contacts> => {
+  const [own, profile] = await Promise.all([getSettings().then((s) => s.contacts), fetchBusinessProfile()])
+  const rows = hoursRows(profile)
+  const line = (label: string, fallback: string) => {
+    const r = rows.find((x) => x.days === label || x.days.startsWith(label))
+    return r ? `${r.days} ${r.time}` : fallback
+  }
+  const weekdays = rows.find((x) => x.days.includes("–")) ?? rows[0]
+  return {
+    ...own,
+    legalName: profile.displayName || own.legalName,
+    company: profile.legalName || own.company,
+    phone: { display: profile.phone, href: telHref(profile) },
+    email: { display: profile.email, href: `mailto:${profile.email}` },
+    address: {
+      ...own.address,
+      street: profile.address,
+      postalCode: profile.postalCode,
+      city: profile.city,
+      region: profile.region,
+      country: profile.country,
+    },
+    hours: {
+      weekdays: weekdays ? `${weekdays.days} ${weekdays.time}` : own.hours.weekdays,
+      saturday: line("Сб", own.hours.saturday),
+      sunday: profile.hours.sun?.closed ? "Нд — вихідний" : line("Нд", own.hours.sunday),
+    },
+    chat: { ...own.chat, viber: viberHref(profile), telegram: telegramHref(profile) },
+    social: {
+      instagram: profile.instagram || own.social.instagram,
+      facebook: profile.facebook || own.social.facebook,
+    },
+  }
+}

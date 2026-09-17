@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, type FormEvent } from "react"
+import { ProfilePhone } from "@/components/profile-phone"
 import Link from "next/link"
 import * as Dialog from "@radix-ui/react-dialog"
 import { Check, Paperclip, X } from "lucide-react"
@@ -8,7 +9,6 @@ import { useConsultStore } from "@/lib/store/consult"
 import { shrinkImage } from "@/lib/image-shrink"
 import { readAttribution } from "@/lib/attribution"
 import { trackEvent } from "@/components/analytics-pixels"
-import { CONTACT } from "@/lib/site-facts"
 import { cn } from "@/lib/utils"
 
 /**
@@ -192,9 +192,7 @@ export function ConsultModal() {
                 </span>
                 <h3 className="mt-5 text-xl font-semibold">Запит надіслано</h3>
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">{feedback}</p>
-                <a href={CONTACT.phoneHref} className="mt-6 text-sm font-medium underline underline-offset-4">
-                  Або подзвоніть: {CONTACT.phoneDisplay}
-                </a>
+                <ProfilePhone prefix="Або подзвоніть: " className="mt-6 text-sm font-medium underline underline-offset-4" />
               </div>
             ) : (
               <form onSubmit={submit} className="space-y-4">

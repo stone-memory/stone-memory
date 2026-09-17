@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { Phone } from "lucide-react"
 import { Header } from "@/components/header"
+import { ProfilePhone } from "@/components/profile-phone"
 import { Footer } from "@/components/footer"
 import { SelectionSidebar } from "@/components/selection-sidebar"
 import { Breadcrumbs, type Crumb } from "@/components/breadcrumbs"
 import { ConsultButton } from "@/components/consult-button"
-import { CONTACT } from "@/lib/site-facts"
 import { cn } from "@/lib/utils"
 
 /**
@@ -205,13 +205,9 @@ export function CtaBand({
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end">
             <ConsultButton className="bg-background text-foreground" topic={title}>{cta}</ConsultButton>
-            <a
-              href={CONTACT.phoneHref}
-              className="inline-flex items-center gap-2 text-sm font-medium text-background/85 hover:text-background"
-            >
+            <ProfilePhone className="inline-flex items-center gap-2 text-sm font-medium text-background/85 hover:text-background">
               <Phone className="h-4 w-4" strokeWidth={2} />
-              {CONTACT.phoneDisplay}
-            </a>
+            </ProfilePhone>
           </div>
         </div>
       </div>
