@@ -12,6 +12,8 @@ import {
   seedBlogConfig,
 } from "@/lib/data/seeds"
 import { guardCapability } from "@/lib/auth/permissions"
+import { revalidatePath } from "next/cache"
+import { PUBLIC_RESOURCES, revalidateBusinessProfile, revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -128,5 +130,13 @@ export async function POST(req: Request) {
     report.site_content = rows.length
   }
 
+  // Сід переписує все, що читають кешовані сторінки: скидаємо їх усі.
+  for (const r of PUBLIC_RESOURCES) revalidateForResource(r)
+  revalidateBusinessProfile()
+  try {
+    revalidatePath("/pro-nas", "page")
+  } catch {
+    // best-effort
+  }
   return NextResponse.json({ ok: true, seeded: report, force })
 }

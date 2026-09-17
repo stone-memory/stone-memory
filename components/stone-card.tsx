@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useBusinessProfile } from "@/lib/store/business-profile"
+import { toTelHref } from "@/lib/phone-format"
 import Image from "next/image"
 import Link from "next/link"
 import { Check } from "lucide-react"
@@ -87,6 +89,7 @@ function buildDescription(item: StoneItem, locale: Locale): string {
 // без перекладу й показувала «Size» в усіх мовах.
 
 export function StoneCard({ item, showBestseller, priority = false, headingTag: Heading = "h3" }: StoneCardProps) {
+  const phone = useBusinessProfile().phone
   const [showSuccess, setShowSuccess] = useState(false)
   const [imageSrc, setImageSrc] = useState(item.imagePath)
   const { addItem, items } = useSelectionStore()
@@ -249,7 +252,7 @@ export function StoneCard({ item, showBestseller, priority = false, headingTag: 
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  window.location.href = "tel:+380688080222"
+                  window.location.href = toTelHref(phone)
                 }}
                 className="w-full inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:-translate-y-[1px] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >

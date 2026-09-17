@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { create } from "zustand"
 import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import { authedFetch } from "@/lib/authed-fetch"
+import { useBusinessProfile } from "@/lib/store/business-profile"
 import type { Locale } from "@/lib/types"
 import { botCopy, matchQuickReply, type FaqItem } from "@/lib/chat-bot"
 
@@ -165,9 +166,11 @@ export function useChatSettings(locale: Locale) {
     hydrate()
   }, [hydrate])
   const o = hasHydrated ? overrides[locale] : undefined
+  // Номер у типовій відповіді — з профілю бізнесу, а не з коду.
+  const phone = useBusinessProfile().phone
   return {
     quickReplies: o?.quickReplies ?? defaultQuickReplies[locale],
-    fallback: o?.fallback ?? defaultFallback[locale],
+    fallback: o?.fallback ?? defaultFallback[locale].replace("+380 (68) 808 02 22", phone),
   }
 }
 

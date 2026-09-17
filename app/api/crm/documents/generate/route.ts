@@ -1,3 +1,4 @@
+import { fetchBusinessProfile } from "@/lib/data-source"
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
@@ -5,6 +6,7 @@ import {
   renderQuoteHTML,
   renderContractHTML,
   renderInvoiceHTML,
+  setDocumentCompany,
 } from "@/lib/crm/pdf-templates"
 import type { DocumentKind } from "@/lib/crm/types"
 import { DOCUMENTS_BUCKET, ensureDocumentsBucket } from "@/lib/crm/documents-storage"
@@ -53,6 +55,10 @@ export async function POST(req: Request) {
 
   const items = itemsR.data || []
   const payments = paymentsR.data || []
+
+  // Реквізити — з бази, а не з коду: інакше в договорах стояв плейсхолдер
+  // «введіть IBAN у Бізнес-профіль».
+  setDocumentCompany(await fetchBusinessProfile())
 
   let html: string
   if (body.kind === "quote") {

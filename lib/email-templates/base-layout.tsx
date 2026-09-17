@@ -10,10 +10,16 @@ import {
   Text,
 } from "@react-email/components"
 
+// Підпис у листах береться з профілю бізнесу: lib/email.tsx викликає
+// setEmailCompany() перед рендером. Тут лише запасні значення.
 export const COMPANY = {
   name: "Stone Memory",
-  address: "Костопіль, Рівненська обл., Україна",
+  address: "провулок Білий, 20, Костопіль, Рівненська область, 35000, Україна",
   email: "info@stonememory.com.ua",
+}
+
+export function setEmailCompany(next: Partial<typeof COMPANY>) {
+  Object.assign(COMPANY, next)
 }
 
 export function BaseLayout({

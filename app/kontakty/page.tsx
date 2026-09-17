@@ -3,6 +3,17 @@ import Link from "next/link"
 import { Clock, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react"
 import { InfoPage, Section, Steps, CtaBand } from "@/components/info-page"
 import { CITIES, CONTACT, WARRANTY_YEARS } from "@/lib/site-facts"
+import { fetchBusinessProfile } from "@/lib/data-source"
+import {
+  fullAddress,
+  hoursRows,
+  openingHoursSpecification,
+  phoneE164,
+  postalAddress,
+  telHref,
+  telegramHref,
+  viberHref,
+} from "@/lib/business-profile"
 import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
 const PATH = "/kontakty"
@@ -36,7 +47,8 @@ const HOW_TO_VISIT = [
   },
 ]
 
-export default function ContactsPage() {
+export default async function ContactsPage() {
+  const profile = await fetchBusinessProfile()
   const mapBbox = `${CONTACT.geo.lng - 0.012}%2C${CONTACT.geo.lat - 0.006}%2C${CONTACT.geo.lng + 0.012}%2C${CONTACT.geo.lat + 0.006}`
   const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${mapBbox}&layer=mapnik&marker=${CONTACT.geo.lat}%2C${CONTACT.geo.lng}`
   const mapLink = `https://www.openstreetmap.org/?mlat=${CONTACT.geo.lat}&mlon=${CONTACT.geo.lng}#map=16/${CONTACT.geo.lat}/${CONTACT.geo.lng}`
@@ -50,21 +62,11 @@ export default function ContactsPage() {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#localbusiness`,
       name: "Stone Memory",
-      telephone: "+380688080222",
-      email: CONTACT.email,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "провулок Білий, 20",
-        addressLocality: "Костопіль",
-        addressRegion: "Рівненська область",
-        postalCode: "35000",
-        addressCountry: "UA",
-      },
+      telephone: phoneE164(profile),
+      email: profile.email,
+      address: postalAddress(profile),
       geo: { "@type": "GeoCoordinates", latitude: CONTACT.geo.lat, longitude: CONTACT.geo.lng },
-      openingHoursSpecification: [
-        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
-        { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "10:00", closes: "16:00" },
-      ],
+      openingHoursSpecification: openingHoursSpecification(profile),
       areaServed: CITIES.map((c) => ({ "@type": "City", name: c.name })),
     },
   }
@@ -81,23 +83,23 @@ export default function ContactsPage() {
           <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
             <div className="space-y-4">
               <Card icon={Phone} title="Телефон">
-                <a href={CONTACT.phoneHref} className="text-xl font-semibold tracking-tight-custom hover:underline">
-                  {CONTACT.phoneDisplay}
+                <a href={telHref(profile)} className="text-xl font-semibold tracking-tight-custom hover:underline">
+                  {profile.phone}
                 </a>
                 <p className="mt-1 text-sm text-muted-foreground">Дзвінки, SMS, Viber і Telegram — один номер.</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Messenger href={CONTACT.viberHref} label="Viber" icon={MessageCircle} />
-                  <Messenger href={CONTACT.telegramHref} label="Telegram" icon={Send} />
+                  <Messenger href={viberHref(profile)} label="Viber" icon={MessageCircle} />
+                  <Messenger href={telegramHref(profile)} label="Telegram" icon={Send} />
                 </div>
               </Card>
               <Card icon={Mail} title="Пошта">
-                <a href={`mailto:${CONTACT.email}`} className="text-lg font-medium hover:underline">
-                  {CONTACT.email}
+                <a href={`mailto:${profile.email}`} className="text-lg font-medium hover:underline">
+                  {profile.email}
                 </a>
                 <p className="mt-1 text-sm text-muted-foreground">Для фото ділянки, ескізів і документів для фондів та підприємств.</p>
               </Card>
               <Card icon={MapPin} title="Адреса">
-                <p className="text-lg font-medium">{CONTACT.address}</p>
+                <p className="text-lg font-medium">{fullAddress(profile)}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   45 км від Рівного трасою Р-05, 110 км від Луцька.{" "}
                   <a href={mapLink} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
@@ -107,7 +109,7 @@ export default function ContactsPage() {
               </Card>
               <Card icon={Clock} title="Години роботи">
                 <dl className="divide-y divide-foreground/5">
-                  {CONTACT.hours.map((h) => (
+                  {hoursRows(profile).map((h) => (
                     <div key={h.days} className="flex justify-between py-1.5 text-[15px]">
                       <dt className="text-muted-foreground">{h.days}</dt>
                       <dd className="font-medium tabular-nums">{h.time}</dd>

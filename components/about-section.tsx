@@ -5,20 +5,19 @@ import { motion } from "framer-motion"
 import { MapPin, Phone, Mail, Clock, Award, Shield, Users, Truck } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
 import { useAbout } from "@/lib/store/about"
+import { useBusinessProfile } from "@/lib/store/business-profile"
+import { hoursLine, shortAddress } from "@/lib/business-profile"
 import { trackEvent } from "@/components/analytics-pixels"
 import { toTelHref } from "@/lib/phone-format"
 import { CONTACT } from "@/lib/site-facts"
 import type { AboutOverrides } from "@/lib/store/about"
 
-const PHONE_DISPLAY = "+380 (68) 808 02 22"
-const EMAIL = "info@stonememory.com.ua"
-
 const contactLabels = {
-  uk: { heading: "Контакти", address: "Адреса", phone: "Телефон", email: "Email", hours: "Графік", hoursValue: "Пн–Пт 9:00–19:00 · Сб 10:00–16:00" },
-  pl: { heading: "Kontakt", address: "Adres", phone: "Telefon", email: "Email", hours: "Godziny", hoursValue: "Pn–Pt 9:00–19:00 · Sb 10:00–16:00" },
-  en: { heading: "Contact", address: "Address", phone: "Phone", email: "Email", hours: "Hours", hoursValue: "Mon–Fri 9:00–19:00 · Sat 10:00–16:00" },
-  de: { heading: "Kontakt", address: "Adresse", phone: "Telefon", email: "E-Mail", hours: "Öffnungszeiten", hoursValue: "Mo–Fr 9:00–19:00 · Sa 10:00–16:00" },
-  lt: { heading: "Kontaktai", address: "Adresas", phone: "Telefonas", email: "El. paštas", hours: "Darbo laikas", hoursValue: "Pr–Pn 9:00–19:00 · Š 10:00–16:00" },
+  uk: { heading: "Контакти", address: "Адреса", phone: "Телефон", email: "Email", hours: "Графік" },
+  pl: { heading: "Kontakt", address: "Adres", phone: "Telefon", email: "Email", hours: "Godziny" },
+  en: { heading: "Contact", address: "Address", phone: "Phone", email: "Email", hours: "Hours" },
+  de: { heading: "Kontakt", address: "Adresse", phone: "Telefon", email: "E-Mail", hours: "Öffnungszeiten" },
+  lt: { heading: "Kontaktai", address: "Adresas", phone: "Telefonas", email: "El. paštas", hours: "Darbo laikas" },
 } as const
 
 const badgeIconMap = {
@@ -43,8 +42,10 @@ const MAP_LINK = `https://www.openstreetmap.org/?mlat=${CONTACT.geo.lat}&mlon=${
 export function AboutSection({ initialOverrides }: { initialOverrides?: AboutOverrides | null }) {
   const { locale, t } = useTranslation()
   const content = useAbout(locale, initialOverrides)
+  const profile = useBusinessProfile()
   const C = contactLabels[locale]
-  const addressValue = t.footer.addressValue
+  const addressValue = shortAddress(profile) || t.footer.addressValue
+  const hoursValue = hoursLine(profile, locale)
 
   return (
     <section id="about" className="pt-8 pb-16 md:pt-10 md:pb-20">
@@ -99,17 +100,17 @@ export function AboutSection({ initialOverrides }: { initialOverrides?: AboutOve
               <ContactRow
                 icon={Phone}
                 term={C.phone}
-                desc={PHONE_DISPLAY}
-                href={toTelHref(PHONE_DISPLAY)}
+                desc={profile.phone}
+                href={toTelHref(profile.phone)}
                 onClick={() => trackEvent("phone_click", { source: "about_section" })}
               />
               <ContactRow
                 icon={Mail}
                 term={C.email}
-                desc={EMAIL}
-                href={`mailto:${EMAIL}`}
+                desc={profile.email}
+                href={`mailto:${profile.email}`}
               />
-              <ContactRow icon={Clock} term={C.hours} desc={C.hoursValue} />
+              <ContactRow icon={Clock} term={C.hours} desc={hoursValue} />
             </dl>
           </motion.div>
         </div>
@@ -138,7 +139,7 @@ export function AboutSection({ initialOverrides }: { initialOverrides?: AboutOve
         <div className="mt-12 overflow-hidden rounded-2xl ring-1 ring-black/[0.06] shadow-soft md:mt-16">
           <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
             <iframe
-              title="Stone Memory — Костопіль, провулок Білий, 20"
+              title={`Stone Memory — ${shortAddress(profile)}`}
               src={MAP_SRC}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -148,7 +149,7 @@ export function AboutSection({ initialOverrides }: { initialOverrides?: AboutOve
             />
             {/* Covers OpenStreetMap attribution footer (which is localized by browser) with our own Ukrainian version */}
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-background/90 px-3 py-1.5 text-[10px] text-muted-foreground backdrop-blur">
-              <span>Костопіль, провулок Білий, 20 · Рівненська область</span>
+              <span>{shortAddress(profile)} · {profile.region}</span>
               <a
                 href={MAP_LINK}
                 target="_blank"

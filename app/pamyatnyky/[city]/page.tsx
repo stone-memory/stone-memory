@@ -3,7 +3,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { InfoPage, Section, Prose, Facts, Faq, CtaBand, LinkPills } from "@/components/info-page"
 import { StoneCard } from "@/components/stone-card"
-import { fetchStones } from "@/lib/data-source"
+import { fetchBusinessProfile, fetchStones } from "@/lib/data-source"
+import { phoneE164 } from "@/lib/business-profile"
 import { MEMORIAL_FACETS, facetItems } from "@/lib/catalog-taxonomy"
 import { productType } from "@/lib/product-copy"
 import { CITIES, CONTACT, DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, cityBySlug, type City } from "@/lib/site-facts"
@@ -70,6 +71,7 @@ function cityFaq(city: City) {
 }
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
+  const profile = await fetchBusinessProfile()
   const { city: slug } = await params
   const city = cityBySlug(slug)
   if (!city) notFound()
@@ -103,7 +105,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       "@type": "Service",
       name: `Виготовлення та встановлення пам'ятників ${city.inCity}`,
       serviceType: "Пам'ятники з граніту",
-      provider: { "@type": "LocalBusiness", "@id": `${SITE_URL}/#localbusiness`, name: "Stone Memory", telephone: "+380688080222" },
+      provider: { "@type": "LocalBusiness", "@id": `${SITE_URL}/#localbusiness`, name: "Stone Memory", telephone: phoneE164(profile) },
       areaServed: { "@type": "City", name: city.name },
       url: absoluteUrl(`/pamyatnyky/${city.slug}`),
       ...(minPrice(single)

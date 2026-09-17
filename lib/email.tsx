@@ -1,3 +1,6 @@
+import { fetchBusinessProfile } from "@/lib/data-source"
+import { fullAddress } from "@/lib/business-profile"
+import { setEmailCompany } from "@/lib/email-templates/base-layout"
 import "server-only"
 import * as React from "react"
 import { Resend } from "resend"
@@ -74,6 +77,16 @@ export async function sendOne(args: SendArgs): Promise<{ ok: boolean; id?: strin
     ? args.react
     : wrapRawHtml(args.html!, args.unsubscribeToken, args.subject)
 
+  try {
+    const profile = await fetchBusinessProfile()
+    setEmailCompany({
+      name: profile.displayName || "Stone Memory",
+      address: `${fullAddress(profile)}, ${profile.country}`,
+      email: profile.email,
+    })
+  } catch {
+    // лишаються запасні значення з base-layout
+  }
   const wrappedHtml = await render(reactEl)
   const plainText = await render(reactEl, { plainText: true })
   const { url: unsubscribeUrl, mailto: unsubscribeMailto } = buildUnsubscribe(args.unsubscribeToken)
