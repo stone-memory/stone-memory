@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { Plus, Trash2, TrendingUp, TrendingDown, Wallet, CircleDollarSign, Download } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useFinancesStore, useTransactions, type TxCategory, type TxKind } from "@/lib/store/finances"
@@ -62,6 +63,7 @@ export default function AdminFinancesPage() {
   const transactions = useTransactions()
   const add = useFinancesStore((s) => s.add)
   const remove = useFinancesStore((s) => s.remove)
+  const loadError = useFinancesStore((s) => s.error)
 
   const [period, setPeriod] = useState<Period>("30d")
   const [showAdd, setShowAdd] = useState(false)
@@ -111,12 +113,21 @@ export default function AdminFinancesPage() {
   }, [filtered])
   const maxVal = Math.max(1, ...timeline.map(([, v]) => Math.max(v.income, v.expense)))
 
-  const submitAdd = () => {
+  const submitAdd = async () => {
     const amount = Number(draft.amount.replace(/\s/g, "")) || 0
     if (amount <= 0) return
-    add({ kind: draft.kind, category: draft.category, amount, date: Date.now(), note: draft.note || undefined })
+    // Оптимістично: рядок з'являється одразу, форма закривається; якщо сервер
+    // відхилив — стор відкотить, а ми обов'язково скажемо про це (це гроші).
+    const pending = add({ kind: draft.kind, category: draft.category, amount, date: Date.now(), note: draft.note || undefined })
     setDraft({ kind: "income", category: "order", amount: "", note: "" })
     setShowAdd(false)
+    const r = await pending
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
+  const removeTx = async (id: string) => {
+    const r = await remove(id)
+    if (!r.ok) toast.error("Не видалено", { description: r.error })
   }
 
   const exportCsv = () => {
@@ -166,6 +177,12 @@ export default function AdminFinancesPage() {
           </Button>
         </div>
       </header>
+
+      {loadError && (
+        <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {loadError}
+        </div>
+      )}
 
       <div className="flex gap-1 rounded-full bg-foreground/5 p-1 w-fit">
         {periods.map((p) => (
@@ -277,7 +294,7 @@ export default function AdminFinancesPage() {
                 {t.kind === "income" ? "+" : "−"}{fmt(t.amount)} {CUR}
               </span>
               <button
-                onClick={() => remove(t.id)}
+                onClick={() => removeTx(t.id)}
                 className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
               >
                 <Trash2 size={14} />

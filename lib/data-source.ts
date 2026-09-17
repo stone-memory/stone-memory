@@ -1,3 +1,4 @@
+import { BUSINESS_PROFILE_KEY, BUSINESS_PROFILE_TAG, mergeProfile, type BusinessProfile } from "@/lib/business-profile"
 import "server-only"
 import { unstable_cache } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
@@ -173,6 +174,12 @@ export async function fetchSingleton<T = unknown>(key: string): Promise<T | null
 // toggle purges the tag right away (app/api/content/singleton/[key]), so the
 // TTL is only a safety net. It used to be 30 s, which alone produced up to
 // ~86K ISR Writes a month against the 200K Hobby limit on Vercel.
+export const fetchBusinessProfile = unstable_cache(
+  async (): Promise<BusinessProfile> => mergeProfile(await fetchSingleton(BUSINESS_PROFILE_KEY)),
+  ["business-profile"],
+  { revalidate: 86400, tags: [BUSINESS_PROFILE_TAG] }
+)
+
 export const fetchNavSettings = unstable_cache(
   async (): Promise<NavSettings> => {
     const data = await fetchSingleton<Partial<NavSettings>>(NAV_SETTINGS_KEY)

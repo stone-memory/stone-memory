@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import { authedFetch } from "@/lib/authed-fetch"
 import type { Locale } from "@/lib/types"
 import { botCopy, matchQuickReply, type FaqItem } from "@/lib/chat-bot"
@@ -89,10 +90,10 @@ interface ChatSettingsState {
   overrides: Overrides
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  setQuickReplies: (locale: Locale, replies: QuickReply[]) => Promise<void>
-  setFallback: (locale: Locale, text: string) => Promise<void>
-  resetLocale: (locale: Locale) => Promise<void>
+  setQuickReplies: (locale: Locale, replies: QuickReply[]) => Promise<SaveResult>
+  setFallback: (locale: Locale, text: string) => Promise<SaveResult>
 }
 
 async function putOverrides(data: Overrides) {
@@ -101,13 +102,14 @@ async function putOverrides(data: Overrides) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data }),
   })
-  if (!res.ok) throw new Error("chat_settings put failed")
+  if (!res.ok) throw await httpError(res, "chat_settings put failed")
 }
 
 export const useChatSettingsStore = create<ChatSettingsState>()((set, get) => ({
   overrides: {},
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -118,10 +120,10 @@ export const useChatSettingsStore = create<ChatSettingsState>()((set, get) => ({
       if (res.ok && json.data && typeof json.data === "object") {
         set({ overrides: json.data as Overrides, hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
-    } catch {
-      set({ hasHydrated: true })
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -133,9 +135,11 @@ export const useChatSettingsStore = create<ChatSettingsState>()((set, get) => ({
     set({ overrides: next })
     try {
       await putOverrides(next)
-    } catch {
+    } catch (e) {
       set({ overrides: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   setFallback: async (locale, text) => {
@@ -144,22 +148,13 @@ export const useChatSettingsStore = create<ChatSettingsState>()((set, get) => ({
     set({ overrides: next })
     try {
       await putOverrides(next)
-    } catch {
+    } catch (e) {
       set({ overrides: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
-  resetLocale: async (locale) => {
-    const prev = get().overrides
-    const next = { ...prev }
-    delete next[locale]
-    set({ overrides: next })
-    try {
-      await putOverrides(next)
-    } catch {
-      set({ overrides: prev })
-    }
-  },
 }))
 
 export function useChatSettings(locale: Locale) {

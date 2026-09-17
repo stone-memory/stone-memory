@@ -25,6 +25,8 @@ interface CustomersState {
   items: Customer[]
   loading: boolean
   loaded: boolean
+  /** Помилка останнього load()/create() (текст сервера або HTTP-статус); null — усе гаразд. */
+  error: string | null
   load: (search?: string) => Promise<void>
   create: (data: Partial<Customer> & { phone: string; name: string }) => Promise<Customer | null>
   update: (id: string, patch: Partial<Customer>) => Promise<void>
@@ -35,14 +37,18 @@ export const useCustomersStore = create<CustomersState>()((set, get) => ({
   items: [],
   loading: false,
   loaded: false,
+  error: null,
   load: async (search) => {
     if (get().loading) return
     set({ loading: true })
     try {
       const url = search ? `/api/crm/customers?q=${encodeURIComponent(search)}` : "/api/crm/customers"
       const r = await authedFetch(url, { cache: "no-store" })
-      const j = await r.json()
-      if (r.ok) set({ items: j.customers || [], loaded: true })
+      const j = await r.json().catch(() => ({}))
+      if (r.ok) set({ items: j.customers || [], loaded: true, error: null })
+      else set({ error: j.error || `HTTP ${r.status}` })
+    } catch (e) {
+      set({ error: e instanceof Error ? e.message : "network error" })
     } finally {
       set({ loading: false })
     }
@@ -53,9 +59,12 @@ export const useCustomersStore = create<CustomersState>()((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
-    const j = await r.json()
-    if (!r.ok) return null
-    set((s) => ({ items: [j.customer, ...s.items.filter((c) => c.id !== j.customer.id)] }))
+    const j = await r.json().catch(() => ({}))
+    if (!r.ok) {
+      set({ error: j.error || `HTTP ${r.status}` })
+      return null
+    }
+    set((s) => ({ items: [j.customer, ...s.items.filter((c) => c.id !== j.customer.id)], error: null }))
     return j.customer
   },
   update: async (id, patch) => {
@@ -85,6 +94,8 @@ interface DealsState {
   items: DealWithCustomer[]
   loading: boolean
   loaded: boolean
+  /** Помилка останнього load()/create() (текст сервера або HTTP-статус); null — усе гаразд. */
+  error: string | null
   load: () => Promise<void>
   create: (data: Partial<Deal> & { customer_id: string }) => Promise<Deal | null>
   update: (id: string, patch: Partial<Deal>) => Promise<{ ok: boolean; error?: string }>
@@ -96,13 +107,17 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
   items: [],
   loading: false,
   loaded: false,
+  error: null,
   load: async () => {
     if (get().loading) return
     set({ loading: true })
     try {
       const r = await authedFetch("/api/crm/deals", { cache: "no-store" })
-      const j = await r.json()
-      if (r.ok) set({ items: j.deals || [], loaded: true })
+      const j = await r.json().catch(() => ({}))
+      if (r.ok) set({ items: j.deals || [], loaded: true, error: null })
+      else set({ error: j.error || `HTTP ${r.status}` })
+    } catch (e) {
+      set({ error: e instanceof Error ? e.message : "network error" })
     } finally {
       set({ loading: false })
     }
@@ -113,9 +128,12 @@ export const useDealsStore = create<DealsState>()((set, get) => ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
-    const j = await r.json()
-    if (!r.ok) return null
-    set((s) => ({ items: [j.deal, ...s.items] }))
+    const j = await r.json().catch(() => ({}))
+    if (!r.ok) {
+      set({ error: j.error || `HTTP ${r.status}` })
+      return null
+    }
+    set((s) => ({ items: [j.deal, ...s.items], error: null }))
     refreshNotificationCounts()
     return j.deal
   },

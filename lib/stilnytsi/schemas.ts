@@ -5,7 +5,7 @@ import type { Field } from "@/components/admin/stilnytsi/schema-form"
  * lib/cms-types.ts у репозиторії memory-stone: сайт читає ці jsonb як є.
  */
 
-export const FAMILIES = ["Граніт", "Мармур", "Кварц", "Керамограніт", "Кварцит", "Лабрадорит"]
+export const FAMILIES = ["Граніт", "Габро", "Базальт", "Лабрадорит", "Пісковик", "Мармур", "Кварцит", "Онікс", "Травертин", "Вапняк", "Кварц", "Керамограніт"]
 export const MATERIAL_KEYS = ["granit", "marmur", "kvarcyt", "kvarc", "keramohranit"]
 export const ARTICLE_CATEGORIES = ["Матеріали", "Догляд", "Проєктування", "Ціни"]
 

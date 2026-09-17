@@ -1,12 +1,14 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { toast } from "sonner"
 import Image from "next/image"
 import { Check, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useStones } from "@/lib/store/stones"
+import { useStones, useStonesAdminStore } from "@/lib/store/stones"
 import { useFeaturedStore } from "@/lib/store/featured"
+import type { SaveResult } from "@/lib/store/result"
 import { cn } from "@/lib/utils"
 
 const MAX = 6
@@ -14,24 +16,36 @@ const MAX = 6
 export default function AdminFeaturedPage() {
   const { ids, toggle, clear, setIds, hydrate } = useFeaturedStore()
   const stones = useStones()
+  // Повний список, разом із прихованими: тимчасово схований товар не має
+  // випадати з «Популярного» назавжди.
+  const allRows = useStonesAdminStore((s) => s.items)
+  const adminHydrated = useStonesAdminStore((s) => s.hasHydrated)
 
   useEffect(() => {
     hydrate()
   }, [hydrate])
+
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
 
   // Stale-ID purge: featured stores raw stone ids. When a stone gets
   // deleted from the catalog, its id stays in the featured list and
   // the counter reads "N/6 full" while only valid stones render —
   // user can no longer add anything, looks broken. Once stones load,
   // strip any id that no longer matches a real stone.
+  // Одна спроба: якщо PUT не пройшов, store відкочує ids і ефект спрацював би
+  // знову — без запобіжника це нескінченний цикл запитів і тостів.
+  const purgeTried = useRef(false)
   useEffect(() => {
-    if (stones.length === 0) return
-    const valid = new Set(stones.map((s) => s.id))
+    if (!adminHydrated || allRows.length === 0 || purgeTried.current) return
+    const valid = new Set(allRows.map((r) => r.id))
     const filtered = ids.filter((id) => valid.has(id))
     if (filtered.length !== ids.length) {
-      setIds(filtered)
+      purgeTried.current = true
+      setIds(filtered).then(report)
     }
-  }, [stones, ids, setIds])
+  }, [allRows, adminHydrated, ids, setIds])
 
   const [query, setQuery] = useState("")
   const [categoryFilter, setCategoryFilter] = useState<"all" | "memorial">("all")
@@ -59,14 +73,14 @@ export default function AdminFeaturedPage() {
     if (idx <= 0) return
     const next = [...ids]
     ;[next[idx - 1], next[idx]] = [next[idx], next[idx - 1]]
-    setIds(next)
+    setIds(next).then(report)
   }
   const moveDown = (id: string) => {
     const idx = ids.indexOf(id)
     if (idx < 0 || idx >= ids.length - 1) return
     const next = [...ids]
     ;[next[idx + 1], next[idx]] = [next[idx], next[idx + 1]]
-    setIds(next)
+    setIds(next).then(report)
   }
 
   return (
@@ -79,7 +93,7 @@ export default function AdminFeaturedPage() {
           </p>
         </div>
         {slotsTaken > 0 && (
-          <Button variant="outline" size="sm" onClick={clear}>
+          <Button variant="outline" size="sm" onClick={() => clear().then(report)}>
             Очистити все
           </Button>
         )}
@@ -134,7 +148,7 @@ export default function AdminFeaturedPage() {
                   </button>
                 </div>
                 <button
-                  onClick={() => toggle(stone.id)}
+                  onClick={() => toggle(stone.id).then(report)}
                   className="rounded-lg p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   aria-label="Видалити"
                 >
@@ -188,7 +202,7 @@ export default function AdminFeaturedPage() {
                 key={stone.id}
                 type="button"
                 disabled={disabled}
-                onClick={() => toggle(stone.id)}
+                onClick={() => toggle(stone.id).then(report)}
                 className={cn(
                   "group relative overflow-hidden rounded-2xl border text-left transition-all",
                   selected

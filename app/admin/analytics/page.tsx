@@ -135,6 +135,9 @@ export default function AnalyticsPage() {
   const [period, setPeriod] = useState<Period>("30d")
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([])
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
+  // 403 / мережа: показуємо «немає доступу» замість нулів у відповідних блоках.
+  const [chatError, setChatError] = useState<string | null>(null)
+  const [subsError, setSubsError] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<number>(Date.now())
 
   useEffect(() => {
@@ -149,9 +152,12 @@ export default function AnalyticsPage() {
         if (r.ok) {
           const j = (await r.json()) as { sessions?: ChatSession[] }
           setChatSessions(j.sessions || [])
+          setChatError(null)
+        } else {
+          setChatError(r.status === 403 ? "Немає доступу до цих даних" : `Не вдалось завантажити (HTTP ${r.status})`)
         }
       } catch {
-        /* ignore */
+        setChatError("Не вдалось завантажити")
       }
     }
     const loadSubs = async () => {
@@ -160,9 +166,12 @@ export default function AnalyticsPage() {
         if (r.ok) {
           const j = (await r.json()) as { subscribers?: Subscriber[] }
           setSubscribers(j.subscribers || [])
+          setSubsError(null)
+        } else {
+          setSubsError(r.status === 403 ? "Немає доступу до цих даних" : `Не вдалось завантажити (HTTP ${r.status})`)
         }
       } catch {
-        /* ignore */
+        setSubsError("Не вдалось завантажити")
       }
     }
     loadChat()
@@ -441,7 +450,7 @@ export default function AnalyticsPage() {
         <Kpi icon={<Trophy size={18} />} label="Win-rate" value={`${winRate}%`} hint={`Виграно ${completedDeals.length} з ${decided} вирішених`} tone={winRate >= 50 ? "success" : "default"} />
         <Kpi icon={<Users size={18} />} label="Клієнтів" value={uniqueClients} hint={repeatClients.repeat > 0 ? `Повторних: ${repeatClients.repeat} (${repeatClients.rate}%)` : "Усі вперше"} />
         <Kpi icon={<Clock size={18} />} label="Сер. цикл угоди" value={avgCycleDays !== null ? `${avgCycleDays} дн` : "—"} hint="Створено → Виконано" />
-        <Kpi icon={<MessageCircle size={18} />} label="Активних чат-сесій" value={chatSessions.length} hint={avgResponseTime !== null ? `Відповідь ~${avgResponseTime} хв` : "Real-time"} tone={unrepliedSessions.length > 0 ? "warn" : "default"} />
+        <Kpi icon={<MessageCircle size={18} />} label="Активних чат-сесій" value={chatError ? "—" : chatSessions.length} hint={chatError ? chatError : avgResponseTime !== null ? `Відповідь ~${avgResponseTime} хв` : "Real-time"} tone={unrepliedSessions.length > 0 ? "warn" : "default"} />
       </div>
 
       {/* ===== Воронка ===== */}
@@ -454,8 +463,11 @@ export default function AnalyticsPage() {
             Чат-сесії → угоди → договір → виконано. Видно, де втрачаються клієнти.
           </p>
         </div>
+        {chatError && (
+          <p className="mb-3 text-xs text-destructive">Чат-сесії: {chatError}</p>
+        )}
         <div className="space-y-4">
-          <FunnelStep label="Чат-сесії" value={recentChats} total={recentChats || 1} color="bg-blue-500" hint="точка входу" />
+          <FunnelStep label="Чат-сесії" value={recentChats} total={recentChats || 1} color="bg-blue-500" hint={chatError ? "недоступно" : "точка входу"} />
           <FunnelStep label="Створено угод" value={recentCreated} total={recentChats || 1} color="bg-accent" hint={`Конверсія з чату: ${fChatToDeal}%`} />
           <FunnelStep label="Договір підписано" value={recentContracted} total={recentChats || 1} color="bg-amber-500" hint={`${fDealToContract}% від угод`} />
           <FunnelStep label="Виконано" value={recentDone} total={recentChats || 1} color="bg-success" hint={`${fContractToDone}% від договорів · win-rate ${winRate}%`} />
@@ -679,7 +691,9 @@ export default function AnalyticsPage() {
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
             <Mail size={14} /> Підписники за мовами
           </h2>
-          {subscribersByLocale.length === 0 ? (
+          {subsError ? (
+            <p className="mt-4 text-sm text-destructive">{subsError}</p>
+          ) : subscribersByLocale.length === 0 ? (
             <p className="mt-4 text-sm text-muted-foreground">Поки немає підписників</p>
           ) : (
             <div className="mt-4 space-y-2">

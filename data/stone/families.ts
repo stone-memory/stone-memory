@@ -9,6 +9,9 @@
  */
 export const families = {
   granit: 'Граніт',
+  gabro: 'Габро',
+  bazalt: 'Базальт',
+  piskovyk: 'Пісковик',
   marmur: 'Мармур',
   kvarc: 'Кварц',
   keramogranit: 'Керамограніт',

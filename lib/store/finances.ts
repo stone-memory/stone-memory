@@ -34,14 +34,22 @@ type Row = {
   occurred_at: string
 }
 
+export type MutationResult = { ok: true } | { ok: false; error: string }
+
+function messageOf(e: unknown, fallback: string) {
+  return e instanceof Error && e.message ? e.message : fallback
+}
+
 interface FinancesState {
   items: Row[]
   hasHydrated: boolean
   loading: boolean
+  /** Помилка останнього hydrate() (HTTP-статус або мережа); null — усе гаразд. */
+  error: string | null
   hydrate: () => Promise<void>
-  add: (t: Omit<Transaction, "id">) => Promise<void>
-  remove: (id: string) => Promise<void>
-  update: (id: string, patch: Partial<Transaction>) => Promise<void>
+  add: (t: Omit<Transaction, "id">) => Promise<MutationResult>
+  remove: (id: string) => Promise<MutationResult>
+  update: (id: string, patch: Partial<Transaction>) => Promise<MutationResult>
 }
 
 function makeId() {
@@ -64,7 +72,7 @@ async function postRow(row: Row) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("tx post failed")
+  if (!res.ok) throw new Error(`tx post failed: HTTP ${res.status}`)
 }
 
 async function patchRow(id: string, patch: Partial<Row>) {
@@ -73,25 +81,28 @@ async function patchRow(id: string, patch: Partial<Row>) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("tx patch failed")
+  if (!res.ok) throw new Error(`tx patch failed: HTTP ${res.status}`)
 }
 
 export const useFinancesStore = create<FinancesState>()((set, get) => ({
   items: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
-    set({ loading: true })
+    set({ loading: true, error: null })
     try {
-      const res = await fetch("/api/content/transactions", { cache: "no-store" })
+      const res = await authedFetch("/api/content/transactions", { cache: "no-store" })
       const json = await res.json()
       if (res.ok && Array.isArray(json.items)) {
         set({ items: json.items as Row[], hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: `Не вдалось завантажити транзакції (HTTP ${res.status})` })
       }
+    } catch (e) {
+      set({ error: messageOf(e, "Не вдалось завантажити транзакції") })
     } finally {
       set({ loading: false })
     }
@@ -105,22 +116,26 @@ export const useFinancesStore = create<FinancesState>()((set, get) => ({
     set({ items: [row, ...prev] })
     try {
       await postRow(row)
-    } catch {
+      return { ok: true }
+    } catch (e) {
       set({ items: prev })
+      return { ok: false, error: messageOf(e, "Мережева помилка") }
     }
   },
 
   update: async (id, patch) => {
     const prev = get().items
     const current = prev.find((r) => r.id === id)
-    if (!current) return
+    if (!current) return { ok: false, error: "Транзакцію не знайдено" }
     const merged: Transaction = { ...current.data, ...patch }
     const row = rowOf(merged)
     set({ items: prev.map((r) => (r.id === id ? row : r)) })
     try {
       await patchRow(id, { data: merged, kind: merged.kind, amount: merged.amount, occurred_at: row.occurred_at })
-    } catch {
+      return { ok: true }
+    } catch (e) {
       set({ items: prev })
+      return { ok: false, error: messageOf(e, "Мережева помилка") }
     }
   },
 
@@ -129,9 +144,11 @@ export const useFinancesStore = create<FinancesState>()((set, get) => ({
     set({ items: prev.filter((r) => r.id !== id) })
     try {
       const res = await authedFetch(`/api/content/transactions/${encodeURIComponent(id)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw new Error(`delete failed: HTTP ${res.status}`)
+      return { ok: true }
+    } catch (e) {
       set({ items: prev })
+      return { ok: false, error: messageOf(e, "Мережева помилка") }
     }
   },
 }))

@@ -290,8 +290,12 @@ function ProfileBasicsSection() {
   const [displayName, setDisplayName] = useState<string>("")
   const [phone, setPhone] = useState<string>("")
   const [loaded, setLoaded] = useState(false)
+  // Профіль реально прочитано з /api/crm/team/me. Поки ні — зберігати не можна:
+  // інакше порожні/вигадані поля перезаписали б справжні дані.
+  const [profileLoaded, setProfileLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [status, setStatus] = useState<"idle" | "ok" | "error">("idle")
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   useEffect(() => {
     authedFetch("/api/auth/me", { cache: "no-store" })
@@ -302,31 +306,46 @@ function ProfileBasicsSection() {
         }
         // /api/auth/me only returns role/email; pull display_name from
         // team_members via a sibling fetch.
-        const me = await r.json()
         const tm = await authedFetch(`/api/crm/team/me`, { cache: "no-store" })
         if (tm.ok) {
           const j = await tm.json()
           setDisplayName(j.display_name || "")
           setPhone(j.phone || "")
+          setProfileLoaded(true)
         } else {
-          // Fallback: split email user part
-          if (me.email) setDisplayName(me.email.split("@")[0])
+          setStatus("error")
+          setErrorMsg(`Не вдалось завантажити профіль (HTTP ${tm.status})`)
         }
         setLoaded(true)
       })
-      .catch(() => setLoaded(true))
+      .catch(() => {
+        setStatus("error")
+        setErrorMsg("Не вдалось завантажити профіль")
+        setLoaded(true)
+      })
   }, [])
 
   const save = async () => {
+    if (!profileLoaded) return
     setSaving(true)
     setStatus("idle")
+    setErrorMsg(null)
     try {
       const r = await authedFetch(`/api/crm/team/me`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ display_name: displayName, phone }),
       })
-      setStatus(r.ok ? "ok" : "error")
+      if (r.ok) {
+        setStatus("ok")
+      } else {
+        const j = (await r.json().catch(() => ({}))) as { error?: string }
+        setStatus("error")
+        setErrorMsg(j.error ? `${j.error} (HTTP ${r.status})` : `HTTP ${r.status}`)
+      }
+    } catch {
+      setStatus("error")
+      setErrorMsg("Немає з'єднання з сервером")
     } finally {
       setSaving(false)
     }
@@ -366,7 +385,12 @@ function ProfileBasicsSection() {
           />
         </div>
         <div className="flex items-center gap-3 pt-2">
-          <Button onClick={save} disabled={saving} className="rounded-xl gap-2">
+          <Button
+            onClick={save}
+            disabled={saving || !profileLoaded}
+            title={!profileLoaded ? "Профіль ще не завантажено" : undefined}
+            className="rounded-xl gap-2"
+          >
             {saving ? "Зберігаю…" : "Зберегти"}
           </Button>
           {status === "ok" && (
@@ -376,7 +400,7 @@ function ProfileBasicsSection() {
           )}
           {status === "error" && (
             <span className="inline-flex items-center gap-1.5 text-sm text-destructive">
-              <AlertCircle size={14} /> Не вдалось зберегти
+              <AlertCircle size={14} /> {errorMsg ? `Не вдалось зберегти: ${errorMsg}` : "Не вдалось зберегти"}
             </span>
           )}
         </div>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { requireSuperAdmin } from "@/lib/auth/permissions"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import {
   resolveRecipients,
@@ -18,9 +19,11 @@ async function allowed(req: Request): Promise<boolean> {
   const cronSecret = process.env.CRON_SECRET
   if (cronSecret) return token === cronSecret
 
+  // Без CRON_SECRET запуск дозволено лише супер-адміну, а не будь-якому
+  // залогіненому користувачу: розсилка й нагадування ідуть клієнтам.
   if (token) {
-    const { data } = await supabaseAdmin.auth.getUser(token)
-    if (data.user) return true
+    const admin = await requireSuperAdmin(req)
+    if (!(admin instanceof NextResponse)) return true
   }
   return false
 }

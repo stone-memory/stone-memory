@@ -18,6 +18,12 @@ export async function FamilyHub({ family }: { family: FamilySlug }) {
           Порівняйте доступні колекції, фініші та застосування. Для природного каменю фінально
           погоджуємо конкретний сляб і розкладку деталей.
         </p>
+        {items.length === 0 && (
+          <p className="mt-10 max-w-xl rounded-xl border p-6 text-sm leading-6 text-muted-foreground">
+            Колекції цієї родини вже заведені й готуються до публікації: чекаємо на фото каменю.
+            Напишіть нам, і ми підберемо сляб чи блок під ваш проєкт уже зараз.
+          </p>
+        )}
         <div className="mt-12">
           <CardGrid
             items={items.map((item) => ({

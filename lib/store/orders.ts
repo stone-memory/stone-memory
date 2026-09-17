@@ -16,8 +16,8 @@ interface OrdersState {
 
 interface OrdersActions {
   initializeOrders: () => Promise<void>
-  updateStatus: (id: string, status: OrderStatus) => Promise<void>
-  addNote: (id: string, note: Omit<OrderNote, "id">) => Promise<void>
+  updateStatus: (id: string, status: OrderStatus) => Promise<boolean>
+  addNote: (id: string, note: Omit<OrderNote, "id">) => Promise<boolean>
   markContacted: (id: string) => Promise<void>
   remove: (id: string) => Promise<void>
   selectOrder: (id: string | null) => void
@@ -99,8 +99,10 @@ export const useOrdersStore = create<OrdersState & OrdersActions>()((set, get) =
       })
       if (!res.ok) throw new Error("patch failed")
       refreshNotificationCounts()
+      return true
     } catch {
       set({ orders: prev })
+      return false
     }
   },
 
@@ -127,8 +129,10 @@ export const useOrdersStore = create<OrdersState & OrdersActions>()((set, get) =
       if (data.order) {
         set({ orders: get().orders.map((o) => (o.id === id ? normalize(data.order as Row) : o)) })
       }
+      return true
     } catch {
       set({ orders: prev })
+      return false
     }
   },
 

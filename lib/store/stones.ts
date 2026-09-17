@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import { stones as baseStones } from "@/lib/data/stones"
 import type { StoneItem } from "@/lib/types"
 
@@ -13,12 +14,13 @@ interface StonesAdminState {
   items: Row[]
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  upsert: (s: StoneItem) => Promise<void>
-  softDelete: (id: string) => Promise<void>
-  restore: (id: string) => Promise<void>
-  remove: (id: string) => Promise<void>
-  reorder: (orderedIds: string[]) => Promise<void>
+  upsert: (s: StoneItem) => Promise<SaveResult>
+  softDelete: (id: string) => Promise<SaveResult>
+  restore: (id: string) => Promise<SaveResult>
+  remove: (id: string) => Promise<SaveResult>
+  reorder: (orderedIds: string[]) => Promise<SaveResult>
 }
 
 async function putRow(row: { id: string; data: StoneItem; hidden: boolean; position: number }) {
@@ -27,7 +29,7 @@ async function putRow(row: { id: string; data: StoneItem; hidden: boolean; posit
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("stones upsert failed")
+  if (!res.ok) throw await httpError(res, "stones upsert failed")
   return res
 }
 
@@ -37,7 +39,7 @@ async function patchRow(id: string, patch: Partial<{ data: StoneItem; hidden: bo
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("stones patch failed")
+  if (!res.ok) throw await httpError(res, "stones patch failed")
   return res
 }
 
@@ -45,6 +47,7 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
   items: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -55,8 +58,10 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
       if (res.ok && Array.isArray(json.items)) {
         set({ items: json.items as Row[], hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -74,9 +79,11 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
     })
     try {
       await putRow(row)
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   softDelete: async (id) => {
@@ -84,9 +91,11 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
     set({ items: prev.map((r) => (r.id === id ? { ...r, hidden: true } : r)) })
     try {
       await patchRow(id, { hidden: true })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   restore: async (id) => {
@@ -94,9 +103,11 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
     set({ items: prev.map((r) => (r.id === id ? { ...r, hidden: false } : r)) })
     try {
       await patchRow(id, { hidden: false })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   remove: async (id) => {
@@ -104,10 +115,12 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
     set({ items: prev.filter((r) => r.id !== id) })
     try {
       const res = await authedFetch(`/api/content/stones/${encodeURIComponent(id)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "delete failed")
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   reorder: async (orderedIds) => {
@@ -124,10 +137,12 @@ export const useStonesAdminStore = create<StonesAdminState>()((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: orderedIds }),
       })
-      if (!res.ok) throw new Error("reorder failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "reorder failed")
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 }))
 

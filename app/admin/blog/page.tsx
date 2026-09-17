@@ -1,11 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Pin, PinOff, Plus, Pencil, Trash2, RotateCcw, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useBlogStore } from "@/lib/store/blog"
+import type { SaveResult } from "@/lib/store/result"
 import { type Article, categoryTitles } from "@/lib/data/articles"
 import { ArticleEditor } from "@/components/admin/article-editor"
 import { cn } from "@/lib/utils"
@@ -60,14 +62,20 @@ export default function AdminBlogPage() {
       ? articles.find((r) => r.slug === currentPinned)?.data.title.uk
       : dbVisibleSorted[0]?.data.title.uk
 
-  const save = (slug: string, draft: Article) => {
-    upsertArticle({ ...draft, slug })
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
+  const save = async (slug: string, draft: Article) => {
+    const r = await upsertArticle({ ...draft, slug })
+    if (!r.ok) return report(r)
     setEditingSlug(null)
   }
 
-  const create = (draft: Article) => {
+  const create = async (draft: Article) => {
     if (!draft.slug.trim()) draft.slug = `art-${Date.now().toString(36)}`
-    upsertArticle(draft)
+    const r = await upsertArticle(draft)
+    if (!r.ok) return report(r)
     setCreating(false)
   }
 
@@ -177,8 +185,8 @@ export default function AdminBlogPage() {
             <div className="flex gap-1 rounded-full bg-foreground/5 p-1">
               <button
                 onClick={() => {
-                  setMode("latest")
-                  setPinned(null)
+                  // setPinned(null) сам переводить heroMode у "latest".
+                  setPinned(null).then(report)
                 }}
                 className={cn(
                   "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
@@ -190,7 +198,7 @@ export default function AdminBlogPage() {
                 Найновіша (авто)
               </button>
               <button
-                onClick={() => setMode("pinned")}
+                onClick={() => setMode("pinned").then(report)}
                 className={cn(
                   "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
                   heroMode === "pinned" && currentPinned
@@ -204,7 +212,7 @@ export default function AdminBlogPage() {
             {currentPinned && (
               <Button
                 variant="outline"
-                onClick={() => setPinned(null)}
+                onClick={() => setPinned(null).then(report)}
                 className="rounded-xl gap-2"
               >
                 <PinOff size={14} /> Відкріпити
@@ -275,7 +283,7 @@ export default function AdminBlogPage() {
                     <div className="inline-flex items-center gap-1">
                       {row.hidden ? (
                         <button
-                          onClick={() => restoreArticle(row.slug)}
+                          onClick={() => restoreArticle(row.slug).then(report)}
                           className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                         >
                           <RotateCcw size={14} /> Відновити
@@ -283,7 +291,7 @@ export default function AdminBlogPage() {
                       ) : (
                         <>
                           <button
-                            onClick={() => setPinned(isPinned ? null : row.slug)}
+                            onClick={() => setPinned(isPinned ? null : row.slug).then(report)}
                             className={cn(
                               "rounded-md p-1.5 hover:bg-foreground/5",
                               isPinned ? "text-accent" : "text-muted-foreground hover:text-foreground"
@@ -299,7 +307,7 @@ export default function AdminBlogPage() {
                             <Pencil size={14} />
                           </button>
                           <button
-                            onClick={() => softDeleteArticle(row.slug)}
+                            onClick={() => softDeleteArticle(row.slug).then(report)}
                             className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                             title="Приховати"
                           >
@@ -308,7 +316,7 @@ export default function AdminBlogPage() {
                           <button
                             onClick={() => {
                               if (confirm(`Видалити «${a.title.uk || row.slug}» назавжди?`)) {
-                                removeArticle(row.slug)
+                                removeArticle(row.slug).then(report)
                               }
                             }}
                             className="rounded-md p-1.5 text-destructive/80 hover:bg-destructive/10"

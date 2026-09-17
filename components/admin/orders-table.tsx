@@ -26,12 +26,16 @@ import type { Order } from "@/lib/types"
 
 interface OrdersTableProps {
   orders: Order[]
+  /** Перше завантаження ще триває — замість порожньої таблиці показуємо «Завантаження…». */
+  loading?: boolean
+  /** Помилка завантаження зі стору — показуємо її рядком замість порожньої таблиці. */
+  error?: string | null
 }
 
 // Дата і ціна — виносимо в lib/admin-format.ts.
 const formatDate = formatRelative
 
-export function OrdersTable({ orders }: OrdersTableProps) {
+export function OrdersTable({ orders, loading = false, error = null }: OrdersTableProps) {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
   const remove = useOrdersStore((s) => s.remove)
 
@@ -58,6 +62,13 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {orders.length === 0 && (loading || error) && (
+              <TableRow>
+                <TableCell colSpan={6} className={`py-10 text-center text-sm ${error ? "text-destructive" : "text-muted-foreground"}`}>
+                  {error ? `Не вдалось завантажити замовлення: ${error}` : "Завантаження…"}
+                </TableCell>
+              </TableRow>
+            )}
             {orders.map((order) => {
               const totalPrice = order.items.reduce((sum, item) => sum + (item.priceFrom ?? 0), 0)
               const modelChips = order.items.slice(0, 3)

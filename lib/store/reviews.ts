@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 
 export type ReviewPlacement = "home" | "all" | "hidden"
 
@@ -30,11 +31,12 @@ interface ReviewsState {
   items: Row[]
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  add: (r: Omit<Review, "id">) => Promise<void>
-  update: (id: string, patch: Partial<Review>) => Promise<void>
-  remove: (id: string) => Promise<void>
-  setPlacement: (id: string, p: ReviewPlacement) => Promise<void>
+  add: (r: Omit<Review, "id">) => Promise<SaveResult>
+  update: (id: string, patch: Partial<Review>) => Promise<SaveResult>
+  remove: (id: string) => Promise<SaveResult>
+  setPlacement: (id: string, p: ReviewPlacement) => Promise<SaveResult>
 }
 
 async function postRow(row: Row) {
@@ -43,7 +45,7 @@ async function postRow(row: Row) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("review upsert failed")
+  if (!res.ok) throw await httpError(res, "review upsert failed")
 }
 
 async function patchRow(id: string, patch: Partial<{ data: Review; placement: ReviewPlacement; order: number }>) {
@@ -52,7 +54,7 @@ async function patchRow(id: string, patch: Partial<{ data: Review; placement: Re
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("review patch failed")
+  if (!res.ok) throw await httpError(res, "review patch failed")
 }
 
 function rowOf(r: Review): Row {
@@ -63,6 +65,7 @@ export const useReviewsStore = create<ReviewsState>()((set, get) => ({
   items: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -73,8 +76,10 @@ export const useReviewsStore = create<ReviewsState>()((set, get) => ({
       if (res.ok && Array.isArray(json.items)) {
         set({ items: json.items as Row[], hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -88,23 +93,27 @@ export const useReviewsStore = create<ReviewsState>()((set, get) => ({
     set({ items: [row, ...prev] })
     try {
       await postRow(row)
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   update: async (id, patch) => {
     const prev = get().items
     const current = prev.find((r) => r.id === id)
-    if (!current) return
+    if (!current) return fail(new Error("Запис не знайдено"))
     const merged: Review = { ...current.data, ...patch }
     const row = rowOf(merged)
     set({ items: prev.map((r) => (r.id === id ? row : r)) })
     try {
       await patchRow(id, { data: merged, placement: row.placement, order: row.order })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   remove: async (id) => {
@@ -112,23 +121,27 @@ export const useReviewsStore = create<ReviewsState>()((set, get) => ({
     set({ items: prev.filter((r) => r.id !== id) })
     try {
       const res = await authedFetch(`/api/content/reviews/${encodeURIComponent(id)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "delete failed")
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   setPlacement: async (id, p) => {
     const prev = get().items
     const current = prev.find((r) => r.id === id)
-    if (!current) return
+    if (!current) return fail(new Error("Запис не знайдено"))
     const merged: Review = { ...current.data, placement: p }
     set({ items: prev.map((r) => (r.id === id ? { ...r, data: merged, placement: p } : r)) })
     try {
       await patchRow(id, { data: merged, placement: p })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 }))
 

@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import type { Locale } from "@/lib/types"
 
 export type Badge = { label: string; icon: "award" | "shield" | "users" | "truck" }
@@ -101,10 +102,10 @@ interface AboutState {
   overrides: Overrides
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   /** Якщо передати `initial` (прочитане на сервері), запит у браузері не робиться. */
   hydrate: (initial?: Overrides | null) => Promise<void>
-  setOverride: (locale: Locale, patch: Partial<AboutContent>) => Promise<void>
-  resetLocale: (locale: Locale) => Promise<void>
+  setOverride: (locale: Locale, patch: Partial<AboutContent>) => Promise<SaveResult>
 }
 
 async function putOverrides(overrides: Overrides) {
@@ -113,13 +114,14 @@ async function putOverrides(overrides: Overrides) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data: overrides }),
   })
-  if (!res.ok) throw new Error("about put failed")
+  if (!res.ok) throw await httpError(res, "about put failed")
 }
 
 export const useAboutStore = create<AboutState>()((set, get) => ({
   overrides: {},
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async (initial) => {
     if (get().hasHydrated || get().loading) return
@@ -134,10 +136,10 @@ export const useAboutStore = create<AboutState>()((set, get) => ({
       if (res.ok && json.data && typeof json.data === "object") {
         set({ overrides: json.data as Overrides, hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
-    } catch {
-      set({ hasHydrated: true })
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -152,22 +154,13 @@ export const useAboutStore = create<AboutState>()((set, get) => ({
     set({ overrides: next })
     try {
       await putOverrides(next)
-    } catch {
+    } catch (e) {
       set({ overrides: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
-  resetLocale: async (locale) => {
-    const prev = get().overrides
-    const next = { ...prev }
-    delete next[locale]
-    set({ overrides: next })
-    try {
-      await putOverrides(next)
-    } catch {
-      set({ overrides: prev })
-    }
-  },
 }))
 
 export function useAbout(locale: Locale, initial?: Overrides | null): AboutContent {

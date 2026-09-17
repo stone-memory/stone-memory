@@ -1,10 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Trash2, RotateCcw, Save } from "lucide-react"
+import { Plus, Trash2, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useBusinessProfileStore, type Weekday } from "@/lib/store/business-profile"
+import {
+  useBusinessProfileStore,
+  type BusinessProfile,
+  type DayHours,
+  type Holiday,
+  type Weekday,
+} from "@/lib/store/business-profile"
 import { cn } from "@/lib/utils"
 
 const WEEKDAYS: { key: Weekday; label: string }[] = [
@@ -18,18 +24,29 @@ const WEEKDAYS: { key: Weekday; label: string }[] = [
 ]
 
 export default function AdminBusinessPage() {
-  const profile = useBusinessProfileStore((s) => s.profile)
-  const update = useBusinessProfileStore((s) => s.update)
-  const updateHours = useBusinessProfileStore((s) => s.updateHours)
-  const addHoliday = useBusinessProfileStore((s) => s.addHoliday)
-  const removeHoliday = useBusinessProfileStore((s) => s.removeHoliday)
-  const reset = useBusinessProfileStore((s) => s.reset)
-  const saveProfile = useBusinessProfileStore((s) => s.saveProfile)
+  const stored = useBusinessProfileStore((s) => s.profile)
+  const hasHydrated = useBusinessProfileStore((s) => s.hasHydrated)
+  const saveToDb = useBusinessProfileStore((s) => s.save)
   const hydrate = useBusinessProfileStore((s) => s.hydrate)
 
   useEffect(() => {
     hydrate()
   }, [hydrate])
+
+  // Форма працює з локальною чернеткою і пише в базу лише кнопкою «Зберегти».
+  // Раніше кожне натискання клавіші відправляло весь профіль, а до завантаження
+  // бази форма містила значення з коду, тож перші символи затирали реальні дані.
+  const [profile, setProfile] = useState<BusinessProfile>(stored)
+  useEffect(() => {
+    if (hasHydrated) setProfile(stored)
+  }, [hasHydrated, stored])
+  const update = (patch: Partial<BusinessProfile>) => setProfile((p) => ({ ...p, ...patch }))
+  const updateHours = (day: Weekday, patch: Partial<DayHours>) =>
+    setProfile((p) => ({ ...p, hours: { ...p.hours, [day]: { ...p.hours[day], ...patch } } }))
+  const addHoliday = (h: Omit<Holiday, "id">) =>
+    setProfile((p) => ({ ...p, holidays: [...p.holidays, { ...h, id: `h-${Date.now().toString(36)}` }] }))
+  const removeHoliday = (id: string) =>
+    setProfile((p) => ({ ...p, holidays: p.holidays.filter((x) => x.id !== id) }))
 
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle")
   const [saveErr, setSaveErr] = useState<string | null>(null)
@@ -39,7 +56,7 @@ export default function AdminBusinessPage() {
   const save = async () => {
     setSaveState("saving")
     setSaveErr(null)
-    const r = await saveProfile()
+    const r = await saveToDb(profile)
     if (r.ok) {
       setSaveState("saved")
       setTimeout(() => setSaveState("idle"), 1500)
@@ -66,10 +83,7 @@ export default function AdminBusinessPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={reset} className="rounded-xl gap-2">
-            <RotateCcw size={16} /> Скинути
-          </Button>
-          <Button onClick={save} disabled={saveState === "saving"} className="rounded-xl gap-2">
+          <Button onClick={save} disabled={saveState === "saving" || !hasHydrated} className="rounded-xl gap-2">
             <Save size={16} />{" "}
             {saveState === "saving"
               ? "Збереження…"
@@ -107,6 +121,12 @@ export default function AdminBusinessPage() {
           </Field>
           <Field label="IBAN">
             <Input value={profile.bankingIban || ""} onChange={(e) => update({ bankingIban: e.target.value })} />
+          </Field>
+          <Field label="Instagram (посилання)">
+            <Input value={profile.instagram || ""} onChange={(e) => update({ instagram: e.target.value })} />
+          </Field>
+          <Field label="Facebook (посилання)">
+            <Input value={profile.facebook || ""} onChange={(e) => update({ facebook: e.target.value })} />
           </Field>
           <Field label="Адреса">
             <Input value={profile.address} onChange={(e) => update({ address: e.target.value })} />

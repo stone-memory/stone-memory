@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { getCollection } from "@/lib/content-schema"
-import { guardContentMutation } from "@/lib/auth/permissions"
+import { guardCapability, guardContentMutation } from "@/lib/auth/permissions"
 import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
 export async function GET(
-  _req: Request,
+  req: Request,
   ctx: { params: Promise<{ resource: string; id: string }> }
 ) {
   const { resource, id } = await ctx.params
   const cfg = getCollection(resource)
   if (!cfg) return NextResponse.json({ error: "unknown resource" }, { status: 404 })
+  if (cfg.readCapability) {
+    const unauthorized = await guardCapability(req, cfg.readCapability)
+    if (unauthorized) return unauthorized
+  }
 
   const { data, error } = await supabaseAdmin
     .from(cfg.table)

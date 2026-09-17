@@ -411,10 +411,18 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
     [application, setApplication] = useState('Усі'),
     [finish, setFinish] = useState('Усі')
   const options = (values: string[]) => ['Усі', ...Array.from(new Set(values))]
-  const shown = collections.filter(
+  // Походження зводимо до країни: «Житомирська область, Україна» і
+  // «Покостівське родовище, Україна» — одна опція «Україна», а не тридцять.
+  const country = (c: Collection) => (/Украї/.test(c.origin) ? 'Україна' : c.origin)
+  // Українські родовища завжди попереду імпорту: сайт показує насамперед те,
+  // що є на українському ринку, а не найдовший список порід.
+  const ordered = [...collections].sort(
+    (a, b) => Number(country(b) === 'Україна') - Number(country(a) === 'Україна')
+  )
+  const shown = ordered.filter(
     (c) =>
       (family === 'Усі' || c.family === family) &&
-      (origin === 'Усі' || c.origin === origin) &&
+      (origin === 'Усі' || country(c) === origin) &&
       (tone === 'Усі' || c.tone === tone) &&
       (application === 'Усі' || c.applications.includes(application)) &&
       (finish === 'Усі' || c.finishes.includes(finish))
@@ -439,7 +447,7 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
           label="Походження"
           value={origin}
           set={setOrigin}
-          options={options(collections.map((c) => c.origin))}
+          options={options(ordered.map(country))}
         />
         <Filter
           label="Колір"

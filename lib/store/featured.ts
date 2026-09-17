@@ -1,16 +1,18 @@
 "use client"
 
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import { authedFetch } from "@/lib/authed-fetch"
 
 interface FeaturedState {
   ids: string[]
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  setIds: (ids: string[]) => Promise<void>
-  toggle: (id: string) => Promise<void>
-  clear: () => Promise<void>
+  setIds: (ids: string[]) => Promise<SaveResult>
+  toggle: (id: string) => Promise<SaveResult>
+  clear: () => Promise<SaveResult>
 }
 
 async function putIds(ids: string[]) {
@@ -19,13 +21,14 @@ async function putIds(ids: string[]) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ids }),
   })
-  if (!res.ok) throw new Error("featured put failed")
+  if (!res.ok) throw await httpError(res, "featured put failed")
 }
 
 export const useFeaturedStore = create<FeaturedState>()((set, get) => ({
   ids: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -36,10 +39,10 @@ export const useFeaturedStore = create<FeaturedState>()((set, get) => ({
       if (res.ok && Array.isArray(data.ids)) {
         set({ ids: data.ids, hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
-    } catch {
-      set({ hasHydrated: true })
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -50,9 +53,11 @@ export const useFeaturedStore = create<FeaturedState>()((set, get) => ({
     set({ ids })
     try {
       await putIds(ids)
-    } catch {
+    } catch (e) {
       set({ ids: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   toggle: async (id) => {
@@ -63,14 +68,16 @@ export const useFeaturedStore = create<FeaturedState>()((set, get) => ({
     } else if (current.length < 6) {
       next = [...current, id]
     } else {
-      return
+      return fail(new Error("Максимум 6 позицій у «Популярному»"))
     }
     set({ ids: next })
     try {
       await putIds(next)
-    } catch {
+    } catch (e) {
       set({ ids: current })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   clear: async () => {
@@ -78,8 +85,10 @@ export const useFeaturedStore = create<FeaturedState>()((set, get) => ({
     set({ ids: [] })
     try {
       await putIds([])
-    } catch {
+    } catch (e) {
       set({ ids: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 }))

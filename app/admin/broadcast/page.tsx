@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Send, Users, User, Mail, Check, AlertCircle, Trash2, Plus, X } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authedFetch } from "@/lib/authed-fetch"
@@ -42,12 +43,23 @@ export default function AdminBroadcastPage() {
   const [sending, setSending] = useState(false)
   const [result, setResult] = useState<{ sent?: number; failed?: number; total?: number; scheduled?: boolean } | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // Підписники не завантажились (403 / мережа): не показуємо «0», а кажемо чому,
+  // і не даємо розіслати «0 підписникам».
+  const [subsError, setSubsError] = useState<string | null>(null)
 
   const loadSubs = async () => {
-    const res = await authedFetch("/api/subscribers", { cache: "no-store" })
-    if (!res.ok) return
-    const json = await res.json()
-    setSubs(json.subscribers || [])
+    try {
+      const res = await authedFetch("/api/subscribers", { cache: "no-store" })
+      if (!res.ok) {
+        setSubsError(res.status === 403 ? "Немає доступу до підписників" : `Не вдалось завантажити підписників (HTTP ${res.status})`)
+        return
+      }
+      const json = await res.json()
+      setSubs(json.subscribers || [])
+      setSubsError(null)
+    } catch {
+      setSubsError("Не вдалось завантажити підписників")
+    }
   }
 
   useEffect(() => {
@@ -58,7 +70,11 @@ export default function AdminBroadcastPage() {
 
   const removeSub = async (id: string) => {
     if (!confirm("Видалити підписника?")) return
-    await authedFetch(`/api/subscribers/${id}`, { method: "DELETE" })
+    const r = await authedFetch(`/api/subscribers/${id}`, { method: "DELETE" })
+    if (!r.ok) {
+      const j = (await r.json().catch(() => ({}))) as { error?: string }
+      toast.error("Не видалено", { description: j.error || `HTTP ${r.status}` })
+    }
     loadSubs()
   }
 
@@ -168,10 +184,16 @@ export default function AdminBroadcastPage() {
         </p>
       </header>
 
+      {subsError && (
+        <div className="inline-flex items-center gap-2 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          <AlertCircle size={16} /> {subsError}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Stat label="Активних підписників" value={activeCount} />
-        <Stat label="Відписаних" value={subs.length - activeCount} />
-        <Stat label="Всього у базі" value={subs.length} />
+        <Stat label="Активних підписників" value={subsError ? "—" : activeCount} />
+        <Stat label="Відписаних" value={subsError ? "—" : subs.length - activeCount} />
+        <Stat label="Всього у базі" value={subsError ? "—" : subs.length} />
       </div>
 
       <section className="rounded-2xl border border-foreground/10 bg-card p-6 space-y-5">
@@ -199,7 +221,7 @@ export default function AdminBroadcastPage() {
             Кому
           </label>
           <div className="flex flex-wrap gap-2">
-            <TargetPill active={target === "subscribers"} onClick={() => setTarget("subscribers")} icon={<Users size={14} />} label={`Усім підписникам (${activeCount})`} />
+            <TargetPill active={target === "subscribers"} onClick={() => setTarget("subscribers")} icon={<Users size={14} />} label={subsError ? "Усім підписникам (—)" : `Усім підписникам (${activeCount})`} />
             <TargetPill active={target === "clients"} onClick={() => setTarget("clients")} icon={<Users size={14} />} label="Усім клієнтам" />
             <TargetPill active={target === "specific"} onClick={() => setTarget("specific")} icon={<User size={14} />} label="Конкретним адресам" />
           </div>
@@ -370,7 +392,12 @@ export default function AdminBroadcastPage() {
         </div>
 
         <div className="flex items-center gap-3 pt-2">
-          <Button onClick={() => send()} disabled={sending} className="rounded-xl gap-2">
+          <Button
+            onClick={() => send()}
+            disabled={sending || (target === "subscribers" && !!subsError)}
+            title={target === "subscribers" && subsError ? subsError : undefined}
+            className="rounded-xl gap-2"
+          >
             <Send size={16} />
             {sending ? (scheduleAt ? "Планую…" : "Відправляю…") : scheduleAt ? "Запланувати" : "Відправити"}
           </Button>
@@ -397,9 +424,11 @@ export default function AdminBroadcastPage() {
       <section className="rounded-2xl border border-foreground/10 bg-card">
         <header className="px-6 py-4 border-b border-foreground/5 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Підписники</h2>
-          <span className="text-xs text-muted-foreground tabular-nums">{subs.length}</span>
+          <span className="text-xs text-muted-foreground tabular-nums">{subsError ? "—" : subs.length}</span>
         </header>
-        {subs.length === 0 ? (
+        {subsError ? (
+          <div className="p-12 text-center text-sm text-destructive">{subsError}</div>
+        ) : subs.length === 0 ? (
           <div className="p-12 text-center text-sm text-muted-foreground">
             Підписників немає. Футер-форма на сайті додає їх сюди автоматично.
           </div>
@@ -444,7 +473,7 @@ export default function AdminBroadcastPage() {
   )
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="rounded-2xl border border-foreground/10 bg-card p-4">
       <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>

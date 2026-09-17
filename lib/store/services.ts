@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import { services as baseServices, type Service } from "@/lib/data/services"
 
 type Row = { slug: string; data: Service; hidden: boolean; position: number }
@@ -12,11 +13,12 @@ interface ServicesAdminState {
   items: Row[]
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  upsert: (s: Service) => Promise<void>
-  softDelete: (slug: string) => Promise<void>
-  restore: (slug: string) => Promise<void>
-  remove: (slug: string) => Promise<void>
+  upsert: (s: Service) => Promise<SaveResult>
+  softDelete: (slug: string) => Promise<SaveResult>
+  restore: (slug: string) => Promise<SaveResult>
+  remove: (slug: string) => Promise<SaveResult>
 }
 
 async function putRow(row: Row) {
@@ -25,7 +27,7 @@ async function putRow(row: Row) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("services upsert failed")
+  if (!res.ok) throw await httpError(res, "services upsert failed")
 }
 
 async function patchRow(slug: string, patch: Partial<{ data: Service; hidden: boolean; position: number }>) {
@@ -34,13 +36,14 @@ async function patchRow(slug: string, patch: Partial<{ data: Service; hidden: bo
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("services patch failed")
+  if (!res.ok) throw await httpError(res, "services patch failed")
 }
 
 export const useServicesAdminStore = create<ServicesAdminState>()((set, get) => ({
   items: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -51,8 +54,10 @@ export const useServicesAdminStore = create<ServicesAdminState>()((set, get) => 
       if (res.ok && Array.isArray(json.items)) {
         set({ items: json.items as Row[], hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -68,9 +73,11 @@ export const useServicesAdminStore = create<ServicesAdminState>()((set, get) => 
     })
     try {
       await putRow(row)
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   softDelete: async (slug) => {
@@ -78,9 +85,11 @@ export const useServicesAdminStore = create<ServicesAdminState>()((set, get) => 
     set({ items: prev.map((r) => (r.slug === slug ? { ...r, hidden: true } : r)) })
     try {
       await patchRow(slug, { hidden: true })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   restore: async (slug) => {
@@ -88,9 +97,11 @@ export const useServicesAdminStore = create<ServicesAdminState>()((set, get) => 
     set({ items: prev.map((r) => (r.slug === slug ? { ...r, hidden: false } : r)) })
     try {
       await patchRow(slug, { hidden: false })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   remove: async (slug) => {
@@ -98,10 +109,12 @@ export const useServicesAdminStore = create<ServicesAdminState>()((set, get) => 
     set({ items: prev.filter((r) => r.slug !== slug) })
     try {
       const res = await authedFetch(`/api/content/services/${encodeURIComponent(slug)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "delete failed")
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 }))
 

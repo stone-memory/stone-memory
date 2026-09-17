@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Plus, Trash2, RotateCcw, Pencil, Eye, EyeOff, X, Check } from "lucide-react"
@@ -12,6 +13,7 @@ import {
   type ProjectCategory,
 } from "@/lib/data/projects"
 import { useProjectsAdminStore } from "@/lib/store/projects"
+import type { SaveResult } from "@/lib/store/result"
 import { MultilingualField } from "@/components/admin/multilingual-field"
 import { ImageUploader } from "@/components/admin/image-uploader"
 import { Switch } from "@/components/ui/switch"
@@ -58,22 +60,29 @@ export default function AdminProjectsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: { showProjects: next } }),
       })
-      if (!res.ok) throw new Error()
-    } catch {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    } catch (e) {
       setShowInNav(prev)
+      toast.error("Не збережено", { description: e instanceof Error && e.message ? e.message : "Не вдалось зберегти" })
     }
   }
 
   const filtered = showHidden ? items : items.filter((r) => !r.hidden)
 
-  const save = (slug: string, draft: Project) => {
-    upsert({ ...draft, slug })
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
+  const save = async (slug: string, draft: Project) => {
+    const r = await upsert({ ...draft, slug })
+    if (!r.ok) return report(r)
     setEditingSlug(null)
   }
 
-  const create = (draft: Project) => {
+  const create = async (draft: Project) => {
     if (!draft.slug) draft.slug = `p-${Date.now().toString(36)}`
-    upsert(draft)
+    const r = await upsert(draft)
+    if (!r.ok) return report(r)
     setCreating(false)
   }
 
@@ -131,7 +140,7 @@ export default function AdminProjectsPage() {
             return (
               <button
                 key={c}
-                onClick={() => toggleCategory(c)}
+                onClick={() => toggleCategory(c).then(report)}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
                   isHidden
@@ -182,7 +191,7 @@ export default function AdminProjectsPage() {
                   <td className="px-4 py-3 text-right">
                     <div className="inline-flex items-center gap-1">
                       {row.hidden ? (
-                        <button onClick={() => restore(row.slug)} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground">
+                        <button onClick={() => restore(row.slug).then(report)} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground">
                           <RotateCcw size={14} /> Відновити
                         </button>
                       ) : (
@@ -191,7 +200,7 @@ export default function AdminProjectsPage() {
                             <Pencil size={14} />
                           </button>
                           <button
-                            onClick={() => softDelete(row.slug)}
+                            onClick={() => softDelete(row.slug).then(report)}
                             className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                             title="Приховати"
                           >
@@ -199,7 +208,7 @@ export default function AdminProjectsPage() {
                           </button>
                           <button
                             onClick={() => {
-                              if (confirm("Видалити назавжди?")) remove(row.slug)
+                              if (confirm("Видалити назавжди?")) remove(row.slug).then(report)
                             }}
                             className="rounded-md p-1.5 text-destructive/80 hover:bg-destructive/10"
                             title="Видалити назавжди"

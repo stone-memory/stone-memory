@@ -46,7 +46,7 @@ export function HomeStoneFamily({ family, items }: { family: string; items: Fami
             </Link>
             <div className="p-4">
               <h4 className="text-[15px] font-semibold leading-snug tracking-tight-custom">
-                {c.name.replace(/^(Граніт|Мармур|Лабрадорит|Кварцит|Онікс|Травертин|Вапняк)\s+/, "")}
+                {c.name.replace(/^(Граніт|Габро|Базальт|Пісковик|Мармур|Лабрадорит|Кварцит|Онікс|Травертин|Вапняк)\s+/, "")}
               </h4>
               <p className="mt-1 text-xs text-muted-foreground">
                 {c.origin.split(",")[0]} · {c.tone}

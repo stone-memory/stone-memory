@@ -1,10 +1,12 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 import { Star, Plus, Trash2, Home, List, EyeOff, RefreshCw, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useReviewsStore, type ReviewPlacement, type Review } from "@/lib/store/reviews"
+import type { SaveResult } from "@/lib/store/result"
 import { cn } from "@/lib/utils"
 
 const placementLabel: Record<ReviewPlacement, string> = {
@@ -49,18 +51,31 @@ export default function AdminReviewsPage() {
     return c
   }, [reviews])
 
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
   const syncGoogle = async () => {
     setSyncing(true)
     try {
       const r = await fetch("/api/reviews", { cache: "no-store" })
-      if (!r.ok) return
+      if (!r.ok) {
+        toast.error("Не вдалось отримати відгуки Google", { description: `HTTP ${r.status}` })
+        return
+      }
       const data = (await r.json()) as { reviews?: Array<{ name: string; text: string; rating: number; date?: string }> }
-      if (!data.reviews?.length) return
+      if (!data.reviews?.length) {
+        toast.info("Google не повернув відгуків")
+        return
+      }
       const existing = new Set(reviews.map((r) => `${r.name}::${r.text.slice(0, 40)}`))
+      let added = 0
+      let failed = 0
+      let lastError = ""
       for (const g of data.reviews) {
         const key = `${g.name}::${g.text.slice(0, 40)}`
         if (existing.has(key)) continue
-        add({
+        const res = await add({
           name: g.name,
           text: g.text,
           rating: g.rating || 5,
@@ -68,15 +83,25 @@ export default function AdminReviewsPage() {
           source: "google",
           placement: "hidden",
         })
+        if (res.ok) added++
+        else {
+          failed++
+          lastError = res.error
+        }
+      }
+      if (failed > 0) {
+        toast.error("Не збережено", { description: `Додано ${added}, не вдалось ${failed}: ${lastError}` })
+      } else {
+        toast.success(added > 0 ? `Додано нових відгуків: ${added}` : "Нових відгуків немає")
       }
     } finally {
       setSyncing(false)
     }
   }
 
-  const submitAdd = () => {
+  const submitAdd = async () => {
     if (!draft.name || !draft.text) return
-    add({
+    const r = await add({
       name: draft.name,
       text: draft.text,
       rating: draft.rating || 5,
@@ -84,6 +109,7 @@ export default function AdminReviewsPage() {
       source: "manual",
       placement: "hidden",
     })
+    if (!r.ok) return report(r)
     setDraft({ name: "", text: "", rating: 5 })
     setShowAdd(false)
   }
@@ -140,7 +166,7 @@ export default function AdminReviewsPage() {
             Відгуків немає
           </div>
         ) : (
-          filtered.map((r) => <ReviewCard key={r.id} r={r} onPlacement={(p) => update(r.id, { placement: p })} onRemove={() => remove(r.id)} onOrderChange={(o) => update(r.id, { order: o })} />)
+          filtered.map((r) => <ReviewCard key={r.id} r={r} onPlacement={(p) => update(r.id, { placement: p }).then(report)} onRemove={() => remove(r.id).then(report)} onOrderChange={(o) => update(r.id, { order: o }).then(report)} />)
         )}
       </div>
 

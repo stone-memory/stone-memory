@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Plus, Mail, Phone, Shield, UserCog, HardHat, BadgeCheck, Trash2, Crown, Table2, Key, X, Check, AlertCircle, Sparkles, Info, Eye, EyeOff, RotateCcw } from "lucide-react"
+import { toast } from "sonner"
 import { formatPhoneAsTyped, unformatPhone } from "@/lib/phone-format"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -51,10 +52,20 @@ export default function TeamPage() {
   // а тут потрібні всі, включно з деактивованими, щоб їх можна було відновити.
   const [members, setMembers] = useState<TeamMember[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const load = async () => {
-    const r = await authedFetch("/api/crm/team", { cache: "no-store" })
-    const j = await r.json().catch(() => ({}))
-    if (r.ok) setMembers(j.team || [])
+    try {
+      const r = await authedFetch("/api/crm/team", { cache: "no-store" })
+      const j = await r.json().catch(() => ({}))
+      if (r.ok) {
+        setMembers(j.team || [])
+        setLoadError(null)
+      } else {
+        setLoadError(r.status === 403 ? "Немає доступу" : `Не вдалось завантажити команду (HTTP ${r.status})`)
+      }
+    } catch {
+      setLoadError("Не вдалось завантажити команду")
+    }
     setLoaded(true)
     // Скинути кеш стору, щоб призначення в угодах побачили зміни складу.
     useTeamStore.setState({ loaded: false })
@@ -150,17 +161,25 @@ export default function TeamPage() {
   }
 
   const updateMember = async (id: string, patch: Partial<TeamMember>) => {
-    await authedFetch(`/api/crm/team/${id}`, {
+    const r = await authedFetch(`/api/crm/team/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     })
+    if (!r.ok) {
+      const j = (await r.json().catch(() => ({}))) as { error?: string }
+      toast.error("Не збережено", { description: j.error || `HTTP ${r.status}` })
+    }
     load()
   }
 
   const removeMember = async (id: string) => {
     if (!confirm("Деактивувати цього члена команди? Історія угод збережеться.")) return
-    await authedFetch(`/api/crm/team/${id}`, { method: "DELETE" })
+    const r = await authedFetch(`/api/crm/team/${id}`, { method: "DELETE" })
+    if (!r.ok) {
+      const j = (await r.json().catch(() => ({}))) as { error?: string }
+      toast.error("Не деактивовано", { description: j.error || `HTTP ${r.status}` })
+    }
     load()
   }
 
@@ -215,7 +234,13 @@ export default function TeamPage() {
       </div>
 
       {/* List */}
-      {loaded && members.length === 0 && (
+      {loaded && loadError && (
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-12 text-center text-sm text-destructive">
+          {loadError}
+        </div>
+      )}
+
+      {loaded && !loadError && members.length === 0 && (
         <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
           Поки немає учасників. Додайте першого вище.
         </div>

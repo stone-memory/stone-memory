@@ -1,5 +1,7 @@
 "use client"
 
+import { toast } from "sonner"
+
 import { useState } from "react"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
@@ -34,19 +36,21 @@ export function OrderDetailSheet({ order, onClose }: OrderDetailSheetProps) {
   // Клієнт міг обрати камінь, відмінний від того, що на фото — рахуємо його ціну.
   const totalPrice = order.items.reduce((sum, item) => sum + (item.selectedPrice ?? item.priceFrom ?? 0), 0)
 
-  const handleAddNote = () => {
-    if (noteText.trim()) {
-      addNote(order.id, {
-        author: "Ви",
-        text: noteText,
-        createdAt: new Date(),
-      })
-      setNoteText("")
-    }
+  const handleAddNote = async () => {
+    if (!noteText.trim()) return
+    const ok = await addNote(order.id, {
+      author: "Ви",
+      text: noteText,
+      createdAt: new Date(),
+    })
+    // Текст очищаємо лише після успіху, інакше нотатка зникала без сліду.
+    if (ok) setNoteText("")
+    else toast.error("Нотатку не збережено")
   }
 
-  const handleStatusChange = (status: Parameters<typeof updateStatus>[1]) => {
-    updateStatus(order.id, status)
+  const handleStatusChange = async (status: Parameters<typeof updateStatus>[1]) => {
+    const ok = await updateStatus(order.id, status)
+    if (!ok) toast.error("Статус не змінено")
   }
 
   const handleMarkContacted = () => {

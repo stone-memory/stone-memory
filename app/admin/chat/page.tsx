@@ -1,5 +1,7 @@
 "use client"
 
+import { toast } from "sonner"
+
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Send, RefreshCw, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -24,18 +26,24 @@ export default function AdminChatPage() {
   const [draft, setDraft] = useState("")
   const [sending, setSending] = useState(false)
   const [closing, setClosing] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const load = async () => {
     try {
       const r = await authedFetch("/api/chat/sessions", { cache: "no-store" })
       const d = (await r.json()) as { sessions?: Session[] }
+      if (!r.ok) {
+        setLoadError(r.status === 403 ? "Немає доступу до діалогів" : `Не вдалось завантажити діалоги (HTTP ${r.status})`)
+        return
+      }
+      setLoadError(null)
       if (d.sessions) {
         setSessions(d.sessions)
         if (!activeId && d.sessions.length) setActiveId(d.sessions[0].sessionId)
       }
     } catch {
-      /* ignore */
+      setLoadError("Не вдалось завантажити діалоги")
     }
   }
 
@@ -126,7 +134,11 @@ export default function AdminChatPage() {
     if (!confirm("Закрити діалог і видалити сесію?")) return
     setClosing(true)
     try {
-      await authedFetch(`/api/chat/sessions/${activeId}`, { method: "DELETE" })
+      const r = await authedFetch(`/api/chat/sessions/${activeId}`, { method: "DELETE" })
+      if (!r.ok) {
+        toast.error("Не вдалось закрити діалог")
+        return
+      }
       setSessions((prev) => prev.filter((s) => s.sessionId !== activeId))
       setActiveId(null)
     } finally {
@@ -139,11 +151,16 @@ export default function AdminChatPage() {
     if (!text || !activeId) return
     setSending(true)
     try {
-      await authedFetch("/api/chat/reply", {
+      const r = await authedFetch("/api/chat/reply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId: activeId, text }),
       })
+      if (!r.ok) {
+        // Текст лишається в полі: оператор бачить, що не пішло, і може повторити.
+        toast.error("Повідомлення не відправлено")
+        return
+      }
       setDraft("")
       refreshNotificationCounts()
       // Realtime subscription picks up the new row and appends it to state;
@@ -170,7 +187,11 @@ export default function AdminChatPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
         <aside className="rounded-2xl border border-foreground/10 bg-card p-2">
-          {sessions.length === 0 ? (
+          {loadError && sessions.length === 0 ? (
+            <div className="p-6 text-center text-sm text-destructive">
+              {loadError}
+            </div>
+          ) : sessions.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">
               Активних сесій немає
             </div>

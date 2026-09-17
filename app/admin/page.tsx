@@ -58,6 +58,12 @@ export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all")
   const orders = useOrdersStore((state) => state.orders)
+  const ordersLoading = useOrdersStore((state) => state.loading)
+  const ordersInitialized = useOrdersStore((state) => state.initialized)
+  const ordersError = useOrdersStore((state) => state.error)
+  // Перше завантаження ще триває: KPI «0» і порожня таблиця читались би як «заявок немає».
+  const ordersPending = !ordersInitialized && (ordersLoading || !ordersError)
+  const kpi = (n: number | string) => (ordersPending ? "…" : n)
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
@@ -175,24 +181,30 @@ export default function AdminPage() {
          compute from real createdAt history and only render when there's
          enough data to be honest. Period comparisons / time-series charts
          live on /admin/analytics where they belong. */}
+      {ordersError && (
+        <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          Не вдалось завантажити замовлення: {ordersError}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           label="Нові замовлення"
-          value={newOrders}
+          value={kpi(newOrders)}
           trend={newOrdersTrend}
           sparkline={createdPerDay7d}
         />
-        <KPICard label="В роботі" value={inProgressOrders} />
+        <KPICard label="В роботі" value={kpi(inProgressOrders)} />
         <KPICard
           label="Завершено цього місяця"
-          value={completedThisMonth}
+          value={kpi(completedThisMonth)}
           trend={completedTrend}
         />
-        <KPICard label="Загальна сума pipeline" value={formatUAHDirect(totalPipeline)} />
+        <KPICard label="Загальна сума pipeline" value={kpi(formatUAHDirect(totalPipeline))} />
       </div>
 
       {/* Orders Table */}
-      <OrdersTable orders={filteredOrders} />
+      <OrdersTable orders={filteredOrders} loading={ordersPending} error={ordersError} />
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Search, Plus, User, Phone, Mail, MapPin } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCustomersStore } from "@/lib/crm/store"
@@ -12,6 +13,8 @@ import { cn } from "@/lib/utils"
 export default function AdminCustomersPage() {
   const items = useCustomersStore((s) => s.items)
   const loading = useCustomersStore((s) => s.loading)
+  const loaded = useCustomersStore((s) => s.loaded)
+  const storeError = useCustomersStore((s) => s.error)
   const load = useCustomersStore((s) => s.load)
   const create = useCustomersStore((s) => s.create)
   const [q, setQ] = useState("")
@@ -34,6 +37,8 @@ export default function AdminCustomersPage() {
     if (c) {
       setShowAdd(false)
       setDraft({ name: "", phone: "", email: "", city: "" })
+    } else {
+      toast.error("Клієнта не створено", { description: useCustomersStore.getState().error || undefined })
     }
   }
 
@@ -67,7 +72,13 @@ export default function AdminCustomersPage() {
         </div>
       )}
 
-      {!loading && items.length === 0 && (
+      {!loading && !loaded && storeError && items.length === 0 && (
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-12 text-center text-sm text-destructive">
+          Не вдалось завантажити клієнтів: {storeError}
+        </div>
+      )}
+
+      {!loading && (loaded || !storeError) && items.length === 0 && (
         <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
           Поки немає клієнтів. Перші зʼявляться автоматично коли клієнт залишить заявку, або додайте вручну.
         </div>
