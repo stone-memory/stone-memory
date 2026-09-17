@@ -2,6 +2,7 @@ import { fetchBusinessProfile } from "@/lib/data-source"
 import { fullAddress } from "@/lib/business-profile"
 import { setEmailCompany } from "@/lib/email-templates/base-layout"
 import "server-only"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 import * as React from "react"
 import { Resend } from "resend"
 import { render } from "@react-email/render"
@@ -9,15 +10,20 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 import { BaseLayout } from "@/lib/email-templates/base-layout"
 import { SITE_URL as NORMALIZED_SITE_URL } from "@/lib/site-config"
 
-const apiKey = process.env.RESEND_API_KEY
-if (!apiKey) {
-  console.warn("[email] RESEND_API_KEY is not set; emails will fail at runtime")
+// Ключ Resend, адреса відправника й reply-to — зі спільного конфігу каналу
+// «Email» (форма адмінки має пріоритет над змінними Vercel). Клієнт Resend
+// створюється на кожну відправку, бо ключ можуть змінити в адмінці без деплою.
+async function mailer() {
+  const cfg = await getIntegrationConfig("email_inbound")
+  return {
+    resend: cfg.resend_api_key ? new Resend(cfg.resend_api_key) : null,
+    fromEmail: cfg.email_from || "onboarding@resend.dev",
+    fromName: cfg.email_from_name || "Stone Memory",
+    replyTo: cfg.email_reply_to || "info@stonememory.com.ua",
+  }
 }
 
-export const resend = apiKey ? new Resend(apiKey) : null
-
-export const FROM_EMAIL = process.env.EMAIL_FROM || "onboarding@resend.dev"
-export const FROM_NAME = process.env.EMAIL_FROM_NAME || "Stone Memory"
+/** Reply-to для посилання «відписатись» у листах; резерв, якщо конфіг ще не прочитано. */
 export const REPLY_TO = process.env.EMAIL_REPLY_TO || "info@stonememory.com.ua"
 // Re-export normalized SITE_URL — many email templates already import from here.
 export const SITE_URL = NORMALIZED_SITE_URL
@@ -71,7 +77,8 @@ function htmlToText(html: string): string {
 }
 
 export async function sendOne(args: SendArgs): Promise<{ ok: boolean; id?: string; error?: string }> {
-  if (!resend) return { ok: false, error: "RESEND_API_KEY not set" }
+  const { resend, fromEmail, fromName, replyTo } = await mailer()
+  if (!resend) return { ok: false, error: "Ключ Resend не задано: заповніть канал «Email» в адмінці або RESEND_API_KEY" }
 
   const reactEl = args.react
     ? args.react
@@ -94,9 +101,9 @@ export async function sendOne(args: SendArgs): Promise<{ ok: boolean; id?: strin
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `${FROM_NAME} <${FROM_EMAIL}>`,
+      from: `${fromName} <${fromEmail}>`,
       to: args.to,
-      replyTo: REPLY_TO,
+      replyTo,
       subject: args.subject,
       html: wrappedHtml,
       text: plainText || htmlToText(wrappedHtml),

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { recordIncoming } from "@/lib/crm/comms"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 import { readSignedMetaBody } from "@/lib/integrations/meta-signature"
 
 export const runtime = "nodejs"
@@ -24,9 +25,9 @@ export const dynamic = "force-dynamic"
  *   перевіряється за X-Hub-Signature-256 (lib/integrations/meta-signature.ts)
  */
 
-const VERIFY_TOKEN = process.env.INSTAGRAM_VERIFY_TOKEN
-
 export async function GET(req: Request) {
+  // Verify token — зі спільного конфігу (форма адмінки має пріоритет).
+  const VERIFY_TOKEN = (await getIntegrationConfig("instagram")).verify_token
   const url = new URL(req.url)
   const mode = url.searchParams.get("hub.mode")
   const token = url.searchParams.get("hub.verify_token")
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
 
       // Спробуємо отримати ім'я через Graph API (опціонально)
       let name: string | undefined
-      const token = process.env.INSTAGRAM_PAGE_ACCESS_TOKEN
+      const token = (await getIntegrationConfig("instagram")).page_access_token
       if (token) {
         try {
           const r = await fetch(`https://graph.facebook.com/v21.0/${senderId}?fields=name&access_token=${encodeURIComponent(token)}`)
