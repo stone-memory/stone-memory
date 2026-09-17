@@ -11,6 +11,7 @@
  * рекомендую @react-pdf/renderer (~3MB bundle, але працює без headless Chrome).
  */
 
+import { DEFAULT_PROFILE, fullAddress, type BusinessProfile } from "@/lib/business-profile"
 import type { Customer, Deal, DealItem, Payment } from "@/lib/crm/types"
 
 // =====================================================
@@ -41,22 +42,34 @@ th { background: #f5f5f5; font-weight: 600; font-size: 12px; text-transform: upp
 @media print { body { background: white; } }
 `
 
-const COMPANY_INFO = {
-  legalName: "ФОП «Stone Memory»",
-  address: "Костопіль, Рівненська обл., Україна",
-  email: "info@stonememory.com.ua",
-  phone: "+380 (68) 808 02 22",
-  iban: "(введіть IBAN у Бізнес-профіль)",
-  vatId: "(введіть ІПН/VAT у Бізнес-профіль)",
+// Реквізити виконавця беруться з профілю бізнесу (адмінка) перед рендером:
+// app/api/crm/documents/generate викликає setDocumentCompany(). Значення тут —
+// лише запасний варіант, якщо профіль не завантажився.
+let COMPANY_INFO = {
+  legalName: DEFAULT_PROFILE.legalName,
+  address: fullAddress(DEFAULT_PROFILE),
+  email: DEFAULT_PROFILE.email,
+  phone: DEFAULT_PROFILE.phone,
+  iban: "—",
+  vatId: "—",
 }
 
-function fmtEUR(eur: number): string {
-  return `€${eur.toLocaleString("uk-UA")}`
+export function setDocumentCompany(profile: BusinessProfile) {
+  COMPANY_INFO = {
+    legalName: profile.legalName || DEFAULT_PROFILE.legalName,
+    address: `${fullAddress(profile)}, ${profile.country}`,
+    email: profile.email,
+    phone: profile.phone,
+    iban: profile.bankingIban?.trim() || "—",
+    vatId: profile.vatId?.trim() ? `ІПН ${profile.vatId.trim()}` : "—",
+  }
 }
 
-function fmtUAH(eur: number): string {
-  const uah = eur * 45 // FX за замовчуванням; підтягни з business-profile коли буде /api/fx
-  return `${Math.round(uah / 10) * 10} ₴`
+// Суми угод і платежів у CRM ведуться в гривнях (адмінка скрізь показує ₴;
+// назва колонки amount_eur — спадок першої версії). Раніше документи підписували
+// ті самі числа як EUR і ще множили на 45 «орієнтовно у грн».
+function fmtMoney(uah: number): string {
+  return `${Math.round(uah).toLocaleString("uk-UA")} ₴`
 }
 
 function fmtDate(d: string | Date): string {
@@ -80,7 +93,7 @@ export function renderQuoteHTML(args: {
     ? items
         .map(
           (it, i) =>
-            `<tr><td>${i + 1}</td><td>${esc(it.title)}</td><td class="right">${it.qty}</td><td class="right">${fmtEUR(Number(it.unit_price_eur) || 0)}</td><td class="right">${fmtEUR(Number(it.total_eur) || 0)}</td></tr>`
+            `<tr><td>${i + 1}</td><td>${esc(it.title)}</td><td class="right">${it.qty}</td><td class="right">${fmtMoney(Number(it.unit_price_eur) || 0)}</td><td class="right">${fmtMoney(Number(it.total_eur) || 0)}</td></tr>`
         )
         .join("")
     : `<tr><td colspan="5" style="color:#9ca3af; font-style: italic; padding: 16px;">Позиції додаються після узгодження ескізу.</td></tr>`
@@ -129,8 +142,7 @@ export function renderQuoteHTML(args: {
     </thead>
     <tbody>${itemsRows}</tbody>
     <tfoot>
-      <tr><td colspan="4" class="right total">Разом, EUR</td><td class="right total">${fmtEUR(total)}</td></tr>
-      <tr><td colspan="4" class="right" style="color:#6b7280;font-size:12px">Орієнтовно у грн</td><td class="right" style="color:#6b7280;font-size:12px">${fmtUAH(total)}</td></tr>
+      <tr><td colspan="4" class="right total">Разом</td><td class="right total">${fmtMoney(total)}</td></tr>
     </tfoot>
   </table>
 
@@ -171,7 +183,7 @@ export function renderContractHTML(args: {
     ? items
         .map(
           (it, i) =>
-            `<tr><td>${i + 1}</td><td>${esc(it.title)}</td><td class="right">${it.qty}</td><td class="right">${fmtEUR(Number(it.total_eur) || 0)}</td></tr>`
+            `<tr><td>${i + 1}</td><td>${esc(it.title)}</td><td class="right">${it.qty}</td><td class="right">${fmtMoney(Number(it.total_eur) || 0)}</td></tr>`
         )
         .join("")
     : `<tr><td colspan="4" style="color:#9ca3af;">Позиції узгоджуються окремою специфікацією.</td></tr>`
@@ -206,17 +218,17 @@ export function renderContractHTML(args: {
 
   <h2>2. Специфікація</h2>
   <table>
-    <thead><tr><th style="width:40px">#</th><th>Найменування</th><th class="right" style="width:60px">К-сть</th><th class="right" style="width:140px">Сума, EUR</th></tr></thead>
+    <thead><tr><th style="width:40px">#</th><th>Найменування</th><th class="right" style="width:60px">К-сть</th><th class="right" style="width:140px">Сума, ₴</th></tr></thead>
     <tbody>${itemsRows}</tbody>
     <tfoot>
-      <tr><td colspan="3" class="right total">Загальна сума</td><td class="right total">${fmtEUR(total)}</td></tr>
+      <tr><td colspan="3" class="right total">Загальна сума</td><td class="right total">${fmtMoney(total)}</td></tr>
     </tfoot>
   </table>
 
   <h2>3. Порядок розрахунків</h2>
   <ol style="font-size:14px;line-height:1.7">
-    <li>Передоплата ${depositPercent}% — <b>${fmtEUR(deposit)}</b> — впродовж 3 робочих днів від підписання.</li>
-    <li>Доплата ${100 - depositPercent}% — <b>${fmtEUR(balance)}</b> — після прийняття готового виробу і перед монтажем.</li>
+    <li>Передоплата ${depositPercent}% — <b>${fmtMoney(deposit)}</b> — впродовж 3 робочих днів від підписання.</li>
+    <li>Доплата ${100 - depositPercent}% — <b>${fmtMoney(balance)}</b> — після прийняття готового виробу і перед монтажем.</li>
     <li>Оплата може бути здійснена готівкою, на картку або банківським переказом на рахунок Виконавця.</li>
   </ol>
 
@@ -262,7 +274,7 @@ export function renderInvoiceHTML(args: {
     ? items
         .map(
           (it, i) =>
-            `<tr><td>${i + 1}</td><td>${esc(it.title)}</td><td class="right">${it.qty}</td><td class="right">${fmtEUR(Number(it.unit_price_eur) || 0)}</td><td class="right">${fmtEUR(Number(it.total_eur) || 0)}</td></tr>`
+            `<tr><td>${i + 1}</td><td>${esc(it.title)}</td><td class="right">${it.qty}</td><td class="right">${fmtMoney(Number(it.unit_price_eur) || 0)}</td><td class="right">${fmtMoney(Number(it.total_eur) || 0)}</td></tr>`
         )
         .join("")
     : `<tr><td colspan="5" style="color:#9ca3af;">Без позицій</td></tr>`
@@ -305,9 +317,9 @@ export function renderInvoiceHTML(args: {
     <thead><tr><th style="width:40px">#</th><th>Найменування</th><th class="right" style="width:60px">К-сть</th><th class="right" style="width:100px">Ціна</th><th class="right" style="width:120px">Сума</th></tr></thead>
     <tbody>${itemsRows}</tbody>
     <tfoot>
-      <tr><td colspan="4" class="right">Разом</td><td class="right">${fmtEUR(total)}</td></tr>
-      <tr><td colspan="4" class="right">Сплачено</td><td class="right">${fmtEUR(paid)}</td></tr>
-      <tr><td colspan="4" class="right total">До сплати</td><td class="right total">${fmtEUR(due)}</td></tr>
+      <tr><td colspan="4" class="right">Разом</td><td class="right">${fmtMoney(total)}</td></tr>
+      <tr><td colspan="4" class="right">Сплачено</td><td class="right">${fmtMoney(paid)}</td></tr>
+      <tr><td colspan="4" class="right total">До сплати</td><td class="right total">${fmtMoney(due)}</td></tr>
     </tfoot>
   </table>
 

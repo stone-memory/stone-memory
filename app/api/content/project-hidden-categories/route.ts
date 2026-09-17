@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
+import { revalidateForResource } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -31,5 +32,7 @@ export async function PUT(req: Request) {
     if (insErr) return NextResponse.json({ error: insErr.message }, { status: 500 })
   }
 
+  // Список прихованих категорій читає /proekty із добовим кешем.
+  revalidateForResource("projects")
   return NextResponse.json({ categories: body.categories })
 }

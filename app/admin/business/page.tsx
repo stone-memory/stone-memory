@@ -143,18 +143,6 @@ export default function AdminBusinessPage() {
           <Field label="Країна">
             <Input value={profile.country} onChange={(e) => update({ country: e.target.value })} />
           </Field>
-          <Field label="Валюта">
-            <select
-              value={profile.currency}
-              onChange={(e) => update({ currency: e.target.value })}
-              className="h-10 w-full rounded-xl border border-foreground/10 bg-background px-3 text-sm"
-            >
-              <option>EUR</option>
-              <option>UAH</option>
-              <option>USD</option>
-              <option>PLN</option>
-            </select>
-          </Field>
         </div>
       </section>
 

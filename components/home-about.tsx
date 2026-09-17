@@ -1,5 +1,6 @@
 import { ConsultButton } from "@/components/consult-button"
-import { CONTACT } from "@/lib/site-facts"
+import { fetchBusinessProfile } from "@/lib/data-source"
+import { telHref } from "@/lib/business-profile"
 
 /**
  * Як працюємо — три кроки, спільні для обох напрямів, і фінальний CTA.
@@ -12,7 +13,8 @@ const STEPS = [
   { title: "Ми виготовляємо й монтуємо", text: "Той самий цех і та сама бригада для обох напрямів. Готовий виріб показуємо до монтажу, після — гарантійний талон." },
 ]
 
-export function HomeAbout() {
+export async function HomeAbout() {
+  const profile = await fetchBusinessProfile()
   return (
     <section id="about" className="mx-auto max-w-7xl px-6 pt-16 md:pt-24">
       <div>
@@ -46,8 +48,8 @@ export function HomeAbout() {
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end">
             <ConsultButton className="bg-background text-foreground" topic="Головна: не знаєте, з чого почати">Написати майстру</ConsultButton>
-            <a href={CONTACT.phoneHref} className="text-sm font-medium text-background/85 hover:text-background">
-              {CONTACT.phoneDisplay}
+            <a href={telHref(profile)} className="text-sm font-medium text-background/85 hover:text-background">
+              {profile.phone}
             </a>
           </div>
         </div>

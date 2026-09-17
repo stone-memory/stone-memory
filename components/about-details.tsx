@@ -1,5 +1,7 @@
 import Link from "next/link"
-import { CONTACT, DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, CITIES } from "@/lib/site-facts"
+import { DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, CITIES } from "@/lib/site-facts"
+import { fetchBusinessProfile } from "@/lib/data-source"
+import { fullAddress, hoursRows } from "@/lib/business-profile"
 import { STONE_GUIDE } from "@/lib/stone-guide"
 
 /**
@@ -11,7 +13,8 @@ import { STONE_GUIDE } from "@/lib/stone-guide"
  * куди ми їздимо. Жодних вигаданих цифр: усе з lib/site-facts.ts і довідника
  * каменю, тож при зміні факту правиться одне місце.
  */
-export function AboutDetails({ modelCount }: { modelCount: number }) {
+export async function AboutDetails({ modelCount }: { modelCount: number }) {
+  const profile = await fetchBusinessProfile()
   const ukrStones = STONE_GUIDE.filter((s) => s.rock !== "Мармур" || s.key === "marble").length
   const freeCities = CITIES.filter((c) => c.freeTravel).map((c) => c.name)
 
@@ -42,8 +45,8 @@ export function AboutDetails({ modelCount }: { modelCount: number }) {
             напряму з кар'єру, без посередників і без складу в обласному центрі, тому в ціні немає оренди салону.
           </p>
           <p>
-            Адреса цеху: {CONTACT.address}. Тут же виставковий майданчик: можна подивитись камінь наживо, торкнутись
-            полірування, побачити гравіювання на реальних стелах. Працюємо {CONTACT.hours.map((h) => `${h.days} ${h.time}`).join(", ")}.
+            Адреса цеху: {fullAddress(profile)}. Тут же виставковий майданчик: можна подивитись камінь наживо, торкнутись
+            полірування, побачити гравіювання на реальних стелах. Працюємо {hoursRows(profile).map((h) => `${h.days} ${h.time}`).join(", ")}.
           </p>
         </Block>
 

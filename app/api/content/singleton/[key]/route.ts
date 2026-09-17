@@ -3,6 +3,8 @@ import { revalidatePath, revalidateTag } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
 import { NAV_SETTINGS_KEY, NAV_SETTINGS_TAG } from "@/lib/nav-settings"
+import { BUSINESS_PROFILE_KEY } from "@/lib/business-profile"
+import { revalidateBusinessProfile } from "@/lib/seo/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -48,11 +50,12 @@ export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> 
   // pages' layout to apply it promptly.
   try {
     if (key === NAV_SETTINGS_KEY) {
-      revalidateTag(NAV_SETTINGS_TAG, "max")
+      revalidateTag(NAV_SETTINGS_TAG, { expire: 0 })
       revalidatePath("/", "layout")
     }
     // Текст «Про нас» читається на сервері сторінки, кеш якої живе добу.
     if (key === "about_overrides") revalidatePath("/pro-nas", "page")
+    if (key === BUSINESS_PROFILE_KEY) revalidateBusinessProfile()
   } catch {
     // best-effort — revalidation is an optimisation, not correctness
   }
@@ -66,5 +69,16 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ key: string 
   const { key } = await ctx.params
   const { error } = await supabaseAdmin.from("site_content").delete().eq("key", key)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  // Те саме скидання кешу, що й після PUT: видалення теж змінює, що бачить сайт.
+  try {
+    if (key === NAV_SETTINGS_KEY) {
+      revalidateTag(NAV_SETTINGS_TAG, { expire: 0 })
+      revalidatePath("/", "layout")
+    }
+    if (key === "about_overrides") revalidatePath("/pro-nas", "page")
+    if (key === BUSINESS_PROFILE_KEY) revalidateBusinessProfile()
+  } catch {
+    // best-effort
+  }
   return NextResponse.json({ ok: true })
 }

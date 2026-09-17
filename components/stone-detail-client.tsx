@@ -19,10 +19,10 @@ import { defaultStone } from "@/lib/stone-guide"
 import { stoneAlt, stoneHeading } from "@/lib/stone-meta"
 import { WARRANTY_YEARS } from "@/lib/site-facts"
 import { toTelHref } from "@/lib/phone-format"
+import { useBusinessProfile } from "@/lib/store/business-profile"
 import { cn } from "@/lib/utils"
 import type { StoneItem } from "@/lib/types"
 
-const PHONE_DISPLAY = "+38 (068) 808-02-22"
 
 // Раніше бралось із t.hero.badge — але бейдж hero тепер про майстерню, а не
 // про гарантію, і чіп довіри на картці має казати саме про гарантію.
@@ -65,6 +65,7 @@ type Props = {
  * їх тепер покриває скидання ISR-кешу з адмінки.
  */
 export function StoneDetailClient({ stone, related, leadTime, storyLead, story, storyAside }: Props) {
+  const PHONE_DISPLAY = useBusinessProfile().phone
   const { t, locale, formatPrice } = useTranslation()
   const { addItem, items, openSidebar } = useSelectionStore()
   const [active, setActive] = useState(0)
