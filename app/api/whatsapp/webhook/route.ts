@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { recordIncoming } from "@/lib/crm/comms"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 import { readSignedMetaBody } from "@/lib/integrations/meta-signature"
 
 export const runtime = "nodejs"
@@ -24,10 +25,10 @@ export const dynamic = "force-dynamic"
  *   перевіряється за X-Hub-Signature-256 (lib/integrations/meta-signature.ts)
  */
 
-const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN
-
 // GET — Meta verify (одноразово при налаштуванні)
 export async function GET(req: Request) {
+  // Verify token — зі спільного конфігу (форма адмінки має пріоритет).
+  const VERIFY_TOKEN = (await getIntegrationConfig("whatsapp")).verify_token
   const url = new URL(req.url)
   const mode = url.searchParams.get("hub.mode")
   const token = url.searchParams.get("hub.verify_token")

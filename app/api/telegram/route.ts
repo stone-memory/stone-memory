@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server"
 import { addOperatorMessage, sessionForRelayMessage } from "@/lib/chat-store"
 import { recordIncoming } from "@/lib/crm/comms"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET
-const TG_ADMIN_CHAT = process.env.TELEGRAM_ADMIN_CHAT_ID
+// Токен, chat id і секрет — зі спільного конфігу (форма адмінки має пріоритет
+// над змінними Vercel). Раніше маршрут читав лише змінні, і токени, збережені
+// у формі, тут не діяли.
 
 type TelegramUser = {
   id: number
@@ -64,6 +66,9 @@ function extractSessionId(msg: TelegramMessage): { sessionId: string; text: stri
 }
 
 export async function POST(req: Request) {
+  const cfg = await getIntegrationConfig("telegram")
+  const WEBHOOK_SECRET = cfg.webhook_secret
+  const TG_ADMIN_CHAT = cfg.admin_chat_id
   // Telegram secret token verification
   if (WEBHOOK_SECRET) {
     const header = req.headers.get("x-telegram-bot-api-secret-token")
@@ -148,7 +153,7 @@ export async function GET() {
 }
 
 async function sendTelegramReply(chatId: number, text: string): Promise<void> {
-  const token = process.env.TELEGRAM_BOT_TOKEN
+  const token = (await getIntegrationConfig("telegram")).bot_token
   if (!token) return
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {

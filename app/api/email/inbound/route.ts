@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { recordIncoming } from "@/lib/crm/comms"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -25,7 +26,6 @@ export const dynamic = "force-dynamic"
  * 2. Webhook URL: https://stonememory.com.ua/api/email/inbound
  */
 
-const SHARED_SECRET = process.env.INBOUND_EMAIL_SECRET
 
 type GenericInboundEmail = {
   // Mailgun
@@ -62,6 +62,8 @@ function pickEmail(s: string | undefined | { email?: string; name?: string } | A
 }
 
 export async function POST(req: Request) {
+  // Секрет — зі спільного конфігу (форма адмінки має пріоритет над змінними).
+  const SHARED_SECRET = (await getIntegrationConfig("email_inbound")).inbound_secret
   // Перевірка secret (опціонально). Без INBOUND_EMAIL_SECRET ендпоінт
   // відкритий для будь-кого — попереджаємо в лог, щоб це не лишилось непоміченим.
   if (SHARED_SECRET) {

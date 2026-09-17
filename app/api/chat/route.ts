@@ -7,14 +7,16 @@ import {
 } from "@/lib/chat-store"
 import { rateLimit, getClientIp } from "@/lib/rate-limit"
 import { recordIncoming } from "@/lib/crm/comms"
+import { getIntegrationConfig } from "@/lib/integrations/config"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-const TG_CHAT = process.env.TELEGRAM_ADMIN_CHAT_ID
-
 async function sendTelegram(text: string): Promise<number | null> {
+  // Токен і chat id — зі спільного конфігу (форма адмінки має пріоритет).
+  const cfg = await getIntegrationConfig("telegram")
+  const TG_TOKEN = cfg.bot_token
+  const TG_CHAT = cfg.admin_chat_id
   if (!TG_TOKEN || !TG_CHAT) return null
   try {
     const r = await fetch(
