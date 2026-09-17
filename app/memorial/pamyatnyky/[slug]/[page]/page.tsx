@@ -12,7 +12,7 @@ import {
 } from "@/lib/catalog-taxonomy"
 import { absoluteUrl } from "@/lib/site-config"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 type Params = { slug: string; page: string }
 

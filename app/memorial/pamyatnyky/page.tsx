@@ -7,7 +7,7 @@ import { absoluteUrl } from "@/lib/site-config"
 
 const PATH = "/memorial/pamyatnyky"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 // Title lives on the page, not the layout — see the note in ./layout.tsx.
 export const metadata: Metadata = {

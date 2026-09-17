@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { fetchServices } from "@/lib/data-source"
 import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 const PATH = "/posluhy"
 

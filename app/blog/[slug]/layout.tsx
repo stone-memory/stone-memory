@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { fetchArticles, fetchArticleBySlug } from "@/lib/data-source"
 import { absoluteUrl } from "@/lib/site-config"
 
-export const revalidate = 3600
+export const revalidate = 86400
 export const dynamicParams = true
 
 export async function generateStaticParams() {

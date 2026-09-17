@@ -9,7 +9,7 @@ import { absoluteUrl } from "@/lib/site-config"
 import type { StoneItem } from "@/lib/types"
 
 const PATH = "/tsiny"
-export const revalidate = 3600
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: "Ціни на пам'ятники — від виробника, з монтажем",

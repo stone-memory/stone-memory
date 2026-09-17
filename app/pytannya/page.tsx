@@ -9,7 +9,7 @@ import { absoluteUrl } from "@/lib/site-config"
 import type { Locale } from "@/lib/types"
 
 const PATH = "/pytannya"
-export const revalidate = 3600
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: "Питання й відповіді про пам'ятники",

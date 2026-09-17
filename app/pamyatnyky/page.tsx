@@ -18,7 +18,7 @@ import type { FaqItem } from "@/lib/store/faq"
 import type { Review } from "@/lib/store/reviews"
 
 const PATH = "/pamyatnyky"
-export const revalidate = 3600
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: "Пам'ятники з граніту від виробника — Костопіль, монтаж по Україні",

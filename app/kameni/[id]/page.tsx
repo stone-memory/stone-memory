@@ -2,7 +2,7 @@ import { notFound, permanentRedirect } from "next/navigation"
 import { fetchStoneById } from "@/lib/data-source"
 import { stonePath } from "@/lib/catalog-taxonomy"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 /**
  * Legacy product URL — kept permanently as a redirect.

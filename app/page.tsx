@@ -8,7 +8,7 @@ import { SelectionSidebar } from "@/components/selection-sidebar"
 import { fetchStones } from "@/lib/data-source"
 import { getCollections } from "@/lib/stone/cms"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 /**
  * Головна — про майстерню й камінь, а не про товар.
