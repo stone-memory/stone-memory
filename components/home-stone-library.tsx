@@ -80,7 +80,7 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
         <dl className="grid grid-cols-3 gap-3">
           <Stat value={`${natural.length}`} label="натуральних порід" />
           <Stat value={`${ukrainian}`} label="українських родовищ" />
-          <Stat value={`${forMemorial}`} label="годяться на пам'ятники" />
+          <Stat value={`${forMemorial}`} label="для пам'ятників" />
         </dl>
       </div>
 
