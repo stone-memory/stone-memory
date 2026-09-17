@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Phone, Mail, MapPin, Clock, Instagram, Facebook, Youtube, ArrowRight } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/context"
 import { useBusinessProfile } from "@/lib/store/business-profile"
+import { hoursLine as formatHoursLine, shortAddress } from "@/lib/business-profile"
 import { PhoneLink } from "@/components/phone-link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
@@ -62,32 +63,8 @@ export function Footer() {
 
   const phone = profile.phone
   const EMAIL = profile.email
-  const addressLine = [profile.address, profile.city].filter(Boolean).join(", ")
-  // Build hours string grouping consecutive days with identical times: "Пн–Пт 9:00–19:00 · Сб 10:00–16:00"
-  const dayLabels: Record<string, string> = locale === "uk"
-    ? { mon: "Пн", tue: "Вт", wed: "Ср", thu: "Чт", fri: "Пт", sat: "Сб", sun: "Нд" }
-    : { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun" }
-  const fmt = (t: string) => t.replace(/^0/, "")
-  const hoursLine = (() => {
-    const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const
-    const groups: { first: string; last: string; open: string; close: string }[] = []
-    for (const day of days) {
-      const h = profile.hours[day]
-      if (!h || h.closed) continue
-      const prev = groups[groups.length - 1]
-      if (prev && prev.open === h.open && prev.close === h.close) {
-        prev.last = day
-      } else {
-        groups.push({ first: day, last: day, open: h.open, close: h.close })
-      }
-    }
-    return groups
-      .map((g) => {
-        const dayPart = g.first === g.last ? dayLabels[g.first] : `${dayLabels[g.first]}–${dayLabels[g.last]}`
-        return `${dayPart} ${fmt(g.open)}–${fmt(g.close)}`
-      })
-      .join(" · ")
-  })()
+  const addressLine = shortAddress(profile)
+  const hoursLine = formatHoursLine(profile, locale === "uk" ? "uk" : "en")
 
   return (
     <footer id="contact" className="border-t border-foreground/5 bg-card pt-20 pb-10 md:pt-28">
@@ -102,12 +79,16 @@ export function Footer() {
               {t.footer.tagline}
             </p>
             <div className="mt-6 flex items-center gap-3">
-              <a href="https://www.instagram.com/sttonememory" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
+              {profile.instagram && (
+              <a href={profile.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
                 <Instagram className="h-4 w-4" strokeWidth={1.75} />
               </a>
-              <a href="https://www.facebook.com/profile.php?id=61588950935616" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
+              )}
+              {profile.facebook && (
+              <a href={profile.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
                 <Facebook className="h-4 w-4" strokeWidth={1.75} />
               </a>
+              )}
               {/* <a href="https://youtube.com/@stonememory" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background">
                 <Youtube className="h-4 w-4" strokeWidth={1.75} />
               </a> */}

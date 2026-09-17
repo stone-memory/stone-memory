@@ -1,5 +1,7 @@
 "use client"
 
+import { toast } from "sonner"
+
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowLeft, Phone, Mail, MapPin, MessageSquare, FileText, CreditCard, Bell, Activity } from "lucide-react"
@@ -302,11 +304,15 @@ function NotesEditor({ customer, onSaved }: { customer: Customer; onSaved: () =>
     setSaving(true)
     try {
       const { authedFetch } = await import("@/lib/authed-fetch")
-      await authedFetch(`/api/crm/customers/${customer.id}`, {
+      const r = await authedFetch(`/api/crm/customers/${customer.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ notes }),
       })
+      if (!r.ok) {
+        toast.error("Нотатки не збережено")
+        return
+      }
       onSaved()
     } finally {
       setSaving(false)

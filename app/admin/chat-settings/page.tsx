@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { authedFetch } from "@/lib/authed-fetch"
-import { Plus, Trash2, RotateCcw, Check } from "lucide-react"
+import { Plus, Trash2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -32,7 +33,6 @@ export default function AdminChatSettingsPage() {
   const hydrate = useChatSettingsStore((s) => s.hydrate)
   const setQuickReplies = useChatSettingsStore((s) => s.setQuickReplies)
   const setFallback = useChatSettingsStore((s) => s.setFallback)
-  const resetLocale = useChatSettingsStore((s) => s.resetLocale)
 
   useEffect(() => {
     hydrate()
@@ -42,43 +42,62 @@ export default function AdminChatSettingsPage() {
   const [saved, setSaved] = useState(false)
   const [draftReplies, setDraftReplies] = useState<QuickReply[]>([])
   const [draftFallback, setDraftFallback] = useState("")
+  // Є незбережені правки: поки так — store не перезаписує чернетку (інакше
+  // фоновий переклад тригерів на інші мови стирав би набране тут).
+  const [dirty, setDirty] = useState(false)
 
   useEffect(() => {
-    if (!hasHydrated) return
+    if (!hasHydrated || dirty) return
     const o = overrides[locale]
     setDraftReplies(o?.quickReplies ?? defaultQuickReplies[locale])
     setDraftFallback(o?.fallback ?? defaultFallback[locale])
-  }, [locale, hasHydrated, overrides])
+  }, [locale, hasHydrated, overrides, dirty])
 
-  const save = () => {
-    setQuickReplies(locale, draftReplies)
-    setFallback(locale, draftFallback)
+  const switchLocale = (code: Locale) => {
+    if (code === locale) return
+    if (dirty && !confirm("Є незбережені зміни. Перейти без збереження?")) return
+    setDirty(false)
+    setLocale(code)
+  }
+
+  const save = async () => {
+    const r1 = await setQuickReplies(locale, draftReplies)
+    if (!r1.ok) {
+      toast.error("Не збережено", { description: r1.error })
+      return
+    }
+    const r2 = await setFallback(locale, draftFallback)
+    if (!r2.ok) {
+      toast.error("Не збережено", { description: r2.error })
+      return
+    }
+    setDirty(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 1500)
   }
-  const reset = () => {
-    resetLocale(locale)
-    setDraftReplies(defaultQuickReplies[locale])
-    setDraftFallback(defaultFallback[locale])
+
+  const editReplies = (next: QuickReply[]) => {
+    setDraftReplies(next)
+    setDirty(true)
   }
 
   const update = (i: number, patch: Partial<QuickReply>) => {
     const next = draftReplies.slice()
     next[i] = { ...next[i], ...patch }
-    setDraftReplies(next)
+    editReplies(next)
   }
   const add = () =>
-    setDraftReplies([
+    editReplies([
       ...draftReplies,
       { id: makeId(), label: "", answer: "", order: draftReplies.length + 1 },
     ])
-  const remove = (i: number) => setDraftReplies(draftReplies.filter((_, idx) => idx !== i))
+  const remove = (i: number) => editReplies(draftReplies.filter((_, idx) => idx !== i))
   const move = (i: number, dir: -1 | 1) => {
     const j = i + dir
     if (j < 0 || j >= draftReplies.length) return
     const next = draftReplies.slice()
     ;[next[i], next[j]] = [next[j], next[i]]
-    setDraftReplies(next.map((q, idx) => ({ ...q, order: idx + 1 })))
+    editReplies(next.map((q, idx) => ({ ...q, order: idx + 1 })))
   }
 
   /**
@@ -94,9 +113,18 @@ export default function AdminChatSettingsPage() {
    * Dedup is case-insensitive per locale: we don't add a translation
    * if the same word is already present.
    */
-  const fanOutTriggers = async (qaId: string, sourceLocale: Locale, added: string[]) => {
+  const fanOutTriggers = async (qaId: string, sourceLocale: Locale, added: string[], sourceReplies: QuickReply[]) => {
     if (added.length === 0) return
+    // Спершу зберігаємо мову-джерело (з уже доданим тригером): інакше
+    // переклади лягли б в інші мови, а оригінал лишився б лише в чернетці.
+    const saved = await setQuickReplies(sourceLocale, sourceReplies)
+    if (!saved.ok) {
+      toast.error("Не збережено", { description: saved.error })
+      return
+    }
     const targets: Locale[] = LOCALES.map((l) => l.code).filter((l) => l !== sourceLocale)
+    let failed = 0
+    let lastError = ""
     // Resolve each target locale's CURRENT quickReplies list (override
     // first, default second). We mutate per-target to avoid clobbering
     // concurrent edits on those locales' drafts.
@@ -131,8 +159,15 @@ export default function AdminChatSettingsPage() {
         qa.triggers = [...current, translation]
         // Persist (await — order matters between sequential phrases
         // so concurrent writes don't lose to each other).
-        await useChatSettingsStore.getState().setQuickReplies(target, replies)
+        const r = await useChatSettingsStore.getState().setQuickReplies(target, replies)
+        if (!r.ok) {
+          failed++
+          lastError = r.error
+        }
       }
+    }
+    if (failed > 0) {
+      toast.error("Не збережено", { description: `Переклад тригерів не зберігся (${failed}): ${lastError}` })
     }
   }
 
@@ -146,9 +181,6 @@ export default function AdminChatSettingsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={reset} className="rounded-xl gap-2">
-            <RotateCcw size={16} /> Скинути {locale.toUpperCase()}
-          </Button>
           <Button onClick={save} className="rounded-xl gap-2">
             {saved ? <Check size={16} /> : null}
             {saved ? "Збережено" : "Зберегти"}
@@ -160,7 +192,7 @@ export default function AdminChatSettingsPage() {
         {LOCALES.map((l) => (
           <button
             key={l.code}
-            onClick={() => setLocale(l.code)}
+            onClick={() => switchLocale(l.code)}
             className={cn(
               "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
               locale === l.code
@@ -222,7 +254,10 @@ export default function AdminChatSettingsPage() {
                 value={q.triggers ?? []}
                 onChange={(triggers) => update(i, { triggers })}
                 placeholderLabel={q.label}
-                onAdded={(added) => fanOutTriggers(q.id, locale, added)}
+                onAdded={(added, triggers) => {
+                  const next = draftReplies.map((x, idx) => (idx === i ? { ...x, triggers } : x))
+                  void fanOutTriggers(q.id, locale, added, next)
+                }}
               />
             </div>
           ))}
@@ -243,7 +278,10 @@ export default function AdminChatSettingsPage() {
         </p>
         <textarea
           value={draftFallback}
-          onChange={(e) => setDraftFallback(e.target.value)}
+          onChange={(e) => {
+            setDraftFallback(e.target.value)
+            setDirty(true)
+          }}
           rows={3}
           className="w-full rounded-lg border border-foreground/10 bg-background px-3 py-2 text-sm outline-none focus:border-foreground/30"
         />
@@ -276,7 +314,7 @@ function TriggersField({
   placeholderLabel?: string
   /** Called with the array of NEW triggers committed (after dedup).
    *  Used by the parent to fan-out auto-translations to other locales. */
-  onAdded?: (added: string[]) => void
+  onAdded?: (added: string[], next: string[]) => void
 }) {
   const [draft, setDraft] = useState("")
 
@@ -298,7 +336,7 @@ function TriggersField({
     }
     if (added.length > 0) {
       onChange(next)
-      onAdded?.(added)
+      onAdded?.(added, next)
     }
     setDraft("")
   }

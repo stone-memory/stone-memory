@@ -12,7 +12,15 @@ import { AttributionCapture } from "@/components/attribution-capture"
 import { SkipLink } from "@/components/skip-link"
 import { ErrorBoundaryClient } from "@/components/error-boundary-client"
 import { SITE_URL } from "@/lib/site-config"
-import { fetchNavSettings } from "@/lib/data-source"
+import { fetchBusinessProfile, fetchNavSettings } from "@/lib/data-source"
+import { BusinessProfileProvider } from "@/components/business-profile-provider"
+import {
+  openingHoursSpecification,
+  phoneE164,
+  postalAddress,
+  socialLinks,
+  type BusinessProfile,
+} from "@/lib/business-profile"
 import { NavSettingsProvider } from "@/components/nav-settings-provider"
 import "./globals.css"
 
@@ -181,72 +189,50 @@ const websiteJsonLd = {
   },
 }
 
-const organizationJsonLd = {
+// Контакти в розмітці беруться з профілю бізнесу (адмінка), а не з коду:
+// раніше тут стояла інша вулиця, ніж на сторінці «Контакти».
+const organizationJsonLd = (profile: BusinessProfile) => ({
   "@context": "https://schema.org",
   "@type": "Organization",
   name: SITE_NAME,
   url: SITE_URL,
   logo: `${SITE_URL}/logo-512.png`,
   description: DESCRIPTION,
-  sameAs: [
-    "https://www.instagram.com/sttonememory/",
-    "https://www.facebook.com/profile.php?id=61588950935616",
-    "https://youtube.com/@stonememory",
-  ],
+  sameAs: socialLinks(profile),
   contactPoint: [
     {
       "@type": "ContactPoint",
-      telephone: "+380688080222",
+      telephone: phoneE164(profile),
+      email: profile.email,
       contactType: "customer service",
-      areaServed: ["UA", "PL", "DE", "LT", "EU"],
+      areaServed: profile.serviceAreas,
       availableLanguage: ["uk", "pl", "de", "lt", "en"],
     },
   ],
-}
+})
 
-const localBusinessJsonLd = {
+const localBusinessJsonLd = (profile: BusinessProfile) => ({
   "@context": "https://schema.org",
   "@type": "Store",
   "@id": `${SITE_URL}/#store`,
   name: SITE_NAME,
   image: `${SITE_URL}/logo-512.png`,
   url: SITE_URL,
-  telephone: "+380688080222",
+  telephone: phoneE164(profile),
+  email: profile.email,
   priceRange: "€€–€€€€",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "Hranitna St, 12",
-    addressLocality: "Kostopil",
-    addressRegion: "Rivne Oblast",
-    postalCode: "35000",
-    addressCountry: "UA",
-  },
-  areaServed: [
-    { "@type": "Country", name: "Ukraine" },
-  ],
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "19:00",
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: "Saturday",
-      opens: "10:00",
-      closes: "16:00",
-    },
-  ],
+  address: postalAddress(profile),
+  areaServed: [{ "@type": "Country", name: "Ukraine" }],
+  openingHoursSpecification: openingHoursSpecification(profile),
   paymentAccepted: "Cash, Credit Card, Bank Transfer",
-}
+})
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const navSettings = await fetchNavSettings()
+  const [navSettings, profile] = await Promise.all([fetchNavSettings(), fetchBusinessProfile()])
   return (
     <html lang="uk" className={inter.variable} data-scroll-behavior="smooth">
       <head>
@@ -266,10 +252,11 @@ export default async function RootLayout({
           />
         </noscript>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd(profile)) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd(profile)) }} />
         <ErrorBoundaryClient />
         <LanguageProvider>
+          <BusinessProfileProvider value={profile}>
           <NavSettingsProvider value={navSettings}>
             <Suspense fallback={null}>
               <NavProgress />
@@ -279,6 +266,7 @@ export default async function RootLayout({
             <PublicChrome />
             <CookieConsent />
           </NavSettingsProvider>
+          </BusinessProfileProvider>
         </LanguageProvider>
         <AttributionCapture />
         <AnalyticsPixels />

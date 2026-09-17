@@ -19,9 +19,14 @@ export async function GET(_req: Request, ctx: { params: Promise<{ key: string }>
 }
 
 export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> }) {
-  const unauthorized = await guardCapability(req, "content.editorial")
-  if (unauthorized) return unauthorized
   const { key } = await ctx.params
+  // Бізнес-профіль у меню адмінки відкривається за team.manage, тож і API
+  // приймає цю здатність, інакше збереження мовчки поверталося 403.
+  const unauthorized = await guardCapability(
+    req,
+    key === "business_profile" ? ["content.editorial", "team.manage"] : "content.editorial"
+  )
+  if (unauthorized) return unauthorized
   const body = (await req.json().catch(() => null)) as { data?: unknown } | null
   if (!body || typeof body !== "object" || !("data" in body)) {
     return NextResponse.json({ error: "missing data field" }, { status: 400 })

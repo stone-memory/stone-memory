@@ -1,15 +1,18 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 import { Plus, Trash2, Pencil, Check, X, ArrowUp, ArrowDown, EyeOff, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useFaqStore, type FaqItem } from "@/lib/store/faq"
+import type { SaveResult } from "@/lib/store/result"
 import { MultilingualField } from "@/components/admin/multilingual-field"
 import type { Locale } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 export default function AdminFaqPage() {
   const rows = useFaqStore((s) => s.items)
+  const loadError = useFaqStore((s) => s.error)
   const hydrate = useFaqStore((s) => s.hydrate)
   const add = useFaqStore((s) => s.add)
   const update = useFaqStore((s) => s.update)
@@ -25,21 +28,26 @@ export default function AdminFaqPage() {
   const items = useMemo(() => rows.map((r) => r.data), [rows])
   const sorted = [...items].sort((a, b) => a.order - b.order)
 
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
+  // Два PATCH послідовно: якщо перший не пройшов, другий не робимо — інакше
+  // два питання отримали б однаковий порядок.
+  const swapOrder = async (a: FaqItem, b: FaqItem) => {
+    const r1 = await update(a.id, { order: b.order })
+    if (!r1.ok) return report(r1)
+    report(await update(b.id, { order: a.order }))
+  }
   const moveUp = (id: string) => {
     const idx = sorted.findIndex((x) => x.id === id)
     if (idx <= 0) return
-    const prev = sorted[idx - 1]
-    const cur = sorted[idx]
-    update(prev.id, { order: cur.order })
-    update(cur.id, { order: prev.order })
+    void swapOrder(sorted[idx - 1], sorted[idx])
   }
   const moveDown = (id: string) => {
     const idx = sorted.findIndex((x) => x.id === id)
     if (idx < 0 || idx >= sorted.length - 1) return
-    const next = sorted[idx + 1]
-    const cur = sorted[idx]
-    update(next.id, { order: cur.order })
-    update(cur.id, { order: next.order })
+    void swapOrder(sorted[idx + 1], sorted[idx])
   }
 
   return (
@@ -59,7 +67,11 @@ export default function AdminFaqPage() {
       </header>
 
       <div className="space-y-3">
-        {sorted.length === 0 ? (
+        {sorted.length === 0 && loadError ? (
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-12 text-center text-sm text-destructive">
+            Не вдалось завантажити питання: {loadError}
+          </div>
+        ) : sorted.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
             Питань немає. Додайте перше.
           </div>
@@ -94,7 +106,7 @@ export default function AdminFaqPage() {
                     <ArrowDown size={14} />
                   </button>
                   <button
-                    onClick={() => update(item.id, { hidden: !item.hidden })}
+                    onClick={() => update(item.id, { hidden: !item.hidden }).then(report)}
                     className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                     title={item.hidden ? "Показати" : "Сховати"}
                   >
@@ -107,7 +119,7 @@ export default function AdminFaqPage() {
                     <Pencil size={14} />
                   </button>
                   <button
-                    onClick={() => remove(item.id)}
+                    onClick={() => remove(item.id).then(report)}
                     className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10"
                   >
                     <Trash2 size={14} />
@@ -123,9 +135,10 @@ export default function AdminFaqPage() {
         <FaqEditor
           item={sorted.find((x) => x.id === editingId)!}
           title="Редагувати питання"
-          onSave={(patch) => {
-            update(editingId, patch)
-            setEditingId(null)
+          onSave={async (patch) => {
+            const r = await update(editingId, patch)
+            if (r.ok) setEditingId(null)
+            return r
           }}
           onCancel={() => setEditingId(null)}
         />
@@ -139,12 +152,13 @@ export default function AdminFaqPage() {
             a: { uk: "", en: "", pl: "", de: "", lt: "" },
           }}
           title="Нове питання"
-          onSave={(patch) => {
-            add({
+          onSave={async (patch) => {
+            const r = await add({
               q: patch.q || { uk: "", en: "", pl: "", de: "", lt: "" },
               a: patch.a || { uk: "", en: "", pl: "", de: "", lt: "" },
             })
-            setCreating(false)
+            if (r.ok) setCreating(false)
+            return r
           }}
           onCancel={() => setCreating(false)}
         />
@@ -161,11 +175,23 @@ function FaqEditor({
 }: {
   item: FaqItem
   title: string
-  onSave: (patch: Partial<FaqItem>) => void
+  onSave: (patch: Partial<FaqItem>) => Promise<SaveResult>
   onCancel: () => void
 }) {
   const [q, setQ] = useState<Record<Locale, string>>({ ...item.q })
   const [a, setA] = useState<Record<Locale, string>>({ ...item.a })
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const submit = async () => {
+    setSaving(true)
+    setError(null)
+    const r = await onSave({ q, a })
+    // При успіху батько закриває модалку — далі стан не чіпаємо.
+    if (r.ok) return
+    setSaving(false)
+    setError(r.error)
+  }
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
       <div className="max-h-[90vh] w-full max-w-2xl overflow-auto rounded-2xl border border-foreground/10 bg-card p-6 shadow-hover">
@@ -179,12 +205,13 @@ function FaqEditor({
           <MultilingualField label="Питання" value={q} onChange={setQ} />
           <MultilingualField label="Відповідь" value={a} onChange={setA} multiline rows={5} />
         </div>
+        {error && <p className="mt-4 text-sm text-destructive">Не збережено: {error}</p>}
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="outline" onClick={onCancel} className="rounded-xl">
             Скасувати
           </Button>
-          <Button onClick={() => onSave({ q, a })} className="rounded-xl gap-2">
-            <Check size={16} /> Зберегти
+          <Button onClick={submit} disabled={saving} className="rounded-xl gap-2">
+            <Check size={16} /> {saving ? "Зберігаю…" : "Зберегти"}
           </Button>
         </div>
       </div>

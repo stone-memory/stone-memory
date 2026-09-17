@@ -14,6 +14,10 @@ export type CollectionConfig = {
   // unauthenticated. `null` = any active team member may write (used
   // for resources that aren't role-gated).
   writeCapability: Capability | null
+  // Capability required to READ. Absent = public GET (storefront catalogue).
+  // Фінанси й переписка з клієнтами йдуть через service role, тож без цього
+  // гарда їх міг прочитати будь-хто без авторизації.
+  readCapability?: Capability
 }
 
 export const collections: Record<string, CollectionConfig> = {
@@ -66,6 +70,7 @@ export const collections: Record<string, CollectionConfig> = {
     orderAsc: false,
     selectColumns: "*",
     writeCapability: "finances.view_company",
+    readCapability: "finances.view_company",
   },
   "crm-messages": {
     table: "crm_messages",
@@ -74,6 +79,7 @@ export const collections: Record<string, CollectionConfig> = {
     orderAsc: false,
     selectColumns: "*",
     writeCapability: "customers.message",
+    readCapability: "customers.message",
   },
 
   // === Сайт стільниць (окремий сайт, спільна база). Після запису

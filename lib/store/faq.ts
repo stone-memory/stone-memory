@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import type { Locale } from "@/lib/types"
 
 export type FaqItem = {
@@ -20,11 +21,12 @@ interface FaqState {
   items: Row[]
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  add: (item: Omit<FaqItem, "id" | "order">) => Promise<void>
-  update: (id: string, patch: Partial<FaqItem>) => Promise<void>
-  remove: (id: string) => Promise<void>
-  setOrder: (id: string, order: number) => Promise<void>
+  add: (item: Omit<FaqItem, "id" | "order">) => Promise<SaveResult>
+  update: (id: string, patch: Partial<FaqItem>) => Promise<SaveResult>
+  remove: (id: string) => Promise<SaveResult>
+  setOrder: (id: string, order: number) => Promise<SaveResult>
 }
 
 async function postRow(row: Row) {
@@ -33,7 +35,7 @@ async function postRow(row: Row) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("faq upsert failed")
+  if (!res.ok) throw await httpError(res, "faq upsert failed")
 }
 
 async function patchRow(id: string, patch: Partial<{ data: FaqItem; order: number; hidden: boolean }>) {
@@ -42,13 +44,14 @@ async function patchRow(id: string, patch: Partial<{ data: FaqItem; order: numbe
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("faq patch failed")
+  if (!res.ok) throw await httpError(res, "faq patch failed")
 }
 
 export const useFaqStore = create<FaqState>()((set, get) => ({
   items: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -59,8 +62,10 @@ export const useFaqStore = create<FaqState>()((set, get) => ({
       if (res.ok && Array.isArray(json.items)) {
         set({ items: json.items as Row[], hasHydrated: true })
       } else {
-        set({ hasHydrated: true })
+        set({ hasHydrated: true, error: res.ok ? "Неочікувана відповідь" : `HTTP ${res.status}` })
       }
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -75,15 +80,17 @@ export const useFaqStore = create<FaqState>()((set, get) => ({
     set({ items: [...prev, row] })
     try {
       await postRow(row)
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   update: async (id, patch) => {
     const prev = get().items
     const current = prev.find((r) => r.id === id)
-    if (!current) return
+    if (!current) return fail(new Error("Запис не знайдено"))
     const merged: FaqItem = { ...current.data, ...patch }
     const row: Row = {
       id,
@@ -94,9 +101,11 @@ export const useFaqStore = create<FaqState>()((set, get) => ({
     set({ items: prev.map((r) => (r.id === id ? row : r)) })
     try {
       await patchRow(id, { data: merged, order: row.order, hidden: row.hidden })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   remove: async (id) => {
@@ -104,23 +113,27 @@ export const useFaqStore = create<FaqState>()((set, get) => ({
     set({ items: prev.filter((r) => r.id !== id) })
     try {
       const res = await authedFetch(`/api/content/faq-items/${encodeURIComponent(id)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "delete failed")
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   setOrder: async (id, order) => {
     const prev = get().items
     const current = prev.find((r) => r.id === id)
-    if (!current) return
+    if (!current) return fail(new Error("Запис не знайдено"))
     const merged: FaqItem = { ...current.data, order }
     set({ items: prev.map((r) => (r.id === id ? { ...r, data: merged, order } : r)) })
     try {
       await patchRow(id, { data: merged, order })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 }))
 

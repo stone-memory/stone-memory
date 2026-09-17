@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import { articles as baseArticles, type Article } from "@/lib/data/articles"
 
 type ArticleRow = { slug: string; data: Article; hidden: boolean; position: number }
@@ -18,13 +19,14 @@ interface BlogState {
   pinnedSlug: string | null
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  setMode: (m: BlogHeroMode) => Promise<void>
-  setPinned: (slug: string | null) => Promise<void>
-  upsertArticle: (a: Article) => Promise<void>
-  softDeleteArticle: (slug: string) => Promise<void>
-  restoreArticle: (slug: string) => Promise<void>
-  removeArticle: (slug: string) => Promise<void>
+  setMode: (m: BlogHeroMode) => Promise<SaveResult>
+  setPinned: (slug: string | null) => Promise<SaveResult>
+  upsertArticle: (a: Article) => Promise<SaveResult>
+  softDeleteArticle: (slug: string) => Promise<SaveResult>
+  restoreArticle: (slug: string) => Promise<SaveResult>
+  removeArticle: (slug: string) => Promise<SaveResult>
   /** Bulk-import the static seed articles into Supabase. Idempotent —
    *  skips articles whose slug already exists in DB. */
   seedArticles: () => Promise<{ imported: number; skipped: number }>
@@ -38,7 +40,7 @@ async function putConfig(data: BlogConfig) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data }),
   })
-  if (!res.ok) throw new Error("blog_config put failed")
+  if (!res.ok) throw await httpError(res, "blog_config put failed")
 }
 
 async function putArticle(row: ArticleRow) {
@@ -47,7 +49,7 @@ async function putArticle(row: ArticleRow) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("article upsert failed")
+  if (!res.ok) throw await httpError(res, "article upsert failed")
 }
 
 async function patchArticle(slug: string, patch: Partial<{ data: Article; hidden: boolean; position: number }>) {
@@ -56,7 +58,7 @@ async function patchArticle(slug: string, patch: Partial<{ data: Article; hidden
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("article patch failed")
+  if (!res.ok) throw await httpError(res, "article patch failed")
 }
 
 export const useBlogStore = create<BlogState>()((set, get) => ({
@@ -65,6 +67,7 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
   pinnedSlug: null,
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -83,8 +86,8 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
         pinnedSlug: cfg.pinnedSlug ?? null,
         hasHydrated: true,
       })
-    } catch {
-      set({ hasHydrated: true })
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -95,9 +98,11 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     set({ heroMode: m })
     try {
       await putConfig({ heroMode: m, pinnedSlug: get().pinnedSlug })
-    } catch {
+    } catch (e) {
       set(prev)
+      return fail(e)
     }
+    return { ok: true }
   },
 
   setPinned: async (slug) => {
@@ -106,9 +111,11 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     set(next)
     try {
       await putConfig(next)
-    } catch {
+    } catch (e) {
       set(prev)
+      return fail(e)
     }
+    return { ok: true }
   },
 
   upsertArticle: async (a) => {
@@ -121,9 +128,11 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     })
     try {
       await putArticle(row)
-    } catch {
+    } catch (e) {
       set({ articles: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   softDeleteArticle: async (slug) => {
@@ -131,9 +140,11 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     set({ articles: prev.map((r) => (r.slug === slug ? { ...r, hidden: true } : r)) })
     try {
       await patchArticle(slug, { hidden: true })
-    } catch {
+    } catch (e) {
       set({ articles: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   restoreArticle: async (slug) => {
@@ -141,9 +152,11 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     set({ articles: prev.map((r) => (r.slug === slug ? { ...r, hidden: false } : r)) })
     try {
       await patchArticle(slug, { hidden: false })
-    } catch {
+    } catch (e) {
       set({ articles: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   removeArticle: async (slug) => {
@@ -151,10 +164,12 @@ export const useBlogStore = create<BlogState>()((set, get) => ({
     set({ articles: prev.filter((r) => r.slug !== slug) })
     try {
       const res = await authedFetch(`/api/content/articles/${encodeURIComponent(slug)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "delete failed")
+    } catch (e) {
       set({ articles: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   refreshSeedArticles: async () => {
@@ -219,11 +234,8 @@ export function useArticles(): Article[] {
     hydrate()
   }, [hydrate])
   if (!hasHydrated) return []
-  // Empty DB: fall back to seed (graceful default for fresh deploys).
-  if (articles.length === 0) return baseArticles
-  // Once admin has written anything, DB is the single source of truth —
-  // matches the Services / Projects / Reviews pattern. This prevents the
-  // static seed from "rebounding" after admin deletes a seed article.
+  // База — єдине джерело: якщо адмін видалив усі статті, сід із коду не
+  // повертається (серверний рендер має власний фолбек у fetchArticles).
   return articles.filter((r) => !r.hidden).map((r) => r.data)
 }
 

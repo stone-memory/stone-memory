@@ -4,6 +4,7 @@ import { authedFetch } from "@/lib/authed-fetch"
 
 import { useEffect } from "react"
 import { create } from "zustand"
+import { fail, httpError, type SaveResult } from "@/lib/store/result"
 import {
   projects as baseProjects,
   categoryLabels as baseCategoryLabels,
@@ -18,12 +19,13 @@ interface ProjectsAdminState {
   hiddenCategories: ProjectCategory[]
   hasHydrated: boolean
   loading: boolean
+  error: string | null
   hydrate: () => Promise<void>
-  upsert: (p: Project) => Promise<void>
-  softDelete: (slug: string) => Promise<void>
-  restore: (slug: string) => Promise<void>
-  remove: (slug: string) => Promise<void>
-  toggleCategory: (c: ProjectCategory) => Promise<void>
+  upsert: (p: Project) => Promise<SaveResult>
+  softDelete: (slug: string) => Promise<SaveResult>
+  restore: (slug: string) => Promise<SaveResult>
+  remove: (slug: string) => Promise<SaveResult>
+  toggleCategory: (c: ProjectCategory) => Promise<SaveResult>
 }
 
 async function putRow(row: Row) {
@@ -32,7 +34,7 @@ async function putRow(row: Row) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(row),
   })
-  if (!res.ok) throw new Error("projects upsert failed")
+  if (!res.ok) throw await httpError(res, "projects upsert failed")
 }
 
 async function patchRow(slug: string, patch: Partial<{ data: Project; hidden: boolean; position: number }>) {
@@ -41,7 +43,7 @@ async function patchRow(slug: string, patch: Partial<{ data: Project; hidden: bo
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   })
-  if (!res.ok) throw new Error("projects patch failed")
+  if (!res.ok) throw await httpError(res, "projects patch failed")
 }
 
 async function putHiddenCategories(categories: ProjectCategory[]) {
@@ -50,7 +52,7 @@ async function putHiddenCategories(categories: ProjectCategory[]) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ categories }),
   })
-  if (!res.ok) throw new Error("project-hidden-categories failed")
+  if (!res.ok) throw await httpError(res, "project-hidden-categories failed")
 }
 
 export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => ({
@@ -58,6 +60,7 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
   hiddenCategories: [],
   hasHydrated: false,
   loading: false,
+  error: null,
 
   hydrate: async () => {
     if (get().hasHydrated || get().loading) return
@@ -74,8 +77,8 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
         hiddenCategories: Array.isArray(catsJson.categories) ? (catsJson.categories as ProjectCategory[]) : [],
         hasHydrated: true,
       })
-    } catch {
-      set({ hasHydrated: true })
+    } catch (e) {
+      set({ hasHydrated: true, error: e instanceof Error ? e.message : "Не вдалось завантажити" })
     } finally {
       set({ loading: false })
     }
@@ -89,9 +92,11 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
     set({ items: existing ? prev.map((r) => (r.slug === p.slug ? row : r)) : [...prev, row] })
     try {
       await putRow(row)
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   softDelete: async (slug) => {
@@ -99,9 +104,11 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
     set({ items: prev.map((r) => (r.slug === slug ? { ...r, hidden: true } : r)) })
     try {
       await patchRow(slug, { hidden: true })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   restore: async (slug) => {
@@ -109,9 +116,11 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
     set({ items: prev.map((r) => (r.slug === slug ? { ...r, hidden: false } : r)) })
     try {
       await patchRow(slug, { hidden: false })
-    } catch {
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   remove: async (slug) => {
@@ -119,10 +128,12 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
     set({ items: prev.filter((r) => r.slug !== slug) })
     try {
       const res = await authedFetch(`/api/content/projects/${encodeURIComponent(slug)}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("delete failed")
-    } catch {
+      if (!res.ok) throw await httpError(res, "delete failed")
+    } catch (e) {
       set({ items: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 
   toggleCategory: async (c) => {
@@ -131,9 +142,11 @@ export const useProjectsAdminStore = create<ProjectsAdminState>()((set, get) => 
     set({ hiddenCategories: next })
     try {
       await putHiddenCategories(next)
-    } catch {
+    } catch (e) {
       set({ hiddenCategories: prev })
+      return fail(e)
     }
+    return { ok: true }
   },
 }))
 

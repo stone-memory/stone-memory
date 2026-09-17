@@ -4,9 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, LayoutGrid, Lock, Layers, Settings2 } from "lucide-react"
+import { Inbox, LineChart, LogOut, Star, Package, MessageCircle, Info, BookOpen, Sparkles, Inbox as InboxIcon, Wallet, MessageSquare, Briefcase, HelpCircle, Wrench, Building2, Send, Menu, X, UserCircle, Users, Bell, Handshake, Plug, Lock, Layers, Settings2 } from "lucide-react"
 import { useNotificationCounts } from "@/lib/crm/notifications-store"
-import { useCurrentRole, isSuperAdmin } from "@/lib/auth/use-current-role"
+import { useCurrentRole, isSuperAdmin, isAdminOrAbove } from "@/lib/auth/use-current-role"
 import type { TeamRole } from "@/lib/crm/types"
 import type { Capability } from "@/lib/permissions/capabilities"
 import { cn } from "@/lib/utils"
@@ -18,8 +18,11 @@ type NavItem = {
   /** Capability required to SEE this link. Mirrors the server-side gate
    *  on the corresponding API route, so the menu never offers something
    *  the backend would reject. Omit + alwaysShow for member-universal
-   *  pages (own tasks, own account). */
-  cap?: Capability
+   *  pages (own tasks, own account). An array means ANY of them is enough. */
+  cap?: Capability | Capability[]
+  /** The page's API also requires role admin|super_admin
+   *  (requireAdminOrSuperAdmin), on top of `cap`. */
+  adminOnly?: boolean
   /** Visible to every active team member regardless of capabilities. */
   alwaysShow?: boolean
   section?: string
@@ -36,7 +39,8 @@ const navItems: NavItem[] = [
   { href: "/admin/inbox", icon: InboxIcon, label: "Inbox (всі канали)", cap: "customers.message", section: "CRM" },
   { href: "/admin/chat", icon: MessageCircle, label: "Лайв-чат сайту", cap: "customers.message", section: "CRM" },
   { href: "/admin/messages", icon: MessageSquare, label: "Повідомлення (legacy)", cap: "customers.message", section: "CRM" },
-  { href: "/admin/broadcast", icon: Send, label: "Розсилка", cap: "content.editorial", section: "CRM" },
+  // Надсилання вимагає customers.message; content.editorial лишаємо для редакторів, які готують лист.
+  { href: "/admin/broadcast", icon: Send, label: "Розсилка", cap: ["content.editorial", "customers.message"], section: "CRM" },
   { href: "/admin/tasks", icon: Bell, label: "Задачі й нагадування", alwaysShow: true, section: "CRM" },
   { href: "/admin/finances", icon: Wallet, label: "Фінанси", cap: "finances.view_company", section: "CRM" },
   { href: "/admin/analytics", icon: LineChart, label: "Аналітика", cap: "finances.view_company", section: "CRM" },
@@ -49,7 +53,6 @@ const navItems: NavItem[] = [
   { href: "/admin/stilnytsi/settings", icon: Settings2, label: "Налаштування сайту", cap: "content.editorial", section: "Стільниці" },
 
   // === Контент сайту ===
-  { href: "/admin/homepage", icon: LayoutGrid, label: "Головна сторінка", cap: "content.editorial", section: "Контент" },
   { href: "/admin/stones", icon: Package, label: "Товари (камінь)", cap: "content.catalog", section: "Контент" },
   { href: "/admin/services", icon: Wrench, label: "Послуги", cap: "content.catalog", section: "Контент" },
   { href: "/admin/projects", icon: Briefcase, label: "Проєкти", cap: "content.editorial", section: "Контент" },
@@ -62,7 +65,8 @@ const navItems: NavItem[] = [
 
   // === Налаштування ===
   { href: "/admin/integrations", icon: Plug, label: "Інтеграції каналів", cap: "integrations.manage", section: "Налаштування", superAdminOnly: true },
-  { href: "/admin/team", icon: Users, label: "Команда і ролі", cap: "team.manage", section: "Налаштування" },
+  // GET /api/crm/team → requireAdminOrSuperAdmin: сама capability без ролі admin дасть 403.
+  { href: "/admin/team", icon: Users, label: "Команда і ролі", cap: "team.manage", adminOnly: true, section: "Налаштування" },
   { href: "/admin/business", icon: Building2, label: "Бізнес-профіль", cap: "team.manage", section: "Налаштування" },
   // /admin/roles — legacy local-only permission toggle, replaced by /admin/team.
   // Page still exists for backward compat but hidden from sidebar.
@@ -96,7 +100,9 @@ export function AdminSidebar() {
   const visible = navItems.filter((item) => {
     if (item.alwaysShow) return true
     if (roleLoading || !item.cap) return false
-    return capabilities.includes(item.cap)
+    if (item.adminOnly && !isAdminOrAbove(realRole)) return false
+    const caps = Array.isArray(item.cap) ? item.cap : [item.cap]
+    return caps.some((c) => capabilities.includes(c))
   })
 
   const handleSignOut = async () => {

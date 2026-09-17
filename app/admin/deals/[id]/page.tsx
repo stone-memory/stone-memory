@@ -1,5 +1,7 @@
 "use client"
 
+import { toast } from "sonner"
+
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowLeft, FileText, CreditCard, Bell, Phone, Mail, MapPin, MessageSquare, Plus, Download, Hammer, StickyNote, Trash2 } from "lucide-react"
@@ -709,7 +711,7 @@ function AddPaymentDialog({ dealId, customerId, onClose }: { dealId: string; cus
     if (!amount) return
     setBusy(true)
     try {
-      await authedFetch("/api/crm/payments", {
+      const r = await authedFetch("/api/crm/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -721,6 +723,11 @@ function AddPaymentDialog({ dealId, customerId, onClose }: { dealId: string; cus
           reference: ref || undefined,
         }),
       })
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}))
+        toast.error("Платіж не збережено", { description: j.error || `HTTP ${r.status}` })
+        return
+      }
       onClose()
     } finally {
       setBusy(false)
@@ -830,11 +837,16 @@ function AddReminderDialog({ dealId, customerId, onClose }: { dealId: string; cu
 
     setBusy(true)
     try {
-      await authedFetch("/api/crm/reminders", {
+      const r = await authedFetch("/api/crm/reminders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ deal_id: dealId, customer_id: customerId, title, due_at: dueAt.toISOString() }),
       })
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}))
+        toast.error("Нагадування не створено", { description: j.error || `HTTP ${r.status}` })
+        return
+      }
       onClose()
     } finally {
       setBusy(false)

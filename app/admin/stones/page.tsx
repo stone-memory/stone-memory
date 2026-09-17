@@ -1,12 +1,14 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
 import { Plus, Search, EyeOff, RotateCcw, Pencil, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useStonesAdminStore } from "@/lib/store/stones"
+import type { SaveResult } from "@/lib/store/result"
 import { ImageUploader } from "@/components/admin/image-uploader"
 import { Pagination, usePagination } from "@/components/admin/pagination"
 import type { StoneItem, StoneColor, StoneShape, StoneFinish, StoneMaterial, Category, Locale } from "@/lib/types"
@@ -118,8 +120,16 @@ export default function AdminStonesPage() {
     const newIndex = pageItems.findIndex((r) => r.id === over.id)
     if (oldIndex === -1 || newIndex === -1) return
     const reorderedPage = arrayMove(pageItems, oldIndex, newIndex)
-    const full = [...filtered.slice(0, pager.from), ...reorderedPage, ...filtered.slice(pager.to)]
-    reorder(full.map((r) => r.id))
+    const visible = [...filtered.slice(0, pager.from), ...reorderedPage, ...filtered.slice(pager.to)]
+    // Сервер ставить position = індекс у списку, тому надсилаємо ВСІ товари:
+    // відфільтровані йдуть у новому порядку на своїх місцях, решта (приховані,
+    // не в пошуку) лишаються там, де були. Інакше позиції колідували.
+    const visibleIds = new Set(visible.map((r) => r.id))
+    let cursor = 0
+    const full = [...items]
+      .sort((a, b) => a.position - b.position)
+      .map((r) => (visibleIds.has(r.id) ? visible[cursor++] : r))
+    reorder(full.map((r) => r.id)).then(report)
   }
 
   const totals = {
@@ -128,13 +138,19 @@ export default function AdminStonesPage() {
     hidden: items.filter((r) => r.hidden).length,
   }
 
-  const saveEdit = (id: string, draft: StoneItem) => {
-    upsert({ ...draft, id })
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
+  const saveEdit = async (id: string, draft: StoneItem) => {
+    const r = await upsert({ ...draft, id })
+    if (!r.ok) return report(r)
     setEditingId(null)
   }
 
-  const createNew = (draft: StoneItem) => {
-    upsert(draft)
+  const createNew = async (draft: StoneItem) => {
+    const r = await upsert(draft)
+    if (!r.ok) return report(r)
     setCreating(false)
   }
 
@@ -245,11 +261,11 @@ export default function AdminStonesPage() {
                     key={row.id}
                     row={row}
                     isDragMode={isDragMode}
-                    onFeatureToggle={() => upsert({ ...row.data, isFeatured: !row.data.isFeatured })}
+                    onFeatureToggle={() => upsert({ ...row.data, isFeatured: !row.data.isFeatured }).then(report)}
                     onEdit={() => setEditingId(row.id)}
-                    onSoftDelete={() => softDelete(row.id)}
-                    onRestore={() => restore(row.id)}
-                    onRemove={() => { if (confirm("Видалити назавжди?")) remove(row.id) }}
+                    onSoftDelete={() => softDelete(row.id).then(report)}
+                    onRestore={() => restore(row.id).then(report)}
+                    onRemove={() => { if (confirm("Видалити назавжди?")) remove(row.id).then(report) }}
                   />
                 ))}
                 {filtered.length === 0 && hasHydrated && (

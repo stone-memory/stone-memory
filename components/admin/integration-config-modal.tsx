@@ -144,6 +144,9 @@ export function IntegrationConfigModal({
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; message: string; info?: Record<string, unknown> } | null>(null)
   const [registeringWebhook, setRegisteringWebhook] = useState(false)
+  // Поки конфіг не завантажено, «Зберегти» й «Перевірити» заблоковані: інакше
+  // порожня форма після збою GET перезаписувала токени інтеграції.
+  const [loaded, setLoaded] = useState(false)
   const [webhookResult, setWebhookResult] = useState<{ ok: boolean; message: string } | null>(null)
 
   useEffect(() => {
@@ -165,7 +168,9 @@ export function IntegrationConfigModal({
         setValues(j.config || {})
         setEnvSet(j.envSet || {})
         setEnabled(j.enabled !== false)
+        setLoaded(true)
       })
+      .catch(() => setError("Не вдалось завантажити налаштування"))
       .finally(() => setLoading(false))
   }, [schemaId, schema])
 
@@ -180,6 +185,7 @@ export function IntegrationConfigModal({
   }
 
   const handleSave = async () => {
+    if (!loaded) return
     setError(null)
     setSaving(true)
     setSaved(false)
@@ -205,6 +211,7 @@ export function IntegrationConfigModal({
   }
 
   const handleTest = async () => {
+    if (!loaded) return
     setTesting(true)
     setTestResult(null)
     try {
@@ -428,7 +435,7 @@ export function IntegrationConfigModal({
                 <Button variant="outline" onClick={onClose} className="rounded-xl">
                   Закрити
                 </Button>
-                <Button onClick={handleSave} disabled={saving} className="rounded-xl gap-2">
+                <Button onClick={handleSave} disabled={saving || !loaded} className="rounded-xl gap-2">
                   {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
                   {saving ? "Зберігаю…" : "Зберегти"}
                 </Button>

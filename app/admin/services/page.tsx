@@ -1,11 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { Plus, Trash2, Pencil, Check, X, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { type Service } from "@/lib/data/services"
 import { useServicesAdminStore } from "@/lib/store/services"
+import type { SaveResult } from "@/lib/store/result"
 import { MultilingualField } from "@/components/admin/multilingual-field"
 import { cn } from "@/lib/utils"
 
@@ -39,14 +41,20 @@ export default function AdminServicesPage() {
 
   const filtered = showHidden ? items : items.filter((r) => !r.hidden)
 
-  const save = (slug: string, draft: Service) => {
-    upsert({ ...draft, slug })
+  const report = (r: SaveResult) => {
+    if (!r.ok) toast.error("Не збережено", { description: r.error })
+  }
+
+  const save = async (slug: string, draft: Service) => {
+    const r = await upsert({ ...draft, slug })
+    if (!r.ok) return report(r)
     setEditingSlug(null)
   }
 
-  const create = (draft: Service) => {
+  const create = async (draft: Service) => {
     if (!draft.slug) draft.slug = `svc-${Date.now().toString(36)}`
-    upsert(draft)
+    const r = await upsert(draft)
+    if (!r.ok) return report(r)
     setCreating(false)
   }
 
@@ -106,7 +114,7 @@ export default function AdminServicesPage() {
                     <div className="inline-flex items-center gap-1">
                       {row.hidden ? (
                         <button
-                          onClick={() => restore(row.slug)}
+                          onClick={() => restore(row.slug).then(report)}
                           className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                         >
                           <RotateCcw size={14} /> Відновити
@@ -120,7 +128,7 @@ export default function AdminServicesPage() {
                             <Pencil size={14} />
                           </button>
                           <button
-                            onClick={() => softDelete(row.slug)}
+                            onClick={() => softDelete(row.slug).then(report)}
                             className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                             title="Приховати"
                           >
@@ -128,7 +136,7 @@ export default function AdminServicesPage() {
                           </button>
                           <button
                             onClick={() => {
-                              if (confirm("Видалити назавжди?")) remove(row.slug)
+                              if (confirm("Видалити назавжди?")) remove(row.slug).then(report)
                             }}
                             className="rounded-md p-1.5 text-destructive/80 hover:bg-destructive/10"
                             title="Видалити назавжди"

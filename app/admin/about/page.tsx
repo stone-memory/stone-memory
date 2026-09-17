@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { authedFetch } from "@/lib/authed-fetch"
 import Image from "next/image"
 import { shouldBypassOptimizer } from "@/lib/image-source"
-import { Plus, Trash2, RotateCcw, Check, Globe, Loader2 } from "lucide-react"
+import { Plus, Trash2, Check, Globe, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAboutStore, defaultAbout, type Badge, type AboutContent } from "@/lib/store/about"
@@ -25,42 +26,59 @@ const ICONS: Badge["icon"][] = ["award", "shield", "users", "truck"]
 export default function AdminAboutPage() {
   const overrides = useAboutStore((s) => s.overrides)
   const hasHydrated = useAboutStore((s) => s.hasHydrated)
+  const hydrate = useAboutStore((s) => s.hydrate)
   const setOverride = useAboutStore((s) => s.setOverride)
-  const resetLocale = useAboutStore((s) => s.resetLocale)
+
+  // Сторінка раніше не підвантажувала збережене з бази і завжди показувала
+  // текст із коду: правки зберігалися, але при наступному відкритті чи
+  // перемиканні мови форма знову показувала старий текст.
+  useEffect(() => {
+    hydrate()
+  }, [hydrate])
 
   const [locale, setLocale] = useState<Locale>("uk")
   const [saved, setSaved] = useState(false)
   const [translating, setTranslating] = useState(false)
   const [translateMsg, setTranslateMsg] = useState<string | null>(null)
+  const [draft, setDraft] = useState<AboutContent>(defaultAbout.uk)
+  // Є незбережені правки у формі: поки так — store не перезаписує чернетку
+  // (інакше збереження іншої мови чи фоновий переклад стирали б набране).
+  const [dirty, setDirty] = useState(false)
 
-  const current: AboutContent = useMemo(() => {
-    if (!hasHydrated) return defaultAbout[locale]
-    return { ...defaultAbout[locale], ...(overrides[locale] || {}) }
-  }, [hasHydrated, overrides, locale])
+  const editDraft = (next: AboutContent) => {
+    setDraft(next)
+    setDirty(true)
+  }
 
-  const [draft, setDraft] = useState<AboutContent>(current)
+  const switchLocale = (code: Locale) => {
+    if (code === locale) return
+    setDirty(false)
+    setLocale(code)
+  }
 
-  // Reset draft when locale changes
-  useMemo(() => {
-    setDraft(current)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale, hasHydrated])
+  // Форма завжди показує те, що бачить сайт: збережене в базі для цієї мови.
+  // Текст із коду лишається лише запасним варіантом для мови, якої в базі
+  // ще немає (те саме робить useAbout на публічній сторінці).
+  useEffect(() => {
+    if (!hasHydrated || dirty) return
+    setDraft({ ...defaultAbout[locale], ...(overrides[locale] || {}) })
+  }, [locale, hasHydrated, overrides, dirty])
 
-  const save = () => {
-    setOverride(locale, {
+  const save = async () => {
+    const r = await setOverride(locale, {
       heading: draft.heading,
       paragraphs: draft.paragraphs,
       photo: draft.photo,
       photoAlt: draft.photoAlt,
       badges: draft.badges,
     })
+    if (!r.ok) {
+      toast.error("Не збережено", { description: r.error })
+      return
+    }
+    setDirty(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 1500)
-  }
-
-  const reset = () => {
-    resetLocale(locale)
-    setDraft(defaultAbout[locale])
   }
 
   // Перекласти всі поля сторінки "Про нас" з обраної мови (sourceLocale)
@@ -75,6 +93,20 @@ export default function AdminAboutPage() {
       // Збираємо унікальні рядки в один масив для batch-перекладу
       const targets: Locale[] = (["uk", "en", "pl", "de", "lt"] as Locale[]).filter((l) => l !== source)
       const sourceContent = draft
+      // Спершу зберігаємо мову-джерело: переклад іде з форми, і без цього
+      // сайт показував би переклади нового тексту поруч зі старим оригіналом.
+      const sourceSaved = await setOverride(source, {
+        heading: sourceContent.heading,
+        paragraphs: sourceContent.paragraphs,
+        photo: sourceContent.photo,
+        photoAlt: sourceContent.photoAlt,
+        badges: sourceContent.badges,
+      })
+      if (!sourceSaved.ok) {
+        toast.error("Не збережено", { description: sourceSaved.error })
+        return
+      }
+      setDirty(false)
 
       const fields: { kind: "heading" | "paragraph" | "photoAlt" | "badge"; index?: number; text: string }[] = [
         { kind: "heading", text: sourceContent.heading },
@@ -108,9 +140,10 @@ export default function AdminAboutPage() {
       )
 
       // Збираємо нові локалі і записуємо через store
+      let failed = 0
+      let lastError = ""
       for (const target of targets) {
         const targetContent: AboutContent = {
-          ...defaultAbout[target],
           ...sourceContent, // за замовчуванням — копія source
           paragraphs: [...sourceContent.paragraphs],
           badges: sourceContent.badges.map((b) => ({ ...b })),
@@ -126,13 +159,26 @@ export default function AdminAboutPage() {
             targetContent.badges[f.index] = { ...targetContent.badges[f.index], label: t }
           }
         }
-        await setOverride(target, {
+        const r = await setOverride(target, {
           heading: targetContent.heading,
           paragraphs: targetContent.paragraphs,
           photo: targetContent.photo,
           photoAlt: targetContent.photoAlt,
           badges: targetContent.badges,
         })
+        if (!r.ok) {
+          failed++
+          lastError = r.error
+        }
+      }
+
+      if (failed > 0) {
+        toast.error("Не збережено", {
+          description: `Не вдалось зберегти переклад для ${failed} з ${targets.length} мов: ${lastError}`,
+        })
+        setTranslateMsg("Помилка збереження")
+        setTimeout(() => setTranslateMsg(null), 3000)
+        return
       }
 
       setTranslateMsg(
@@ -153,22 +199,22 @@ export default function AdminAboutPage() {
   const updateParagraph = (i: number, v: string) => {
     const next = draft.paragraphs.slice()
     next[i] = v
-    setDraft({ ...draft, paragraphs: next })
+    editDraft({ ...draft, paragraphs: next })
   }
 
-  const addParagraph = () => setDraft({ ...draft, paragraphs: [...draft.paragraphs, ""] })
+  const addParagraph = () => editDraft({ ...draft, paragraphs: [...draft.paragraphs, ""] })
   const removeParagraph = (i: number) =>
-    setDraft({ ...draft, paragraphs: draft.paragraphs.filter((_, idx) => idx !== i) })
+    editDraft({ ...draft, paragraphs: draft.paragraphs.filter((_, idx) => idx !== i) })
 
   const updateBadge = (i: number, patch: Partial<Badge>) => {
     const next = draft.badges.slice()
     next[i] = { ...next[i], ...patch }
-    setDraft({ ...draft, badges: next })
+    editDraft({ ...draft, badges: next })
   }
   const addBadge = () =>
-    setDraft({ ...draft, badges: [...draft.badges, { label: "", icon: "award" }] })
+    editDraft({ ...draft, badges: [...draft.badges, { label: "", icon: "award" }] })
   const removeBadge = (i: number) =>
-    setDraft({ ...draft, badges: draft.badges.filter((_, idx) => idx !== i) })
+    editDraft({ ...draft, badges: draft.badges.filter((_, idx) => idx !== i) })
 
   return (
     <div className="space-y-6">
@@ -183,17 +229,14 @@ export default function AdminAboutPage() {
           <Button
             variant="outline"
             onClick={autoTranslateAll}
-            disabled={translating}
+            disabled={translating || !hasHydrated}
             className="rounded-xl gap-2"
             title={`Перекласти всю сторінку «Про нас» з ${locale.toUpperCase()} на інші 4 мови`}
           >
             {translating ? <Loader2 size={16} className="animate-spin" /> : <Globe size={16} />}
             {translating ? "Перекладаю…" : translateMsg || `Перекласти на 4 мови`}
           </Button>
-          <Button variant="outline" onClick={reset} className="rounded-xl gap-2">
-            <RotateCcw size={16} /> Скинути {locale.toUpperCase()}
-          </Button>
-          <Button onClick={save} className="rounded-xl gap-2">
+          <Button onClick={save} disabled={!hasHydrated} className="rounded-xl gap-2">
             {saved ? <Check size={16} /> : null}
             {saved ? "Збережено" : "Зберегти"}
           </Button>
@@ -204,7 +247,7 @@ export default function AdminAboutPage() {
         {LOCALES.map((l) => (
           <button
             key={l.code}
-            onClick={() => setLocale(l.code)}
+            onClick={() => switchLocale(l.code)}
             className={cn(
               "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
               locale === l.code
@@ -225,7 +268,7 @@ export default function AdminAboutPage() {
             </label>
             <Input
               value={draft.heading}
-              onChange={(e) => setDraft({ ...draft, heading: e.target.value })}
+              onChange={(e) => editDraft({ ...draft, heading: e.target.value })}
             />
           </section>
 
@@ -235,12 +278,12 @@ export default function AdminAboutPage() {
             </label>
             <ImageUploader
               value={draft.photo}
-              onChange={(url) => setDraft({ ...draft, photo: url })}
+              onChange={(url) => editDraft({ ...draft, photo: url })}
               folder="about"
             />
             <Input
               value={draft.photoAlt}
-              onChange={(e) => setDraft({ ...draft, photoAlt: e.target.value })}
+              onChange={(e) => editDraft({ ...draft, photoAlt: e.target.value })}
               placeholder="Alt-текст"
             />
             {draft.photo && (
@@ -323,10 +366,6 @@ export default function AdminAboutPage() {
                 </div>
               ))}
             </div>
-          </section>
-
-          <section className="rounded-2xl border border-foreground/10 bg-card p-5 text-xs text-muted-foreground">
-            <p>Зміни зберігаються у localStorage цього браузера. Для спільної БД — підключіть Supabase/Postgres.</p>
           </section>
         </div>
       </div>

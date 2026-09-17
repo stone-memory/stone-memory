@@ -65,12 +65,12 @@ export function useStilnytsiCollection(resource: string, idKey: string) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
-    if (!r.ok) throw new Error("Не вдалось оновити")
+    if (!r.ok) throw new Error(`Не вдалось оновити (HTTP ${r.status})`)
     await load()
   }
   const remove = async (id: string) => {
     const r = await authedFetch(`/api/content/${resource}/${encodeURIComponent(id)}`, { method: "DELETE" })
-    if (!r.ok) throw new Error("Не вдалось видалити")
+    if (!r.ok) throw new Error(`Не вдалось видалити (HTTP ${r.status})`)
     await load()
   }
   const reorder = async (ids: string[]) => {
@@ -79,7 +79,7 @@ export function useStilnytsiCollection(resource: string, idKey: string) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),
     })
-    if (!r.ok) throw new Error("Не вдалось змінити порядок")
+    if (!r.ok) throw new Error(`Не вдалось змінити порядок (HTTP ${r.status})`)
     await load()
   }
   return { rows, loaded, error, load, save, patch, remove, reorder }
@@ -111,9 +111,12 @@ export function StilnytsiCollectionPage({
   searchKeys?: string[]
 }) {
   const col = useStilnytsiCollection(resource, idKey)
-  const [editing, setEditing] = useState<{ id: string | null; data: Doc } | null>(null)
+  // `orig` — JSON запису на момент відкриття: щоб знати, чи є незбережені правки.
+  const [editing, setEditing] = useState<{ id: string | null; data: Doc; orig: string } | null>(null)
   const [busy, setBusy] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  // Помилки дій зі списку (порядок, сховати, видалити) — у той самий банер, що й помилка завантаження.
+  const [actionError, setActionError] = useState<string | null>(null)
   const [q, setQ] = useState("")
   const [showHidden, setShowHidden] = useState(true)
 
@@ -160,6 +163,25 @@ export function StilnytsiCollectionPage({
     await col.reorder(ids)
   }
 
+  // Дії зі списку кидають помилку при невдачі — ловимо її сюди, а не в консоль.
+  const run = async (fn: () => Promise<void>) => {
+    setActionError(null)
+    try {
+      await fn()
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : "Не вдалось зберегти")
+    }
+  }
+
+  const openEditor = (id: string | null, data: Doc) => {
+    setFormError(null)
+    setEditing({ id, data, orig: JSON.stringify(data) })
+  }
+  const closeEditor = () => {
+    if (editing && JSON.stringify(editing.data) !== editing.orig && !confirm("Є незбережені зміни. Закрити без збереження?")) return
+    setEditing(null)
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
@@ -167,7 +189,7 @@ export function StilnytsiCollectionPage({
           <h1 className="text-3xl font-semibold tracking-tight-custom">{title}</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{description}</p>
         </div>
-        <Button onClick={() => { setFormError(null); setEditing({ id: null, data: blank() }) }} className="rounded-xl gap-2">
+        <Button onClick={() => openEditor(null, blank())} className="rounded-xl gap-2">
           <Plus size={16} /> Додати
         </Button>
       </header>
@@ -183,7 +205,7 @@ export function StilnytsiCollectionPage({
         </span>
       </div>
 
-      {col.error && <p className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{col.error}</p>}
+      {(col.error || actionError) && <p className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{col.error || actionError}</p>}
       {!col.loaded && <div className="rounded-xl border border-foreground/10 bg-card p-6 text-center text-sm text-muted-foreground">Завантаження…</div>}
       {col.loaded && col.rows.length === 0 && (
         <div className="rounded-2xl border border-dashed border-foreground/15 p-12 text-center text-sm text-muted-foreground">
@@ -215,13 +237,13 @@ export function StilnytsiCollectionPage({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <button onClick={() => move(i, -1)} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title="Вище"><ArrowUp size={14} /></button>
-                <button onClick={() => move(i, 1)} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title="Нижче"><ArrowDown size={14} /></button>
-                <button onClick={() => col.patch(r.id, { hidden: !r.hidden })} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title={r.hidden ? "Показати на сайті" : "Сховати з сайту"}>
+                <button onClick={() => run(() => move(i, -1))} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title="Вище"><ArrowUp size={14} /></button>
+                <button onClick={() => run(() => move(i, 1))} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title="Нижче"><ArrowDown size={14} /></button>
+                <button onClick={() => run(() => col.patch(r.id, { hidden: !r.hidden }))} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title={r.hidden ? "Показати на сайті" : "Сховати з сайту"}>
                   {r.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
-                <button onClick={() => { setFormError(null); setEditing({ id: r.id, data: r.data }) }} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title="Редагувати"><Pencil size={14} /></button>
-                <button onClick={() => { if (confirm(`Видалити «${s.title}» назавжди? Краще сховати.`)) void col.remove(r.id) }} className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10" title="Видалити"><Trash2 size={14} /></button>
+                <button onClick={() => openEditor(r.id, r.data)} className="rounded-md p-1.5 text-muted-foreground hover:bg-foreground/5" title="Редагувати"><Pencil size={14} /></button>
+                <button onClick={() => { if (confirm(`Видалити «${s.title}» назавжди? Краще сховати.`)) void run(() => col.remove(r.id)) }} className="rounded-md p-1.5 text-destructive/70 hover:bg-destructive/10" title="Видалити"><Trash2 size={14} /></button>
               </div>
             </div>
           )
@@ -231,11 +253,11 @@ export function StilnytsiCollectionPage({
       {col.loaded && visible.length > 0 && <Pagination {...pager} onChange={pager.setPage} />}
 
       {editing && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4" onClick={() => setEditing(null)}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4" onClick={closeEditor}>
           <div className="my-6 w-full max-w-3xl rounded-2xl border border-foreground/10 bg-card p-6 shadow-hover" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">{editing.id ? "Редагування" : "Новий запис"}</h2>
-              <button onClick={() => setEditing(null)} className="rounded-md p-1.5 hover:bg-foreground/5" aria-label="Закрити"><X size={16} /></button>
+              <button onClick={closeEditor} className="rounded-md p-1.5 hover:bg-foreground/5" aria-label="Закрити"><X size={16} /></button>
             </div>
             <SchemaForm fields={fields} value={editing.data} onChange={(data) => setEditing({ ...editing, data })} folder={folder} />
             {formError && <p className="mt-3 text-sm text-destructive">{formError}</p>}

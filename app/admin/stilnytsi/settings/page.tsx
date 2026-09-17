@@ -24,7 +24,12 @@ export default function StilnytsiSettingsPage() {
     setDoc(null)
     setMsg(null)
     fetch(`/api/content/stilnytsi-settings/${key}`, { cache: "no-store" })
-      .then((r) => r.json())
+      .then(async (r) => {
+        // Без перевірки статусу помилка API давала порожню форму, а «Зберегти»
+        // затирало весь документ налаштувань.
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
       .then((j) => {
         if (cancelled) return
         const data = j.data as Doc | null

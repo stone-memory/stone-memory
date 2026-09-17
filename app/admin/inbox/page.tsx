@@ -61,6 +61,7 @@ export default function InboxPage() {
 
   const [items, setItems] = useState<Comm[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [filter, setFilter] = useState<"all" | "unread" | CommChannel>("all")
   const [activeThread, setActiveThread] = useState<string | null>(initialThread)
 
@@ -83,7 +84,14 @@ export default function InboxPage() {
       else if (filter !== "all") params.set("channel", filter)
       const r = await authedFetch(`/api/crm/communications?${params}`, { cache: "no-store" })
       const j = await r.json()
-      if (r.ok) setItems(j.communications || [])
+      if (r.ok) {
+        setItems(j.communications || [])
+        setLoadError(null)
+      } else {
+        setLoadError(r.status === 403 ? "Немає доступу до Inbox" : `Не вдалось завантажити повідомлення (HTTP ${r.status})`)
+      }
+    } catch {
+      setLoadError("Не вдалось завантажити повідомлення")
     } finally {
       setLoading(false)
     }
@@ -218,10 +226,13 @@ export default function InboxPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 min-h-[60vh]">
         {/* Conversations list */}
         <aside className="rounded-2xl border border-foreground/10 bg-card overflow-hidden flex flex-col">
-          {loading && conversations.length === 0 && (
+          {loading && !loadError && conversations.length === 0 && (
             <div className="p-8 text-center text-sm text-muted-foreground">Завантаження…</div>
           )}
-          {!loading && conversations.length === 0 && (
+          {loadError && conversations.length === 0 && (
+            <div className="p-8 text-center text-sm text-destructive">{loadError}</div>
+          )}
+          {!loading && !loadError && conversations.length === 0 && (
             <div className="p-12 text-center text-sm text-muted-foreground">
               <InboxIcon size={32} className="mx-auto mb-2 text-muted-foreground/50" />
               Поки немає повідомлень.
