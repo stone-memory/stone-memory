@@ -124,12 +124,13 @@ const questions: { label: string; options: Option[] }[] = [
       },
       {
         label: 'Природний рисунок',
-        match: (c) => ['Граніт', 'Мармур', 'Кварцит', 'Лабрадорит'].includes(c.family),
+        match: (c) =>
+          ['Граніт', 'Габро', 'Базальт', 'Лабрадорит', 'Пісковик', 'Мармур', 'Кварцит'].includes(c.family),
       },
       { label: 'Тонкий профіль', match: (c) => c.thicknesses.some((t) => t <= 12) },
       {
         label: 'Термостійкість',
-        match: (c) => ['Граніт', 'Кварцит', 'Керамограніт'].includes(c.family),
+        match: (c) => ['Граніт', 'Габро', 'Базальт', 'Кварцит', 'Керамограніт'].includes(c.family),
       },
     ],
   },

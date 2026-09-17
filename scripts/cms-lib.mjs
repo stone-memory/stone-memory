@@ -80,7 +80,12 @@ export async function loadDbContent() {
     if (!r.ok) throw new Error(`${p} → HTTP ${r.status}`)
     return r.json()
   }
-  const list = async (t) => (await rest(`${t}?select=data&order=position.asc`)).map((r) => r.data)
+  // Приховані рядки на сайт не потрапляють (lib/stone/cms.ts), тож і аудит їх
+  // не перевіряє: нові камені без фото чекають у базі з hidden = true.
+  const list = async (t) =>
+    (await rest(`${t}?select=data,hidden&order=position.asc`))
+      .filter((r) => !r.hidden)
+      .map((r) => r.data)
   const [collections, projects, articles, slabs, remnants, settingsRows] = await Promise.all([
     list('stilnytsi_materials'),
     list('stilnytsi_projects'),

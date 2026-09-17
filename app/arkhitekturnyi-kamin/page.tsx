@@ -4,8 +4,8 @@ import { ArrowRight, ChevronRight } from 'lucide-react'
 import { SectionHeading } from '@/components/stone/site/shell'
 import { Cta, WorkSteps } from '@/components/stone/site/sections'
 import { categories, materials } from '@/lib/stone/content'
-import { familyHrefForMaterial } from '@/data/stone/families'
-import { getProjects } from '@/lib/stone/cms'
+import { familyHrefForMaterial, families } from '@/data/stone/families'
+import { getCollections, getProjects } from '@/lib/stone/cms'
 import { pageMetadata } from '@/lib/stone/seo'
 
 // Без власних метаданих сторінка успадковує canonical кореневого layout, тобто
@@ -16,8 +16,29 @@ export const metadata = pageMetadata('/arkhitekturnyi-kamin', {
     'Кам’яні стільниці, підвіконня, сходи, фасади й бруківка з граніту, мармуру та кварцу. Власне виробництво в Костополі, замір, доставка й монтаж по Україні.',
   image: '/stone-hero.webp',
 })
+// Родини з українськими родовищами, у порядку показу. Сайт насамперед показує
+// те, що є на українському ринку, і лише потім імпорт під замовлення.
+const UKRAINIAN_FAMILIES: { slug: keyof typeof families; note: string }[] = [
+  { slug: 'granit', note: 'сірі, червоні, зелені, коричневі родовища Житомирщини, Кіровоградщини, Дніпропетровщини' },
+  { slug: 'gabro', note: 'чорний камінь Житомирщини: Головинське, Букинське, Лугове' },
+  { slug: 'labradoryt', note: 'чорний із синіми переливами: Volga Blue, Irina Blue, Extra Blue' },
+  { slug: 'bazalt', note: 'Берестовецьке, Костопільське, Хустівське: бруківка, сходи, цоколі' },
+  { slug: 'piskovyk', note: 'Теребовлянський: фасади, огорожі, доріжки' },
+  { slug: 'kvarcyt', note: 'Овруцький: найтвердіший український камінь для бруківки й цоколів' },
+]
+
 export default async function Home() {
-  const projects = await getProjects()
+  const [projects, collections] = await Promise.all([getProjects(), getCollections()])
+  const isUkrainian = (origin: string) => /Украї/.test(origin)
+  const ukrainian = collections.filter((c) => isUkrainian(c.origin))
+  const imported = collections.filter(
+    (c) => !isUkrainian(c.origin) && !['Кварц', 'Керамограніт'].includes(c.family)
+  )
+  const ukrainianFamilies = UKRAINIAN_FAMILIES.map((f) => ({
+    ...f,
+    name: families[f.slug],
+    count: ukrainian.filter((c) => c.family === families[f.slug]).length,
+  })).filter((f) => f.count > 0)
   return (
     <main id="main-content">
       <section className="page-shell flex min-h-[58vh] flex-col items-center justify-center py-10 text-center md:min-h-[72vh] md:py-20">
@@ -44,8 +65,8 @@ export default async function Home() {
           </Link>
         </div>
         <p className="mt-5 max-w-3xl text-pretty text-sm text-muted-foreground">
-          Власне виробництво в Костополі • 10 українських гранітів + мармур, кварц, керамограніт •
-          монтаж під ключ
+          Власне виробництво в Костополі • {ukrainian.length} українських родовищ + {imported.length}{' '}
+          імпортних порід під замовлення • монтаж під ключ
         </p>
       </section>
       <section className="page-shell">
@@ -79,6 +100,31 @@ export default async function Home() {
               <div>
                 <h3 className="text-xl font-semibold tracking-[-.035em]">{c.name}</h3>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{c.blurb}</p>
+                <ArrowRight className="mt-5 text-accent" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section className="page-shell section-pad">
+        <SectionHeading
+          eyebrow="Український камінь"
+          title="Спершу те, що є в Україні."
+          copy={`${ukrainian.length} родовищ із власних кар'єрів країни: ріжемо з блоку в Костополі, без очікування імпортного сляба. Імпортний мармур, кварцит і онікс — під замовлення через українські склади.`}
+        />
+        <div className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {ukrainianFamilies.map((f) => (
+            <Link
+              href={`/arkhitekturnyi-kamin/materialy/${f.slug}`}
+              key={f.slug}
+              className="surface group flex min-h-44 flex-col justify-between p-6 transition-transform hover:-translate-y-1"
+            >
+              <span className="text-xs text-muted-foreground">
+                {f.count} {f.count === 1 ? 'родовище' : f.count < 5 ? 'родовища' : 'родовищ'}
+              </span>
+              <div>
+                <h3 className="text-xl font-semibold tracking-[-.035em]">{f.name}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{f.note}</p>
                 <ArrowRight className="mt-5 text-accent" />
               </div>
             </Link>

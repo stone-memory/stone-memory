@@ -15,12 +15,18 @@ import type { Collection } from "@/lib/stone/cms-types"
  * посиланням у розділ.
  */
 
-const NATURAL = ["Граніт", "Лабрадорит", "Мармур", "Кварцит", "Онікс", "Травертин", "Вапняк"]
+const NATURAL = ["Граніт", "Габро", "Базальт", "Лабрадорит", "Пісковик", "Мармур", "Кварцит", "Онікс", "Травертин", "Вапняк"]
 
-const FAMILY_ORDER = ["Граніт", "Лабрадорит", "Мармур", "Кварцит", "Онікс", "Травертин", "Вапняк"]
+// Спершу родини, де є українські родовища, потім суто імпортні.
+const FAMILY_ORDER = ["Граніт", "Габро", "Лабрадорит", "Базальт", "Пісковик", "Кварцит", "Мармур", "Онікс", "Травертин", "Вапняк"]
+
+const isUkrainian = (origin: string) => /Украї/.test(origin)
 
 const FAMILY_NOTE: Record<string, string> = {
   Граніт: "Український, з кар'єрів Житомирщини, Рівненщини, Кіровоградщини й Дніпропетровщини. Найміцніший і найдовговічніший камінь у нас — і на стелу, і на стільницю.",
+  Габро: "Український чорний камінь із Житомирщини: Головинське, Букинське, Лугове. Найщільніша порода в нас; на пам'ятниках тримає портрет, у домі — чорна стільниця без плям.",
+  Базальт: "Рівненський і закарпатський камінь із матовою дрібнозернистою поверхнею. Для бруківки, сходів, цоколів і фасадів, де важлива стійкість до морозу.",
+  Пісковик: "Теребовлянський камінь із Тернопільщини: теплий сіро-зелений, з природним сколом. Фасади, огорожі, доріжки.",
   Лабрадорит: "Темний камінь із синіми переливами. На пам'ятниках — контраст під гравіювання, у домі — акцентна поверхня, що змінюється зі світлом.",
   Мармур: "Італійський та іспанський. На пам'ятники — для скульптури, дитячих і світлих рішень; у домі — ванни, каміни, підвіконня.",
   Кварцит: "Твердість граніту, рисунок мармуру. Для дому — стільниці й острови.",
@@ -31,6 +37,9 @@ const FAMILY_NOTE: Record<string, string> = {
 
 const FAMILY_HREF: Record<string, string> = {
   Граніт: "/arkhitekturnyi-kamin/materialy/granit",
+  Габро: "/arkhitekturnyi-kamin/materialy/gabro",
+  Базальт: "/arkhitekturnyi-kamin/materialy/bazalt",
+  Пісковик: "/arkhitekturnyi-kamin/materialy/piskovyk",
   Лабрадорит: "/arkhitekturnyi-kamin/materialy/labradoryt",
   Мармур: "/arkhitekturnyi-kamin/materialy/marmur",
   Кварцит: "/arkhitekturnyi-kamin/materialy/kvarcyt",
@@ -50,7 +59,7 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
   const engineered = collections.filter((c) => !NATURAL.includes(c.family))
   const families = FAMILY_ORDER.filter((f) => natural.some((c) => c.family === f))
   const brands = Array.from(new Set(engineered.map((c) => c.brand).filter(Boolean))) as string[]
-  const ukrainian = natural.filter((c) => /Украї/.test(c.origin)).length
+  const ukrainian = natural.filter((c) => isUkrainian(c.origin)).length
   const forMemorial = natural.filter((c) => memorialHref(c.slug)).length
 
   if (natural.length === 0) return null
@@ -77,7 +86,10 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
 
       <div className="space-y-12">
         {families.map((family) => {
-          const items = natural.filter((c) => c.family === family)
+          // Українські родовища попереду імпорту в кожній родині.
+          const items = natural
+            .filter((c) => c.family === family)
+            .sort((a, b) => Number(isUkrainian(b.origin)) - Number(isUkrainian(a.origin)))
           return (
             <div key={family}>
               <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">

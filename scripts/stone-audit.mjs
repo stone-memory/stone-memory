@@ -145,6 +145,8 @@ for (const f of htmlFiles) {
       let asset = null
       if (u.startsWith('/_next/image?url=')) asset = decodeURIComponent(u.slice(17).split('&')[0])
       else if (u.startsWith('/') && !u.startsWith('/_next')) asset = u
+      // Версія за вмістом (?v=<хеш>, lib/stone/asset-url.ts) не є частиною шляху у public/.
+      if (asset) asset = asset.split('?')[0]
       // Абсолютні URL (Supabase Storage) не перевіряємо — вони не в public/.
       if (asset && !/^https?:/.test(asset) && !appServed.has(asset) && !fs.existsSync(path.join(pub, asset)))
         note(badAssets, asset, page)
