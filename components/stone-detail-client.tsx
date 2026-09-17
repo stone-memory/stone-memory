@@ -48,6 +48,8 @@ type Props = {
    * готовим HTML; тут лише вирішуємо, чи показувати його для поточної локалі.
    */
   story?: ReactNode
+  /** «Від чого залежить ціна» — праворуч під характеристиками (лише uk). */
+  storyAside?: ReactNode
 }
 
 /**
@@ -62,7 +64,7 @@ type Props = {
  * ще й тягнула /api/content/stones (145 КБ) для «живих» правок з адмінки —
  * їх тепер покриває скидання ISR-кешу з адмінки.
  */
-export function StoneDetailClient({ stone, related, leadTime, storyLead, story }: Props) {
+export function StoneDetailClient({ stone, related, leadTime, storyLead, story, storyAside }: Props) {
   const { t, locale, formatPrice } = useTranslation()
   const { addItem, items, openSidebar } = useSelectionStore()
   const [active, setActive] = useState(0)
@@ -157,8 +159,12 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story }
             {L.back}
           </Link>
 
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
-            <div>
+          {/* «Про цю модель» стоїть у лівій колонці одразу під галереєю: раніше текст
+              ішов окремою секцією нижче за обидві колонки, і під фото лишалась
+              порожнеча. На телефоні ліва обгортка стає `contents`, а текст отримує
+              order-last, тож порядок: фото → ціна й характеристики → текст. */}
+          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-14">
+            <div className="contents lg:block">
               <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-foreground/5 ring-1 ring-black/[0.04] shadow-soft">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
@@ -216,6 +222,8 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story }
                   ))}
                 </div>
               )}
+
+              {showStory && story && <div className="order-last mt-4 lg:order-none lg:mt-12">{story}</div>}
             </div>
 
             <div className="lg:pt-6">
@@ -331,10 +339,10 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story }
                   )}
                 </dl>
               </div>
+
+              {showStory && storyAside && <div className="mt-6">{storyAside}</div>}
             </div>
           </div>
-
-          {showStory && story}
 
           {related.length > 0 && (
             <section className="mt-24 md:mt-32">

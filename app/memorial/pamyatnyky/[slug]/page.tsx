@@ -1,7 +1,7 @@
 import { notFound, permanentRedirect } from "next/navigation"
 import { CatalogPage } from "@/components/catalog-page"
 import { StoneDetailClient } from "@/components/stone-detail-client"
-import { StoneStory } from "@/components/stone-story"
+import { StoneStory, StoneStoryAside } from "@/components/stone-story"
 import { productStory } from "@/lib/product-copy"
 import { relatedStones } from "@/lib/related-stones"
 import { fetchStones } from "@/lib/data-source"
@@ -55,6 +55,7 @@ export default async function MonumentSlugPage({ params }: { params: Promise<{ s
         leadTime={story.leadTime}
         storyLead={story.intro.split("\n\n")[0]}
         story={<StoneStory stone={stone} />}
+        storyAside={<StoneStoryAside stone={stone} />}
       />
     )
   }

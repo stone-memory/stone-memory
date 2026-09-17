@@ -10,13 +10,16 @@ import type { StoneItem } from "@/lib/types"
  * кілобайт прози, яка ніколи не змінюється після рендеру. Тепер це HTML із
  * сервера; клієнтська обгортка лише ховає блок для інших локалей.
  */
+/**
+ * Текст і розміри. У картці товару стоїть у лівій колонці під галереєю, щоб
+ * заповнити місце під фото, поки праворуч тягнуться ціна й характеристики.
+ */
 export function StoneStory({ stone }: { stone: StoneItem }) {
   const story = productStory(stone)
   const [, ...storyRest] = story.intro.split("\n\n")
 
   return (
-    <section className="mt-16 grid gap-10 md:mt-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
-      <div>
+    <section>
         <h2 className="text-2xl font-semibold tracking-tight-custom md:text-3xl">Про цю модель</h2>
         <div className="mt-5 max-w-2xl space-y-4 text-base leading-relaxed text-foreground/85 md:text-[17px]">
           {storyRest.map((p, i) => (
@@ -36,9 +39,14 @@ export function StoneStory({ stone }: { stone: StoneItem }) {
         <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
           Розміри типові для цієї моделі. Ріжемо під вашу ділянку — на замірі уточнюємо кожен елемент.
         </p>
-      </div>
+    </section>
+  )
+}
 
-      <div>
+/** Чинники ціни й доповнення. У картці стоїть праворуч під характеристиками. */
+export function StoneStoryAside({ stone }: { stone: StoneItem }) {
+  const story = productStory(stone)
+  return (
         <div className="rounded-2xl bg-secondary/60 p-6">
           <h3 className="text-lg font-semibold tracking-tight-custom">Від чого залежить остаточна ціна</h3>
           <ul className="mt-4 space-y-2 text-[15px] text-foreground/85">
@@ -51,7 +59,5 @@ export function StoneStory({ stone }: { stone: StoneItem }) {
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">Можна додати окремо: {story.extras.join(", ")}.</p>
         </div>
-      </div>
-    </section>
   )
 }
