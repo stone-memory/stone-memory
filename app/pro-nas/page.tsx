@@ -6,7 +6,7 @@ import { AboutDetails } from "@/components/about-details"
 import { fetchSingleton, fetchStones } from "@/lib/data-source"
 import type { AboutOverrides } from "@/lib/store/about"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export default async function AboutPage() {
   const [stones, aboutOverrides] = await Promise.all([

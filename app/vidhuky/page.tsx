@@ -2,7 +2,7 @@ import { fetchReviews } from "@/lib/data-source"
 import type { Review } from "@/lib/store/reviews"
 import { ReviewsPageClient } from "@/components/reviews-page-client"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export default async function ReviewsPage() {
   const rows = await fetchReviews("all")

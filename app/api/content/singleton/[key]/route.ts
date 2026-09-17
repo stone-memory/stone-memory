@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { guardCapability } from "@/lib/auth/permissions"
-import { NAV_SETTINGS_KEY } from "@/lib/nav-settings"
+import { NAV_SETTINGS_KEY, NAV_SETTINGS_TAG } from "@/lib/nav-settings"
 
 export const dynamic = "force-dynamic"
 
@@ -38,11 +38,15 @@ export async function PUT(req: Request, ctx: { params: Promise<{ key: string }> 
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // The nav toggle is read in the root layout (shared by every page), so
-  // re-render all pages' layout to apply it promptly.
+  // The nav toggle is read in the root layout (shared by every page) through
+  // a day-long unstable_cache: drop that entry by tag, then re-render all
+  // pages' layout to apply it promptly.
   try {
-    if (key === NAV_SETTINGS_KEY) revalidatePath("/", "layout")
-    // Текст «Про нас» читається на сервері сторінки, кеш якої живе годину.
+    if (key === NAV_SETTINGS_KEY) {
+      revalidateTag(NAV_SETTINGS_TAG, "max")
+      revalidatePath("/", "layout")
+    }
+    // Текст «Про нас» читається на сервері сторінки, кеш якої живе добу.
     if (key === "about_overrides") revalidatePath("/pro-nas", "page")
   } catch {
     // best-effort — revalidation is an optimisation, not correctness

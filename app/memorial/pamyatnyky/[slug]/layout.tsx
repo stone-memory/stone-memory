@@ -19,7 +19,7 @@ import { stoneDescription, stoneTitle } from "@/lib/stone-meta"
 import { defaultStone } from "@/lib/stone-guide"
 import { productStory } from "@/lib/product-copy"
 
-export const revalidate = 3600
+export const revalidate = 86400
 export const dynamicParams = true
 
 type Params = { slug: string }

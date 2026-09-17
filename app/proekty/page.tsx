@@ -3,7 +3,7 @@ import { categoryLabels, type ProjectCategory } from "@/lib/data/projects"
 import { ProjectsPageClient } from "@/components/projects-page-client"
 import { PortfolioFallback } from "@/components/portfolio-fallback"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export default async function ProjectsPage() {
   const [projects, hidden] = await Promise.all([

@@ -3,7 +3,7 @@ import { absoluteUrl } from "@/lib/site-config"
 import { stonePath } from "@/lib/catalog-taxonomy"
 import { stoneAlt } from "@/lib/stone-meta"
 
-export const revalidate = 3600
+export const revalidate = 86400
 export const dynamic = "force-static"
 
 function esc(s: string): string {

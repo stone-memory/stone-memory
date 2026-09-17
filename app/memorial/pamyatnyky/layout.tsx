@@ -3,7 +3,7 @@ import { absoluteUrl } from "@/lib/site-config"
 
 const PATH = "/memorial/pamyatnyky"
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 // NO `title` here — deliberately. Any title on this layout breaks the brand
 // suffix for the segments below it:
