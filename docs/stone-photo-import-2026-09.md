@@ -1,8 +1,36 @@
 # Завдання для агента: фото 24 нових колекцій каменю
 
-Ти працюєш із порожньою текою проєкту. Створи в ній `public/materials/` і
-`public/collections/` і згенеруй рівно **96 файлів**: для кожного з 24
-каменів у таблиці нижче 4 зображення. Нічого більше не генерувати.
+Стан на 18.09.2026, партія 1 прийнята: 4 камені з повним комплектом
+(vratza-r1, vratza-r3, travertino-medium, travertino-alabastrino) і картки ще
+20 каменів. Лишається **60 файлів**, перелік у розділі «Партія 2» нижче.
+Далі повний бриф, за яким робились обидві партії.
+
+## Партія 2: що ще треба
+
+Ти працюєш із текою `generacziya-foto-kamenyu`. Наявні файли в
+`public/materials/` і `public/collections/` не чіпати, крім двох заглушок.
+
+1. Дві картки прийшли заглушками по 11 КБ, перегенерувати поверх:
+   `public/materials/neolith-classtone-whitesands.png` і
+   `public/materials/vratza-r1.png` (для R1 текстуру взяти з
+   `collections/vratza-r1-macro.png`).
+2. `public/collections/travertino-safari-brown-application.png`: сцена з таблиці.
+3. Для кожного з 19 каменів нижче три файли в `public/collections/`:
+   `<slug>-macro.png`, `<slug>-slab.png`, `<slug>-application.png`, з текстурою
+   вже прийнятої картки `public/materials/<slug>.png`:
+   le-blanc, kalahari-blue, macaubas-fantasy, white-pearl, negresco,
+   london-grey, calacatta-oriental, volakas, honey-onyx, bianco-a-onyx,
+   caesarstone-4011-cloudburst-concrete, caesarstone-5143-white-attica,
+   caesarstone-5100-vanilla-noir, caesarstone-5810-black-tempal,
+   neolith-fusion-beton, neolith-mont-blanc, neolith-steel-sofia-cuprum,
+   neolith-classtone-whitesands, laminam-calce-nero.
+
+Разом: 2 + 1 + 19 × 3 = 60 файлів, з них 2 заміни; нових 58.
+
+## Повний бриф
+
+Для кожного з 24 каменів у таблиці нижче 4 зображення, разом 96 файлів.
+Нічого поза переліком не генерувати.
 
 ## Імена файлів (для кожного `slug`)
 
@@ -75,7 +103,11 @@ no text, no watermark, no people`.
 
 ## Що далі на боці сайту
 
-1. `node scripts/import-stone-photos.mjs <тека агента>` (обрізає до 3:2, 1200×800 WebP).
+Партія 1 (18.09.2026): 37 файлів імпортовано, 4 камені перенесені в основний
+сід, відкриваються після деплою `scripts/apply-market-check.ts --unhide`.
+Для наступних партій той самий порядок:
+
+1. `node scripts/import-stone-photos.mjs <тека агента>` (обрізає до 3:2, 1200×800 WebP; заглушки до 50 КБ пропускає).
 2. Перенести рядки з `importedPending`, `quartzPending`, `porcelainPending`
    в основні списки `data/stone/seed/collections.ts`.
 3. `npm run build`, `npm run stone-audit`, деплой.

@@ -27,6 +27,8 @@ const CROPS = {
 /** Ціль ← джерело + кадрування: коли генератор не дав файл, робимо його з картки. */
 const DERIVED = {
   'collections/rakhni-polivsky-macro': ['materials/rakhni-polivsky', [0.4, 0.25, 0.1, 0.42]],
+  // Партія «заміни» 09.2026: картка Vratza R1 прийшла заглушкою, макро рівне — беремо його цілком
+  'materials/vratza-r1': ['collections/vratza-r1-macro', [0, 0, 0, 0]],
 }
 
 async function convert(from, to, inset = [0, 0, 0, 0]) {
@@ -42,7 +44,7 @@ async function convert(from, to, inset = [0, 0, 0, 0]) {
   return `${width}×${height}`
 }
 
-const isPlaceholder = (file) => fs.statSync(file).size < 50_000
+const isPlaceholder = (file) => !fs.existsSync(file) || fs.statSync(file).size < 50_000
 let done = 0
 for (const dir of ['materials', 'collections']) {
   const from = path.join(src, 'public', dir)
@@ -64,6 +66,7 @@ for (const [target, [source, inset]] of Object.entries(DERIVED)) {
   const slug = path.basename(source)
   if (only.length && !only.includes(slug)) continue
   const from = path.join(src, 'public', `${source}.png`)
+  if (!fs.existsSync(from)) continue // джерела в цій теці нема: похідний з іншої партії
   if (fs.existsSync(path.join('public', `${target}.webp`)) && !isPlaceholder(path.join(src, 'public', `${target}.png`))) continue
   const size = await convert(from, path.join('public', `${target}.webp`), inset)
   console.log(`  ${target}.webp ← ${source} ${size} (похідний)`)
