@@ -1,6 +1,6 @@
 import { pageMetadata } from '@/lib/stone/seo'
 import { SITE_URL } from '@/lib/site-config'
-import { getProjects } from '@/lib/stone/cms'
+import { getLocalizedProjects } from '@/lib/stone/i18n-content'
 import { ProposalCatalog } from '@/components/stone/interactive/tools'
 import { JsonLd, PageHero } from '@/components/stone/pages/primitives'
 
@@ -9,7 +9,7 @@ export const metadata = pageMetadata('/arkhitekturnyi-kamin/proekty', {
   image: '/proposal-kitchen.webp',
 })
 export default async function Page() {
-  const projects = await getProjects()
+  const projects = await getLocalizedProjects()
   return (
     <>
       <JsonLd

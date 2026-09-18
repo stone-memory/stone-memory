@@ -1,0 +1,194 @@
+{
+  "kitchen-everyday": {
+    "pl": { "story": "Rodzina w nowym budownictwie potrzebuje blatu, którego nie trzeba oszczędzać: jasny kwarc łatwo sprzątać po codziennym gotowaniu.", "solution": "Blat w kształcie L, zlew podwieszany, krótki fartuch.", "alt": "Standardowa kuchnia w nowym budownictwie z blatem Vicostone BQ8270 Calacatta" },
+    "en": { "story": "A family in a new-build needs a countertop they don't have to baby: light quartz is easy to clean after everyday cooking.", "solution": "L-shaped countertop, undermount sink, short splashback.", "alt": "Standard new-build kitchen with a Vicostone BQ8270 Calacatta countertop" },
+    "de": { "story": "Eine Familie im Neubau braucht eine Arbeitsplatte, die man nicht schonen muss: Heller Quarz lässt sich nach dem täglichen Kochen leicht reinigen.", "solution": "L-förmige Arbeitsplatte, Unterbauspüle, kurzer Spritzschutz.", "alt": "Standardküche im Neubau mit Arbeitsplatte Vicostone BQ8270 Calacatta" },
+    "lt": { "story": "Šeimai naujame name reikia stalviršio, kurio nereikia gailėti: šviesų kvarcą lengva nuvalyti po kasdienio gaminimo.", "solution": "L formos stalviršis, apatinio montavimo plautuvė, trumpa sienelė.", "alt": "Standartinė virtuvė naujame name su stalviršiu Vicostone BQ8270 Calacatta" }
+  },
+  "family-island": {
+    "pl": { "story": "W kuchni domu prywatnego wyspa zbiera rodzinę na śniadanie, a jasnoszary granit wytrzymuje codzienną pracę.", "solution": "Kompaktowa wyspa, matowa powierzchnia, prosta krawędź.", "alt": "Rodzinna kuchnia z wyspą z granitu pokostiwskiego Grey Ukraine" },
+    "en": { "story": "In the kitchen of a private house the island gathers the family for breakfast, and light grey granite withstands daily work.", "solution": "Compact island, honed surface, simple straight edge.", "alt": "Family kitchen with an island in Pokostivka granite Grey Ukraine" },
+    "de": { "story": "In der Küche eines Privathauses versammelt die Insel die Familie zum Frühstück, und hellgrauer Granit hält die tägliche Arbeit aus.", "solution": "Kompakte Insel, matte Oberfläche, einfache gerade Kante.", "alt": "Familienküche mit Insel aus Pokostivka-Granit Grey Ukraine" },
+    "lt": { "story": "Privataus namo virtuvėje sala suburia šeimą pusryčiams, o šviesiai pilkas granitas atlaiko kasdienį darbą.", "solution": "Kompaktiška sala, matinis paviršius, paprastas tiesus kraštas.", "alt": "Šeimos virtuvė su sala iš Pokostivkos granito Grey Ukraine" }
+  },
+  "bathroom-without-excess": {
+    "pl": { "story": "W standardowej łazience beżowy marmur ogrzewa szafkę i jedną ścianę akcentową, nie przeciążając niewielkiego pomieszczenia.", "solution": "Blat pod umywalkę, jeden panel ścienny, impregnacja ochronna.", "alt": "Zwykła łazienka z marmurem Crema Marfil" },
+    "en": { "story": "In a standard bathroom beige marble warms the vanity and one accent wall without overloading the small room.", "solution": "Vanity top, one wall panel, protective sealing.", "alt": "Ordinary bathroom with Crema Marfil marble" },
+    "de": { "story": "In einem Standardbad wärmt beiger Marmor den Waschtisch und eine Akzentwand, ohne den kleinen Raum zu überladen.", "solution": "Waschtischplatte, ein Wandpaneel, Schutzimprägnierung.", "alt": "Gewöhnliches Badezimmer mit Marmor Crema Marfil" },
+    "lt": { "story": "Standartinėje vonioje smėlinis marmuras sušildo spintelę ir vieną akcentinę sieną, neperkraudamas nedidelio kambario.", "solution": "Stalviršis po praustuvu, viena sienos plokštė, apsauginis impregnavimas.", "alt": "Paprastas vonios kambarys su marmuru Crema Marfil" }
+  },
+  "stairs-in-house": {
+    "pl": { "story": "Schody w domu dwupiętrowym mają przeżyć dzieci i wnuki, dlatego rodzina wybrała mocny lokalny granit.", "solution": "Matowe stopnice, prosty cokół, obróbka antypoślizgowa.", "alt": "Jasne domowe schody ze stopnicami z granitu pokostiwskiego Grey Ukraine" },
+    "en": { "story": "The stairs in a two-storey house must outlive children and grandchildren, so the family chose strong local granite.", "solution": "Honed treads, simple skirting, anti-slip finish.", "alt": "Light home stairs with treads in Pokostivka granite Grey Ukraine" },
+    "de": { "story": "Die Treppe in einem zweigeschossigen Haus soll Kinder und Enkel überdauern, deshalb wählte die Familie festen heimischen Granit.", "solution": "Matte Trittstufen, einfacher Sockel, rutschhemmende Bearbeitung.", "alt": "Helle Haustreppe mit Trittstufen aus Pokostivka-Granit Grey Ukraine" },
+    "lt": { "story": "Laiptai dviaukščiame name turi pergyventi vaikus ir anūkus, todėl šeima pasirinko tvirtą vietinį granitą.", "solution": "Matinės pakopos, paprasta grindjuostė, neslidus apdirbimas.", "alt": "Šviesūs namų laiptai su pakopomis iš Pokostivkos granito Grey Ukraine" }
+  },
+  "winterproof-entry": {
+    "pl": { "story": "Właściciele domu potrzebują schodów, które nie boją się śniegu, soli i codziennego obuwia. Płomieniowane gabro daje pewną przyczepność.", "solution": "Płomieniowane stopnice, odprowadzenie wody, dobrze widoczne krawędzie.", "alt": "Zadbane wejście do domu prywatnego ze schodami z płomieniowanego gabro Kometa Black" },
+    "en": { "story": "The homeowners need steps that aren't afraid of snow, salt and everyday shoes. Flamed gabbro gives reliable grip.", "solution": "Flamed treads, drainage, clearly visible edges.", "alt": "Well-kept private house entrance with steps in flamed Kometa Black gabbro" },
+    "de": { "story": "Die Hausbesitzer brauchen eine Treppe, die weder Schnee, Salz noch Alltagsschuhe fürchtet. Geflammter Gabbro gibt sicheren Halt.", "solution": "Geflammte Trittstufen, Wasserableitung, gut sichtbare Kanten.", "alt": "Gepflegter Eingang eines Privathauses mit Treppe aus geflammtem Gabbro Kometa Black" },
+    "lt": { "story": "Namo savininkams reikia laiptų, kurie nebijo sniego, druskos ir kasdienių batų. Degintas gabras suteikia patikimą sukibimą.", "solution": "Degintos pakopos, vandens nuvedimas, gerai matomi kraštai.", "alt": "Tvarkingas įėjimas į privatų namą su laiptais iš deginto gabro Kometa Black" }
+  },
+  "turnkey-yard": {
+    "pl": { "story": "Na zwykłej działce podmiejskiej połączono czerwony Maple Red z szarym Grey Ukraine w ścieżce i miejscu parkingowym.", "solution": "Kostka cięto-płomieniowana, prosty dwukolorowy moduł, spadki dla wody.", "alt": "Zadbane prywatne podwórze z czerwoną kostką Maple Red i jasnoszarymi akcentami Grey Ukraine" },
+    "en": { "story": "On an ordinary suburban plot red Maple Red was combined with grey Grey Ukraine in the path and parking space.", "solution": "Sawn-flamed paving, simple two-colour module, slopes for water.", "alt": "Well-kept private yard with red Maple Red paving and light grey Grey Ukraine accents" },
+    "de": { "story": "Auf einem gewöhnlichen Vorstadtgrundstück wurden roter Maple Red und grauer Grey Ukraine in Weg und Stellplatz kombiniert.", "solution": "Gesägt-geflammtes Pflaster, einfaches zweifarbiges Modul, Gefälle für Wasser.", "alt": "Gepflegter Privathof mit rotem Pflaster Maple Red und hellgrauen Akzenten Grey Ukraine" },
+    "lt": { "story": "Paprastame priemiesčio sklype take ir stovėjimo vietoje suderintas raudonas Maple Red su pilku Grey Ukraine.", "solution": "Pjautas-degintas grindinys, paprastas dvispalvis modulis, nuolydžiai vandeniui.", "alt": "Tvarkingas privatus kiemas su raudonu grindiniu Maple Red ir šviesiai pilkais Grey Ukraine akcentais" }
+  },
+  "windowsill-for-years": {
+    "pl": { "story": "Głęboki parapet w mieszkaniu pracuje jak półka na kwiaty i kubek, a kwarc w kolorze betonu łatwo wytrzeć.", "solution": "Głęboka płyta, niewielki nawis, staranne przyleganie do okna.", "alt": "Przytulny parapet do czytania z kwarcu Caesarstone 4001 Fresh Concrete" },
+    "en": { "story": "A deep window sill in a flat works as a shelf for plants and a cup, and concrete-look quartz is easy to wipe.", "solution": "Deep slab, small overhang, neat fit to the window.", "alt": "Cosy reading window sill in Caesarstone 4001 Fresh Concrete quartz" },
+    "de": { "story": "Eine tiefe Fensterbank in einer Wohnung dient als Ablage für Blumentöpfe und Tasse, und Quarz in Betonoptik lässt sich leicht abwischen.", "solution": "Tiefe Platte, kleiner Überstand, sauberer Anschluss ans Fenster.", "alt": "Gemütliche Lesefensterbank aus Quarz Caesarstone 4001 Fresh Concrete" },
+    "lt": { "story": "Gili palangė bute dirba kaip lentyna vazonams ir puodeliui, o betono imitacijos kvarcą lengva nušluostyti.", "solution": "Gili plokštė, nedidelė iškyša, tvarkingas priglaudimas prie lango.", "alt": "Jauki skaitymo palangė iš kvarco Caesarstone 4001 Fresh Concrete" }
+  },
+  "living-room-fireplace": {
+    "pl": { "story": "Kompaktowy czarny portal spaja rodzinny salon z sofą i półkami na książki, nie zabierając całej ściany.", "solution": "Lakoniczna rama, minimalna spoina, termicznie oddzielony obrys.", "alt": "Rodzinny salon z kominkiem z marmuru Nero Marquina" },
+    "en": { "story": "A compact black surround pulls together a family living room with a sofa and bookshelves without taking the whole wall.", "solution": "Restrained frame, minimal joint, thermally separated contour.", "alt": "Family living room with a Nero Marquina marble fireplace" },
+    "de": { "story": "Ein kompaktes schwarzes Portal fasst das Familienwohnzimmer mit Sofa und Bücherregalen zusammen, ohne die ganze Wand einzunehmen.", "solution": "Schlichter Rahmen, minimale Fuge, thermisch getrennte Kontur.", "alt": "Familienwohnzimmer mit Kamin aus Marmor Nero Marquina" },
+    "lt": { "story": "Kompaktiškas juodas portalas sujungia šeimos svetainę su sofa ir knygų lentynomis, neužimdamas visos sienos.", "solution": "Lakoniškas rėmas, minimali siūlė, termiškai atskirtas kontūras.", "alt": "Šeimos svetainė su židiniu iš marmuro Nero Marquina" }
+  },
+  "corner-coffee-shop": {
+    "pl": { "story": "Właściciel małej kawiarni wybrał ciemny labradoryt z niebieskimi błyskami na krótki bar przy ekspresie.", "solution": "Mocna konstrukcja, spokojny fragment sląba, zaokrąglony narożnik zewnętrzny.", "alt": "Mała lokalna kawiarnia z barem z labradorytu Volga Blue" },
+    "en": { "story": "The owner of a small café chose dark labradorite with blue flashes for a short counter by the coffee machine.", "solution": "Sturdy frame, calm section of the slab, rounded outer corner.", "alt": "Small local café with a Volga Blue labradorite counter" },
+    "de": { "story": "Der Besitzer eines kleinen Cafés wählte dunklen Labradorit mit blauen Blitzen für einen kurzen Tresen neben der Kaffeemaschine.", "solution": "Stabiles Gestell, ruhiger Plattenabschnitt, abgerundete Außenecke.", "alt": "Kleines Café um die Ecke mit Tresen aus Labradorit Volga Blue" },
+    "lt": { "story": "Mažos kavinės savininkas pasirinko tamsų labradoritą su mėlynais blyksniais trumpam stalui prie kavos aparato.", "solution": "Tvirtas karkasas, rami plokštės dalis, suapvalintas išorinis kampas.", "alt": "Maža vietinė kavinė su stalu iš labradorito Volga Blue" }
+  },
+  "lviv-two-storey-stairs": {
+    "pl": { "story": "Szary granit wybrano na schody w domu dwupiętrowym, po których codziennie chodzą dzieci i pies.", "solution": "Matowa powierzchnia antypoślizgowa, prosty cokół, kontrastowy pierwszy stopień.", "alt": "Domowe schody z granitu pokostiwskiego Grey Ukraine" },
+    "en": { "story": "Grey granite was chosen for the stairs in a two-storey house where children and the family dog walk every day.", "solution": "Honed anti-slip surface, simple skirting, contrasting first step.", "alt": "Home stairs in Pokostivka granite Grey Ukraine" },
+    "de": { "story": "Grauer Granit wurde für die Treppe in einem zweigeschossigen Haus gewählt, auf der täglich Kinder und der Hund laufen.", "solution": "Matte rutschhemmende Oberfläche, einfacher Sockel, kontrastierende erste Stufe.", "alt": "Haustreppe aus Pokostivka-Granit Grey Ukraine" },
+    "lt": { "story": "Pilkas granitas pasirinktas laiptams dviaukščiame name, kur kasdien vaikšto vaikai ir šuo.", "solution": "Matinis neslidus paviršius, paprasta grindjuostė, kontrastinga pirma pakopa.", "alt": "Namų laiptai iš Pokostivkos granito Grey Ukraine" }
+  },
+  "uzhhorod-shop-entry": {
+    "pl": { "story": "Ciemne gabro chroni stopnie i cokół małego sklepu spożywczego przed brudem i codziennym obciążeniem.", "solution": "Płomieniowane stopnice, odprowadzenie wody, dobrze widoczne krawędzie.", "alt": "Wejście małego sklepu ze schodami z gabro Kometa Black" },
+    "en": { "story": "Dark gabbro protects the steps and plinth of a small grocery shop from dirt and daily load.", "solution": "Flamed treads, drainage, clearly visible edges.", "alt": "Small shop entrance with steps in Kometa Black gabbro" },
+    "de": { "story": "Dunkler Gabbro schützt Stufen und Sockel eines kleinen Lebensmittelladens vor Schmutz und täglicher Belastung.", "solution": "Geflammte Trittstufen, Wasserableitung, gut sichtbare Kanten.", "alt": "Eingang eines kleinen Ladens mit Treppe aus Gabbro Kometa Black" },
+    "lt": { "story": "Tamsus gabras saugo mažos maisto parduotuvės pakopas ir cokolį nuo purvo ir kasdienės apkrovos.", "solution": "Degintos pakopos, vandens nuvedimas, gerai matomi kraštai.", "alt": "Mažos parduotuvės įėjimas su laiptais iš gabro Kometa Black" }
+  },
+  "lutsk-blue-kitchen": {
+    "pl": { "story": "Niewielka wyspa z niebieskimi krystalicznymi błyskami stała się jedynym wyrazistym akcentem w prostej kuchni z szarymi frontami.", "solution": "Cyfrowy rozkład, prosta krawędź, ukryte wzmocnienie.", "alt": "Domowa kuchnia z wyspą z labradorytu Volga Blue" },
+    "en": { "story": "A small island with blue crystalline flashes became the only bold accent in a simple kitchen with grey fronts.", "solution": "Digital layout, straight edge, hidden reinforcement.", "alt": "Home kitchen with a Volga Blue labradorite island" },
+    "de": { "story": "Eine kleine Insel mit blauen kristallinen Blitzen wurde zum einzigen ausdrucksstarken Akzent in einer schlichten Küche mit grauen Fronten.", "solution": "Digitale Aufteilung, gerade Kante, verdeckte Verstärkung.", "alt": "Hausküche mit Insel aus Labradorit Volga Blue" },
+    "lt": { "story": "Nedidelė sala su mėlynais kristaliniais blyksniais tapo vieninteliu išraiškingu akcentu paprastoje virtuvėje su pilkais fasadais.", "solution": "Skaitmeninis išdėstymas, tiesus kraštas, paslėptas sustiprinimas.", "alt": "Namų virtuvė su sala iš labradorito Volga Blue" }
+  },
+  "rivne-utility-counter": {
+    "pl": { "story": "Jasna powierzchnia łączy pralkę, suszarkę i zlew gospodarczy w niewielkim pomieszczeniu gospodarczym.", "solution": "Cienki blat, wodoodporne łączenia, niski fartuch.", "alt": "Pralnia z blatem Neolith Arctic White" },
+    "en": { "story": "A light surface unites the washing machine, dryer and utility sink in a small utility room.", "solution": "Thin countertop, moisture-resistant joints, low splashback.", "alt": "Laundry room with a Neolith Arctic White countertop" },
+    "de": { "story": "Eine helle Oberfläche vereint Waschmaschine, Trockner und Ausgussbecken in einem kleinen Hauswirtschaftsraum.", "solution": "Dünne Arbeitsplatte, feuchtigkeitsbeständige Stöße, niedriger Spritzschutz.", "alt": "Waschküche mit Arbeitsplatte Neolith Arctic White" },
+    "lt": { "story": "Šviesus paviršius sujungia skalbimo mašiną, džiovyklę ir ūkinę plautuvę nedideliame buities kambaryje.", "solution": "Plonas stalviršis, drėgmei atsparios jungtys, žema sienelė.", "alt": "Skalbykla su stalviršiu Neolith Arctic White" }
+  },
+  "lviv-hall-wall": {
+    "pl": { "story": "Panele chronią dolną część ściany w czystej, ale zwykłej klatce schodowej małego budynku.", "solution": "Prosty podział paneli, naprawialne łączenia, staranne wycięcia pod włączniki.", "alt": "Klatka schodowa budynku mieszkalnego z panelami ściennymi Neolith Calacatta" },
+    "en": { "story": "Panels protect the lower part of the wall in a clean but ordinary entrance hall of a small building.", "solution": "Straight panel division, repairable joints, neat cut-outs for switches.", "alt": "Residential building entrance hall with Neolith Calacatta wall panels" },
+    "de": { "story": "Paneele schützen den unteren Teil der Wand in einem sauberen, aber gewöhnlichen Hausflur eines kleinen Gebäudes.", "solution": "Gerade Paneelteilung, reparierbare Stöße, saubere Ausschnitte für Schalter.", "alt": "Hausflur eines Wohnhauses mit Wandpaneelen Neolith Calacatta" },
+    "lt": { "story": "Plokštės saugo apatinę sienos dalį švarioje, bet paprastoje nedidelio namo laiptinėje.", "solution": "Tiesus plokščių padalijimas, remontuojamos jungtys, tvarkingos išpjovos jungikliams.", "alt": "Gyvenamojo namo laiptinė su sienų plokštėmis Neolith Calacatta" }
+  },
+  "ternopil-dining-table": {
+    "pl": { "story": "Stół z dekorem trawertynu stoi w zwykłej kuchni-jadalni obok krzesełka dziecięcego i otwartych półek.", "solution": "Lekka podstawa, zaokrąglone narożniki, cienka wielkoformatowa powierzchnia.", "alt": "Rodzinna jadalnia ze stołem Laminam Travertino" },
+    "en": { "story": "A table with a travertine decor stands in an ordinary kitchen-diner next to a high chair and open shelves.", "solution": "Light base, rounded corners, thin large-format surface.", "alt": "Family dining room with a Laminam Travertino table" },
+    "de": { "story": "Ein Tisch in Travertindekor steht in einer gewöhnlichen Wohnküche neben Kinderstuhl und offenen Regalen.", "solution": "Leichtes Gestell, abgerundete Ecken, dünne Großformatplatte.", "alt": "Familienessplatz mit Tisch Laminam Travertino" },
+    "lt": { "story": "Stalas su travertino dekoru stovi paprastoje virtuvėje-valgomajame šalia vaikiškos kėdutės ir atvirų lentynų.", "solution": "Lengvas pagrindas, suapvalinti kampai, plonas didelio formato paviršius.", "alt": "Šeimos valgomasis su stalu Laminam Travertino" }
+  },
+  "lviv-flower-shop": {
+    "pl": { "story": "Grafitowa powierzchnia nie boi się wody i ziemi w małej kwiaciarni na parterze budynku mieszkalnego.", "solution": "Cienkie panele, zabezpieczone narożniki, wygodna strefa pakowania.", "alt": "Mała kwiaciarnia z ladą Laminam Pietra Grey" },
+    "en": { "story": "A graphite surface isn't afraid of water and soil in a small flower shop on the ground floor of a residential building.", "solution": "Thin panels, protected corners, convenient wrapping zone.", "alt": "Small flower shop with a Laminam Pietra Grey counter" },
+    "de": { "story": "Eine graphitfarbene Oberfläche fürchtet weder Wasser noch Erde in einem kleinen Blumenladen im Erdgeschoss eines Wohnhauses.", "solution": "Dünne Paneele, geschützte Ecken, bequeme Packzone.", "alt": "Kleiner Blumenladen mit Theke Laminam Pietra Grey" },
+    "lt": { "story": "Grafito paviršius nebijo vandens ir žemės mažoje gėlių parduotuvėje gyvenamojo namo pirmame aukšte.", "solution": "Plonos plokštės, apsaugoti kampai, patogi pakavimo zona.", "alt": "Nedidelė gėlių parduotuvė su prekystaliu Laminam Pietra Grey" }
+  },
+  "rivne-covered-terrace": {
+    "pl": { "story": "Ciemny kamienny blat pracuje przy grillu na krytej tarasie zwykłego domu prywatnego.", "solution": "Matowe wykończenie, wentylacja pod grillem, mrozoodporne spoiny.", "alt": "Kuchnia letnia domu prywatnego z blatem z gabro Kometa Black" },
+    "en": { "story": "A dark stone countertop works next to the grill on the covered terrace of an ordinary private house.", "solution": "Honed finish, ventilation under the grill, frost-resistant joints.", "alt": "Private house outdoor kitchen with a Kometa Black gabbro countertop" },
+    "de": { "story": "Eine dunkle Steinarbeitsplatte arbeitet neben dem Grill auf der überdachten Terrasse eines gewöhnlichen Privathauses.", "solution": "Matte Oberfläche, Belüftung unter dem Grill, frostbeständige Fugen.", "alt": "Außenküche eines Privathauses mit Arbeitsplatte aus Gabbro Kometa Black" },
+    "lt": { "story": "Tamsus akmens stalviršis dirba prie kepsninės dengtoje paprasto privataus namo terasoje.", "solution": "Matinė apdaila, ventiliacija po kepsnine, šalčiui atsparios siūlės.", "alt": "Privataus namo vasaros virtuvė su stalviršiu iš gabro Kometa Black" }
+  },
+  "kostopil-window-sill": {
+    "pl": { "story": "Ciepły kamienny parapet wytrzymuje doniczki i codzienne sprzątanie w jasnym pokoju bloku z wielkiej płyty.", "solution": "Prosta płyta, niewielki nawis, matowa impregnacja.", "alt": "Szeroki domowy parapet z marmuru Crema Marfil" },
+    "en": { "story": "A warm stone window sill withstands plant pots and daily cleaning in a light room of a panel-block flat.", "solution": "Simple slab, small overhang, matte sealing.", "alt": "Wide home window sill in Crema Marfil marble" },
+    "de": { "story": "Eine warme Steinfensterbank hält Blumentöpfe und tägliches Putzen in einem hellen Zimmer eines Plattenbaus aus.", "solution": "Einfache Platte, kleiner Überstand, matte Imprägnierung.", "alt": "Breite Fensterbank aus Marmor Crema Marfil" },
+    "lt": { "story": "Šilta akmens palangė atlaiko vazonus ir kasdienį valymą šviesiame blokinio namo kambaryje.", "solution": "Paprasta plokštė, nedidelė iškyša, matinis impregnavimas.", "alt": "Plati namų palangė iš marmuro Crema Marfil" }
+  },
+  "lutsk-tv-console": {
+    "pl": { "story": "Niewielka kwarcowa półka trzyma sprzęt i książki w salonie typowego mieszkania, dodając rysunek bez zbędnego dekoru.", "solution": "Ukryte mocowanie, cienka krawędź, otwory na kable.", "alt": "Salon mieszkania z półką Caesarstone Arabetto" },
+    "en": { "story": "A small quartz shelf holds electronics and books in the living room of a typical flat, adding pattern without extra decor.", "solution": "Hidden fixing, thin edge, cable holes.", "alt": "Flat living room with a Caesarstone Arabetto shelf" },
+    "de": { "story": "Ein kleines Quarzregal trägt Technik und Bücher im Wohnzimmer einer typischen Wohnung und bringt Zeichnung ohne überflüssigen Dekor.", "solution": "Verdeckte Befestigung, dünne Kante, Kabeldurchführungen.", "alt": "Wohnzimmer einer Wohnung mit Regal Caesarstone Arabetto" },
+    "lt": { "story": "Nedidelė kvarco lentyna laiko techniką ir knygas tipinio buto svetainėje, pridėdama rašto be nereikalingo dekoro.", "solution": "Paslėptas tvirtinimas, plonas kraštas, skylės kabeliams.", "alt": "Buto svetainė su lentyna Caesarstone Arabetto" }
+  },
+  "rivne-school-steps": {
+    "pl": { "story": "Mocny szary granit zastosowano przy małym prywatnym centrum edukacyjnym, do którego codziennie przychodzą dzieci i rodzice.", "solution": "Płomieniowane schody, rampa, kontrastowe oznaczenie krawędzi.", "alt": "Wejście centrum edukacyjnego z granitu pokostiwskiego" },
+    "en": { "story": "Strong grey granite was used at a small private learning centre where children and parents come every day.", "solution": "Flamed steps, ramp, contrasting edge marking.", "alt": "Learning centre entrance in Pokostivka granite" },
+    "de": { "story": "Fester grauer Granit wurde an einem kleinen privaten Bildungszentrum verwendet, zu dem täglich Kinder und Eltern kommen.", "solution": "Geflammte Stufen, Rampe, kontrastierende Kantenmarkierung.", "alt": "Eingang eines Bildungszentrums aus Pokostivka-Granit" },
+    "lt": { "story": "Tvirtas pilkas granitas panaudotas prie nedidelio privataus mokymo centro, kur kasdien ateina vaikai ir tėvai.", "solution": "Deginti laiptai, nuovaža, kontrastingas kraštų žymėjimas.", "alt": "Mokymo centro įėjimas iš Pokostivkos granito" }
+  },
+  "ternopil-hall-console": {
+    "pl": { "story": "Wąska marmurowa konsola zajmuje wolną ścianę w przedpokoju i zbiera klucze, listy i niewielką lampę stołową.", "solution": "Stalowa podstawa, krawędź 20 mm, ukryte mocowanie do ściany.", "alt": "Przedpokój mieszkania z konsolą z marmuru Bianco Carrara" },
+    "en": { "story": "A narrow marble console occupies a free wall in the hallway and collects keys, letters and a small table lamp.", "solution": "Steel base, 20 mm edge, hidden wall fixing.", "alt": "Flat hallway with a Bianco Carrara marble console" },
+    "de": { "story": "Eine schmale Marmorkonsole nimmt eine freie Wand im Flur ein und sammelt Schlüssel, Briefe und eine kleine Tischlampe.", "solution": "Stahlgestell, 20-mm-Kante, verdeckte Wandbefestigung.", "alt": "Wohnungsflur mit Konsole aus Marmor Bianco Carrara" },
+    "lt": { "story": "Siaura marmuro konsolė užima laisvą sieną prieškambaryje ir surenka raktus, laiškus ir nedidelę stalinę lempą.", "solution": "Plieninis pagrindas, 20 mm kraštas, paslėptas tvirtinimas prie sienos.", "alt": "Buto prieškambaris su konsole iš marmuro Bianco Carrara" }
+  },
+  "frankivsk-neighborhood-bar": {
+    "pl": { "story": "Krystaliczny rysunek ożywia krótki bar małej wieczornej kawiarni bez podświetlenia i ostentacyjnego dekoru.", "solution": "Wybór spokojnego fragmentu sląba, mocna konstrukcja, zaokrąglony narożnik zewnętrzny.", "alt": "Niewielka osiedlowa kawiarnia z barem z labradorytu Volga Blue" },
+    "en": { "story": "A crystalline pattern livens up the short counter of a small evening café without backlighting or showy decor.", "solution": "Choice of a calm section of the slab, sturdy frame, rounded outer corner.", "alt": "Small neighbourhood café with a Volga Blue labradorite counter" },
+    "de": { "story": "Eine kristalline Zeichnung belebt den kurzen Tresen eines kleinen Abendcafés ohne Hinterleuchtung und auffälligen Dekor.", "solution": "Wahl eines ruhigen Plattenabschnitts, stabiles Gestell, abgerundete Außenecke.", "alt": "Kleines Stadtteilcafé mit Tresen aus Labradorit Volga Blue" },
+    "lt": { "story": "Kristalinis raštas pagyvina trumpą mažos vakarinės kavinės stalą be apšvietimo ir įmantraus dekoro.", "solution": "Ramios plokštės dalies pasirinkimas, tvirtas karkasas, suapvalintas išorinis kampas.", "alt": "Nedidelė rajono kavinė su stalu iš labradorito Volga Blue" }
+  },
+  "chernivtsi-small-patio": {
+    "pl": { "story": "Małe patio między domem i ścianą gospodarczą otrzymało jasną nawierzchnię, prostą ławkę i kilka doniczek z zielenią.", "solution": "Powierzchnia antypoślizgowa, szczeliny dylatacyjne, spadek od domu.", "alt": "Mały miejski dziedziniec z nawierzchnią Laminam Travertino" },
+    "en": { "story": "A small patio between the house and a utility wall got a light surface, a simple bench and a few pots of greenery.", "solution": "Anti-slip surface, movement joints, slope away from the house.", "alt": "Small urban courtyard with Laminam Travertino paving" },
+    "de": { "story": "Ein kleiner Innenhof zwischen Haus und Wirtschaftswand erhielt einen hellen Belag, eine einfache Bank und ein paar Töpfe mit Grün.", "solution": "Rutschhemmende Oberfläche, Dehnungsfugen, Gefälle vom Haus weg.", "alt": "Kleiner Stadthof mit Belag Laminam Travertino" },
+    "lt": { "story": "Mažas kiemelis tarp namo ir ūkinės sienos gavo šviesią dangą, paprastą suolą ir kelis vazonus su žaluma.", "solution": "Neslidus paviršius, deformacinės siūlės, nuolydis nuo namo.", "alt": "Mažas miesto kiemelis su danga Laminam Travertino" }
+  },
+  "lviv-guest-bath": {
+    "pl": { "story": "W małej łazience czarny marmur zastosowano tylko na blacie i wąskim fartuchu, aby nie zaciemniać całego pomieszczenia.", "solution": "Blat pod umywalkę nablatową, spoina epoksydowa, pielęgnacja bez kwasów.", "alt": "Niewielka domowa łazienka z blatem Nero Marquina" },
+    "en": { "story": "In a small bathroom black marble was used only on the vanity top and a narrow splashback so as not to darken the whole room.", "solution": "Top for a countertop basin, epoxy joint, acid-free care.", "alt": "Small home bathroom with a Nero Marquina vanity top" },
+    "de": { "story": "In einem kleinen Bad wurde schwarzer Marmor nur auf Waschtischplatte und schmalem Spritzschutz eingesetzt, um den Raum nicht zu verdunkeln.", "solution": "Platte für Aufsatzwaschbecken, Epoxidfuge, säurefreie Pflege.", "alt": "Kleines Gästebad mit Waschtischplatte Nero Marquina" },
+    "lt": { "story": "Mažame vonios kambaryje juodas marmuras panaudotas tik stalviršiui ir siaurai sienelei, kad neužtemdytų viso kambario.", "solution": "Stalviršis po pastatomu praustuvu, epoksidinė siūlė, priežiūra be rūgščių.", "alt": "Nedidelis namų vonios kambarys su stalviršiu Nero Marquina" }
+  },
+  "kyiv-family-kitchen": {
+    "pl": { "story": "Jasna kwarcowa powierzchnia łączy strefę roboczą typowej kuchni rodzinnej.", "solution": "Prosty blat, parapet i krótki fartuch.", "alt": "Rodzinna kuchnia z kwarcowym blatem Calacatta Nuvo" },
+    "en": { "story": "A light quartz surface unites the work area of a typical family kitchen.", "solution": "Straight countertop, window sill and short splashback.", "alt": "Family kitchen with a Calacatta Nuvo quartz countertop" },
+    "de": { "story": "Eine helle Quarzoberfläche vereint die Arbeitszone einer typischen Familienküche.", "solution": "Gerade Arbeitsplatte, Fensterbank und kurzer Spritzschutz.", "alt": "Familienküche mit Quarzarbeitsplatte Calacatta Nuvo" },
+    "lt": { "story": "Šviesus kvarco paviršius sujungia tipinės šeimos virtuvės darbo zoną.", "solution": "Tiesus stalviršis, palangė ir trumpa sienelė.", "alt": "Šeimos virtuvė su kvarco stalviršiu Calacatta Nuvo" }
+  },
+  "rivne-compact-bath": {
+    "pl": { "story": "Ciepły marmur zastosowano tylko na szafce, aby zachować lekkość przestrzeni.", "solution": "Blat pod umywalkę i impregnacja ochronna.", "alt": "Kompaktowa łazienka z blatem Crema Marfil" },
+    "en": { "story": "Warm marble was used only for the vanity to keep the space light.", "solution": "Vanity top and protective sealing.", "alt": "Compact bathroom with a Crema Marfil vanity top" },
+    "de": { "story": "Warmer Marmor wurde nur für den Waschtisch verwendet, um den Raum leicht zu halten.", "solution": "Waschtischplatte und Schutzimprägnierung.", "alt": "Kompaktes Bad mit Waschtischplatte Crema Marfil" },
+    "lt": { "story": "Šiltas marmuras panaudotas tik spintelei, kad erdvė liktų lengva.", "solution": "Stalviršis po praustuvu ir apsauginis impregnavimas.", "alt": "Kompaktiška vonia su stalviršiu Crema Marfil" }
+  },
+  "lutsk-house-porch": {
+    "pl": { "story": "Szary granit tworzy praktyczne schody codziennego wejścia.", "solution": "Płomieniowane stopnice, spadek i odprowadzenie wody.", "alt": "Ganek z płomieniowanego Grey Ukraine" },
+    "en": { "story": "Grey granite forms practical steps for the everyday entrance.", "solution": "Flamed treads, slope and drainage.", "alt": "Porch in flamed Grey Ukraine" },
+    "de": { "story": "Grauer Granit bildet eine praktische Treppe für den täglichen Eingang.", "solution": "Geflammte Trittstufen, Gefälle und Wasserableitung.", "alt": "Vorbau aus geflammtem Grey Ukraine" },
+    "lt": { "story": "Pilkas granitas formuoja praktiškus laiptus kasdieniam įėjimui.", "solution": "Degintos pakopos, nuolydis ir vandens nuvedimas.", "alt": "Prieangis iš deginto Grey Ukraine" }
+  },
+  "ternopil-small-yard": {
+    "pl": { "story": "Czerwony kamień pracuje jako akcent w spokojnym szarym brukowaniu.", "solution": "Miejsce parkingowe, ścieżka i stałe krawędzie.", "alt": "Podwórze z czerwoną kostką granitową Maple Red" },
+    "en": { "story": "Red stone works as an accent in calm grey paving.", "solution": "Parking space, path and fixed edges.", "alt": "Yard with red Maple Red granite paving" },
+    "de": { "story": "Roter Stein wirkt als Akzent in ruhigem grauem Pflaster.", "solution": "Stellplatz, Weg und feste Ränder.", "alt": "Hof mit rotem Granitpflaster Maple Red" },
+    "lt": { "story": "Raudonas akmuo dirba kaip akcentas ramiame pilkame grindinyje.", "solution": "Stovėjimo vieta, takas ir fiksuoti kraštai.", "alt": "Kiemas su raudonu granito grindiniu Maple Red" }
+  },
+  "lviv-small-cafe": {
+    "pl": { "story": "Niebieski refleks labradorytu dodaje charakteru kompaktowej sali.", "solution": "Krótki bar, zaokrąglony narożnik i zabezpieczona spoina robocza.", "alt": "Małe kafe z barem Volga Blue" },
+    "en": { "story": "The blue flash of labradorite adds character to a compact room.", "solution": "Short counter, rounded corner and protected working joint.", "alt": "Small café with a Volga Blue counter" },
+    "de": { "story": "Der blaue Schimmer des Labradorits gibt dem kompakten Raum Charakter.", "solution": "Kurzer Tresen, abgerundete Ecke und geschützte Arbeitsfuge.", "alt": "Kleines Café mit Tresen Volga Blue" },
+    "lt": { "story": "Mėlynas labradorito atspindys suteikia charakterio kompaktiškai salei.", "solution": "Trumpas stalas, suapvalintas kampas ir apsaugota darbinė siūlė.", "alt": "Maža kavinė su stalu Volga Blue" }
+  },
+  "zhytomyr-family-windowsill": {
+    "pl": { "story": "Szeroki parapet służy roślinom, książkom i codziennym rzeczom.", "solution": "Prosta płyta z małym nawisem i dokładnym przyleganiem.", "alt": "Pokój rodzinny z parapetem Grey Ukraine" },
+    "en": { "story": "A wide window sill is used for plants, books and everyday things.", "solution": "Straight slab with a small overhang and precise fit.", "alt": "Family room with a Grey Ukraine window sill" },
+    "de": { "story": "Eine breite Fensterbank dient Pflanzen, Büchern und Alltagsdingen.", "solution": "Gerade Platte mit kleinem Überstand und präzisem Anschluss.", "alt": "Familienzimmer mit Fensterbank Grey Ukraine" },
+    "lt": { "story": "Plati palangė naudojama augalams, knygoms ir kasdieniams daiktams.", "solution": "Tiesi plokštė su maža iškyša ir tiksliu priglaudimu.", "alt": "Šeimos kambarys su palange Grey Ukraine" }
+  },
+  "frankivsk-house-fireplace": {
+    "pl": { "story": "Kontrastowy czarny portal tworzy centrum niewielkiego salonu.", "solution": "Lakoniczna rama i szczelina techniczna od wkładu.", "alt": "Prywatny salon z portalem Nero Marquina" },
+    "en": { "story": "A contrasting black surround forms the centre of a small living room.", "solution": "Restrained frame and a technical gap from the firebox.", "alt": "Private living room with a Nero Marquina surround" },
+    "de": { "story": "Ein kontrastierendes schwarzes Portal bildet die Mitte eines kleinen Wohnzimmers.", "solution": "Schlichter Rahmen und technischer Abstand zum Feuerraum.", "alt": "Privates Wohnzimmer mit Portal Nero Marquina" },
+    "lt": { "story": "Kontrastingas juodas portalas formuoja nedidelės svetainės centrą.", "solution": "Lakoniškas rėmas ir techninis tarpas nuo pakuros.", "alt": "Privati svetainė su portalu Nero Marquina" }
+  },
+  "khmelnytskyi-dining-table": {
+    "pl": { "story": "Cienka powierzchnia z rysunkiem trawertynu odciąża rodzinną jadalnię.", "solution": "Stół na sześć osób z zaokrąglonymi narożnikami.", "alt": "Stół rodzinny z Laminam Travertino" },
+    "en": { "story": "A thin surface with a travertine pattern lightens the family dining room.", "solution": "Table for six with rounded corners.", "alt": "Family table in Laminam Travertino" },
+    "de": { "story": "Eine dünne Oberfläche in Travertinzeichnung macht das Familienesszimmer leichter.", "solution": "Tisch für sechs Personen mit abgerundeten Ecken.", "alt": "Familientisch aus Laminam Travertino" },
+    "lt": { "story": "Plonas paviršius su travertino raštu palengvina šeimos valgomąjį.", "solution": "Stalas šešiems su suapvalintais kampais.", "alt": "Šeimos stalas iš Laminam Travertino" }
+  }
+}

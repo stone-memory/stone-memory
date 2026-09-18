@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { InfoPage, Section, Table, Faq, CtaBand, LinkPills } from "@/components/info-page"
+import { PricesContent, type FacetLink, type PriceRow } from "@/components/info/prices-content"
 import { fetchStones } from "@/lib/data-source"
 import { MEMORIAL_FACETS, facetItems, catalogPagePath } from "@/lib/catalog-taxonomy"
 import { productType, type ProductType } from "@/lib/product-copy"
-import { LEAD_TIMES, PAYMENT, SERVICE_PRICES, WARRANTY_YEARS } from "@/lib/site-facts"
+import { FACTS } from "@/lib/i18n/copy/facts"
+import { PRICES_COPY } from "@/lib/i18n/copy/pages/prices"
 import { absoluteUrl } from "@/lib/site-config"
 import type { StoneItem } from "@/lib/types"
 
@@ -25,18 +25,16 @@ export const metadata: Metadata = {
   },
 }
 
-const TYPE_ORDER: { type: ProductType; label: string; facet: string; lead: string; includes: string }[] = [
-  { type: "single", label: "Одинарний пам'ятник", facet: "odynochni", lead: LEAD_TIMES.single, includes: "стела, тумба, квітник, портрет і напис, фундамент, монтаж" },
-  { type: "double", label: "Подвійний пам'ятник", facet: "podviyni", lead: LEAD_TIMES.double, includes: "широка стела або дві, тумба, квітник на дві могили, два портрети" },
-  { type: "european", label: "Європейський пам'ятник", facet: "yevropeiski", lead: LEAD_TIMES.single, includes: "низька стела, надгробна плита, тумба, портрет і напис" },
-  { type: "cross", label: "Хрест гранітний", facet: "khresty", lead: LEAD_TIMES.cross, includes: "хрест із суцільної плити, тумба, напис, квітник" },
-  { type: "child", label: "Дитячий пам'ятник", facet: "dytyachi", lead: LEAD_TIMES.child, includes: "стела зменшеного розміру, тумба, квітник, портрет" },
-  { type: "complex", label: "Меморіальний комплекс", facet: "kompleksy", lead: LEAD_TIMES.complex, includes: "стела, тумба, плита з квітником, облицювання ділянки, фундамент" },
-  { type: "military", label: "Військовий пам'ятник", facet: "viyskovi", lead: LEAD_TIMES.military, includes: "стела, портрет у формі, символіка, плита, облицювання, документи" },
+/** Порядок рядків таблиці і фасет каталогу для кожного типу; підписи — у словнику сторінки. */
+const TYPE_ORDER: { type: ProductType; facet: string; lead: PriceRow["lead"] }[] = [
+  { type: "single", facet: "odynochni", lead: "single" },
+  { type: "double", facet: "podviyni", lead: "double" },
+  { type: "european", facet: "yevropeiski", lead: "single" },
+  { type: "cross", facet: "khresty", lead: "cross" },
+  { type: "child", facet: "dytyachi", lead: "child" },
+  { type: "complex", facet: "kompleksy", lead: "complex" },
+  { type: "military", facet: "viyskovi", lead: "military" },
 ]
-
-/** Нерозривний пробіл перед ₴, щоб у вузькій колонці знак не переносився на окремий рядок. */
-const fmt = (n: number) => `${n.toLocaleString("uk-UA")}\u00A0₴`
 
 function stats(items: StoneItem[]) {
   const prices = items.map((s) => s.priceFrom).filter((p): p is number => typeof p === "number" && p > 0).sort((a, b) => a - b)
@@ -44,45 +42,27 @@ function stats(items: StoneItem[]) {
   return { min: prices[0], median: prices[Math.floor(prices.length / 2)], max: prices[prices.length - 1], n: prices.length }
 }
 
-const FAQ = [
-  {
-    q: "Чому ціна вказана «від»?",
-    a: "Ціна «від» — це базова комплектація моделі в мінімальному стандартному розмірі, з фундаментом і монтажем. Остаточна вартість залежить від розміру ділянки, висоти й товщини стели, кількості гравіювань і додаткових елементів. Після фото ділянки називаємо точну цифру, і вона не змінюється під час роботи.",
-  },
-  {
-    q: "Чи входить монтаж і фундамент у ціну?",
-    a: "Так. У кожній ціні на сайті вже є армований бетонний фундамент, доставка й монтаж бригадою в межах Рівненської та Волинської областей. В інші регіони доставка рахується за пробігом, і ми називаємо її одразу разом із ціною виробу.",
-  },
-  {
-    q: "Як оплачувати?",
-    a: `${PAYMENT.steps.map((s) => `${s.share} — ${s.when}`).join("; ")}. ${PAYMENT.methods}`,
-  },
-  {
-    q: "Скільки коштує лише гравіювання портрета на вже встановленому пам'ятнику?",
-    a: "Портрет на готовому камені — від 2 000 ₴ разом із ретушшю фото, виконуємо на кладовищі або в цеху, якщо стелу можна зняти. Термін — 7–10 днів. Виїзд по Рівненщині й Волині безкоштовний.",
-  },
-]
-
+/**
+ * Сервер рахує статистику цін і передає числа; тексти й валюта — у
+ * клієнтському PricesContent за мовою відвідувача. JSON-LD — українською.
+ */
 export default async function PricesPage() {
   const stones = await fetchStones()
   const monuments = stones.filter((s) => s.category === "memorial")
 
-  const rows = TYPE_ORDER.map((t) => {
-    const items = monuments.filter((s) => productType(s) === t.type)
-    return { ...t, items, st: stats(items) }
-  }).filter((r) => r.st)
+  const rows: PriceRow[] = TYPE_ORDER.flatMap((t) => {
+    const st = stats(monuments.filter((s) => productType(s) === t.type))
+    return st ? [{ ...t, ...st }] : []
+  })
 
   const overall = stats(monuments)
-  const facetLinks = MEMORIAL_FACETS.map((f) => ({
-    href: catalogPagePath(f.slug, 1),
-    label: f.h1,
-    count: facetItems(stones, f).length,
-  })).filter((f) => f.count > 0)
+  const facets: FacetLink[] = MEMORIAL_FACETS.map((f) => ({ slug: f.slug, h1: f.h1, count: facetItems(stones, f).length })).filter((f) => f.count > 0)
 
+  const uk = PRICES_COPY.uk(FACTS.uk)
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+    mainEntity: uk.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   }
   const offers = {
     "@context": "https://schema.org",
@@ -91,10 +71,10 @@ export default async function PricesPage() {
     url: absoluteUrl(PATH),
     itemListElement: rows.map((r) => ({
       "@type": "Offer",
-      name: r.label,
+      name: uk.types[r.type].label,
       priceCurrency: "UAH",
-      price: r.st!.min,
-      priceSpecification: { "@type": "PriceSpecification", minPrice: r.st!.min, maxPrice: r.st!.max, priceCurrency: "UAH" },
+      price: r.min,
+      priceSpecification: { "@type": "PriceSpecification", minPrice: r.min, maxPrice: r.max, priceCurrency: "UAH" },
       url: absoluteUrl(catalogPagePath(r.facet, 1)),
     })),
   }
@@ -103,67 +83,7 @@ export default async function PricesPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(offers) }} />
-      <InfoPage
-        crumbs={[{ name: "Ціни" }]}
-        title="Ціни на пам'ятники"
-        lead={`Від виробника, з фундаментом і монтажем. ${overall ? `Каталог починається з ${fmt(overall.min)} за одинарний пам'ятник` : "Каталог оновлюється"}`}
-      >
-        <Section eyebrow="За типом виробу" title="Скільки коштує пам'ятник">
-          <Table
-            head={["Тип", "Від", "Типово", "До", "Термін", "У базовій ціні"]}
-            rows={rows.map((r) => [
-              <Link key={r.type} href={catalogPagePath(r.facet, 1)} className="underline decoration-foreground/20 underline-offset-4 hover:decoration-foreground">
-                {r.label} <span className="text-muted-foreground">({r.st!.n})</span>
-              </Link>,
-              <span key={`${r.type}-min`} className="whitespace-nowrap">{fmt(r.st!.min)}</span>,
-              <span key={`${r.type}-med`} className="whitespace-nowrap">{fmt(r.st!.median)}</span>,
-              <span key={`${r.type}-max`} className="whitespace-nowrap">{fmt(r.st!.max)}</span>,
-              <span key={`${r.type}-lead`} className="whitespace-nowrap">{r.lead}</span>,
-              <span key={`${r.type}-inc`} className="text-sm text-muted-foreground">{r.includes}</span>,
-            ])}
-            caption="«Типово» — медіана цін моделей цього типу в каталозі. Усі ціни в гривнях, на дату перегляду сторінки."
-          />
-          <div className="mt-6">
-            <LinkPills items={facetLinks} />
-          </div>
-        </Section>
-
-        <Section eyebrow="Послуги" title="Гравіювання, доповнення, благоустрій">
-          <Table
-            head={["Робота", "Ціна", "Примітка"]}
-            // Ціна одним рядком: на телефоні колонка вужчала, і «від 2 000 ₴»
-            // ламалось усередині суми («від 2 / 000 ₴»).
-            rows={SERVICE_PRICES.map((s) => [
-              s.name,
-              <span key={`${s.name}-price`} className="whitespace-nowrap">{s.price}</span>,
-              <span key={s.name} className="text-sm text-muted-foreground">{s.note}</span>,
-            ])}
-            caption="Орієнтовні ціни на роботи окремо від пам'ятника. Точну вартість називаємо після фото."
-          />
-        </Section>
-
-        <Section eyebrow="Оплата" title="Три платежі">
-          <ol className="grid gap-4 md:grid-cols-3">
-            {PAYMENT.steps.map((s) => (
-              <li key={s.share} className="rounded-2xl bg-card p-6 ring-1 ring-black/[0.06] shadow-soft">
-                <div className="text-3xl font-semibold tracking-tight-custom tabular-nums">{s.share}</div>
-                <div className="mt-2 font-medium">{s.when}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{s.what}</div>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-4 max-w-3xl text-[15px] text-muted-foreground">
-            {PAYMENT.methods} Гарантія {WARRANTY_YEARS} років на камінь, фундамент і монтаж входить у ціну.{" "}
-            <Link href="/dostavka-i-oplata" className="underline underline-offset-4 hover:text-foreground">Докладніше про доставку й оплату</Link>.
-          </p>
-        </Section>
-
-        <Section eyebrow="Питання" title="Про ціни запитують найчастіше">
-          <Faq items={FAQ} />
-        </Section>
-
-        <CtaBand title="Точна ціна — за фото ділянки" text="Надішліть фото місця і модель, яка сподобалась, — протягом робочого дня повернемось із ескізом у вашому камені й остаточною цифрою, яка не зміниться під час роботи." cta="Отримати точну ціну" />
-      </InfoPage>
+      <PricesContent rows={rows} overallMin={overall?.min ?? null} facets={facets} />
     </>
   )
 }

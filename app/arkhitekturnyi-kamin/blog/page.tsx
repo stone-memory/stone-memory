@@ -1,12 +1,12 @@
 import { pageMetadata } from '@/lib/stone/seo'
 import { SITE_URL } from '@/lib/site-config'
-import { getArticles } from '@/lib/stone/cms'
+import { getLocalizedArticles } from '@/lib/stone/i18n-content'
 import { BlogHub } from '@/components/stone/blog/blog-hub'
 import { JsonLd, PageHero } from '@/components/stone/pages/primitives'
 
 export const metadata = pageMetadata('/arkhitekturnyi-kamin/blog', { title: 'Журнал Stone Memory' })
 export default async function Page() {
-  const articles = await getArticles()
+  const articles = await getLocalizedArticles()
   return (
     <>
       <JsonLd

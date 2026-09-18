@@ -346,6 +346,42 @@ export const finishLabels: Record<StoneFinish, Record<Locale, string>> = {
   split: { uk: "Колота", pl: "Łupane", en: "Split", de: "Gespalten", lt: "Skaldyta" },
 }
 
+/**
+ * Значення, які адмінка зберігає українським вільним текстом (усі 206 позицій
+ * мають finish «Полірована», shape — «Меморіальний комплекс» тощо), а не
+ * канонічним ключем. Резолвери шукають і за ними, щоб чип на картці та
+ * характеристики товару перекладались без міграції даних. Ключ — нижній
+ * регістр збереженого значення.
+ */
+const FINISH_ALIASES: Record<string, StoneFinish> = {
+  "полірована": "polished",
+  "полірований": "polished",
+  "шліфована": "honed",
+  "термо": "flamed",
+  "термооброблена": "flamed",
+  "антик": "antique",
+  "природна": "natural",
+  "колота": "split",
+}
+
+const SHAPE_TEXT_LABELS: Record<string, Record<Locale, string>> = {
+  "меморіальний комплекс": { uk: "Меморіальний комплекс", pl: "Kompleks nagrobny", en: "Memorial complex", de: "Grabanlage", lt: "Memorialinis kompleksas" },
+  "пам'ятник одинарний": { uk: "Пам'ятник одинарний", pl: "Pomnik pojedynczy", en: "Single monument", de: "Einzelgrabmal", lt: "Vienvietis paminklas" },
+  "одиночний": { uk: "Одиночний", pl: "Pojedynczy", en: "Single", de: "Einzel", lt: "Vienvietis" },
+  "військовий пам'ятник": { uk: "Військовий пам'ятник", pl: "Pomnik wojskowy", en: "Military monument", de: "Soldatengrabmal", lt: "Karinis paminklas" },
+  "пам'ятник подвійний": { uk: "Пам'ятник подвійний", pl: "Pomnik podwójny", en: "Double monument", de: "Doppelgrabmal", lt: "Dvivietis paminklas" },
+  "хрест гранітний": { uk: "Хрест гранітний", pl: "Krzyż granitowy", en: "Granite cross", de: "Granitkreuz", lt: "Granito kryžius" },
+  "пам'ятник європейський": { uk: "Пам'ятник європейський", pl: "Pomnik europejski", en: "European-style monument", de: "Grabmal im europäischen Stil", lt: "Europietiškas paminklas" },
+  "дитячий пам'ятник": { uk: "Дитячий пам'ятник", pl: "Pomnik dziecięcy", en: "Children's monument", de: "Kindergrabmal", lt: "Vaikų paminklas" },
+  "скульптура": { uk: "Скульптура", pl: "Rzeźba", en: "Sculpture", de: "Skulptur", lt: "Skulptūra" },
+  "надгробна плита": { uk: "Надгробна плита", pl: "Płyta nagrobna", en: "Grave slab", de: "Grabplatte", lt: "Antkapio plokštė" },
+  "обеліск": { uk: "Обеліск", pl: "Obelisk", en: "Obelisk", de: "Obelisk", lt: "Obeliskas" },
+  "колумбарна плита": { uk: "Колумбарна плита", pl: "Płyta kolumbaryjna", en: "Columbarium plaque", de: "Kolumbariumsplatte", lt: "Kolumbariumo plokštė" },
+  "стела з барельєфом": { uk: "Стела з барельєфом", pl: "Stela z płaskorzeźbą", en: "Stele with bas-relief", de: "Stele mit Relief", lt: "Stela su bareljefu" },
+  "урна-пам'ятник": { uk: "Урна-пам'ятник", pl: "Urna pomnikowa", en: "Urn monument", de: "Urnengrabmal", lt: "Urnos paminklas" },
+  "валун": { uk: "Валун", pl: "Głaz", en: "Boulder", de: "Findling", lt: "Riedulys" },
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // Safe label resolvers. Admins can now add custom material/colour/shape/finish
 // values that aren't in the maps above. These helpers return the localized
@@ -369,7 +405,17 @@ function resolveLabel<K extends string>(
   const manual = i18n?.[locale]
   if (manual) return manual
   const entry = (map as Record<string, Record<Locale, string>>)[value]
-  return entry?.[locale] ?? capitalize(value)
+  if (entry) return entry[locale]
+  const lower = value.trim().toLowerCase()
+  if ((map as unknown) === finishLabels) {
+    const alias = FINISH_ALIASES[lower]
+    if (alias) return finishLabels[alias][locale]
+  }
+  if ((map as unknown) === shapeLabels) {
+    const text = SHAPE_TEXT_LABELS[lower]
+    if (text) return text[locale]
+  }
+  return capitalize(value)
 }
 
 export const colorLabel = (v: string | undefined, locale: Locale, i18n?: I18nOverride) =>

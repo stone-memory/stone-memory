@@ -12,6 +12,7 @@ import { SelectionSidebar } from "@/components/selection-sidebar"
 import { StoneCard } from "@/components/stone-card"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
+import { PRODUCT_COPY } from "@/lib/i18n/copy/product"
 import { filterLabels, colorLabel, shapeLabel, finishLabel, materialLabel } from "@/lib/i18n/filters"
 import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { MaterialPicker, type MaterialChoice } from "@/components/material-picker"
@@ -80,6 +81,7 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story, 
   const shownPrice = choice?.price ?? stone.priceFrom
 
   const L = filterLabels[locale]
+  const P = PRODUCT_COPY[locale]
   const isSelected = items.some((i) => i.id === stone.id)
   const displayName = stoneDisplayName(stone) ?? `№ ${stoneCode(stone)}`
   // Descriptive h1 and alt text — the page used to render the bare code ("001")
@@ -191,13 +193,13 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story, 
                 <button
                   type="button"
                   onClick={handleShare}
-                  aria-label={shared ? "Посилання скопійовано" : L.shareTitle}
+                  aria-label={shared ? P.linkCopied : L.shareTitle}
                   className="absolute right-4 top-4 z-10 flex h-10 items-center justify-center gap-1.5 rounded-full bg-white/85 px-3 backdrop-blur-md text-foreground shadow-soft transition-transform hover:-translate-y-0.5"
                 >
                   {shared ? (
                     <>
                       <Check className="h-4 w-4 text-green-600" strokeWidth={2} />
-                      <span className="text-xs font-medium">Скопійовано</span>
+                      <span className="text-xs font-medium">{P.copied}</span>
                     </>
                   ) : (
                     <Share2 className="h-4 w-4" strokeWidth={1.75} />
@@ -218,7 +220,7 @@ export function StoneDetailClient({ stone, related, leadTime, storyLead, story, 
                       )}
                       aria-label={`Image ${i + 1}`}
                     >
-                      <Image src={g} alt={`${imageAlt}, фото ${i + 1}`} fill sizes="200px" className="object-cover" />
+                      <Image src={g} alt={`${imageAlt}, ${P.photoN(i + 1)}`} fill sizes="200px" className="object-cover" />
                     </button>
                   ))}
                 </div>

@@ -1,0 +1,173 @@
+{
+  "ukladannya-granitnoyi-brukivky": {
+    "title": "Układanie kostki granitowej: technologia i podłoże",
+    "h1": "Jak układa się kostkę granitową — etapy i podłoże",
+    "description": "Układanie kostki granitowej: warstwy podłoża pod ścieżkę i podjazd, spadki, krawężniki, sposoby brukowania, wypełnienie spoin i pielęgnacja po ułożeniu.",
+    "dek": "Podłoże, spadki, spoiny i kolejność prac dla stabilnej nawierzchni.",
+    "intro": "Kostka granitowa służy wiecznie, ale podłoże pod nią nie, jeśli zrobić je źle. Zapadnięte koleiny na podjeździe i „fale” na ścieżce to zawsze błąd w warstwach, zagęszczeniu lub wodzie, a nie w kamieniu. Opisujemy technologię, według której pracujemy, i wyjaśniamy, czym różni się podłoże dla pieszych i dla samochodu.",
+    "sections": [
+      { "heading": "Jak prawidłowo ułożyć kostkę?", "body": "Kolejność jest jedna dla wszystkich powierzchni: wytyczenie i zaplanowanie spadków, wykop na głębokość wszystkich warstw, geowłóknina, tłuczeń z warstwowym zagęszczeniem, krawężniki na betonie, warstwa wyrównująca, układanie kamienia, ubijanie, wypełnienie spoin.\n\nSpadek nawierzchni od budynku nie mniej niż 1,5–2 %, czyli 2 cm na metr. Woda ma iść do trawnika, korytka odwadniającego lub wpustu, a nie do ściany. Ta zasada jest ważniejsza od grubości kamienia." },
+      { "heading": "Jakie podłoże przygotować?", "body": "Ścieżka piesza: wykop 25–30 cm, geowłóknina, tłuczeń frakcji 20–40 warstwą 15 cm zagęszczony płytą wibracyjną, warstwa wyrównująca z grysu granitowego lub mieszanki piasku z cementem 3–5 cm, kostka 50–60 mm.\n\nPodjazd i miejsce parkingowe: wykop 40–45 cm, geowłóknina, tłuczeń 40–70 warstwą 15 cm, tłuczeń 20–40 warstwą 10 cm, każdą warstwę zagęszcza się osobno, warstwa wyrównująca 3–4 cm, kostka 80–100 mm. Na słabych gruntach dodaje się warstwę piasku 10 cm pod tłuczeń lub zbrojoną płytę betonową.\n\nKrawężniki stawia się na ławie betonowej przed ułożeniem kamienia: trzymają nawierzchnię przed rozjechaniem. Bez krawężników lub z krawężnikami „na piasek” brzegi osiadają w pierwszym sezonie." },
+      { "heading": "Jakie są sposoby brukowania i wzory?", "body": "Rzędami: najprostszy i najszybszy, pasuje na ścieżki. Z przesunięciem o pół kostki: mocniejszy, bo spoiny się nie pokrywają, standard na podjazdy. Łukami i wachlarzem: klasyka europejskich placów z kostki łupanej 100 × 100 mm, wymaga doświadczenia i większej ilości kamienia, ale świetnie przenosi obciążenia.\n\nDla kontrastowych wzorów łączy się szary Grey Ukraine z czerwonym Maple Red lub czarnym gabro: obramowanie, pasy, moduł szachownicy. Kostka cięto-łupana z równą górą jest wygodniejsza do chodzenia w szpilkach i na rowerze, w pełni łupana jest bardziej fakturowa i lepiej pracuje na spadkach." },
+      { "heading": "Jak pielęgnować po ułożeniu?", "body": "Przez pierwsze dwa tygodnie spoiny dosypuje się: grys lub piasek osiadają po deszczach i trzeba je doprowadzić do poziomu kamienia. Dalej raz w roku zamiata się, w razie potrzeby dosypuje spoiny i spłukuje wodą. Piasek polimerowy do spoin trzyma się lepiej od zwykłego i nie porasta trawą, ale jest droższy.\n\nZimą odgarniaj śnieg łopatą plastikową lub gumową, sól granitowi nie szkodzi. Mech po północnej, zacienionej stronie zmywa się wodą pod ciśnieniem raz na kilka lat. Jeśli jeden kamień się zapadł lub uszkodził, wyjmuje się go, dosypuje podłoże i układa z powrotem: to główna zaleta brukowania nad asfaltem i betonem." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Piasek", "Warstwa wyrównująca 3–5 cm", "Tylko na zagęszczonym tłuczniu"],
+        ["Tłuczeń", "Warstwa nośna 15–25 cm", "Warstwowe zagęszczanie płytą wibracyjną"],
+        ["Beton", "Krawężniki, słabe grunty, korytka", "Odwodnienie i szczeliny dylatacyjne"],
+        ["Geowłóknina", "Między gruntem i tłuczniem", "Nie pozwala warstwom się mieszać"]
+      ]
+    },
+    "faq": [
+      { "question": "Jaka grubość kostki pod auto?", "answer": "80–100 mm dla aut osobowych i 100 mm dla ciężarówek. Ścieżki piesze — 50–60 mm." },
+      { "question": "Czy potrzebny jest beton?", "answer": "Pod samą kostkę zwykle nie: zagęszczony tłuczeń i grys pracują lepiej, bo przepuszczają wodę. Beton potrzebny jest pod krawężniki, korytka oraz na słabych lub nasypowych gruntach." },
+      { "question": "Jak wypełnić spoiny?", "answer": "Grysem granitowym lub drobnym piaskiem, który zamiata się w spoiny i przelewa wodą w kilku podejściach. Piasek polimerowy trzyma się dłużej i nie porasta." },
+      { "question": "Jak długo służy?", "answer": "Kamień — bez ograniczeń. Podłoże przy prawidłowej technologii — 30 i więcej lat bez przekładania." }
+    ]
+  },
+  "kamin-dlya-kaminu-granit-marmur": {
+    "title": "Kamień na kominek: granit, marmur czy trawertyn",
+    "h1": "Jaki kamień wybrać na okładzinę kominka",
+    "description": "Kamień na kominek: granit, marmur, trawertyn lub labradoryt. Odporność termiczna, szczeliny techniczne od wkładu, klej, pielęgnacja i wygląd portalu.",
+    "dek": "Skała i detal okładziny dla różnych typów kominków.",
+    "intro": "Portal kominkowy to najbardziej widoczny kamienny wyrób w salonie i pracuje w najtrudniejszych warunkach: nagrzewanie, sadza, gwałtowne zmiany temperatury. Kamień naturalny jest do tego stworzony, ale skała, detal i klej muszą odpowiadać typowi kominka. Wyjaśniamy różnicę między kominkiem na drewno, gazowym i elektrycznym oraz co radzimy do każdego.",
+    "sections": [
+      { "heading": "Który kamień nadaje się na kominek?", "body": "Do kominka na drewno z otwartą lub zamkniętą komorą: granit lub gabro na portal, a szczególnie na podest przed wkładem, gdzie spadają iskry i węgle. Do gazowego: każdy kamień, także marmur, bo nagrzewanie jest umiarkowane. Do elektrycznego: ograniczeń nie ma, to mebel.\n\nLabradoryt Volga Blue to jeden z najefektowniejszych wariantów na portal: niebieski błysk kryształów ożywa w świetle ognia. Trawertyn wybiera się do ciepłych śródziemnomorskich wnętrz, ale jego pory wymagają ochrony przed sadzą." },
+      { "heading": "Czym granit jest lepszy przy intensywnym użytkowaniu?", "body": "Granit nie zmienia koloru od nagrzania do 200–250 °C, po impregnacji nie chłonie sadzy, wytrzymuje uderzenie polan i łatwo się myje. Na podeście przed wkładem można go czyścić z węgla twardą szczotką. Polerowana powierzchnia odbija ogień i dodaje pokojowi światła.\n\nRozszerzalność cieplna granitu jest niewielka, ale portalu nie przykleja się do wkładu na styk: między metalem i kamieniem zostawia się szczelinę 5–10 mm z uszczelniaczem żaroodpornym lub wełną mineralną, a płyty układa się na żaroodpornym kleju do kamienia." },
+      { "heading": "Kiedy wybrać marmur?", "body": "Marmur to klasyka portali kominkowych od Wersalu do lwowskich kamienic. Wybieraj go do kominków gazowych i elektrycznych albo do kominków na drewno z zamkniętą komorą, gdzie portal nie ma kontaktu z płomieniem i ma szczelinę techniczną.\n\nNa marmurze widoczna jest sadza i ślady po rękach, a kwasowe środki do czyszczenia szyby wkładu wytrawiają powierzchnię. Dlatego portal marmurowy pielęgnuje się tylko środkami neutralnymi i impregnuje raz w roku. Bianco Carrara i Nero Marquina to najpowszechniejszy wybór; Crema Marfil daje ciepły, spokojny portal do jasnego salonu." },
+      { "heading": "Co z odpornością termiczną i pielęgnacją?", "body": "Kamień naturalny wytrzymuje nagrzanie, jakie osiąga portal, ale nie wytrzymuje gwałtownego miejscowego nagrzania: gorące żeliwne naczynie na marmurowym podeście może zostawić ślad lub pęknięcie. Dlatego podest przed wkładem na drewno robimy z granitu lub gabro.\n\nPielęgnacja: sadzę zmywa się wodą ze środkiem neutralnym, ciężkie zabrudzenia kompresem z sody. Granit impregnuje się raz na dwa–trzy lata, marmur i trawertyn co roku. Raz w sezonie sprawdzaj szczelinę między wkładem i kamieniem: uszczelniacz ma być elastyczny i bez pęknięć." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Granit / gabro", "Kominki na drewno, podest", "Żaroodporny, myje się szczotką"],
+        ["Labradoryt", "Portal akcentowy", "Błysk kryształów w świetle ognia"],
+        ["Marmur", "Wkłady gazowe i zamknięte, klasyka", "Wrażliwy na kwasy i sadzę"],
+        ["Trawertyn", "Ciepłe wnętrza", "Pory impregnować co roku"]
+      ]
+    },
+    "faq": [
+      { "question": "Czy marmur wytrzymuje żar?", "answer": "Umiarkowane nagrzanie portalu — tak. Bezpośredni kontakt z płomieniem, iskrami lub gorącym metalem — nie, do tych stref bierzemy granit." },
+      { "question": "Co do kominka na drewno?", "answer": "Granit lub gabro na portal i podest, klej żaroodporny, szczelina 5–10 mm od wkładu z elastycznym uszczelniaczem." },
+      { "question": "Co do klasyki?", "answer": "Marmur Bianco Carrara lub Nero Marquina z profilowaną krawędzią, czasem z elementami rzeźbionymi. Do wkładu gazowego lub zamkniętego to bezpieczny wybór." },
+      { "question": "Jak czyścić portal?", "answer": "Neutralnym środkiem do kamienia i miękką ściereczką. Sadzę kompresem z sody. Bez kwasów, zwłaszcza na marmurze, i bez środków do czyszczenia szyby wkładu na kamieniu." }
+    ]
+  },
+  "landshaftnyy-kamin-dvir": {
+    "title": "Kamień ogrodowy na podwórze: rodzaje i zastosowanie",
+    "h1": "Kamień ogrodowy — jak wybrać na podwórze i do ogrodu",
+    "description": "Kamień ogrodowy na podwórze: płyty na ścieżki, mury oporowe, krawężniki, rabaty. Mrozoodporność, wykończenie antypoślizgowe, łączenie z kostką i elewacją.",
+    "dek": "Kamień na ścieżki, rabaty, mury oporowe i strefy dekoracyjne.",
+    "intro": "W ogrodzie kamień pracuje inaczej niż w domu: nie ma tu gorących naczyń, ale jest mróz, woda, korzenie i kosiarka. Kamień ogrodowy wybiera się nie za urodę na sląbie, lecz za funkcję: po czym chodzić, co trzymać, co podkreślić. Opowiadamy, jakie wyroby z granitu robimy na podwórza i jak łączą się z kostką i elewacją.",
+    "sections": [
+      { "heading": "Który kamień do ogrodu wybrać?", "body": "Granit zamyka wszystkie zadania podwórza: płyty na ścieżki i tarasy, krawężniki, schody, mury oporowe, okładziny rabat i oczek wodnych. Jest mrozoodporny, nie boi się wody i soli, a powierzchnia płomieniowana nie jest śliska. Piaskowiec i wapień są miększe i bardziej porowate, w naszym klimacie łuszczą się po kilku zimach.\n\nDo stref dekoracyjnych nadaje się kamień łupany z odpadów produkcyjnych: łamany na suche murki, otoczaki na rabaty. To przystępny sposób na naturalną fakturę i proponujemy go razem z głównymi wyrobami." },
+      { "heading": "Jakie rodzaje stosuje się na podwórzu?", "body": "Płyty na ścieżki i tarasy: 30–40 mm do układania na tłuczniu i piasku, 20 mm na podłożu betonowym, format od 300 × 300 do 600 × 900 mm, wykończenie płomieniowane lub cięte. Stopnie i schody ogrodowe: masywne bloki lub stopnice nakładane 30–40 mm na betonie.\n\nMury oporowe: bloki granitowe 200–400 mm lub płyty okładzinowe na rdzeniu betonowym. Krawężniki: cięte lub łupane o wysokości 80–150 mm, trzymają ścieżki i trawnik. Okładziny: rabaty, misy, oczka wodne, kuchnie zewnętrzne, ławy i blaty do grilla z granitu płomieniowanego." },
+      { "heading": "Jak połączyć kamień z kostką i elewacją?", "body": "Jedna zasada: nie więcej niż dwie skały na podwórzu. Na przykład Grey Ukraine w kostce i płytach tarasów plus Kometa Black w krawężnikach, schodach i pasach akcentowych. Jeśli elewacja lub cokół są z kamienia, ogród kontynuuje jego skałę.\n\nWykończenia dobieraj według funkcji: polerowane tylko na pionach i akcentach, płomieniowane wszędzie, gdzie się chodzi. Wymiary modułów warto dopasować do kostki (100 mm), aby ścieżka z płyt i podjazd z kostki łączyły się bez docinania." },
+      { "heading": "Jak pielęgnować kamień ogrodowy?", "body": "Dwa razy w roku spłukać wodą pod ciśnieniem, zwłaszcza miejsca zacienione, gdzie rośnie mech. Impregnacja granitu na zewnątrz nie jest potrzebna, dla piaskowca i wapienia — hydrofobizacja raz na kilka lat.\n\nZimą plastikowa łopata i dowolny środek przeciwoblodzeniowy, granit je wytrzymuje. Raz w roku sprawdź spoiny między płytami i krawężnikami i w razie potrzeby dosyp. Rośliny z agresywnymi korzeniami (wierzba, topola, bambus) sadź nie bliżej niż 2–3 m od ścieżek: korzenie podnoszą płyty niezależnie od rodzaju kamienia." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Płyty", "Ścieżki, tarasy, strefa grilla", "Płomieniowane wykończenie antypoślizgowe"],
+        ["Kamień łupany", "Rabaty, suche murki, akcenty", "Stabilne podłoże, drenaż"],
+        ["Bloki", "Mury oporowe, schody w ogrodzie", "Obliczenia inżynierskie od 1 m"],
+        ["Krawężniki", "Granice ścieżek i trawnika", "Na ławie betonowej"]
+      ]
+    },
+    "faq": [
+      { "question": "Który kamień jest mrozoodporny?", "answer": "Granit, gabro i labradoryt: nasiąkliwość poniżej 0,2 %, ponad 300 cykli zamrażania bez zmian. Piaskowiec i wapień w naszym klimacie łuszczą się." },
+      { "question": "Czy jest śliski po deszczu?", "answer": "Polerowany — tak, dlatego na zewnątrz go nie układamy. Płomieniowany, groszkowany i cięty granit są antypoślizgowe na mokro." },
+      { "question": "Jak układać?", "answer": "Płyty 30–40 mm na zagęszczony tłuczeń i grys jak kostkę, 20 mm na beton i klej. Krawężniki i schody na ławie betonowej." },
+      { "question": "Jak czyścić?", "answer": "Wodą pod ciśnieniem dwa razy w roku. Mech się zmywa, sól granitowi nie szkodzi, impregnacja nie jest potrzebna." }
+    ]
+  },
+  "skilky-koshtue-stilnytsia-z-kamenyu": {
+    "title": "Ile kosztuje blat z kamienia: od czego zależy cena",
+    "h1": "Od czego zależy koszt blatu z kamienia",
+    "description": "Koszt blatu z kamienia: materiał, powierzchnia i rozkrój, grubość, krawędź, wycięcia, wzmocnienia, dostawa i montaż. Jak uzyskać dokładną kalkulację.",
+    "dek": "Czynniki kosztorysu bez mylących uniwersalnych cen.",
+    "intro": "„Ile kosztuje blat z kamienia za metr?” — to najczęstsze pytanie i nie ma na nie uczciwej krótkiej odpowiedzi. Dwa blaty tej samej długości z tego samego kamienia mogą różnić się ceną dwukrotnie przez rozkrój, wycięcia i krawędź. Wyjaśniamy, z czego składa się kosztorys, w jakiej kolejności czynniki wpływają na kwotę i jak uzyskać dokładną liczbę w jeden dzień.",
+    "sections": [
+      { "heading": "Ile kosztuje blat z kamienia?", "body": "Kosztorys składa się z czterech części: materiał (sląb lub jego część), obróbka (rozkrój, krawędź, wycięcia, polerowanie krawędzi), elementy dodatkowe (fartuch, wzmocnienie, klejona krawędź) oraz logistyka z montażem.\n\nMateriał stanowi zwykle od 40 do 60 % kwoty, obróbka 25–40 %, reszta to dostawa i montaż. Dlatego pytanie „za metr” wprowadza w błąd: cennik za metr bieżący kamienia nie uwzględnia połowy prac. Orientację dla konkretnych wymiarów daje kalkulator na stronie, liczy właśnie według tej logiki." },
+      { "heading": "Jakie czynniki wpływają na cenę?", "body": "Materiał: skała, marka, rzadkość koloru. Powierzchnia i rozkrój: płacimy za cały sląb, dlatego ważne jest, ile płyt jest potrzebnych i jak detale na nie wchodzą; blat 3,1 m może wymagać dwóch sląbów zamiast jednego.\n\nGrubość: 30 mm jest droższe od 20 mm i w materiale, i w obróbce. Krawędź: prosta jest bazowa, faza i zaokrąglenie nieco droższe, ogee, wodospad i klejona krawędź 40–60 mm znacznie droższe. Wycięcia: każde wycięcie pod zlew, płytę grzewczą, baterię lub gniazdko dodaje pracy, a zlew podwieszany wymaga polerowania wewnętrznego obwodu.\n\nMontaż: piętro, winda, długość detali, łączenia na miejscu, wzmocnienie nawisów. Blat na piąte piętro bez windy kosztuje więcej niż ten sam na parterze." },
+      { "heading": "Jak materiał wpływa na koszt?", "body": "Umownie materiały katalogu dzielą się na trzy poziomy. Podstawowy: ukraińskie granity Grey Ukraine, Maple Red, Rosso Santiago i gres w standardowych dekorach. Średni: gabro, labradoryt, markowy kwarc Vicostone i Caesarstone z kolekcji podstawowych. Premium: marmur, kwarcyt Taj Mahal, kwarc z kolekcji „pod Calacattę”, Dekton i Neolith.\n\nW obrębie jednego poziomu różnica w cenie jest niewielka, między poziomami odczuwalna. Jeszcze jeden niuans: jasne jednolite materiały są z reguły droższe od ciemnych z rysunkiem, bo trudniej wyprodukować je bez wad. Ceny „od” dla każdej kolekcji są podane na jej stronie w katalogu." },
+      { "heading": "Jak szybko uzyskać dokładną kalkulację?", "body": "Krok pierwszy: kalkulator na stronie z wymiarami, typem wyrobu i materiałem daje orientację w minutę. Krok drugi: prześlij nam plan kuchni lub zdjęcie z wymiarami, a policzymy rozkrój i pełny kosztorys w jeden dzień. Krok trzeci: pomiar na obiekcie po ustawieniu mebli ustala ostateczną kwotę, która już się nie zmienia.\n\nAby nie przepłacać, przemyśl przed pomiarem trzy rzeczy: czy potrzebna jest klejona krawędź, czy można przenieść spoinę w miejsce, gdzie jest niewidoczna, i czy potrzebny jest kamienny fartuch na całej długości, czy tylko za płytą." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Materiał", "40–60 % kosztorysu", "Poziom skały i liczba sląbów"],
+        ["Rozkrój i grubość", "Wysoki wpływ", "Długość powyżej 3 m = drugi sląb"],
+        ["Krawędź i wycięcia", "Średni lub wysoki", "Klejona krawędź i zlew podwieszany droższe"],
+        ["Dostawa i montaż", "10–20 %", "Piętro, winda, łączenia na miejscu"]
+      ]
+    },
+    "faq": [
+      { "question": "Co droższe — granit czy kwarc?", "answer": "Ukraińskie granity są zwykle tańsze od markowego kwarcu. Importowany granit w rzadkich kolorach i kwarc z kolekcji premium kosztują mniej więcej tyle samo." },
+      { "question": "Czy montaż jest wliczony?", "answer": "W kosztorysie montaż jest osobną pozycją, jak i dostawa. Pozwala to widzieć, za co płacisz, i na życzenie zamówić samo wykonanie." },
+      { "question": "Jak policzyć samodzielnie?", "answer": "Kalkulator na stronie liczy według wymiarów, typu wyrobu, materiału, krawędzi i liczby wycięć. To orientacja z dokładnością około ±15 %, resztę precyzuje rozkrój." },
+      { "question": "Co wpływa najbardziej?", "answer": "Materiał i liczba sląbów. Dalej krawędź i wycięcia. Grubość 30 mm zamiast 20 mm dodaje 20–40 %." }
+    ]
+  },
+  "shcho-take-slyab": {
+    "title": "Czym jest sląb i gdzie się go stosuje",
+    "h1": "Sląb — co to jest, wymiary i zastosowanie",
+    "description": "Sląb to duża płyta kamienia naturalnego lub inżynieryjnego. Wymiary sląbów granitu, marmuru, kwarcu i gresu, grubość, jak wybrać i czym jest resztka.",
+    "dek": "Jak czytać całą płytę, partię, ton i powierzchnię użyteczną.",
+    "intro": "Sląb (od angielskiego slab, „płyta”) to duża płyta kamienia przecięta z bloku i wypolerowana z jednej strony. Właśnie ze sląbów tnie się blaty, parapety, schody i okładziny, i właśnie sląb, a nie próbkę 10 × 10 cm, trzeba oglądać przed zamówieniem. Wyjaśniamy, jakie bywają sląby, jakie mają wymiary i jak powstaje z nich Twój blat.",
+    "sections": [
+      { "heading": "Czym jest sląb?", "body": "W kamieniołomie kamień wydobywa się blokami o wadze 10–30 ton. Blok przecina się na płyty o grubości 20 lub 30 mm na trakach linowych lub tarczowych, następnie szlifuje i poleruje stronę licową. Gotowa płyta to właśnie sląb: w kamieniu naturalnym wymiar określa blok, w kwarcu i gresie — format fabryki.\n\nKażdy sląb ma numer, partię i rzeczywiste wymiary, a kamienie naturalne dodatkowo indywidualny rysunek. Dlatego w katalogu pokazujemy nie „granit szary”, lecz konkretne płyty ze zdjęciami, wymiarami i statusem dostępności." },
+      { "heading": "Jakie bywają sląby z granitu, marmuru i kwarcytu?", "body": "Granitowe: największa grupa, ukraińskie i importowane, grubość 20 i 30 mm, wykończenie polerowane, matowe, płomieniowane lub leather. Marmurowe: import z Włoch, Hiszpanii, Turcji, grubość 20 i 30 mm, często z siatką zbrojącą na spodzie z powodu kruchości. Kwarcytowe: Brazylia i Indie, grubość 20 i 30 mm, najtwardsze i najdroższe z naturalnych.\n\nKwarcowe (konglomerat): fabryczne płyty standardowego formatu, grubość 20 i 30 mm, jednolity kolor. Gresowe: 6, 12 i 20 mm, format do 3200 × 1600 mm, z dekorem tylko na powierzchni lub barwione w masie zależnie od kolekcji." },
+      { "heading": "Jakie standardowe wymiary ma sląb?", "body": "Granit i marmur: od 2400 × 1200 do 3200 × 1900 mm, najczęściej około 2800 × 1600 mm. Wymiar zależy od bloku i skały: ukraińskie granity zwykle 2400–3000 × 1200–1500 mm. Kwarc: standard 3050 × 1400 mm, format Jumbo 3200 × 1600 mm w kolekcjach premium.\n\nGres: Laminam 3240 × 1620 mm, Neolith 3200 × 1600 mm, Dekton 3200 × 1440 mm. Powierzchnia użyteczna jest zawsze mniejsza od gabarytu: brzegi płyty mają odsadzkę 20–50 mm z wadami cięcia, a na kamieniu naturalnym mogą być pęknięcia lub wtrącenia, które omijamy przy rozkroju." },
+      { "heading": "Gdzie stosuje się sląby?", "body": "Blaty i wyspy: z granitu, kwarcu, kwarcytu i gresu. Parapety i schody: z granitu, marmuru. Okładziny ścian, kominków i elewacji: z każdego kamienia płytami dużego formatu, gdy potrzebny jest „bezspoinowy” rysunek lub bookmatch, lustrzane zestawienie dwóch sąsiednich sląbów.\n\nResztki sląbów po rozkroju to osobna kategoria: fragmenty 0,5–1,5 m, z których powstają parapety, stoliki, półki i małe blaty w niższej cenie. U nas są dostępne na stronie resztek z wymiarami i zdjęciami." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Sląb granitowy", "Blaty, schody, okładziny", "2400–3200 × 1200–1900 mm, 20/30 mm"],
+        ["Sląb marmurowy", "Łazienki, parapety, portale", "Często z siatką na spodzie"],
+        ["Sląb kwarcytowy", "Blaty i wyspy", "Najtwardszy, do 3 × 1,8 m"],
+        ["Sląb kwarcowy", "Blaty w jednolitym kolorze", "3050 × 1400 lub 3200 × 1600 mm"],
+        ["Gresowy", "Blaty, elewacje, fartuchy", "3200 × 1600 mm, 6–20 mm"]
+      ]
+    },
+    "faq": [
+      { "question": "Czym sląb różni się od płytki?", "answer": "Wymiarem i tym, co się z niego robi. Płytka to gotowy moduł do 1200 mm do układania na klej. Sląb to półprodukt do 3,2 m, z którego wyrób tnie się na Twój wymiar." },
+      { "question": "Jakie wymiary ma sląb?", "answer": "Kamień naturalny od 2,4 × 1,2 do 3,2 × 1,9 m, kwarc 3,05 × 1,4 lub 3,2 × 1,6 m, gres 3,2 × 1,6 m. Dokładne wymiary podane są dla każdej płyty w katalogu." },
+      { "question": "Ile kosztuje?", "answer": "Sląb sprzedaje się za metr kwadratowy ze współczynnikiem na całą płytę. Cena zależy od skały, grubości i partii; w katalogu podana jest cena konkretnych sląbów dostępnych w magazynie." },
+      { "question": "Jak wybrać sląb?", "answer": "Oglądać całą płytę w świetle dziennym, a nie próbkę: sprawdzić rysunek, pęknięcia, wtrącenia, uzgodnić rozkład detali na płycie. Wysyłamy zdjęcia i wideo sląba i rezerwujemy go dla Ciebie do rozkroju." }
+    ]
+  },
+  "yak-vybraty-kamin-dlya-kukhni": {
+    "title": "Jak wybrać kamień do kuchni: pełny przewodnik 2026",
+    "h1": "Jak wybrać kamień na blat kuchenny — pełny przewodnik",
+    "description": "Jak wybrać kamień do kuchni: granit, kwarc, kwarcyt, gres czy marmur. Porównanie wytrzymałości, odporności na ciepło, pielęgnacji, rysunku i budżetu, grubość i krawędź.",
+    "dek": "Główny przewodnik według wytrzymałości, ciepła, pielęgnacji i charakteru rysunku.",
+    "intro": "Wybór kamienia do kuchni zaczyna się nie od nazwy materiału, lecz od trzech pytań: jak gotujesz, ile uwagi jesteś gotów poświęcić pielęgnacji i jaki charakter ma mieć kuchnia. Odpowiadając na nie, niemal automatycznie dostajesz jeden z pięciu materiałów. W tym przewodniku zebraliśmy wszystko, co wyjaśniamy klientom na produkcji, z linkami do szczegółowych artykułów.",
+    "sections": [
+      { "heading": "Który kamień wybrać do kuchni?", "body": "Gotujesz dużo, stawiasz gorące gdzie popadnie, lubisz naturalny rysunek: granit. Chcesz jasnej jednolitej powierzchni i minimum pielęgnacji, gorące na podkładkę: kwarc. Chcesz jasnego kamienia naturalnego z żyłkami, który nie boi się cytryny: kwarcyt. Potrzebujesz cienkiego nowoczesnego blatu, na który można stawiać gorące: gres. Jesteś gotów na patynę dla pięknego marmuru: marmur, ale ze zrozumieniem konsekwencji.\n\nTo uproszczony schemat, ale działa w większości przypadków. Dalej niuanse." },
+      { "heading": "Granit, kwarc, kwarcyt, gres czy marmur — jaka różnica?", "body": "Granit: skała naturalna, twardość 6–7, wytrzymuje gorące, wymaga impregnacji raz na 1–3 lata, każdy sląb unikalny, ukraińskie skały przystępne cenowo.\n\nKwarc: 90 % kwarcu z żywicą, bez porów, powtarzalny kolor, wrażliwy na temperaturę powyżej 150 °C i na ultrafiolet, nie na zewnątrz.\n\nKwarcyt: naturalny, twardość 7, odporny na kwasy, wymaga impregnacji, jasne ciepłe tony, najdroższy z naturalnych.\n\nGres: spiekana płyta 12 mm, nie boi się nic poza uderzeniem w krawędź, najlżejszy, wymaga pełnego podłoża i fazy na krawędzi.\n\nMarmur: kalcyt, twardość 3–4, wytrawiany przez kwasy, najpiękniejszy rysunek, do kuchni z ostrożnym gospodarzem lub na wyspę, na której się nie gotuje." },
+      { "heading": "Co uwzględnić pod kątem wytrzymałości, pielęgnacji i budżetu?", "body": "Odporność na uderzenia i zarysowania: kwarcyt i granit, potem kwarc i gres (kruche krawędzie), potem marmur. Odporność na plamy bez impregnacji: kwarc i gres, potem kwarcyt i granit z impregnacją, potem marmur.\n\nPielęgnacja: kwarc i gres nic poza myciem; granit i kwarcyt test wodny i impregnacja; marmur impregnacja co roku i zawsze neutralna chemia. Budżet rosnąco: ukraińskie granity i podstawowy gres, dalej kwarc i gabro, dalej marmur, kwarcyt i kolekcje premium kwarcu i gresu." },
+      { "heading": "Jaka grubość i obróbka są potrzebne?", "body": "Grubość: 20 mm do standardowej kuchni we wszystkich materiałach, 30 mm do długich konsol lub masywnego stylu, 12 mm dla gresu z klejoną krawędzią. Krawędź: prosta lub faza bazowo, zaokrąglenie R3 dla rodzin z dziećmi, klejona 40 mm dla wyglądu grubej płyty.\n\nWykończenie: polerowane pokazuje rysunek i łatwiej się myje, matowe (honed) ukrywa odciski i wytrawienia na marmurze, leather na ciemnym granicie dodaje dotykowości i ukrywa rysy. W kuchni z oknem na południe ciemny polerowany kamień da odblaski, uwzględnij to." },
+      { "heading": "Jak zamówić i wyliczyć koszt?", "body": "Policz orientację w kalkulatorze, wybierz dwie–trzy kolekcje w katalogu i napisz do nas z planem kuchni. Wyślemy zdjęcia sląbów w magazynie, kosztorys z rozkrojem i termin pomiaru. Po pomiarze zatwierdzasz rozkład detali na konkretnej płycie i za tydzień–dwa blat stoi w kuchni.\n\nJeśli wahasz się między dwoma materiałami, przyjedź na produkcję do Kostopola lub zamów próbki: można na nich zrobić domowy test cytryną, gorącym kubkiem i nożem, po którym wybór staje się oczywisty." }
+    ],
+    "table": {
+      "headers": ["Materiał", "Mocna strona", "Co uwzględnić"],
+      "rows": [
+        ["Granit", "Ciepło, uderzenia, unikalny rysunek", "Impregnacja raz na 1–3 lata"],
+        ["Kwarc", "Bez porów, powtarzalny kolor", "Podkładka pod gorące, nie na zewnątrz"],
+        ["Kwarcyt", "Twardość i jasny naturalny ton", "Uzgodnienie sląba, wyższa cena"],
+        ["Gres", "Cienkość, gorące, odporność na UV", "Kruche krawędzie, pełne podłoże"],
+        ["Marmur", "Najpiękniejszy rysunek", "Kwasy, patyna, pielęgnacja co roku"]
+      ]
+    },
+    "faq": [
+      { "question": "Co jest najpraktyczniejsze?", "answer": "Kwarc do jasnej kuchni, granit do każdej innej. Oba wybaczają codzienne użytkowanie, różnica tylko w gorących naczyniach i impregnacji." },
+      { "question": "Co wybrać dla rodziny z dziećmi?", "answer": "Kwarc lub granit z zaokrągloną krawędzią R3. Gres gorzej znosi uderzenia zabawkami w krawędź, marmur wymaga uwagi, której w rodzinie z dziećmi zwykle brakuje." },
+      { "question": "Co wymaga impregnacji?", "answer": "Granit, kwarcyt i marmur. Kwarc i gres nie mają porów i nie są impregnowane." },
+      { "question": "Od czego zacząć wybór?", "answer": "Od scenariusza: jak gotujesz i ile pielęgnacji jesteś gotów dać. Potem od koloru i rysunku w katalogu, potem od kalkulatora i próbek." }
+    ]
+  }
+}

@@ -2,6 +2,8 @@
 
 import { ArrowRight } from "lucide-react"
 import { useConsultStore } from "@/lib/store/consult"
+import { useTranslation } from "@/lib/i18n/context"
+import { CONSULT_COPY } from "@/lib/i18n/copy/consult"
 import { cn } from "@/lib/utils"
 
 /**
@@ -16,7 +18,7 @@ import { cn } from "@/lib/utils"
  * іде менеджеру в заявці. Текст кнопки стає заголовком модалки.
  */
 export function ConsultButton({
-  children = "Отримати розрахунок",
+  children,
   variant = "primary",
   className,
   topic,
@@ -27,7 +29,11 @@ export function ConsultButton({
   topic?: string
 }) {
   const open = useConsultStore((s) => s.open)
-  const title = typeof children === "string" ? children : undefined
+  const { locale } = useTranslation()
+  // Без children — типовий підпис за мовою; модалка тоді теж покаже свій
+  // локалізований заголовок (title лишається порожнім).
+  const label = children ?? CONSULT_COPY[locale].defaultTitle
+  const title = children !== undefined && typeof children === "string" ? children : undefined
   return (
     <button
       type="button"
@@ -40,7 +46,7 @@ export function ConsultButton({
         className
       )}
     >
-      {children}
+      {label}
       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
     </button>
   )

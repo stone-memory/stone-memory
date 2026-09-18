@@ -9,6 +9,11 @@ import { useSelectionStore } from "@/lib/store/selection"
 import { useOrdersStore } from "@/lib/store/orders"
 import { usePopularity } from "@/lib/store/popularity"
 import { useTranslation } from "@/lib/i18n/context"
+import type { Locale } from "@/lib/types"
+
+type LocaleMap = Partial<Record<Locale, string>> & { uk: string }
+const pickText = (v: string | LocaleMap | undefined, locale: Locale) =>
+  v === undefined || typeof v === "string" ? v : v[locale] ?? v.uk
 import { filterLabels } from "@/lib/i18n/filters"
 import { CATALOG_PAGE_SIZE, catalogPagePath, findFacet } from "@/lib/catalog-taxonomy"
 import type { Category, StoneItem } from "@/lib/types"
@@ -29,8 +34,9 @@ type CatalogGridProps = {
    * the match function is looked up from the slug on this side.
    */
   facetSlug?: string
-  heading?: string
-  intro?: string
+  /** Рядок або мапа за мовою — серверна сторінка каталогу передає мапу. */
+  heading?: string | LocaleMap
+  intro?: string | LocaleMap
   /** Сторінка з адреси (/storinka-2). Без фільтрів сітка показує саме її. */
   initialPage?: number
   /**
@@ -176,10 +182,10 @@ export function CatalogGrid({
         {/* h1, not h2: this is the catalogue page's main heading and the route
             previously shipped no h1 at all. */}
         <h1 className="text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
-          {heading ?? t.catalog.heading}
+          {pickText(heading, locale) ?? t.catalog.heading}
         </h1>
         <p className="mt-3 max-w-2xl text-base text-muted-foreground text-balance md:text-lg">
-          {intro ?? t.catalog.subheading}
+          {pickText(intro, locale) ?? t.catalog.subheading}
         </p>
       </div>
 

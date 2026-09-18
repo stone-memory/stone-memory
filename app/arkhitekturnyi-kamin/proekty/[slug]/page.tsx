@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/stone/seo'
 import { getCollection, getProject, getProjects } from '@/lib/stone/cms'
+import { getLocalizedProject } from '@/lib/stone/i18n-content'
 import { ProjectDetail } from '@/components/stone/pages/project-detail'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Props) {
 }
 export default async function Page({ params }: Props) {
   const { slug } = await params
-  const p = await getProject(slug)
+  const p = await getLocalizedProject(slug)
   if (!p) notFound()
   const material = await getCollection(p.materialSlug)
   return <ProjectDetail project={p} materialAvailable={Boolean(material)} />

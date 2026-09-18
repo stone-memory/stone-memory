@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Filter, X } from 'lucide-react'
 import type { Collection } from '@/lib/stone/cms-types'
+import { useStoneT } from '@/lib/i18n/stone/client'
+import { collectionName, collectionSummary } from '@/lib/i18n/stone'
 type Group = 'family' | 'tone' | 'applications' | 'finishes' | 'thicknesses' | 'brand'
 const labels: Record<Group, string> = {
   family: 'Родина',
@@ -34,6 +36,7 @@ const values = (item: Collection, group: Group): string[] =>
           ? [item.brand ?? item.origin]
           : [item[group]]
 export function FacetedCatalog({ collections }: { collections: Collection[] }) {
+  const { t, locale } = useStoneT()
   const [active, setActive] = useState<Record<Group, string[]>>({
       family: [],
       tone: [],
@@ -64,7 +67,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
     <div className="flex flex-col gap-7">
       {groups.map((group) => (
         <fieldset key={group}>
-          <legend className="text-sm font-semibold">{labels[group]}</legend>
+          <legend className="text-sm font-semibold">{t(labels[group])}</legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {options(group).map((value) => {
               const selected = active[group].includes(value),
@@ -86,7 +89,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
                   {group === 'tone' && (
                     <span className={`size-3 rounded-full border ${toneColor(value)}`} />
                   )}{' '}
-                  {group === 'thicknesses' ? `${value} мм` : value}{' '}
+                  {group === 'thicknesses' ? `${value} ${t('мм')}` : t(value)}{' '}
                   <span className="opacity-60">{count}</span>
                 </button>
               )
@@ -101,13 +104,13 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
     <div className="page-shell py-12">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
-          Знайдено: <strong className="text-foreground">{result.length}</strong>
+          {t('Знайдено:')} <strong className="text-foreground">{result.length}</strong>
         </p>
         <button
           onClick={() => setMobile(true)}
           className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm lg:hidden"
         >
-          <Filter className="size-4" /> Фільтри
+          <Filter className="size-4" /> {t('Фільтри')}
         </button>
       </div>
       {chips.length > 0 && (
@@ -118,7 +121,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
               onClick={() => toggle(chip.group, chip.value)}
               className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-2 text-xs"
             >
-              {chip.value}
+              {t(chip.value)}
               <X className="size-3" />
             </button>
           ))}
@@ -135,7 +138,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
             }
             className="px-3 py-2 text-xs font-semibold underline"
           >
-            Скинути все
+            {t('Скинути все')}
           </button>
         </div>
       )}
@@ -153,7 +156,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
                   <div className="relative aspect-[4/3]">
                     <Image
                       src={item.cardImage}
-                      alt={`${item.name}: фактура каменю`}
+                      alt={`${collectionName(locale, item.name)}: ${t('фактура каменю')}`}
                       fill
                       sizes="(max-width:640px) 100vw, (max-width:1280px) 50vw, 33vw"
                       className="object-cover transition-transform group-hover:scale-[1.02]"
@@ -161,11 +164,11 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
                   </div>
                   <div className="p-5">
                     <p className="eyebrow text-muted-foreground">
-                      {item.family} · {item.origin}
+                      {t(item.family)} · {t(item.origin)}
                     </p>
-                    <h2 className="mt-3 text-xl font-semibold">{item.name}</h2>
+                    <h2 className="mt-3 text-xl font-semibold">{collectionName(locale, item.name)}</h2>
                     <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted-foreground">
-                      {item.description}
+                      {collectionSummary(locale, item)}
                     </p>
                   </div>
                 </Link>
@@ -173,9 +176,9 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
             </div>
           ) : (
             <div className="rounded-xl border bg-card p-10 text-center">
-              <h2 className="text-2xl font-semibold">Немає точного збігу</h2>
+              <h2 className="text-2xl font-semibold">{t('Немає точного збігу')}</h2>
               <p className="mt-3 text-sm text-muted-foreground">
-                Скиньте частину фільтрів або перегляньте популярні позиції.
+                {t('Скиньте частину фільтрів або перегляньте популярні позиції.')}
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 {collections.slice(0, 3).map((item) => (
@@ -184,7 +187,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
                     href={`/arkhitekturnyi-kamin/materialy/${item.slug}`}
                     key={item.slug}
                   >
-                    {item.name}
+                    {collectionName(locale, item.name)}
                   </Link>
                 ))}
               </div>
@@ -196,12 +199,12 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Фільтри каталогу"
+          aria-label={t('Фільтри каталогу')}
           className="fixed inset-0 z-50 overflow-y-auto bg-background p-5 lg:hidden"
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">Фільтри</h2>
-            <button aria-label="Закрити фільтри" onClick={() => setMobile(false)}>
+            <h2 className="text-2xl font-semibold">{t('Фільтри')}</h2>
+            <button aria-label={t('Закрити фільтри')} onClick={() => setMobile(false)}>
               <X />
             </button>
           </div>
@@ -210,7 +213,7 @@ export function FacetedCatalog({ collections }: { collections: Collection[] }) {
             onClick={() => setMobile(false)}
             className="sticky bottom-4 w-full rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground"
           >
-            Показати {result.length} результатів
+            {t('Показати')} {result.length} {t('результатів')}
           </button>
         </div>
       )}

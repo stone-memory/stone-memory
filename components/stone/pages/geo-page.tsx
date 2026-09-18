@@ -4,12 +4,14 @@ import type { GeoCity } from '@/lib/stone/cms-types'
 import { MaterialCatalog } from '@/components/stone/interactive/tools'
 import { Cta } from '@/components/stone/site/sections'
 import { Breadcrumbs, Faq, JsonLd } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
 
 export async function GeoPage({ city, data: d }: { city: string; data: GeoCity }) {
-  const [contacts, faq, collections] = await Promise.all([
+  const [contacts, faq, collections, { t }] = await Promise.all([
     getContacts(),
     getSetting('faq'),
     getCollections(),
+    getStoneT(),
   ])
   return (
     <main id="main-content">
@@ -27,12 +29,12 @@ export async function GeoPage({ city, data: d }: { city: string; data: GeoCity }
         }}
       />
       <section className="page-shell py-20">
-        <p className="eyebrow text-accent">Локальний сервіс</p>
+        <p className="eyebrow text-accent">{t('Локальний сервіс')}</p>
         <h1 className="mt-5 max-w-5xl text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
-          Кам’яні стільниці у {d.locative}.
+          {t('Кам’яні стільниці у')} {t(d.locative)}.
         </h1>
         <p className="mt-8 max-w-xl leading-7 text-muted-foreground">
-          {d.context} {d.distance}
+          {t(d.context)} {t(d.distance)}
         </p>
         <div className="mt-14">
           <MaterialCatalog collections={collections} />

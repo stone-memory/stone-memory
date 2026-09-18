@@ -3,7 +3,8 @@ import { unstable_cache } from "next/cache"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { Article, Collection, Contacts, Project, Remnant, SettingKey, Settings, Slab } from "@/lib/stone/cms-types"
 import { fetchBusinessProfile } from "@/lib/data-source"
-import { hoursRows, telHref, telegramHref, viberHref } from "@/lib/business-profile"
+import { DAY_LABELS, hoursRows, telHref, telegramHref, viberHref } from "@/lib/business-profile"
+import type { Locale } from "@/lib/types"
 import { versioned, versionedAll } from "@/lib/stone/asset-url"
 
 /**
@@ -114,9 +115,12 @@ export async function getSetting<K extends SettingKey>(k: K): Promise<Settings[K
  * бізнес-профілю (одна адмінка на весь сайт); з налаштувань стільниць
  * лишаються бренд, координати цеху для мапи й посилання WhatsApp.
  */
-export const getContacts = async (): Promise<Contacts> => {
+export const getContacts = async (locale: Locale = "uk"): Promise<Contacts> => {
   const [own, profile] = await Promise.all([getSettings().then((s) => s.contacts), fetchBusinessProfile()])
-  const rows = hoursRows(profile)
+  // Підписи днів — мовою відвідувача (Пн–Пт / Mo–Fr); сам графік один.
+  const labels = DAY_LABELS[locale] ?? DAY_LABELS.uk
+  const closedLabel = { uk: "за домовленістю", pl: "po uzgodnieniu", en: "by arrangement", de: "nach Vereinbarung", lt: "susitarus" }[locale] ?? "за домовленістю"
+  const rows = hoursRows(profile, locale, closedLabel)
   const line = (label: string, fallback: string) => {
     const r = rows.find((x) => x.days === label || x.days.startsWith(label))
     return r ? `${r.days} ${r.time}` : fallback
@@ -138,8 +142,8 @@ export const getContacts = async (): Promise<Contacts> => {
     },
     hours: {
       weekdays: weekdays ? `${weekdays.days} ${weekdays.time}` : own.hours.weekdays,
-      saturday: line("Сб", own.hours.saturday),
-      sunday: profile.hours.sun?.closed ? "Нд — вихідний" : line("Нд", own.hours.sunday),
+      saturday: line(labels.sat, own.hours.saturday),
+      sunday: profile.hours.sun?.closed ? `${labels.sun} — ${closedLabel}` : line(labels.sun, own.hours.sunday),
     },
     chat: { ...own.chat, viber: viberHref(profile), telegram: telegramHref(profile) },
     social: {

@@ -1,0 +1,173 @@
+{
+  "ukladannya-granitnoyi-brukivky": {
+    "title": "Granito grindinio klojimas: technologija ir pagrindas",
+    "h1": "Kaip klojamas granito grindinys — etapai ir pagrindas",
+    "description": "Granito grindinio klojimas: pagrindo sluoksniai takui ir įvažiavimui, nuolydžiai, bortai, klojimo būdai, siūlių užpildymas ir priežiūra po klojimo.",
+    "dek": "Pagrindas, nuolydžiai, siūlės ir darbų tvarka stabiliai dangai.",
+    "intro": "Granito grindinys tarnauja amžinai, o pagrindas po juo — ne, jei jis padarytas neteisingai. Įdubusios vėžės įvažiavime ir „bangos“ take — visada klaida sluoksniuose, sutankinime ar vandenyje, o ne akmenyje. Aprašome technologiją, pagal kurią dirbame, ir paaiškiname, kuo skiriasi pagrindas pėstiesiems ir automobiliui.",
+    "sections": [
+      { "heading": "Kaip teisingai kloti grindinį?", "body": "Seka viena visiems plotams: žymėjimas ir nuolydžių planavimas, grunto iškasimas visų sluoksnių gyliui, geotekstilė, skalda su sluoksniniu sutankinimu, bortai ant betono, išlyginamasis sluoksnis, akmens klojimas, tankinimas, siūlių užpildymas.\n\nDangos nuolydis nuo namo ne mažiau 1,5–2 %, tai yra 2 cm metrui. Vanduo turi tekėti į veją, drenažo lovelį ar lietaus surinktuvą, o ne į sieną. Ši taisyklė svarbesnė už akmens storį." },
+      { "heading": "Kokį pagrindą parengti?", "body": "Pėsčiųjų takas: iškasa 25–30 cm, geotekstilė, 20–40 frakcijos skalda 15 cm sluoksniu, sutankinta vibroplokšte, išlyginamasis sluoksnis iš granito atsijų arba smėlio ir cemento mišinio 3–5 cm, grindinys 50–60 mm.\n\nĮvažiavimas ir stovėjimo vieta: iškasa 40–45 cm, geotekstilė, 40–70 skalda 15 cm sluoksniu, 20–40 skalda 10 cm sluoksniu, kiekvienas sluoksnis tankinamas atskirai, išlyginamasis sluoksnis 3–4 cm, grindinys 80–100 mm. Silpnuose gruntuose pridedamas 10 cm smėlio sluoksnis po skalda arba armuota betono plokštė.\n\nBortai statomi ant betono pagalvės prieš klojant akmenį: jie laiko dangą nuo išsiplėtimo. Be bortų arba su bortais „ant smėlio“ kraštai nusėda per pirmą sezoną." },
+      { "heading": "Kokie yra klojimo būdai ir raštai?", "body": "Eilėmis: paprasčiausias ir greičiausias, tinka takams. Su puse akmens poslinkiu: tvirtesnis, nes siūlės nesutampa, standartas įvažiavimams. Lankais ir vėduokle: Europos aikščių klasika iš skaldyto 100 × 100 mm grindinio, reikalauja patirties ir daugiau akmens, bet puikiai laiko apkrovas.\n\nKontrastingiems raštams derinamas pilkas Grey Ukraine su raudonu Maple Red arba juodu gabru: apvadas, juostos, šachmatinis modulis. Pjautas-skaldytas grindinys su lygiu viršumi patogesnis vaikščioti su kulniukais ir važiuoti dviračiu, visiškai skaldytas faktūriškesnis ir geriau dirba nuolydžiuose." },
+      { "heading": "Kaip prižiūrėti po klojimo?", "body": "Pirmas dvi savaites siūlės papildomos: atsijos ar smėlis nusėda po lietų, ir juos reikia užpildyti iki akmens lygio. Toliau kartą per metus šluojama, esant reikalui papildomos siūlės ir nuplaunama vandeniu. Polimerinis smėlis siūlėms laikosi geriau nei paprastas ir neapželia žole, bet brangesnis.\n\nŽiemą valykite sniegą plastikiniu ar guminiu kastuvu, druska granitui nekenkia. Samanos šiaurinėje šešėlinėje pusėje nuplaunamos vandeniu su slėgiu kartą per kelis metus. Jei vienas akmuo nusėdo ar pažeistas, jį išima, papildo pagrindą ir deda atgal: tai pagrindinis grindinio privalumas prieš asfaltą ir betoną." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Smėlis", "Išlyginamasis sluoksnis 3–5 cm", "Tik ant sutankintos skaldos"],
+        ["Skalda", "Laikantysis sluoksnis 15–25 cm", "Sluoksninis tankinimas vibroplokšte"],
+        ["Betonas", "Bortai, silpni gruntai, loveliai", "Drenažas ir deformacinės siūlės"],
+        ["Geotekstilė", "Tarp grunto ir skaldos", "Neleidžia sluoksniams maišytis"]
+      ]
+    },
+    "faq": [
+      { "question": "Koks grindinio storis automobiliui?", "answer": "80–100 mm lengviesiems automobiliams ir 100 mm sunkvežimiams ir vilkikams. Pėsčiųjų takai — 50–60 mm." },
+      { "question": "Ar reikia betono?", "answer": "Po pačiu grindiniu paprastai ne: sutankinta skalda ir atsijos dirba geriau, nes praleidžia vandenį. Betono reikia po bortais, loveliais ir silpnuose ar supiltuose gruntuose." },
+      { "question": "Kaip užpildyti siūles?", "answer": "Granito atsijomis arba smulkiu smėliu, kuris sušluojamas į siūles ir perpilamas vandeniu keliais kartais. Polimerinis smėlis laikosi ilgiau ir neapželia." },
+      { "question": "Kiek tarnauja?", "answer": "Akmuo — neribotai. Pagrindas pagal teisingą technologiją — 30 ir daugiau metų be perklojimo." }
+    ]
+  },
+  "kamin-dlya-kaminu-granit-marmur": {
+    "title": "Akmuo židiniui: granitas, marmuras ar travertinas",
+    "h1": "Kokį akmenį rinktis židinio apdailai",
+    "description": "Akmuo židiniui: granitas, marmuras, travertinas arba labradoritas. Atsparumas karščiui, techniniai tarpai nuo pakuros, klijai, priežiūra ir portalo išvaizda.",
+    "dek": "Uoliena ir apdailos mazgas skirtingiems židinių tipams.",
+    "intro": "Židinio portalas — labiausiai matomas akmens gaminys svetainėje, ir jis dirba sunkiausiomis sąlygomis: įkaitimas, suodžiai, staigūs temperatūros svyravimai. Natūralus akmuo tam sukurtas, bet uoliena, mazgas ir klijai turi atitikti židinio tipą. Paaiškiname skirtumą tarp malkinio, dujinio ir elektrinio ir ką patariame kiekvienam.",
+    "sections": [
+      { "heading": "Koks akmuo tinka židiniui?", "body": "Malkiniam židiniui su atvira ar uždara pakura: granitas arba gabras portalui ir ypač podiumui prieš pakurą, kur krinta kibirkštys ir žarijos. Dujiniam: bet koks akmuo, įskaitant marmurą, nes įkaitimas vidutinis. Elektriniam: apribojimų nėra, tai baldas.\n\nLabradoritas Volga Blue — vienas efektingiausių variantų portalui: mėlynas kristalų blyksnis atgyja ugnies šviesoje. Travertiną renkasi šiltiems Viduržemio jūros interjerams, bet jo poros reikalauja apsaugos nuo suodžių." },
+      { "heading": "Kuo granitas geresnis aktyviam naudojimui?", "body": "Granitas nekeičia spalvos įkaitęs iki 200–250 °C, po impregnavimo neįgeria suodžių, atlaiko malkų smūgius ir lengvai plaunamas. Podiume prieš pakurą jį galima valyti nuo žarijų kietu šepečiu. Poliruotas paviršius atspindi ugnį ir prideda kambariui šviesos.\n\nGranito šiluminis plėtimasis nedidelis, bet portalas neklijuojamas prie pakuros glaudžiai: tarp metalo ir akmens paliekamas 5–10 mm tarpas su karščiui atspariu sandarikliu ar mineraline vata, o plokštės dedamos ant karščiui atsparių akmens klijų." },
+      { "heading": "Kada rinktis marmurą?", "body": "Marmuras — židinių portalų klasika nuo Versalio iki Lvivo namų. Rinkitės jį dujiniams ir elektriniams židiniams arba malkiniams su uždara pakura, kur portalas neliečia liepsnos ir turi techninį tarpą.\n\nAnt marmuro matomi suodžiai ir rankų pėdsakai, o rūgštinės pakuros stiklo valymo priemonės ėsdina paviršių. Todėl marmuro portalas prižiūrimas tik neutraliomis priemonėmis ir impregnuojamas kartą per metus. Bianco Carrara ir Nero Marquina — dažniausias pasirinkimas; Crema Marfil suteikia šiltą ramų portalą šviesiai svetainei." },
+      { "heading": "Kas dėl atsparumo karščiui ir priežiūros?", "body": "Natūralus akmuo atlaiko įkaitimą, kurį pasiekia portalas, bet neatlaiko staigaus vietinio įkaitimo: karštas ketaus indas ant marmuro podiumo gali palikti pėdsaką ar įtrūkimą. Todėl podiumą prieš malkinę pakurą darome iš granito arba gabro.\n\nPriežiūra: suodžiai nuplaunami vandeniu su neutralia priemone, sunkūs nešvarumai — sodos kompresu. Granitas impregnuojamas kartą per dvejus–trejus metus, marmuras ir travertinas — kasmet. Kartą per sezoną apžiūrėkite tarpą tarp pakuros ir akmens: sandariklis turi būti elastingas ir be įtrūkimų." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Granitas / gabras", "Malkiniai židiniai, podiumas", "Atsparus karščiui, plaunamas šepečiu"],
+        ["Labradoritas", "Akcentinis portalas", "Kristalų blizgesys ugnies šviesoje"],
+        ["Marmuras", "Dujinės ir uždaros pakuros, klasika", "Jautrus rūgštims ir suodžiams"],
+        ["Travertinas", "Šilti interjerai", "Poras impregnuoti kasmet"]
+      ]
+    },
+    "faq": [
+      { "question": "Ar marmuras atlaiko karštį?", "answer": "Vidutinį portalo įkaitimą — taip. Tiesioginį kontaktą su liepsna, kibirkštimis ar karštu metalu — ne, šioms zonoms imame granitą." },
+      { "question": "Kas malkiniam židiniui?", "answer": "Granitas arba gabras portalui ir podiumui, karščiui atsparūs klijai, 5–10 mm tarpas nuo pakuros su elastingu sandarikliu." },
+      { "question": "Kas klasikai?", "answer": "Marmuras Bianco Carrara arba Nero Marquina su profiliuotu kraštu, kartais su raižytais elementais. Dujinei ar uždarai pakurai tai saugus pasirinkimas." },
+      { "question": "Kaip valyti portalą?", "answer": "Neutralia akmens priemone ir minkšta šluoste. Suodžius — sodos kompresu. Be rūgščių, ypač ant marmuro, ir be pakuros stiklo valiklių ant akmens." }
+    ]
+  },
+  "landshaftnyy-kamin-dvir": {
+    "title": "Kraštovaizdžio akmuo kiemui: rūšys ir pritaikymas",
+    "h1": "Kraštovaizdžio akmuo — kaip rinktis kiemui ir sodui",
+    "description": "Kraštovaizdžio akmuo kiemui: plokštės takams, atraminės sienos, bortai, gėlynai. Atsparumas šalčiui, neslidi apdaila, derinimas su grindiniu ir fasadu.",
+    "dek": "Akmuo takams, gėlynams, atraminėms sienoms ir dekoratyvinėms zonoms.",
+    "intro": "Sode akmuo dirba kitaip nei namuose: čia nėra karštų indų, bet yra šaltis, vanduo, šaknys ir vejapjovė. Kraštovaizdžio akmuo renkamas ne pagal grožį ant plokštės, o pagal funkciją: kuo vaikščioti, ką laikyti, ką pabrėžti. Pasakojame, kokius granito gaminius darome kiemams ir kaip jie derinasi su grindiniu ir fasadu.",
+    "sections": [
+      { "heading": "Kokį akmenį kraštovaizdžiui rinktis?", "body": "Granitas išsprendžia visas kiemo užduotis: plokštės takams ir terasoms, bortai, laiptai, atraminės sienos, gėlynų ir tvenkinių apdaila. Jis atsparus šalčiui, nebijo vandens ir druskos, o degintas paviršius neslidus. Smiltainis ir klintis minkštesni ir porėtesni, mūsų klimate lupasi po kelių žiemų.\n\nDekoratyvinėms zonoms tinka skaldytas akmuo iš gamybos atliekų: skalda sausoms sienelėms, apvalūs akmenys gėlynams. Tai prieinamas būdas gauti natūralią faktūrą, ir siūlome jį kartu su pagrindiniais gaminiais." },
+      { "heading": "Kokios rūšys naudojamos kieme?", "body": "Plokštės takams ir terasoms: 30–40 mm klojimui ant skaldos ir smėlio, 20 mm ant betoninio pagrindo, formatas nuo 300 × 300 iki 600 × 900 mm, deginta arba pjauta apdaila. Pakopos ir sodo laiptai: masyvūs blokai arba uždedamos 30–40 mm pakopos ant betono.\n\nAtraminės sienos: granito blokai 200–400 mm arba apdailos plokštės ant betoninio branduolio. Bortai: pjauti arba skaldyti 80–150 mm aukščio, laiko takus ir veją. Apdaila: gėlynai, dubenys, tvenkiniai, lauko virtuvės, suolai ir stalviršiai kepsninei iš deginto granito." },
+      { "heading": "Kaip derinti akmenį su grindiniu ir fasadu?", "body": "Viena taisyklė: ne daugiau dviejų uolienų kieme. Pavyzdžiui, Grey Ukraine grindinyje ir terasų plokštėse plius Kometa Black bortuose, laiptuose ir akcentinėse juostose. Jei fasadas ar cokolis iš akmens, kraštovaizdis tęsia jo uolieną.\n\nApdailas derinkite pagal funkciją: poliruota tik vertikalėse ir akcentuose, deginta visur, kur vaikštoma. Modulių matmenis verta derinti kartotinius grindiniui (100 mm), kad plokščių takas ir grindinio įvažiavimas jungtųsi be papjovimo." },
+      { "heading": "Kaip prižiūrėti kraštovaizdžio akmenį?", "body": "Du kartus per metus nuplauti vandeniu su slėgiu, ypač šešėlines vietas, kur auga samanos. Impregnavimo granitui lauke nereikia, smiltainiui ir klinčiai — hidrofobizatorius kartą per kelis metus.\n\nŽiemą plastikinis kastuvas ir bet kokia priemonė nuo apledėjimo, granitas jas atlaiko. Kartą per metus patikrinkite siūles tarp plokščių ir bortų ir esant reikalui papildykite. Augalus su agresyviomis šaknimis (gluosnis, tuopa, bambukas) sodinkite ne arčiau kaip 2–3 m nuo takų: šaknys kelia plokštes nepriklausomai nuo akmens rūšies." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Plokštės", "Takai, terasos, kepsninės zona", "Deginta neslidi apdaila"],
+        ["Skaldytas akmuo", "Gėlynai, sausos sienelės, akcentai", "Stabilus pagrindas, drenažas"],
+        ["Blokai", "Atraminės sienos, laiptai sode", "Inžinerinis skaičiavimas nuo 1 m"],
+        ["Bortai", "Takų ir vejos ribos", "Ant betono pagalvės"]
+      ]
+    },
+    "faq": [
+      { "question": "Koks akmuo atsparus šalčiui?", "answer": "Granitas, gabras ir labradoritas: vandens įgertis mažesnė nei 0,2 %, daugiau nei 300 užšalimo ciklų be pokyčių. Smiltainis ir klintis mūsų klimate lupasi." },
+      { "question": "Ar jis slidus po lietaus?", "answer": "Poliruotas — taip, todėl lauke jo neklojame. Degintas, kalstytas ir pjautas granitas neslidūs drėgni." },
+      { "question": "Kaip kloti?", "answer": "Plokštes 30–40 mm ant sutankintos skaldos ir atsijų kaip grindinį, 20 mm ant betono ir klijų. Bortus ir laiptus ant betono pagalvės." },
+      { "question": "Kaip valyti?", "answer": "Vandeniu su slėgiu du kartus per metus. Samanos nusiplauna, druska granitui nekenkia, impregnavimo nereikia." }
+    ]
+  },
+  "skilky-koshtue-stilnytsia-z-kamenyu": {
+    "title": "Kiek kainuoja akmens stalviršis: nuo ko priklauso kaina",
+    "h1": "Nuo ko priklauso akmens stalviršio kaina",
+    "description": "Akmens stalviršio kaina: medžiaga, plotas ir pjaustymas, storis, kraštas, išpjovos, sustiprinimas, pristatymas ir montavimas. Kaip gauti tikslų skaičiavimą.",
+    "dek": "Sąmatos faktoriai be klaidinančių universalių kainų.",
+    "intro": "„Kiek kainuoja akmens stalviršis už metrą?“ — dažniausias klausimas, ir sąžiningo trumpo atsakymo į jį nėra. Du vienodo ilgio stalviršiai iš to paties akmens gali skirtis kaina dvigubai dėl pjaustymo, išpjovų ir krašto. Paaiškiname, iš ko susideda sąmata, kokia tvarka faktoriai veikia sumą ir kaip gauti tikslų skaičių per vieną dieną.",
+    "sections": [
+      { "heading": "Kiek kainuoja akmens stalviršis?", "body": "Sąmata susideda iš keturių dalių: medžiaga (plokštė arba jos dalis), apdirbimas (pjaustymas, kraštas, išpjovos, kraštų poliravimas), papildomi elementai (sienelė, sustiprinimas, suklijuotas kraštas) ir logistika su montavimu.\n\nMedžiaga paprastai sudaro 40–60 % sumos, apdirbimas 25–40 %, likusi dalis — pristatymas ir montavimas. Todėl klausimas „už metrą“ klaidina: akmens metro kaina neapima pusės darbų. Orientyrą konkretiems matmenims duoda skaičiuoklė svetainėje, ji skaičiuoja būtent pagal šią logiką." },
+      { "heading": "Kokie faktoriai veikia kainą?", "body": "Medžiaga: uoliena, prekės ženklas, spalvos retumas. Plotas ir pjaustymas: mokame už visą plokštę, todėl svarbu, kiek plokščių reikia ir kaip detalės ant jų išsidėsto; 3,1 m stalviršiui gali reikėti dviejų plokščių vietoj vienos.\n\nStoris: 30 mm brangiau nei 20 mm ir medžiagoje, ir apdirbime. Kraštas: tiesus kraštas bazinis, nuožulna ir suapvalinimas kiek brangesni, ogee, krioklys ir suklijuotas 40–60 mm kraštas gerokai brangesni. Išpjovos: kiekviena išpjova plautuvei, kaitlentei, maišytuvui ar kištukiniam lizdui prideda darbo, o apatinio montavimo plautuvei reikia poliruoti vidinį perimetrą.\n\nMontavimas: aukštas, liftas, detalių ilgis, sujungimai vietoje, iškyšų sustiprinimas. Stalviršis į penktą aukštą be lifto kainuoja brangiau nei tas pats pirmame." },
+      { "heading": "Kaip medžiaga veikia kainą?", "body": "Sąlyginai katalogo medžiagos skirstomos į tris lygius. Bazinis: ukrainietiški granitai Grey Ukraine, Maple Red, Rosso Santiago ir standartinių dekorų keraminis granitas. Vidutinis: gabras, labradoritas, firminis kvarcas Vicostone ir Caesarstone bazinių kolekcijų. Premium: marmuras, kvarcitas Taj Mahal, „Calacatta“ tipo kvarco kolekcijos, Dekton ir Neolith.\n\nViename lygyje kainų skirtumas nedidelis, tarp lygių — juntamas. Dar vienas niuansas: šviesios vienalytės medžiagos, kaip taisyklė, brangesnės už tamsias su raštu, nes jas sunkiau pagaminti be defektų. Kainos „nuo“ kiekvienai kolekcijai nurodytos jos puslapyje kataloge." },
+      { "heading": "Kaip greitai gauti tikslų skaičiavimą?", "body": "Pirmas žingsnis: skaičiuoklė svetainėje su matmenimis, gaminio tipu ir medžiaga duoda orientyrą per minutę. Antras žingsnis: atsiųskite mums virtuvės planą ar nuotrauką su matmenimis, ir apskaičiuosime pjaustymą ir pilną sąmatą per dieną. Trečias žingsnis: išmatavimas objekte po baldų sustatymo fiksuoja galutinę sumą, kuri jau nesikeičia.\n\nKad nepermokėtumėte, prieš matavimą apgalvokite tris dalykus: ar reikia suklijuoto krašto, ar galima perkelti siūlę į nematomą vietą, ir ar reikia akmens sienelės per visą ilgį, ar tik už kaitlentės." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Medžiaga", "40–60 % sąmatos", "Uolienos lygis ir plokščių skaičius"],
+        ["Pjaustymas ir storis", "Didelė įtaka", "Ilgis virš 3 m = antra plokštė"],
+        ["Kraštas ir išpjovos", "Vidutinė arba didelė", "Suklijuotas kraštas ir apatinė plautuvė brangesni"],
+        ["Pristatymas ir montavimas", "10–20 %", "Aukštas, liftas, sujungimai vietoje"]
+      ]
+    },
+    "faq": [
+      { "question": "Kas brangiau — granitas ar kvarcas?", "answer": "Ukrainietiški granitai paprastai prieinamesni už firminį kvarcą. Importuotas retų spalvų granitas ir premium kolekcijų kvarcas kainuoja maždaug vienodai." },
+      { "question": "Ar montavimas įskaičiuotas?", "answer": "Sąmatoje montavimas — atskira eilutė, kaip ir pristatymas. Tai leidžia matyti, už ką mokate, ir norint užsakyti tik gamybą." },
+      { "question": "Kaip apskaičiuoti pačiam?", "answer": "Skaičiuoklė svetainėje skaičiuoja pagal matmenis, gaminio tipą, medžiagą, kraštą ir išpjovų skaičių. Tai orientyras su maždaug ±15 % tikslumu, likusią dalį patikslina pjaustymo planas." },
+      { "question": "Kas veikia labiausiai?", "answer": "Medžiaga ir plokščių skaičius. Toliau kraštas ir išpjovos. 30 mm storis vietoj 20 mm prideda 20–40 %." }
+    ]
+  },
+  "shcho-take-slyab": {
+    "title": "Kas yra plokštė (slab) ir kur ji naudojama",
+    "h1": "Plokštė (slab) — kas tai, matmenys ir pritaikymas",
+    "description": "Plokštė (slab) — didelė natūralaus ar inžinerinio akmens plokštė. Granito, marmuro, kvarco ir keraminio granito plokščių matmenys, storis, kaip rinktis ir kas yra likutis.",
+    "dek": "Kaip skaityti visą plokštę, partiją, toną ir naudingą plotą.",
+    "intro": "Plokštė (nuo angliško slab) — tai didelė akmens plokštė, išpjauta iš bloko ir nupoliruota iš vienos pusės. Būtent iš plokščių pjaunami stalviršiai, palangės, laiptai ir apdaila, ir būtent plokštę, o ne 10 × 10 cm pavyzdį, reikia žiūrėti prieš užsakant. Paaiškiname, kokios būna plokštės, kokie jų matmenys ir kaip iš jų gaunasi jūsų stalviršis.",
+    "sections": [
+      { "heading": "Kas yra plokštė?", "body": "Karjere akmuo kasamas 10–30 tonų blokais. Blokas pjaunamas į 20 arba 30 mm storio plokštes lyninėmis arba diskinėmis staklėmis, paskui šlifuojama ir poliruojama priekinė pusė. Gatava plokštė ir yra slab: natūralaus akmens dydį lemia blokas, kvarco ir keraminio granito — gamyklos formatas.\n\nKiekviena plokštė turi numerį, partiją ir faktinius matmenis, o natūralūs akmenys — dar ir individualų raštą. Todėl kataloge rodome ne „pilką granitą“, o konkrečias plokštes su nuotraukomis, matmenimis ir prieinamumo būsena." },
+      { "heading": "Kokios būna granito, marmuro ir kvarcito plokštės?", "body": "Granito: didžiausia grupė, ukrainietiškos ir importuotos, storis 20 ir 30 mm, apdaila poliruota, matinė, deginta arba leather. Marmuro: importas iš Italijos, Ispanijos, Turkijos, storis 20 ir 30 mm, dažnai su armuojančiu tinkleliu kitoje pusėje dėl trapumo. Kvarcito: Brazilija ir Indija, storis 20 ir 30 mm, kiečiausios ir brangiausios iš natūralių.\n\nKvarco (aglomeratas): gamyklinės standartinio formato plokštės, storis 20 ir 30 mm, vienalytė spalva. Keraminio granito: 6, 12 ir 20 mm, formatas iki 3200 × 1600 mm, su dekoru tik paviršiuje arba su pilnu prasidažymu priklausomai nuo kolekcijos." },
+      { "heading": "Kokie standartiniai plokštės matmenys?", "body": "Granitas ir marmuras: nuo 2400 × 1200 iki 3200 × 1900 mm, dažniausiai apie 2800 × 1600 mm. Dydis priklauso nuo bloko ir uolienos: ukrainietiški granitai paprastai 2400–3000 × 1200–1500 mm. Kvarcas: standartas 3050 × 1400 mm, Jumbo formatas 3200 × 1600 mm premium kolekcijose.\n\nKeraminis granitas: Laminam 3240 × 1620 mm, Neolith 3200 × 1600 mm, Dekton 3200 × 1440 mm. Naudingas plotas visada mažesnis už gabaritą: plokštės kraštai turi 20–50 mm atstumą su pjovimo defektais, o natūraliame akmenyje gali būti įtrūkimų ar intarpų, kuriuos apeiname pjaustydami." },
+      { "heading": "Kur naudojamos plokštės?", "body": "Stalviršiai ir salos: iš granito, kvarco, kvarcito ir keraminio granito. Palangės ir laiptai: iš granito, marmuro. Sienų, židinių ir fasadų apdaila: iš bet kokio akmens didelio formato plokštėmis, kai reikia „besiūlio“ rašto arba bookmatch — veidrodinio dviejų gretimų plokščių derinimo.\n\nPlokščių likučiai po pjaustymo — atskira kategorija: 0,5–1,5 m fragmentai, iš kurių išeina palangės, staliukai, lentynos ir nedideli stalviršiai už žemesnę kainą. Pas mus jie prieinami likučių puslapyje su matmenimis ir nuotraukomis." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Granito plokštė", "Stalviršiai, laiptai, apdaila", "2400–3200 × 1200–1900 mm, 20/30 mm"],
+        ["Marmuro plokštė", "Vonios, palangės, portalai", "Dažnai su tinkleliu kitoje pusėje"],
+        ["Kvarcito plokštė", "Stalviršiai ir salos", "Kiečiausia, iki 3 × 1,8 m"],
+        ["Kvarco plokštė", "Vienalytės spalvos stalviršiai", "3050 × 1400 arba 3200 × 1600 mm"],
+        ["Keraminio granito", "Stalviršiai, fasadai, sienelės", "3200 × 1600 mm, 6–20 mm"]
+      ]
+    },
+    "faq": [
+      { "question": "Kuo plokštė skiriasi nuo plytelės?", "answer": "Dydžiu ir tuo, kas iš jos daroma. Plytelė — gatavas modulis iki 1200 mm klijuoti. Plokštė — ruošinys iki 3,2 m, iš kurio gaminys pjaunamas pagal jūsų matmenis." },
+      { "question": "Kokie plokštės matmenys?", "answer": "Natūralus akmuo nuo 2,4 × 1,2 iki 3,2 × 1,9 m, kvarcas 3,05 × 1,4 arba 3,2 × 1,6 m, keraminis granitas 3,2 × 1,6 m. Tikslūs matmenys nurodyti kiekvienai plokštei kataloge." },
+      { "question": "Kiek ji kainuoja?", "answer": "Plokštė parduodama už kvadratinį metrą su koeficientu visai plokštei. Kaina priklauso nuo uolienos, storio ir partijos; kataloge nurodyta konkrečių turimų plokščių kaina." },
+      { "question": "Kaip rinktis plokštę?", "answer": "Žiūrėti visą plokštę dienos šviesoje, o ne pavyzdį: patikrinti raštą, įtrūkimus, intarpus, suderinti detalių išdėstymą ant plokštės. Atsiunčiame plokštės nuotraukas ir vaizdo įrašą ir rezervuojame ją jums iki pjaustymo." }
+    ]
+  },
+  "yak-vybraty-kamin-dlya-kukhni": {
+    "title": "Kaip išsirinkti akmenį virtuvei: išsamus gidas 2026",
+    "h1": "Kaip išsirinkti akmenį virtuvės stalviršiui — išsamus gidas",
+    "description": "Kaip išsirinkti akmenį virtuvei: granitas, kvarcas, kvarcitas, keraminis granitas ar marmuras. Palyginimas pagal tvirtumą, karštį, priežiūrą, raštą ir biudžetą, storį ir kraštą.",
+    "dek": "Pagrindinis gidas pagal tvirtumą, karštį, priežiūrą ir rašto charakterį.",
+    "intro": "Akmens pasirinkimas virtuvei prasideda ne nuo medžiagos pavadinimo, o nuo trijų klausimų: kaip gaminate, kiek dėmesio pasiryžę skirti priežiūrai ir kokį charakterį turi turėti virtuvė. Atsakę į juos, beveik automatiškai gausite vieną iš penkių medžiagų. Šiame gide surinkome viską, ką aiškiname klientams gamyboje, su nuorodomis į išsamius straipsnius.",
+    "sections": [
+      { "heading": "Kokį akmenį rinktis virtuvei?", "body": "Daug gaminate, statote karštus indus kur pakliūva, mėgstate natūralų raštą: granitas. Norite šviesaus vienalyčio paviršiaus ir minimalios priežiūros, karštus indus ant padėklo: kvarcas. Norite šviesaus natūralaus akmens su gyslomis, kuris nebijo citrinos: kvarcitas. Reikia plono modernaus stalviršio, ant kurio galima statyti karštus indus: keraminis granitas. Pasiryžę patinai dėl gražaus marmuro: marmuras, bet suprantant pasekmes.\n\nTai supaprastinta schema, bet ji veikia daugumoje atvejų. Toliau niuansai." },
+      { "heading": "Granitas, kvarcas, kvarcitas, keraminis granitas ar marmuras — koks skirtumas?", "body": "Granitas: natūrali uoliena, kietumas 6–7, atlaiko karštį, reikia impregnuoti kartą per 1–3 metus, kiekviena plokštė unikali, ukrainietiškos uolienos prieinamos kaina.\n\nKvarcas: 90 % kvarco su derva, be porų, kartojama spalva, jautrus temperatūrai virš 150 °C ir ultravioletui, ne laukui.\n\nKvarcitas: natūralus, kietumas 7, atsparus rūgštims, reikia impregnuoti, šviesūs šilti tonai, brangiausias iš natūralių.\n\nKeraminis granitas: sukepinta 12 mm plokštė, nebijo nieko, išskyrus smūgio į briauną, lengviausias, reikia vientiso pagrindo ir nuožulnos ant krašto.\n\nMarmuras: kalcitas, kietumas 3–4, ėsdinamas rūgštimis, gražiausias raštas, virtuvei su atsargiu šeimininku arba salai, kur negaminama." },
+      { "heading": "Į ką atsižvelgti pagal tvirtumą, priežiūrą ir biudžetą?", "body": "Atsparumas smūgiams ir įbrėžimams: kvarcitas ir granitas, paskui kvarcas ir keraminis granitas (trapūs kraštai), paskui marmuras. Atsparumas dėmėms be impregnavimo: kvarcas ir keraminis granitas, paskui kvarcitas ir granitas su impregnavimu, paskui marmuras.\n\nPriežiūra: kvarcas ir keraminis granitas nieko, išskyrus plovimą; granitas ir kvarcitas — vandens testas ir impregnavimas; marmuras — impregnavimas kasmet ir visada neutrali chemija. Biudžetas didėjimo tvarka: ukrainietiški granitai ir bazinis keraminis granitas, toliau kvarcas ir gabras, toliau marmuras, kvarcitas ir premium kvarco bei keraminio granito kolekcijos." },
+      { "heading": "Kokio storio ir apdirbimo reikia?", "body": "Storis: 20 mm standartinei virtuvei visose medžiagose, 30 mm ilgoms konsolėms ar masyviam stiliui, 12 mm keraminiam granitui su suklijuotu kraštu. Kraštas: tiesus kraštas arba nuožulna baziniai, suapvalinimas R3 šeimoms su vaikais, suklijuotas 40 mm storos plokštės išvaizdai.\n\nApdaila: poliruota parodo raštą ir lengviau plaunama, matinė (honed) paslepia pirštų atspaudus ir ėsdinimą ant marmuro, leather ant tamsaus granito prideda lytėjimo pojūčio ir paslepia įbrėžimus. Virtuvėje su langu į pietus tamsus poliruotas akmuo duos atspindžių, atsižvelkite į tai." },
+      { "heading": "Kaip užsakyti ir apskaičiuoti kainą?", "body": "Paskaičiuokite orientyrą skaičiuoklėje, išsirinkite dvi–tris kolekcijas kataloge ir parašykite mums su virtuvės planu. Atsiųsime turimų plokščių nuotraukas, sąmatą su pjaustymu ir matavimo datą. Po matavimo patvirtinate detalių išdėstymą konkrečioje plokštėje, ir per vieną–dvi savaites stalviršis stovi virtuvėje.\n\nJei dvejojate tarp dviejų medžiagų, atvykite į gamybą Kostopilyje arba užsisakykite pavyzdžių: ant jų galima atlikti namų testą su citrina, karštu puodeliu ir peiliu, po kurio pasirinkimas tampa akivaizdus." }
+    ],
+    "table": {
+      "headers": ["Medžiaga", "Stiprioji pusė", "Į ką atsižvelgti"],
+      "rows": [
+        ["Granitas", "Karštis, smūgiai, unikalus raštas", "Impregnavimas kartą per 1–3 metus"],
+        ["Kvarcas", "Be porų, kartojama spalva", "Padėklas karštiems indams, ne laukui"],
+        ["Kvarcitas", "Kietumas ir šviesus natūralus tonas", "Plokštės suderinimas, aukštesnė kaina"],
+        ["Keraminis granitas", "Plonumas, karštis, atsparumas UV", "Trapūs kraštai, vientisas pagrindas"],
+        ["Marmuras", "Gražiausias raštas", "Rūgštys, patina, priežiūra kasmet"]
+      ]
+    },
+    "faq": [
+      { "question": "Kas praktiškiausia?", "answer": "Kvarcas šviesiai virtuvei, granitas bet kuriai kitai. Abu atleidžia kasdienį naudojimą, skirtumas tik karštuose induose ir impregnavime." },
+      { "question": "Ką rinktis šeimai su vaikais?", "answer": "Kvarcą arba granitą su suapvalintu kraštu R3. Keraminis granitas blogiau atlaiko žaislų smūgius į briauną, marmuras reikalauja dėmesio, kurio šeimoje su vaikais paprastai nėra." },
+      { "question": "Ką reikia impregnuoti?", "answer": "Granitą, kvarcitą ir marmurą. Kvarcas ir keraminis granitas neturi porų ir neimpregnuojami." },
+      { "question": "Nuo ko pradėti pasirinkimą?", "answer": "Nuo scenarijaus: kaip gaminate ir kiek priežiūros pasiryžę skirti. Paskui nuo spalvos ir rašto kataloge, paskui nuo skaičiuoklės ir pavyzdžių." }
+    ]
+  }
+}

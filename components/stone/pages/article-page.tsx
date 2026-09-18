@@ -10,9 +10,12 @@ import type { Article } from '@/lib/stone/cms-types'
 import { PavingCalc } from '@/components/stone/interactive/stone-tools'
 import { AuthorCard } from '@/components/stone/site/content-components'
 import { Breadcrumbs, Faq, JsonLd } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
+import { collectionName } from '@/lib/i18n/stone'
+import { hasCyrillic } from '@/lib/stone/i18n-content'
 
 export async function ArticlePage({ article: a }: { article: Article }) {
-  const [collections, known] = await Promise.all([getCollections(), getKnownPaths()])
+  const [collections, known, { t, locale }] = await Promise.all([getCollections(), getKnownPaths(), getStoneT()])
   const cover = a.image || versioned(`/blog/${a.slug}.webp`)
   const detail = a.detailImage || versioned(`/blog/${a.slug}-detail.webp`)
   return (
@@ -59,8 +62,11 @@ export async function ArticlePage({ article: a }: { article: Article }) {
       />
       <article className="page-shell max-w-4xl py-20">
         <p className="eyebrow text-accent">
-          {a.category} · Оновлено: {a.dateModified} · {a.readingTime}
+          {t(a.category)} · {t('Оновлено:')} {a.dateModified} · {a.readingTime.replace('хв читання', t('хв читання'))}
         </p>
+        {locale !== 'uk' && hasCyrillic(a.intro) && (
+          <p className="mt-4 inline-flex rounded-full border px-3 py-1.5 text-xs text-muted-foreground">{t('Ця стаття доступна українською. Переклад готується.')}</p>
+        )}
         <h1 className="mt-5 text-balance text-3xl font-semibold tracking-[-.055em] sm:text-5xl md:text-7xl">
           {a.h1}
         </h1>
@@ -68,7 +74,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
         <div className="relative mt-10 aspect-video overflow-hidden rounded-xl">
           <Image
             src={cover}
-            alt={`${a.h1}: приклад каменю та його застосування`}
+            alt={`${a.h1}: ${t('приклад каменю та його застосування')}`}
             fill
             priority
             sizes="(max-width: 896px) 100vw, 896px"
@@ -91,7 +97,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
         <div className="relative mt-12 aspect-[4/3] overflow-hidden rounded-xl">
           <Image
             src={detail}
-            alt={`Деталь поверхні для статті «${a.title}»`}
+            alt={`${t('Деталь поверхні для статті')} «${a.title}»`}
             fill
             sizes="(max-width: 896px) 100vw, 896px"
             className="object-cover"
@@ -99,7 +105,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
         </div>
         {a.slug === 'ukladannya-granitnoyi-brukivky' && (
           <section className="mt-12">
-            <h2 className="mb-6 text-3xl font-semibold">Розрахуйте площу замовлення</h2>
+            <h2 className="mb-6 text-3xl font-semibold">{t('Розрахуйте площу замовлення')}</h2>
             <PavingCalc />
           </section>
         )}
@@ -128,11 +134,11 @@ export async function ArticlePage({ article: a }: { article: Article }) {
           </table>
         </div>
         <section className="mt-12">
-          <h2 className="text-3xl font-semibold">Поширені питання</h2>
+          <h2 className="text-3xl font-semibold">{t('Поширені питання')}</h2>
           <Faq items={a.faq} includeSchema={false} />
         </section>
         <section className="mt-12">
-          <h2 className="text-2xl font-semibold">Читайте також</h2>
+          <h2 className="text-2xl font-semibold">{t('Читайте також')}</h2>
           <div className="mt-4 flex flex-wrap gap-3">
             {a.related
               .map(stoneHref)
@@ -144,7 +150,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
                   className="rounded-full border px-4 py-2 text-sm font-semibold"
                 >
                   {href === '/arkhitekturnyi-kamin/kalkulyator'
-                    ? 'Розрахувати вартість'
+                    ? t('Розрахувати вартість')
                     : href.split('/').filter(Boolean).at(-1)?.replaceAll('-', ' ')}
                 </Link>
               ))}
@@ -152,7 +158,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
         </section>
         <AuthorCard />
         <section className="mt-12 rounded-xl bg-card p-6">
-          <h2 className="text-2xl font-semibold">Пов’язані матеріали</h2>
+          <h2 className="text-2xl font-semibold">{t('Пов’язані матеріали')}</h2>
           <div className="mt-4 flex flex-wrap gap-3">
             {a.materials.map((s) => {
               const c = collections.find((x) => x.slug === s)
@@ -160,7 +166,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
               if (!c) return null
               return (
                 <Link className="rounded-full border px-4 py-2 text-sm" href={`/arkhitekturnyi-kamin/materialy/${s}`} key={s}>
-                  {c.name}
+                  {collectionName(locale, c.name)}
                 </Link>
               )
             })}
@@ -168,7 +174,7 @@ export async function ArticlePage({ article: a }: { article: Article }) {
           <div className="mt-4 flex flex-wrap gap-3">
             {a.categories.map((s) => (
               <Link className="text-sm underline" href={`/arkhitekturnyi-kamin/vyroby/${s}`} key={s}>
-                {categories.find((c) => c.slug === s)?.name || s}
+                {t(categories.find((c) => c.slug === s)?.name || s)}
               </Link>
             ))}
           </div>

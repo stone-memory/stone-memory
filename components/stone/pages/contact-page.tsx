@@ -1,9 +1,11 @@
 import { getContacts, getProjects } from '@/lib/stone/cms'
 import { InquiryForm } from '@/components/stone/interactive/tools'
 import { PageHero } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
 
 export async function ContactPage() {
-  const [contacts, projects] = await Promise.all([getContacts(), getProjects()])
+  const { t, locale } = await getStoneT()
+  const [contacts, projects] = await Promise.all([getContacts(locale), getProjects()])
   return (
     <PageHero
       eyebrow="Контакти"
@@ -14,10 +16,10 @@ export async function ContactPage() {
         <div className="rounded-xl bg-primary p-8 text-primary-foreground">
           <p className="eyebrow opacity-50">Stone Memory</p>
           <p className="mt-12 text-3xl font-semibold">
-            {contacts.address.city}, {contacts.address.country}
+            {t(contacts.address.city)}, {t(contacts.address.country)}
           </p>
           <p className="mt-3 text-sm opacity-60">
-            {contacts.address.street}
+            {t(contacts.address.street)}
             <br />
             {contacts.phone.display}
             <br />

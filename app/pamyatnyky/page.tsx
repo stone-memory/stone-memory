@@ -1,14 +1,14 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SelectionSidebar } from "@/components/selection-sidebar"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import { ConsultButton } from "@/components/consult-button"
+import { HubIntro } from "@/components/hub-intro"
 import { FeaturedStones } from "@/components/featured-stones"
 import { ReviewsSection } from "@/components/reviews-section"
 import { FaqSection } from "@/components/faq-section"
 import { CtaBand } from "@/components/info-page"
+import { HUB_COPY } from "@/lib/i18n/copy/hub"
 import { HomeCollections, HomeNumbers, HomeProcess, HomeRegions, HomeShowcase } from "@/components/home-sections"
 import { fetchFaqItems, fetchReviews, fetchStones } from "@/lib/data-source"
 import { seedFaq } from "@/lib/data/seeds"
@@ -18,6 +18,8 @@ import type { FaqItem } from "@/lib/store/faq"
 import type { Review } from "@/lib/store/reviews"
 
 const PATH = "/pamyatnyky"
+// Крихта за мовою: Breadcrumbs — клієнтський і сам обере переклад.
+const HUB_CRUMB = { uk: HUB_COPY.uk.intro.crumb, pl: HUB_COPY.pl.intro.crumb, en: HUB_COPY.en.intro.crumb, de: HUB_COPY.de.intro.crumb, lt: HUB_COPY.lt.intro.crumb }
 export const revalidate = 86400
 
 export const metadata: Metadata = {
@@ -77,37 +79,9 @@ export default async function MemorialHubPage() {
       <Header />
       <main id="main-content">
         <div className="mx-auto max-w-7xl px-6 pt-6">
-          <Breadcrumbs items={[{ name: "Пам'ятники" }]} />
+          <Breadcrumbs items={[{ name: HUB_CRUMB }]} />
         </div>
-        <section className="mx-auto max-w-7xl px-6 pt-6 md:pt-8">
-          <span className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            Меморіальний напрям
-          </span>
-          <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
-            Пам'ятники з граніту від виробника
-          </h1>
-          <p className="mt-4 max-w-2xl text-base text-muted-foreground text-balance md:text-lg">
-            Одинарні й подвійні пам'ятники, хрести, дитячі та військові, меморіальні комплекси під ключ.
-            Український граніт, габро й лабрадорит, власний цех у Костополі, монтаж по всій Україні.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/memorial/pamyatnyky"
-              prefetch
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-[1px]"
-            >
-              Переглянути каталог
-            </Link>
-            <Link
-              href="/tsiny"
-              prefetch
-              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 px-6 py-3 text-sm font-medium transition-colors hover:bg-foreground/5"
-            >
-              Ціни
-            </Link>
-            <ConsultButton variant="secondary" topic="Хаб пам'ятників">Отримати розрахунок</ConsultButton>
-          </div>
-        </section>
+        <HubIntro />
 
         <HomeNumbers stones={stones} />
         <HomeCollections stones={stones} />

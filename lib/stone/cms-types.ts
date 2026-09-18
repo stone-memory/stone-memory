@@ -58,6 +58,8 @@ export type Project = {
   image: string
   gallery: string[]
   alt: string
+  /** Переклади story/solution/alt за мовою (pl/en/de/lt) */
+  i18n?: Partial<Record<string, ProjectI18n>>
 }
 
 export type ArticleCategory = 'Матеріали' | 'Догляд' | 'Проєктування' | 'Ціни'
@@ -84,7 +86,14 @@ export type Article = {
   image?: string
   /** Друге фото в тексті; якщо порожньо — /blog/<slug>-detail.webp */
   detailImage?: string
+  /** Переклади тексту за мовою (pl/en/de/lt); відсутні поля лишаються українськими */
+  i18n?: Partial<Record<string, ArticleI18n>>
 }
+
+export type ArticleI18n = Partial<
+  Pick<Article, 'title' | 'h1' | 'description' | 'dek' | 'intro' | 'sections' | 'table' | 'faq'>
+>
+export type ProjectI18n = Partial<Pick<Project, 'story' | 'solution' | 'alt'>>
 
 export type Slab = {
   id: string

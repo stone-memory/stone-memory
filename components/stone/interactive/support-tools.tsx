@@ -7,8 +7,10 @@ import { Check, Loader2 } from 'lucide-react'
 import { edgeProfiles, finishes } from '@/data/stone/technical'
 import type { Remnant } from '@/lib/stone/cms-types'
 import { readAttribution } from '@/lib/attribution'
+import { useStoneT } from '@/lib/i18n/stone/client'
 
 export function EdgeProfiles() {
+  const { t } = useStoneT()
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {edgeProfiles.map(([name, copy, tier], i) => (
@@ -16,7 +18,7 @@ export function EdgeProfiles() {
           <svg
             viewBox="0 0 160 80"
             role="img"
-            aria-label={`Переріз профілю ${name}`}
+            aria-label={`${t('Переріз профілю')} ${t(name)}`}
             className="h-24 w-full text-foreground"
           >
             <path
@@ -32,9 +34,9 @@ export function EdgeProfiles() {
               strokeWidth="3"
             />
           </svg>
-          <p className="eyebrow text-accent">{tier}</p>
-          <h2 className="mt-3 text-2xl font-semibold">{name}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{copy}</p>
+          <p className="eyebrow text-accent">{t(tier)}</p>
+          <h2 className="mt-3 text-2xl font-semibold">{t(name)}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t(copy)}</p>
         </article>
       ))}
     </div>
@@ -42,6 +44,7 @@ export function EdgeProfiles() {
 }
 
 export function FinishGrid() {
+  const { t } = useStoneT()
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {finishes.map(([name, image, feel, use, slip, care]) => (
@@ -49,30 +52,30 @@ export function FinishGrid() {
           <div className="relative aspect-square">
             <Image
               src={image}
-              alt={`${name} фініш натурального каменю крупним планом`}
+              alt={`${t(name)} — ${t('фініш натурального каменю крупним планом')}`}
               fill
               sizes="(max-width:768px) 100vw, 33vw"
               className="object-cover"
             />
           </div>
           <div className="p-6">
-            <h2 className="text-2xl font-semibold">{name}</h2>
+            <h2 className="text-2xl font-semibold">{t(name)}</h2>
             <dl className="mt-5 grid gap-3 text-sm">
               <div>
-                <dt className="text-muted-foreground">Тактильність</dt>
-                <dd>{feel}</dd>
+                <dt className="text-muted-foreground">{t('Тактильність')}</dt>
+                <dd>{t(feel)}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Застосування</dt>
-                <dd>{use}</dd>
+                <dt className="text-muted-foreground">{t('Застосування')}</dt>
+                <dd>{t(use)}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Зчеплення</dt>
-                <dd>{slip}</dd>
+                <dt className="text-muted-foreground">{t('Зчеплення')}</dt>
+                <dd>{t(slip)}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Догляд</dt>
-                <dd>{care}</dd>
+                <dt className="text-muted-foreground">{t('Догляд')}</dt>
+                <dd>{t(care)}</dd>
               </div>
             </dl>
           </div>
@@ -83,6 +86,7 @@ export function FinishGrid() {
 }
 
 export function RemnantInventory({ remnants }: { remnants: Remnant[] }) {
+  const { t } = useStoneT()
   const [selected, setSelected] = useState('')
   const item = remnants.find((r) => r.id === selected)
   return (
@@ -93,7 +97,7 @@ export function RemnantInventory({ remnants }: { remnants: Remnant[] }) {
             <div className="relative aspect-[4/3]">
               <Image
                 src={r.image}
-                alt={`Залишок сляба ${r.name}, ${r.id}`}
+                alt={`${t('Залишок сляба')} ${r.name}, ${r.id}`}
                 fill
                 sizes="(max-width:768px) 100vw, 50vw"
                 className="object-cover"
@@ -102,18 +106,18 @@ export function RemnantInventory({ remnants }: { remnants: Remnant[] }) {
             <div className="p-6">
               <div className="flex items-center justify-between gap-4">
                 <p className="eyebrow text-accent">{r.id}</p>
-                <span className="rounded-full border px-3 py-1 text-xs">{r.status}</span>
+                <span className="rounded-full border px-3 py-1 text-xs">{t(r.status)}</span>
               </div>
               <h2 className="mt-4 text-2xl font-semibold">{r.name}</h2>
               <p className="mt-3 text-sm text-muted-foreground">
-                {r.size} · {r.thickness} · {r.finish}
+                {r.size.replace('мм', t('мм'))} · {t(r.thickness)} · {t(r.finish)}
               </p>
-              <p className="mt-4 font-semibold">{r.price}</p>
+              <p className="mt-4 font-semibold">{r.price.replace(/^від/, t('від')).replace(/грн$/, t('грн'))}</p>
               <button
                 onClick={() => setSelected(r.id)}
                 className="mt-5 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
               >
-                Зарезервувати
+                {t('Зарезервувати')}
               </button>
             </div>
           </article>
@@ -143,6 +147,7 @@ function ReservationForm({
   itemId: string
   onClose: () => void
 }) {
+  const { t } = useStoneT()
   const [status, setStatus] = useState<'idle' | 'pending' | 'done'>('idle')
   const [error, setError] = useState('')
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -160,30 +165,29 @@ function ReservationForm({
       return
     }
     const result = response ? await response.json().catch(() => ({})) : {}
-    setError(result.error || 'Не вдалося надіслати запит. Зателефонуйте нам або спробуйте ще раз.')
+    setError(result.error || t('Не вдалося надіслати запит. Зателефонуйте нам або спробуйте ще раз.'))
     setStatus('idle')
   }
   return (
     <div className="mt-8 rounded-xl border bg-card p-6" aria-live="polite">
       {status === 'done' ? (
         <p className="flex items-center gap-2 font-semibold">
-          <Check className="size-5" /> Запит на {itemId} надіслано. Ми зв’яжемося протягом робочого
-          дня.
+          <Check className="size-5" /> {t('Запит на')} {itemId} {t('надіслано. Ми зв’яжемося протягом робочого дня.')}
         </p>
       ) : (
         <form onSubmit={submit} className="grid gap-4 md:grid-cols-3">
           <div>
-            <p className="eyebrow text-accent">Резерв {itemId}</p>
+            <p className="eyebrow text-accent">{t('Резерв')} {itemId}</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Резерв підтверджує менеджер після перевірки залишку.
+              {t('Резерв підтверджує менеджер після перевірки залишку.')}
             </p>
           </div>
           <label className="sr-only">
-            Не заповнюйте це поле
+            {t('Не заповнюйте це поле')}
             <input name="website" tabIndex={-1} autoComplete="off" />
           </label>
           <label className="text-sm">
-            Ім’я
+            {t('Ім’я')}
             <input
               name="name"
               required
@@ -193,7 +197,7 @@ function ReservationForm({
             />
           </label>
           <label className="text-sm">
-            Телефон
+            {t('Телефон')}
             <input
               name="phone"
               required
@@ -208,10 +212,10 @@ function ReservationForm({
               disabled={status === 'pending'}
               className="flex rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
             >
-              {status === 'pending' && <Loader2 className="mr-2 size-4 animate-spin" />}Надіслати
+              {status === 'pending' && <Loader2 className="mr-2 size-4 animate-spin" />}{t('Надіслати')}
             </button>
             <button type="button" onClick={onClose} className="text-sm">
-              Скасувати
+              {t('Скасувати')}
             </button>
           </div>
           {error && <p className="text-sm text-destructive md:col-span-3">{error}</p>}
@@ -222,16 +226,17 @@ function ReservationForm({
 }
 
 export function SupportLinks() {
+  const { t } = useStoneT()
   return (
     <div className="flex flex-wrap gap-3">
       <Link href="/arkhitekturnyi-kamin/materialy/tovshchyny" className="rounded-full border px-4 py-2 text-sm">
-        Товщини
+        {t('Товщини')}
       </Link>
       <Link href="/arkhitekturnyi-kamin/materialy/finishi" className="rounded-full border px-4 py-2 text-sm">
-        Фініші
+        {t('Фініші')}
       </Link>
       <Link href="/arkhitekturnyi-kamin/dohliad" className="rounded-full border px-4 py-2 text-sm">
-        Догляд
+        {t('Догляд')}
       </Link>
     </div>
   )

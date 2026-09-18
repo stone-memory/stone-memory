@@ -1,29 +1,33 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { SITE_URL } from '@/lib/site-config'
 import { FaqSection, JsonLd } from '@/components/stone/site/content-components'
+import { useStoneT } from '@/lib/i18n/stone/client'
 
 /** Спільні будівельні блоки сторінок. Серверні компоненти без стану. */
 
 export { JsonLd }
 
 export function Breadcrumbs({ items }: { items: { name: string; href?: string }[] }) {
+  const { t } = useStoneT()
   return (
     <>
       <nav
         className="page-shell pt-8 text-xs text-muted-foreground"
-        aria-label="Навігаційний ланцюжок"
+        aria-label={t('Навігаційний ланцюжок')}
       >
-        <Link href="/">Головна</Link>
+        <Link href="/">{t('Головна')}</Link>
         {items.map((x) => (
           <span key={x.name}>
             {' '}
             <span className="px-2">/</span>
             {x.href ? (
-              <Link href={x.href}>{x.name}</Link>
+              <Link href={x.href}>{t(x.name)}</Link>
             ) : (
-              <span aria-current="page">{x.name}</span>
+              <span aria-current="page">{t(x.name)}</span>
             )}
           </span>
         ))}
@@ -58,15 +62,16 @@ export function PageHero({
   copy: string
   children?: React.ReactNode
 }) {
+  const { t } = useStoneT()
   return (
     <main id="main-content">
       <section className="page-shell py-20 md:py-28">
-        <p className="eyebrow text-accent">{eyebrow}</p>
+        <p className="eyebrow text-accent">{t(eyebrow)}</p>
         <h1 className="mt-5 max-w-5xl text-balance text-4xl font-semibold leading-[.95] tracking-[-.055em] sm:text-5xl md:text-7xl lg:text-8xl">
-          {title}
+          {t(title)}
         </h1>
         <p className="mt-8 max-w-xl text-pretty text-base leading-7 text-muted-foreground">
-          {copy}
+          {t(copy)}
         </p>
         {children && <div className="mt-14">{children}</div>}
       </section>
@@ -79,6 +84,7 @@ export function CardGrid({
 }: {
   items: { name: string; copy: string; href: string; image?: string; alt?: string }[]
 }) {
+  const { t } = useStoneT()
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
       {items.map((x, i) => (
@@ -101,8 +107,8 @@ export function CardGrid({
           <div className="flex min-h-52 flex-col justify-between p-6">
             <span className="eyebrow text-muted-foreground">{String(i + 1).padStart(2, '0')}</span>
             <div>
-              <h2 className="text-2xl font-semibold">{x.name}</h2>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">{x.copy}</p>
+              <h2 className="text-2xl font-semibold">{t(x.name)}</h2>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{t(x.copy)}</p>
               <ArrowRight className="mt-5" />
             </div>
           </div>

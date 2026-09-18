@@ -4,6 +4,7 @@ import { getProjects, getSetting } from '@/lib/stone/cms'
 import type { Professional } from '@/lib/stone/cms-types'
 import { InquiryForm } from '@/components/stone/interactive/tools'
 import { Breadcrumbs, Faq, PageHero } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
 
 /** Розвʼязує слаг /b2b/<slug> у сегмент аудиторії або тематичну сторінку. */
 export function resolveProfessional(pro: Professional, slug: string) {
@@ -24,7 +25,7 @@ export function resolveProfessional(pro: Professional, slug: string) {
 }
 
 export async function ProfessionalPage({ slug }: { slug: string }) {
-  const [pro, projects] = await Promise.all([getSetting('professional'), getProjects()])
+  const [pro, projects, { t }] = await Promise.all([getSetting('professional'), getProjects(), getStoneT()])
   const data = resolveProfessional(pro, slug)!
   return (
     <main id="main-content">
@@ -33,14 +34,14 @@ export async function ProfessionalPage({ slug }: { slug: string }) {
         <div>
           <p className="eyebrow text-accent">B2B · Stone Memory</p>
           <h1 className="mt-5 text-balance text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
-            {data.title}
+            {t(data.title)}
           </h1>
-          <p className="mt-7 max-w-xl leading-7 text-muted-foreground">{data.copy}</p>
+          <p className="mt-7 max-w-xl leading-7 text-muted-foreground">{t(data.copy)}</p>
         </div>
         <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
           <Image
             src={data.image ?? '/production-gallery.webp'}
-            alt={data.alt ?? `${data.title} — робота з каменем у виробництві Stone Memory`}
+            alt={data.alt ?? `${t(data.title)} — Stone Memory`}
             fill
             priority
             sizes="(max-width:1024px) 100vw, 50vw"
@@ -52,17 +53,17 @@ export async function ProfessionalPage({ slug }: { slug: string }) {
         {data.items.map((x, i) => (
           <div key={x} className="bg-card p-7">
             <span className="eyebrow text-accent">{String(i + 1).padStart(2, '0')}</span>
-            <p className="mt-5 text-xl font-semibold">{x}</p>
+            <p className="mt-5 text-xl font-semibold">{t(x)}</p>
           </div>
         ))}
       </section>
       <section className="page-shell py-20">
         <div className="grid gap-8 lg:grid-cols-[.7fr_1fr]">
           <div>
-            <p className="eyebrow text-accent">Почати співпрацю</p>
-            <h2 className="mt-5 text-4xl font-semibold">Надішліть бриф або креслення.</h2>
+            <p className="eyebrow text-accent">{t('Почати співпрацю')}</p>
+            <h2 className="mt-5 text-4xl font-semibold">{t('Надішліть бриф або креслення.')}</h2>
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
-              Відповімо з переліком потрібних даних і наступним кроком.
+              {t('Відповімо з переліком потрібних даних і наступним кроком.')}
             </p>
           </div>
           <InquiryForm trade proposals={projects} />
@@ -74,7 +75,7 @@ export async function ProfessionalPage({ slug }: { slug: string }) {
 }
 
 export async function TradeProgram() {
-  const [faq, projects] = await Promise.all([getSetting('faq'), getProjects()])
+  const [faq, projects, { t }] = await Promise.all([getSetting('faq'), getProjects(), getStoneT()])
   return (
     <PageHero
       eyebrow="Trade program"
@@ -87,7 +88,7 @@ export async function TradeProgram() {
             (x) => (
               <div className="flex items-center gap-3 rounded-lg border p-5 text-sm" key={x}>
                 <Layers3 />
-                {x}
+                {t(x)}
               </div>
             )
           )}

@@ -5,7 +5,9 @@ import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { Check, Upload, X } from 'lucide-react'
 import { materials } from '@/lib/stone/content'
 import { readAttribution } from '@/lib/attribution'
-import { estimatePrice, formatPrice } from '@/lib/stone/prices'
+import { estimatePrice } from '@/lib/stone/prices'
+import { useStoneT } from '@/lib/i18n/stone/client'
+import { collectionName, collectionSummary, stonePrice } from '@/lib/i18n/stone'
 import type { CalculatorRates, Collection, Project, Slab } from '@/lib/stone/cms-types'
 const field =
   'h-12 w-full rounded-md border bg-background px-4 text-sm outline-none focus:ring-2 focus:ring-ring'
@@ -20,6 +22,7 @@ export function Calculator({
   collections: Collection[]
   rates: CalculatorRates
 }) {
+  const { t } = useStoneT()
   const products = Object.keys(rates.productRates)
   const [product, setProduct] = useState(products[0] ?? 'Стільниця'),
     [materialSlug, setMaterialSlug] = useState('grey-ukraine'),
@@ -41,7 +44,7 @@ export function Calculator({
   const pickFile = (next: File | null) => {
     if (next && next.size > MAX_UPLOAD_MB * 1024 * 1024) {
       setFile(null)
-      setFileError(`Файл завеликий: до ${MAX_UPLOAD_MB} МБ.`)
+      setFileError(`${t('Файл завеликий: до')} ${MAX_UPLOAD_MB} ${t('МБ')}.`)
       return
     }
     setFileError('')
@@ -66,11 +69,12 @@ export function Calculator({
       })
     : null
   const summary = `${product}; ${selected.name}; ${length} × ${width} мм; кромка: ${edge}; вирізів: ${cutouts}; орієнтир: ${estimate?.toLocaleString('uk-UA')} грн.`
+  // Підсумок для менеджера лишається українським: він іде в CRM і Telegram.
   if (handoff)
     return (
       <div>
         <button onClick={() => setHandoff(false)} className="mb-5 text-sm text-muted-foreground">
-          ← Назад до розрахунку
+          {t('← Назад до розрахунку')}
         </button>
         <InquiryForm initialMessage={summary} attachment={file} />
       </div>
@@ -81,22 +85,22 @@ export function Calculator({
         className="grid gap-5 rounded-xl bg-card p-6 md:grid-cols-2 md:p-10"
         onSubmit={(e) => e.preventDefault()}
       >
-        <Select label="Тип виробу" value={product} set={(v) => setProduct(v)} options={products} />
+        <Select label={t('Тип виробу')} value={product} set={(v) => setProduct(v)} options={products} />
         <MaterialSelect
           product={product}
           value={materialSlug}
           set={setMaterialSlug}
           collections={collections}
         />
-        <NumberField label="Довжина, мм" value={length} set={setLength} />
-        <NumberField label="Ширина, мм" value={width} set={setWidth} />
+        <NumberField label={t('Довжина, мм')} value={length} set={setLength} />
+        <NumberField label={t('Ширина, мм')} value={width} set={setWidth} />
         <Select
-          label="Профіль кромки"
+          label={t('Профіль кромки')}
           value={edge}
           set={(v) => setEdge(v)}
           options={Object.keys(rates.edgeRates)}
         />
-        <NumberField label="Кількість вирізів" value={cutouts} set={setCutouts} min={0} />
+        <NumberField label={t('Кількість вирізів')} value={cutouts} set={setCutouts} min={0} />
         <label className="flex cursor-pointer items-center gap-3 rounded-md border border-dashed p-4 text-sm md:col-span-2">
           <Upload className="shrink-0" />
           <span className="min-w-0 flex-1">
@@ -104,14 +108,14 @@ export function Calculator({
               <>
                 <span className="block truncate font-semibold">{file.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {(file.size / 1024).toFixed(0)} КБ · піде разом із конфігурацією
+                  {(file.size / 1024).toFixed(0)} {t('КБ')} · {t('піде разом із конфігурацією')}
                 </span>
               </>
             ) : (
               <>
-                Додати фото або креслення
+                {t('Додати фото або креслення')}
                 <span className="block text-xs text-muted-foreground">
-                  Фото або PDF, до {MAX_UPLOAD_MB} МБ
+                  {t('Фото або PDF, до')} {MAX_UPLOAD_MB} {t('МБ')}
                 </span>
               </>
             )}
@@ -123,7 +127,7 @@ export function Calculator({
                 e.preventDefault()
                 pickFile(null)
               }}
-              aria-label="Прибрати файл"
+              aria-label={t('Прибрати файл')}
               className="rounded-full p-1 hover:bg-secondary"
             >
               <X className="size-4" />
@@ -139,30 +143,30 @@ export function Calculator({
         {fileError && <p className="text-sm text-destructive md:col-span-2">{fileError}</p>}
         {!valid && (
           <p className="text-sm text-destructive md:col-span-2">
-            Введіть додатні розміри та коректну кількість вирізів.
+            {t('Введіть додатні розміри та коректну кількість вирізів.')}
           </p>
         )}
       </form>
       <aside className="flex min-h-80 flex-col justify-between rounded-xl bg-primary p-8 text-primary-foreground md:p-10">
         <div>
-          <p className="eyebrow opacity-55">Орієнтовна вартість</p>
+          <p className="eyebrow opacity-55">{t('Орієнтовна вартість')}</p>
           <p className="mt-6 text-5xl font-semibold">
-            {estimate ? `від ${estimate.toLocaleString('uk-UA')} грн` : 'Вкажіть розміри'}
+            {estimate ? `${t('від')} ${estimate.toLocaleString('uk-UA')} ${t('грн')}` : t('Вкажіть розміри')}
           </p>
           <p className="mt-3 text-sm opacity-60">
-            {product} · {tier.toLowerCase()}
+            {t(product)} · {t(tier.toLowerCase())}
           </p>
         </div>
         <div>
           <p className="mb-5 text-sm opacity-60">
-            Орієнтовно. Точна ціна — після заміру й погодження сляба.
+            {t('Орієнтовно. Точна ціна — після заміру й погодження сляба.')}
           </p>
           <button
             disabled={!estimate}
             onClick={() => setHandoff(true)}
             className="w-full rounded-md bg-background p-4 text-sm font-semibold text-foreground disabled:opacity-50"
           >
-            Надіслати конфігурацію
+            {t('Надіслати конфігурацію')}
           </button>
         </div>
       </aside>
@@ -180,19 +184,20 @@ function MaterialSelect({
   set: (v: string) => void
   collections: Collection[]
 }) {
+  const { t, locale } = useStoneT()
   const available = collections.filter((item) => !(product === 'Стільниця' && item.exteriorOnly))
   const families = Array.from(new Set(available.map((item) => item.family)))
   return (
     <label className="flex flex-col gap-2 text-sm">
-      Матеріал
+      {t('Матеріал')}
       <select className={field} value={value} onChange={(event) => set(event.target.value)}>
         {families.map((family) => (
-          <optgroup key={family} label={family}>
+          <optgroup key={family} label={t(family)}>
             {available
               .filter((item) => item.family === family)
               .map((item) => (
                 <option key={item.slug} value={item.slug}>
-                  {item.name}
+                  {collectionName(locale, item.name)}
                 </option>
               ))}
           </optgroup>
@@ -212,12 +217,15 @@ function Select({
   set: (v: string) => void
   options: string[]
 }) {
+  const { t } = useStoneT()
   return (
     <label className="flex flex-col gap-2 text-sm">
       {label}
       <select className={field} value={value} onChange={(e) => set(e.target.value)}>
         {options.map((x) => (
-          <option key={x}>{x}</option>
+          <option key={x} value={x}>
+            {t(x)}
+          </option>
         ))}
       </select>
     </label>
@@ -264,6 +272,7 @@ export function InquiryForm({
   /** Проєктні пропозиції для підстановки з /kontakty?proposal=<slug>. */
   proposals?: Pick<Project, 'slug' | 'name' | 'type' | 'material'>[]
 }) {
+  const { t } = useStoneT()
   const [status, setStatus] = useState<'idle' | 'pending' | 'sent' | 'error'>('idle')
   const [feedback, setFeedback] = useState('')
   const [role, setRole] = useState(ROLES[0])
@@ -294,11 +303,11 @@ export function InquiryForm({
     const result = response ? await response.json().catch(() => ({})) : {}
     if (response?.ok) {
       setStatus('sent')
-      setFeedback('Дякуємо. Ми отримали запит і зв’яжемося з вами.')
+      setFeedback(t('Дякуємо. Ми отримали запит і зв’яжемося з вами.'))
     } else {
       setStatus('error')
       setFeedback(
-        result.error || 'Не вдалося надіслати запит. Зателефонуйте нам або спробуйте ще раз.'
+        result.error || t('Не вдалося надіслати запит. Зателефонуйте нам або спробуйте ще раз.')
       )
     }
   }
@@ -311,7 +320,7 @@ export function InquiryForm({
         <span className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <Check />
         </span>
-        <h3 className="text-3xl font-semibold">Запит надіслано</h3>
+        <h3 className="text-3xl font-semibold">{t('Запит надіслано')}</h3>
         <p className="max-w-md text-sm text-muted-foreground">{feedback}</p>
       </div>
     )
@@ -325,20 +334,20 @@ export function InquiryForm({
     >
       {trade && (
         <>
-          <Select label="Ваша роль" value={role} set={setRole} options={ROLES} />
+          <Select label={t('Ваша роль')} value={role} set={setRole} options={ROLES} />
           <input type="hidden" name="role" value={role} />
         </>
       )}
       <label className="sr-only">
-        Не заповнюйте це поле
+        {t('Не заповнюйте це поле')}
         <input name="website" tabIndex={-1} autoComplete="off" />
       </label>
       <label className="flex flex-col gap-2 text-sm">
-        Ім’я
-        <input name="name" required minLength={2} className={field} placeholder="Ваше ім’я" />
+        {t('Ім’я')}
+        <input name="name" required minLength={2} className={field} placeholder={t('Ваше ім’я')} />
       </label>
       <label className="flex flex-col gap-2 text-sm">
-        Телефон
+        {t('Телефон')}
         <input
           name="phone"
           required
@@ -350,50 +359,50 @@ export function InquiryForm({
         />
       </label>
       <label className="flex flex-col gap-2 text-sm">
-        Місто
+        {t('Місто')}
         <input
           name="city"
           autoComplete="address-level2"
           className={field}
-          placeholder="Ваше місто"
+          placeholder={t('Ваше місто')}
         />
       </label>
       <label className="flex flex-col gap-2 text-sm">
-        Виріб
+        {t('Виріб')}
         <input
           name="interest"
           value={interest}
           onChange={(e) => setInterest(e.target.value)}
           className={field}
-          placeholder="Стільниця, сходи…"
+          placeholder={t('Стільниця, сходи…')}
         />
       </label>
       <label className="flex flex-col gap-2 text-sm md:col-span-2">
-        Коротко про запит
+        {t('Коротко про запит')}
         <textarea
           name="message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           maxLength={1200}
           className="min-h-32 rounded-md border bg-background p-4 text-sm outline-none focus:ring-2 focus:ring-ring"
-          placeholder="Опишіть виріб, матеріал або проєкт"
+          placeholder={t('Опишіть виріб, матеріал або проєкт')}
         />
       </label>
       {attachment && (
         <p className="text-sm text-muted-foreground md:col-span-2">
-          Вкладення: <span className="font-semibold">{attachment.name}</span>
+          {t('Вкладення:')} <span className="font-semibold">{attachment.name}</span>
         </p>
       )}
       <button
         disabled={status === 'pending'}
         className="h-12 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-60 md:col-span-2"
       >
-        {status === 'pending' ? 'Надсилаємо…' : 'Надіслати'}
+        {status === 'pending' ? t('Надсилаємо…') : t('Надіслати')}
       </button>
       <p className="text-xs leading-5 text-muted-foreground md:col-span-2">
-        Ми не передаємо ваші дані третім особам. Натискаючи «Надіслати», ви погоджуєтесь з{' '}
+        {t('Ми не передаємо ваші дані третім особам. Натискаючи «Надіслати», ви погоджуєтесь з')}{' '}
         <Link href="/konfidentsiinist" className="underline">
-          Політикою конфіденційності
+          {t('Політикою конфіденційності')}
         </Link>
         .
       </p>
@@ -405,6 +414,7 @@ export function InquiryForm({
 }
 
 export function MaterialCatalog({ collections }: { collections: Collection[] }) {
+  const { t, locale } = useStoneT()
   const [family, setFamily] = useState('Усі'),
     [origin, setOrigin] = useState('Усі'),
     [tone, setTone] = useState('Усі'),
@@ -438,31 +448,31 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
     <>
       <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         <Filter
-          label="Родина"
+          label={t('Родина')}
           value={family}
           set={setFamily}
           options={options(collections.map((c) => c.family))}
         />
         <Filter
-          label="Походження"
+          label={t('Походження')}
           value={origin}
           set={setOrigin}
           options={options(ordered.map(country))}
         />
         <Filter
-          label="Колір"
+          label={t('Колір')}
           value={tone}
           set={setTone}
           options={options(collections.map((c) => c.tone))}
         />
         <Filter
-          label="Застосування"
+          label={t('Застосування')}
           value={application}
           set={setApplication}
           options={options(collections.flatMap((c) => c.applications))}
         />
         <Filter
-          label="Фініш"
+          label={t('Фініш')}
           value={finish}
           set={setFinish}
           options={options(collections.flatMap((c) => c.finishes))}
@@ -472,10 +482,10 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
           onClick={reset}
           className="h-12 self-end rounded-md border px-4 text-sm"
         >
-          Скинути
+          {t('Скинути')}
         </button>
       </div>
-      <p className="mb-6 text-sm text-muted-foreground">Знайдено матеріалів: {shown.length}</p>
+      <p className="mb-6 text-sm text-muted-foreground">{t('Знайдено матеріалів:')} {shown.length}</p>
       <div className="grid gap-px overflow-hidden rounded-xl bg-border md:grid-cols-2 lg:grid-cols-4">
         {shown.map((c) => (
           <Link
@@ -486,7 +496,7 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
             <div className="relative aspect-[4/3]">
               <Image
                 src={c.image}
-                alt={`Текстура ${c.name}`}
+                alt={`${t('Текстура')} ${collectionName(locale, c.name)}`}
                 fill
                 sizes="(max-width:768px) 100vw, 25vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
@@ -494,18 +504,18 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
             </div>
             <div className="flex flex-1 flex-col p-6">
               <p className="text-xs text-muted-foreground">
-                {c.family} · {c.tone}
+                {t(c.family)} · {t(c.tone)}
               </p>
-              <h3 className="mt-4 text-2xl font-semibold">{c.name}</h3>
-              <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{c.description}</p>
-              <p className="mt-auto pt-5 text-sm font-semibold">{formatPrice(c.price)}</p>
+              <h3 className="mt-4 text-2xl font-semibold">{collectionName(locale, c.name)}</h3>
+              <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{collectionSummary(locale, c)}</p>
+              <p className="mt-auto pt-5 text-sm font-semibold">{stonePrice(locale, c.price)}</p>
             </div>
           </Link>
         ))}
       </div>
       {!shown.length && (
         <p className="rounded-xl border p-8 text-center text-muted-foreground">
-          За цими параметрами матеріалів не знайдено.
+          {t('За цими параметрами матеріалів не знайдено.')}
         </p>
       )}
     </>
@@ -513,6 +523,7 @@ export function MaterialCatalog({ collections }: { collections: Collection[] }) 
 }
 
 export function ProposalCatalog({ projects }: { projects: Project[] }) {
+  const { t, locale } = useStoneT()
   const [type, setType] = useState('Усі'),
     [material, setMaterial] = useState('Усі')
   const types = ['Усі', ...Array.from(new Set(projects.map((p) => p.type)))],
@@ -523,10 +534,10 @@ export function ProposalCatalog({ projects }: { projects: Project[] }) {
   return (
     <>
       <div className="mb-8 grid gap-3 sm:grid-cols-2">
-        <Filter label="Тип простору" value={type} set={setType} options={types} />
-        <Filter label="Матеріал" value={material} set={setMaterial} options={mats} />
+        <Filter label={t('Тип простору')} value={type} set={setType} options={types} />
+        <Filter label={t('Матеріал')} value={material} set={setMaterial} options={mats} />
       </div>
-      <p className="mb-6 text-sm text-muted-foreground">Знайдено пропозицій: {shown.length}</p>
+      <p className="mb-6 text-sm text-muted-foreground">{t('Знайдено пропозицій:')} {shown.length}</p>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {shown.map((p) => (
           <Link
@@ -543,18 +554,17 @@ export function ProposalCatalog({ projects }: { projects: Project[] }) {
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
               />
               <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">
-                Візуалізація
+                {t('Візуалізація')}
               </span>
             </div>
             <div className="p-6">
               <p className="eyebrow text-muted-foreground">
-                {p.type} · приклад застосування: {p.location}
+                {t(p.type)} · {t('приклад застосування:')} {t(p.location)}
               </p>
-              <h2 className="mt-4 text-2xl font-semibold">{p.name}</h2>
-              <p className="mt-2 text-sm text-muted-foreground">{p.material}</p>
+              <h2 className="mt-4 text-2xl font-semibold">{t(p.name)}</h2>
+              <p className="mt-2 text-sm text-muted-foreground">{collectionName(locale, p.material)}</p>
               <p className="mt-4 text-xs leading-5 text-muted-foreground">
-                Приклад дизайну (візуалізація, створена за допомогою ШІ). Прив&apos;язка до міста
-                наведена як приклад стилю; це не фотографія виконаного проєкту.
+                {t("Приклад дизайну (візуалізація, створена за допомогою ШІ). Прив'язка до міста наведена як приклад стилю; це не фотографія виконаного проєкту.")}
               </p>
             </div>
           </Link>
@@ -565,6 +575,7 @@ export function ProposalCatalog({ projects }: { projects: Project[] }) {
 }
 
 export function Inventory({ slabs }: { slabs: Slab[] }) {
+  const { t, locale } = useStoneT()
   const [material, setMaterial] = useState('Усі'),
     [tone, setTone] = useState('Усі'),
     [thickness, setThickness] = useState('Усі'),
@@ -591,31 +602,31 @@ export function Inventory({ slabs }: { slabs: Slab[] }) {
     <>
       <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Filter
-          label="Матеріал"
+          label={t('Матеріал')}
           value={material}
           set={setMaterial}
           options={['Усі', ...materials.map((m) => m.slug)]}
         />
         <Filter
-          label="Колір"
+          label={t('Колір')}
           value={tone}
           set={setTone}
           options={['Усі', ...Array.from(new Set(slabs.map((s) => s.tone)))]}
         />
         <Filter
-          label="Товщина"
+          label={t('Товщина')}
           value={thickness}
           set={setThickness}
           options={['Усі', '12', '20', '30']}
         />
         <Filter
-          label="Статус"
+          label={t('Статус')}
           value={status}
           set={setStatus}
           options={['Усі', 'В наявності', 'Резерв', 'Під замовлення']}
         />
         <button onClick={reset} className="h-12 rounded-md border px-4 text-sm">
-          Скинути фільтри
+          {t('Скинути фільтри')}
         </button>
       </div>
       {filtered.length ? (
@@ -635,27 +646,27 @@ export function Inventory({ slabs }: { slabs: Slab[] }) {
                 <div className="flex justify-between gap-3">
                   <p className="eyebrow text-muted-foreground">{s.id}</p>
                   <span className="rounded-full bg-secondary px-3 py-1 text-[10px]">
-                    {s.status}
+                    {t(s.status)}
                   </span>
                 </div>
-                <h2 className="mt-5 text-2xl font-semibold">{s.collection}</h2>
+                <h2 className="mt-5 text-2xl font-semibold">{collectionName(locale, s.collection)}</h2>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {s.dimensions[0]} × {s.dimensions[1]} см · {s.thickness} мм · {s.finish}
+                  {s.dimensions[0]} × {s.dimensions[1]} {t('см')} · {s.thickness} {t('мм')} · {t(s.finish)}
                 </p>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Партія {s.lot} · Походження: {s.origin} · Кількість: {s.quantity}
+                  {t('Партія')} {s.lot} · {t('Походження:')} {t(s.origin)} · {t('Кількість:')} {s.quantity}
                 </p>
                 <p className="mt-2 text-sm font-semibold">
                   {s.price
-                    ? `від ${s.price.toLocaleString('uk-UA')} ${s.origin === 'Україна' ? 'грн' : '€'}`
-                    : 'Ціна за запитом'}
+                    ? `${t('від')} ${s.price.toLocaleString('uk-UA')} ${s.origin === 'Україна' ? t('грн') : '€'}`
+                    : t('Ціна за запитом')}
                 </p>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">{s.uniqueness}</p>
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">{t(s.uniqueness)}</p>
                 <button
                   onClick={() => setSelected(s)}
                   className="mt-6 w-full rounded-md border p-3 text-sm"
                 >
-                  Зарезервувати цей сляб
+                  {t('Зарезервувати цей сляб')}
                 </button>
               </div>
             </article>
@@ -663,7 +674,7 @@ export function Inventory({ slabs }: { slabs: Slab[] }) {
         </div>
       ) : (
         <p className="rounded-xl border p-10 text-center text-muted-foreground">
-          Слябів за обраними параметрами не знайдено. Скиньте фільтри або змініть критерії.
+          {t('Слябів за обраними параметрами не знайдено. Скиньте фільтри або змініть критерії.')}
         </p>
       )}
       {selected && (
@@ -671,13 +682,13 @@ export function Inventory({ slabs }: { slabs: Slab[] }) {
           className="fixed inset-0 z-50 flex items-end justify-center bg-primary/60 p-4 sm:items-center"
           role="dialog"
           aria-modal="true"
-          aria-label={`Запит про ${selected.id}`}
+          aria-label={`${t('Запит про')} ${selected.id}`}
         >
           <div className="relative max-h-[90vh] w-full max-w-2xl overflow-auto rounded-xl bg-background p-4">
             <button
               onClick={() => setSelected(null)}
               className="absolute right-5 top-5 z-10 rounded-full bg-secondary p-2"
-              aria-label="Закрити"
+              aria-label={t('Закрити')}
             >
               <X />
             </button>
@@ -701,23 +712,20 @@ function Filter({
   set: (v: string) => void
   options: string[]
 }) {
+  const { t, locale } = useStoneT()
+  const slugName: Record<string, string> = { granit: 'Граніт', marmur: 'Мармур', kvarcyt: 'Кварцит', kvarc: 'Кварц', keramohranit: 'Керамограніт' }
+  // Назви колекцій у фільтрі пропозицій не мають словникового перекладу — транслітеруємо.
+  const label_ = (x: string) => {
+    const hit = t(slugName[x] ?? x)
+    return hit === x ? collectionName(locale, x) : hit
+  }
   return (
     <label className="flex flex-col gap-1 text-xs text-muted-foreground">
       {label}
       <select className={field} value={value} onChange={(e) => set(e.target.value)}>
         {options.map((x) => (
           <option key={x} value={x}>
-            {x === 'granit'
-              ? 'Граніт'
-              : x === 'marmur'
-                ? 'Мармур'
-                : x === 'kvarcyt'
-                  ? 'Кварцит'
-                  : x === 'kvarc'
-                    ? 'Кварц'
-                    : x === 'keramohranit'
-                      ? 'Керамограніт'
-                      : x}
+            {label_(x)}
           </option>
         ))}
       </select>
