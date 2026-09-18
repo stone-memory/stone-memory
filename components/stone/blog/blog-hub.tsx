@@ -3,15 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { Article } from '@/lib/stone/cms-types'
+import { useStoneT } from '@/lib/i18n/stone/client'
 
 const categories = ['Усі', 'Матеріали', 'Догляд', 'Проєктування', 'Ціни'] as const
 export function BlogHub({ articles }: { articles: Article[] }) {
+  const { t, locale } = useStoneT()
   const [active, setActive] = useState<(typeof categories)[number]>('Усі')
   const visible =
     active === 'Усі' ? articles : articles.filter((article) => article.category === active)
   return (
     <div>
-      <div className="mb-8 flex flex-wrap gap-3" aria-label="Фільтр статей">
+      <div className="mb-8 flex flex-wrap gap-3" aria-label={t('Фільтр статей')}>
         {categories.map((category) => (
           <button
             key={category}
@@ -20,7 +22,7 @@ export function BlogHub({ articles }: { articles: Article[] }) {
             aria-pressed={active === category}
             className={`rounded-full border px-4 py-2 text-sm font-semibold ${active === category ? 'bg-primary text-primary-foreground' : ''}`}
           >
-            {category}
+            {t(category)}
           </button>
         ))}
       </div>
@@ -30,15 +32,18 @@ export function BlogHub({ articles }: { articles: Article[] }) {
             key={article.slug}
             className="flex min-h-64 flex-col justify-between rounded-xl bg-card p-6"
           >
-            <p className="eyebrow text-accent">{article.category}</p>
+            <p className="eyebrow text-accent">{t(article.category)}</p>
             <div>
               <h2 className="text-2xl font-semibold">
                 <Link href={`/arkhitekturnyi-kamin/blog/${article.slug}`}>{article.title}</Link>
               </h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{article.dek}</p>
               <p className="mt-5 text-xs text-muted-foreground">
-                {article.readingTime} · Оновлено {article.dateModified}
+                {article.readingTime.replace('хв читання', t('хв читання'))} · {t('Оновлено')} {article.dateModified}
               </p>
+              {locale !== 'uk' && /[Ѐ-ӿ]/.test(article.title) && (
+                <p className="mt-2 text-xs text-muted-foreground">{t('Ця стаття доступна українською. Переклад готується.')}</p>
+              )}
             </div>
           </article>
         ))}

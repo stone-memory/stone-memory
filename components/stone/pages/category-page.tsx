@@ -6,8 +6,10 @@ import { MaterialCatalog } from '@/components/stone/interactive/tools'
 import { SectionHeading } from '@/components/stone/site/shell'
 import { Cta } from '@/components/stone/site/sections'
 import { Breadcrumbs, Faq, JsonLd } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
 
-function CategoryApplications({ slug }: { slug: string }) {
+async function CategoryApplications({ slug }: { slug: string }) {
+  const { t } = await getStoneT()
   const imageSets: Record<string, string[]> = {
     stilnytsi: ['kitchen-everyday', 'kyiv-family-kitchen', 'rivne-family-kitchen'],
     pidvikonnya: ['windowsill-for-years', 'zhytomyr-family-windowsill', 'kostopil-window-sill'],
@@ -32,14 +34,14 @@ function CategoryApplications({ slug }: { slug: string }) {
             <div className="relative aspect-[4/3]">
               <Image
                 src={`/proposals/${name}.webp`}
-                alt={`Застосування ${slug}: варіант ${index + 1}`}
+                alt={`${t('Застосування')} ${slug}: ${index + 1}`}
                 fill
                 sizes="(max-width:768px) 100vw, 33vw"
                 className="object-cover"
               />
             </div>
             <figcaption className="p-4 text-xs leading-5 text-muted-foreground">
-              Візуалізація можливого застосування. Не фотографія виконаного проєкту.
+              {t('Візуалізація можливого застосування. Не фотографія виконаного проєкту.')}
             </figcaption>
           </figure>
         ))}
@@ -50,7 +52,7 @@ function CategoryApplications({ slug }: { slug: string }) {
 
 export async function CategoryPage({ slug }: { slug: string }) {
   const item = categories.find((x) => x.slug === slug)!
-  const [collections, faq] = await Promise.all([getCollections(), getSetting('faq')])
+  const [collections, faq, { t }] = await Promise.all([getCollections(), getSetting('faq'), getStoneT()])
   const categoryImages: Record<string, string> = {
     stilnytsi: '/proposal-kitchen.webp',
     pidvikonnya: '/proposal-window.webp',
@@ -88,19 +90,18 @@ export async function CategoryPage({ slug }: { slug: string }) {
       />
       <section className="page-shell grid gap-10 py-20 lg:grid-cols-2 lg:items-end">
         <div>
-          <p className="eyebrow text-accent">Вироби</p>
+          <p className="eyebrow text-accent">{t('Вироби')}</p>
           <h1 className="mt-5 text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
-            {item.name}
+            {t(item.name)}
           </h1>
           <p className="mt-6 max-w-lg leading-7 text-muted-foreground">
-            {item.blurb} Матеріал підбираємо за навантаженням, умовами експлуатації та бажаною
-            фактурою.
+            {t(item.blurb)} {t('Матеріал підбираємо за навантаженням, умовами експлуатації та бажаною фактурою.')}
           </p>
         </div>
         <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
           <Image
             src={categoryImages[slug] || '/stone-project.webp'}
-            alt={`${item.name}: проєктна пропозиція з архітектурного каменю`}
+            alt={`${t(item.name)}: ${t('Проєктна пропозиція')}`}
             fill
             priority
             sizes="(max-width:1024px) 100vw, 50vw"

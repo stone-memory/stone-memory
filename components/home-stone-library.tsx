@@ -1,7 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { STONE_GUIDE } from "@/lib/stone-guide"
 import { HomeStoneFamily } from "@/components/home-stone-family"
+import { useTranslation } from "@/lib/i18n/context"
+import { HOME_COPY } from "@/lib/i18n/copy/home"
+import { rockFamilyLabel } from "@/lib/i18n/copy/common"
 import type { Collection } from "@/lib/stone/cms-types"
 
 /**
@@ -13,6 +18,9 @@ import type { Collection } from "@/lib/stone/cms-types"
  * фасет каталогу) і «для дому» (сторінка колекції). Інженерний камінь (кварц,
  * керамограніт) на пам'ятники не йде, тому він окремим рядком лише з
  * посиланням у розділ.
+ *
+ * Родини в даних названі українською («Граніт»); для інших мов назву й
+ * примітку підставляє словник, самі дані не чіпаємо.
  */
 
 const NATURAL = ["Граніт", "Габро", "Базальт", "Лабрадорит", "Пісковик", "Мармур", "Кварцит", "Онікс", "Травертин", "Вапняк"]
@@ -21,19 +29,6 @@ const NATURAL = ["Граніт", "Габро", "Базальт", "Лабрадо
 const FAMILY_ORDER = ["Граніт", "Габро", "Лабрадорит", "Базальт", "Пісковик", "Кварцит", "Мармур", "Онікс", "Травертин", "Вапняк"]
 
 const isUkrainian = (origin: string) => /Украї/.test(origin)
-
-const FAMILY_NOTE: Record<string, string> = {
-  Граніт: "Український, з кар'єрів Житомирщини, Рівненщини, Кіровоградщини й Дніпропетровщини. Найміцніший і найдовговічніший камінь у нас — і на стелу, і на стільницю.",
-  Габро: "Український чорний камінь із Житомирщини: Головинське, Букинське, Лугове. Найщільніша порода в нас; на пам'ятниках тримає портрет, у домі — чорна стільниця без плям.",
-  Базальт: "Рівненський і закарпатський камінь із матовою дрібнозернистою поверхнею. Для бруківки, сходів, цоколів і фасадів, де важлива стійкість до морозу.",
-  Пісковик: "Теребовлянський камінь із Тернопільщини: теплий сіро-зелений, з природним сколом. Фасади, огорожі, доріжки.",
-  Лабрадорит: "Темний камінь із синіми переливами. На пам'ятниках — контраст під гравіювання, у домі — акцентна поверхня, що змінюється зі світлом.",
-  Мармур: "Італійський та іспанський. На пам'ятники — для скульптури, дитячих і світлих рішень; у домі — ванни, каміни, підвіконня.",
-  Кварцит: "Твердість граніту, рисунок мармуру. Для дому — стільниці й острови.",
-  Онікс: "Напівпрозорий шаруватий камінь. Барні стійки, панно й стіни з підсвіткою.",
-  Травертин: "Пористий теплий камінь Середземномор'я. Фасади, підлоги, каміни.",
-  Вапняк: "Матовий м'який камінь для фасадів, підлог і терас; не для кухні.",
-}
 
 const FAMILY_HREF: Record<string, string> = {
   Граніт: "/arkhitekturnyi-kamin/materialy/granit",
@@ -55,12 +50,14 @@ function memorialHref(slug: string): string | null {
 }
 
 export function HomeStoneLibrary({ collections }: { collections: Collection[] }) {
-  const natural = collections.filter((c) => NATURAL.includes(c.family))
-  const engineered = collections.filter((c) => !NATURAL.includes(c.family))
-  const families = FAMILY_ORDER.filter((f) => natural.some((c) => c.family === f))
-  const brands = Array.from(new Set(engineered.map((c) => c.brand).filter(Boolean))) as string[]
-  const ukrainian = natural.filter((c) => isUkrainian(c.origin)).length
-  const forMemorial = natural.filter((c) => memorialHref(c.slug)).length
+  const { locale } = useTranslation()
+  const c = HOME_COPY[locale].library
+  const natural = collections.filter((col) => NATURAL.includes(col.family))
+  const engineered = collections.filter((col) => !NATURAL.includes(col.family))
+  const families = FAMILY_ORDER.filter((f) => natural.some((col) => col.family === f))
+  const brands = Array.from(new Set(engineered.map((col) => col.brand).filter(Boolean))) as string[]
+  const ukrainian = natural.filter((col) => isUkrainian(col.origin)).length
+  const forMemorial = natural.filter((col) => memorialHref(col.slug)).length
 
   if (natural.length === 0) return null
 
@@ -68,19 +65,14 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
     <section id="stone" className="mx-auto max-w-7xl px-6 pt-16 md:pt-24">
       <div className="mb-8 grid gap-6 md:mb-12 lg:grid-cols-[1.3fr_1fr] lg:items-end">
         <div>
-          <span className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">Бібліотека каменю</span>
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">
-            Камінь, з яким ми працюємо
-          </h2>
-          <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
-            Одна бібліотека на два напрями. Кожен натуральний камінь тут можна замовити і як стелу на пам'ятник, і
-            як стільницю чи сходи — з того самого блоку, з того самого цеху.
-          </p>
+          <span className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">{c.eyebrow}</span>
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight-custom md:text-6xl text-balance">{c.heading}</h2>
+          <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">{c.lead}</p>
         </div>
         <dl className="grid grid-cols-3 gap-3">
-          <Stat value={`${natural.length}`} label="натуральних порід" />
-          <Stat value={`${ukrainian}`} label="українських родовищ" />
-          <Stat value={`${forMemorial}`} label="для пам'ятників" />
+          <Stat value={`${natural.length}`} label={c.statNatural} />
+          <Stat value={`${ukrainian}`} label={c.statUkrainian} />
+          <Stat value={`${forMemorial}`} label={c.statMemorial} />
         </dl>
       </div>
 
@@ -88,23 +80,24 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
         {families.map((family) => {
           // Українські родовища попереду імпорту в кожній родині.
           const items = natural
-            .filter((c) => c.family === family)
+            .filter((col) => col.family === family)
             .sort((a, b) => Number(isUkrainian(b.origin)) - Number(isUkrainian(a.origin)))
+          const familyLabel = rockFamilyLabel(family, locale)
           return (
             <div key={family}>
               <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
-                <h3 className="text-2xl font-semibold tracking-tight-custom md:text-3xl">{family}</h3>
-                <p className="max-w-2xl text-[15px] text-muted-foreground">{FAMILY_NOTE[family]}</p>
+                <h3 className="text-2xl font-semibold tracking-tight-custom md:text-3xl">{familyLabel}</h3>
+                <p className="max-w-2xl text-[15px] text-muted-foreground">{c.familyNote[family]}</p>
               </div>
               <HomeStoneFamily
-                family={family}
-                items={items.map((c) => ({
-                  slug: c.slug,
-                  name: c.name,
-                  origin: c.origin,
-                  tone: c.tone,
-                  image: c.cardImage || c.image,
-                  memorialHref: memorialHref(c.slug),
+                family={familyLabel}
+                items={items.map((col) => ({
+                  slug: col.slug,
+                  name: col.name,
+                  origin: col.origin,
+                  tone: col.tone,
+                  image: col.cardImage || col.image,
+                  memorialHref: memorialHref(col.slug),
                 }))}
               />
               <div className="mt-4">
@@ -112,7 +105,7 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
                   href={FAMILY_HREF[family] ?? "/arkhitekturnyi-kamin/materialy"}
                   className="group inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground"
                 >
-                  Усе про {family.toLowerCase()}
+                  {c.allAbout(familyLabel)}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
                 </Link>
               </div>
@@ -124,17 +117,16 @@ export function HomeStoneLibrary({ collections }: { collections: Collection[] })
       {engineered.length > 0 && (
         <div className="mt-12 flex flex-col gap-4 rounded-3xl bg-secondary/60 p-6 md:flex-row md:items-center md:justify-between md:p-8">
           <div>
-            <h3 className="text-xl font-semibold tracking-tight-custom md:text-2xl">Інженерний камінь — лише для дому</h3>
+            <h3 className="text-xl font-semibold tracking-tight-custom md:text-2xl">{c.engineeredTitle}</h3>
             <p className="mt-1.5 max-w-2xl text-[15px] text-muted-foreground">
-              {engineered.length} колекцій кварцу й керамограніту{brands.length ? ` — ${brands.join(", ")}` : ""}: рівний
-              колір, непориста поверхня, будь-який формат.
+              {c.engineeredText(engineered.length, brands.join(", "))}
             </p>
           </div>
           <Link
             href="/arkhitekturnyi-kamin/materialy"
             className="inline-flex w-fit items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:-translate-y-[1px]"
           >
-            Уся бібліотека матеріалів
+            {c.allMaterials}
             <ArrowRight className="h-4 w-4" strokeWidth={2} />
           </Link>
         </div>

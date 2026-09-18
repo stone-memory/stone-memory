@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/stone/seo'
 import { getArticle, getArticles } from '@/lib/stone/cms'
+import { getLocalizedArticle } from '@/lib/stone/i18n-content'
 import { versioned } from '@/lib/stone/asset-url'
 import { ArticlePage } from '@/components/stone/pages/article-page'
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props) {
 }
 export default async function Page({ params }: Props) {
   const { slug } = await params
-  const a = await getArticle(slug)
+  const a = await getLocalizedArticle(slug)
   if (!a) notFound()
   return <ArticlePage article={a} />
 }

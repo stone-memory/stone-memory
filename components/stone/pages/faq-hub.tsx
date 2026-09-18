@@ -1,9 +1,10 @@
 import { getSetting } from '@/lib/stone/cms'
 import { SupportLinks } from '@/components/stone/interactive/support-tools'
 import { Breadcrumbs, Faq, JsonLd } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
 
 export async function FaqHub() {
-  const faq = await getSetting('faq')
+  const [faq, { t }] = await Promise.all([getSetting('faq'), getStoneT()])
   const items = [...faq.category, ...faq.calculator, ...faq.b2b, ...faq.geo].filter(
     (x, i, a) => a.findIndex((y) => y.question === x.question) === i
   )
@@ -22,9 +23,9 @@ export async function FaqHub() {
         }}
       />
       <section className="page-shell py-20">
-        <p className="eyebrow text-accent">Підтримка</p>
+        <p className="eyebrow text-accent">{t('Підтримка')}</p>
         <h1 className="mt-5 text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">
-          Відповіді до початку робіт.
+          {t('Відповіді до початку робіт.')}
         </h1>
         <Faq items={items} includeSchema={false} />
         <div className="mt-10">

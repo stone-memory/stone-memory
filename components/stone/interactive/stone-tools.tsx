@@ -3,7 +3,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import type { Collection } from '@/lib/stone/cms-types'
+import { useStoneT } from '@/lib/i18n/stone/client'
+import { collectionName } from '@/lib/i18n/stone'
 export function StoneCompareTable() {
+  const { t } = useStoneT()
   const rows = [
     ['Походження', 'Природна порода', 'Інженерна поверхня', 'Спечена кераміка'],
     ['Тепло', 'Висока стійкість', 'Потрібна підставка', 'Висока стійкість'],
@@ -18,7 +21,7 @@ export function StoneCompareTable() {
           <tr>
             {['Критерій', 'Граніт', 'Кварц', 'Керамограніт'].map((x) => (
               <th className="p-4" key={x}>
-                {x}
+                {t(x)}
               </th>
             ))}
           </tr>
@@ -31,7 +34,7 @@ export function StoneCompareTable() {
                   className={`border-t p-4 ${index ? 'text-muted-foreground' : 'font-semibold'}`}
                   key={cell}
                 >
-                  {cell}
+                  {t(cell)}
                 </td>
               ))}
             </tr>
@@ -42,13 +45,14 @@ export function StoneCompareTable() {
   )
 }
 export function FinishSlider() {
+  const { t } = useStoneT()
   const [position, setPosition] = useState(50)
   return (
     <figure>
       <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
         <Image
           src="/materials/grey-ukraine.webp"
-          alt="Полірований фініш сірого граніту"
+          alt={t('Полірований фініш сірого граніту')}
           fill
           sizes="(max-width:1280px) 100vw, 1180px"
           className="object-cover"
@@ -57,7 +61,7 @@ export function FinishSlider() {
             обидва зображення однакового масштабу, роздільник збігається на будь-якому екрані. */}
         <Image
           src="/materials/kometa-black.webp"
-          alt="Матований фініш темного граніту"
+          alt={t('Матований фініш темного граніту')}
           fill
           sizes="(max-width:1280px) 100vw, 1180px"
           className="object-cover"
@@ -66,9 +70,9 @@ export function FinishSlider() {
         <span className="absolute inset-y-0 w-0.5 bg-background" style={{ left: `${position}%` }} />
       </div>
       <label className="mt-4 flex flex-col gap-2 text-sm font-semibold">
-        Порівняти полірований і матований фініш
+        {t('Порівняти полірований і матований фініш')}
         <input
-          aria-label="Положення розділювача фінішів"
+          aria-label={t('Положення розділювача фінішів')}
           type="range"
           min="5"
           max="95"
@@ -145,6 +149,7 @@ const questions: { label: string; options: Option[] }[] = [
   },
 ]
 export function StoneQuiz({ collections }: { collections: Collection[] }) {
+  const { t, locale } = useStoneT()
   const [step, setStep] = useState(0),
     [answers, setAnswers] = useState<Option[]>([])
   const results = useMemo(
@@ -161,7 +166,7 @@ export function StoneQuiz({ collections }: { collections: Collection[] }) {
   if (step === questions.length)
     return (
       <div className="rounded-xl bg-card p-7">
-        <p className="eyebrow text-accent">Ваш shortlist</p>
+        <p className="eyebrow text-accent">{t('Ваш shortlist')}</p>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {results.map((item) => (
             <Link
@@ -169,12 +174,12 @@ export function StoneQuiz({ collections }: { collections: Collection[] }) {
               href={`/arkhitekturnyi-kamin/materialy/${item.slug}`}
               key={item.slug}
             >
-              <strong>{item.name}</strong>
+              <strong>{collectionName(locale, item.name)}</strong>
               <p className="mt-2 text-sm text-muted-foreground">
-                {item.family} · {item.tone}
+                {t(item.family)} · {t(item.tone)}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Збігається з {item.score} із {answers.length} відповідей
+                {t('Збігається з')} {item.score} {t('із')} {answers.length} {t('відповідей')}
               </p>
             </Link>
           ))}
@@ -186,15 +191,15 @@ export function StoneQuiz({ collections }: { collections: Collection[] }) {
             setAnswers([])
           }}
         >
-          Пройти ще раз
+          {t('Пройти ще раз')}
         </button>
       </div>
     )
   const q = questions[step]
   return (
     <div className="rounded-xl border p-7">
-      <p className="eyebrow text-muted-foreground">Крок {step + 1} із 4</p>
-      <h2 className="mt-4 text-2xl font-semibold">{q.label}</h2>
+      <p className="eyebrow text-muted-foreground">{t('Крок')} {step + 1} {t('із')} 4</p>
+      <h2 className="mt-4 text-2xl font-semibold">{t(q.label)}</h2>
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         {q.options.map((option) => (
           <button
@@ -205,7 +210,7 @@ export function StoneQuiz({ collections }: { collections: Collection[] }) {
               setStep(step + 1)
             }}
           >
-            {option.label}
+            {t(option.label)}
           </button>
         ))}
       </div>
@@ -213,13 +218,14 @@ export function StoneQuiz({ collections }: { collections: Collection[] }) {
   )
 }
 export function PavingCalc() {
+  const { t } = useStoneT()
   const [area, setArea] = useState(20),
     [waste, setWaste] = useState(7)
   const total = area * (1 + waste / 100)
   return (
     <div className="grid gap-6 rounded-xl bg-card p-7 sm:grid-cols-2">
       <label className="flex flex-col gap-2 text-sm">
-        Площа, м²
+        {t('Площа, м²')}
         <input
           className="h-12 rounded-md border bg-background px-4"
           min="1"
@@ -229,7 +235,7 @@ export function PavingCalc() {
         />
       </label>
       <label className="flex flex-col gap-2 text-sm">
-        Запас, %
+        {t('Запас, %')}
         <input
           className="h-12 rounded-md border bg-background px-4"
           min="0"
@@ -244,8 +250,7 @@ export function PavingCalc() {
           {total.toLocaleString('uk-UA', { maximumFractionDigits: 1 })} м²
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Орієнтовна площа замовлення з урахуванням запасу. Кількість палет буде доступна після
-          підтвердження норми пакування.
+          {t('Орієнтовна площа замовлення з урахуванням запасу. Кількість палет буде доступна після підтвердження норми пакування.')}
         </p>
       </div>
     </div>

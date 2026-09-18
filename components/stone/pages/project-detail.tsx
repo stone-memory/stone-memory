@@ -4,9 +4,13 @@ import { SITE_URL } from '@/lib/site-config'
 import type { Project } from '@/lib/stone/cms-types'
 import { Cta } from '@/components/stone/site/sections'
 import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
+import { collectionName } from '@/lib/i18n/stone'
+import { hasCyrillic } from '@/lib/stone/i18n-content'
 
 /** materialAvailable = false, коли колекція проєкту прихована в базі: кнопка на матеріал не рендериться, щоб не вести на 404. */
-export function ProjectDetail({ project: x, materialAvailable = true }: { project: Project; materialAvailable?: boolean }) {
+export async function ProjectDetail({ project: x, materialAvailable = true }: { project: Project; materialAvailable?: boolean }) {
+  const { t, locale } = await getStoneT()
   return (
     <main id="main-content">
       <Breadcrumbs items={[{ name: 'Проєктні пропозиції', href: '/arkhitekturnyi-kamin/proekty' }, { name: x.name }]} />
@@ -26,30 +30,32 @@ export function ProjectDetail({ project: x, materialAvailable = true }: { projec
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent" />
           <div className="absolute bottom-0 p-8 text-primary-foreground md:p-12">
             <p className="eyebrow opacity-70">
-              Проєктна пропозиція · {x.type} · {x.location}
+              {t('Проєктна пропозиція')} · {t(x.type)} · {t(x.location)}
             </p>
-            <h1 className="mt-4 text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">{x.name}</h1>
+            <h1 className="mt-4 text-4xl font-semibold tracking-[-.055em] sm:text-6xl md:text-8xl">{t(x.name)}</h1>
           </div>
         </div>
       </section>
       <section className="page-shell grid gap-12 py-20 lg:grid-cols-[.55fr_1fr]">
         <div>
-          <p className="eyebrow text-accent">Концепція</p>
+          <p className="eyebrow text-accent">{t('Концепція')}</p>
           <p className="mt-6 text-sm leading-6 text-muted-foreground">
-            Візуалізація показує можливий характер рішення. Фактична розкладка залежить від обраного
-            сляба, заміру й технічного завдання.
+            {t('Візуалізація показує можливий характер рішення. Фактична розкладка залежить від обраного сляба, заміру й технічного завдання.')}
           </p>
+          {locale !== 'uk' && hasCyrillic(x.story) && (
+            <p className="mt-4 text-xs text-muted-foreground">{t('Опис пропозиції наведено українською.')}</p>
+          )}
         </div>
         <div>
           <p className="text-2xl leading-relaxed">{x.story}</p>
           <div className="mt-8 grid gap-px overflow-hidden rounded-xl bg-border sm:grid-cols-3">
             {[
-              ['Матеріал', x.material],
+              ['Матеріал', collectionName(locale, x.material)],
               ['Рішення', x.solution],
-              ['Процес', 'Підбір · замір · розкладка · монтаж'],
+              ['Процес', t('Підбір · замір · розкладка · монтаж')],
             ].map(([a, b]) => (
               <div key={a} className="bg-card p-5">
-                <p className="text-xs text-muted-foreground">{a}</p>
+                <p className="text-xs text-muted-foreground">{t(a)}</p>
                 <p className="mt-3 text-sm leading-6">{b}</p>
               </div>
             ))}
@@ -60,14 +66,14 @@ export function ProjectDetail({ project: x, materialAvailable = true }: { projec
                 href={`/arkhitekturnyi-kamin/materialy/${x.materialSlug}`}
                 className="rounded-full border px-5 py-3 text-sm font-semibold"
               >
-                Дивитися матеріал
+                {t('Дивитися матеріал')}
               </Link>
             )}
             <Link
               href={`/arkhitekturnyi-kamin/kontakty?proposal=${x.slug}`}
               className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
             >
-              Обговорити цю пропозицію
+              {t('Обговорити цю пропозицію')}
             </Link>
           </div>
         </div>

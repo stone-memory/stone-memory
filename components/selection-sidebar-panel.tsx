@@ -16,6 +16,7 @@ import { SelectionForm } from "@/components/selection-form"
 import { SelectionSuccess } from "@/components/selection-success"
 import { useSelectionStore } from "@/lib/store/selection"
 import { useTranslation } from "@/lib/i18n/context"
+import { PRODUCT_COPY } from "@/lib/i18n/copy/product"
 import { stoneCode, stoneDisplayName } from "@/lib/catalog-taxonomy"
 import { cn } from "@/lib/utils"
 
@@ -149,7 +150,7 @@ export function SelectionSidebar() {
                               <p className="font-mono text-sm tabular-nums">{stoneDisplayName(item) ?? `№ ${stoneCode(item)}`}</p>
                               {item.selectedMaterial ? (
                                 <p className="mt-0.5 text-xs text-muted-foreground">
-                                  Камінь: {item.selectedMaterial}
+                                  {PRODUCT_COPY[locale].stoneLabel}: {item.selectedMaterial}
                                 </p>
                               ) : null}
                               <p className="mt-1 text-sm text-muted-foreground">

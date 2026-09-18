@@ -4,6 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronDown } from "lucide-react"
+import { useTranslation } from "@/lib/i18n/context"
+import { HOME_COPY } from "@/lib/i18n/copy/home"
 
 export type FamilyCard = {
   slug: string
@@ -23,6 +25,8 @@ const INITIAL = 5
  * екран за екраном карток. Тому перший ряд, решта за кнопкою.
  */
 export function HomeStoneFamily({ family, items }: { family: string; items: FamilyCard[] }) {
+  const { locale } = useTranslation()
+  const L = HOME_COPY[locale].library
   const [expanded, setExpanded] = useState(false)
   const visible = expanded ? items : items.slice(0, INITIAL)
   const hidden = items.length - INITIAL
@@ -57,14 +61,14 @@ export function HomeStoneFamily({ family, items }: { family: string; items: Fami
                     href={c.memorialHref}
                     className="rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium text-background transition-transform hover:-translate-y-[1px]"
                   >
-                    Пам'ятники
+                    {L.memorialTag}
                   </Link>
                 )}
                 <Link
                   href={`/arkhitekturnyi-kamin/materialy/${c.slug}`}
                   className="rounded-full border border-foreground/15 px-2.5 py-1 text-[11px] font-medium transition-colors hover:border-foreground/40"
                 >
-                  Для дому
+                  {L.homeTag}
                 </Link>
               </div>
             </div>
@@ -78,7 +82,7 @@ export function HomeStoneFamily({ family, items }: { family: string; items: Fami
           aria-expanded={expanded}
           className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm font-medium transition-colors hover:bg-foreground/5"
         >
-          {expanded ? `Згорнути ${family.toLowerCase()}` : `Показати всі ${items.length}`}
+          {expanded ? L.collapse(family) : L.showAll(items.length)}
           <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? "rotate-180" : ""}`} strokeWidth={2} />
         </button>
       )}

@@ -10,6 +10,7 @@ import { PhoneLink } from "@/components/phone-link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import type { Locale } from "@/lib/types"
+import { CONSULT_COPY } from "@/lib/i18n/copy/consult"
 
 const SUPPORT_LABELS: Record<Locale, { prices: string; howToOrder: string }> = {
   uk: { prices: "Ціни", howToOrder: "Як замовити" },
@@ -21,6 +22,7 @@ const SUPPORT_LABELS: Record<Locale, { prices: string; howToOrder: string }> = {
 
 export function Footer() {
   const { t, locale } = useTranslation()
+  const F = CONSULT_COPY[locale].footer
   const profile = useBusinessProfile()
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
@@ -48,14 +50,14 @@ export function Footer() {
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        setError(data?.error === "invalid email" ? "Невірний email" : "Не вдалось підписатися")
+        setError(data?.error === "invalid email" ? F.invalidEmail : F.subscribeFailed)
         return
       }
       setSubscribed(true)
       setEmail("")
       setTimeout(() => setSubscribed(false), 3000)
     } catch {
-      setError("Помилка мережі")
+      setError(F.network)
     } finally {
       setSubmitting(false)
     }
@@ -124,7 +126,7 @@ export function Footer() {
               </button>
             </form>
             {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
-            {subscribed && <p className="mt-2 text-xs text-success">Дякуємо — ви підписані!</p>}
+            {subscribed && <p className="mt-2 text-xs text-success">{F.subscribed}</p>}
           </div>
         </div>
 
@@ -136,7 +138,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-[15px]">
               <li><Link href="/memorial/pamyatnyky" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.catalog}</Link></li>
               <li><Link href="/posluhy" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.services}</Link></li>
-              <li><Link href="/arkhitekturnyi-kamin" prefetch className="text-foreground/85 hover:text-foreground">Архітектурний камінь</Link></li>
+              <li><Link href="/arkhitekturnyi-kamin" prefetch className="text-foreground/85 hover:text-foreground">{F.stone}</Link></li>
               <li><Link href="/pro-nas" prefetch className="text-foreground/85 hover:text-foreground">{t.footer.about}</Link></li>
               <li><Link href="/blog" prefetch className="text-foreground/85 hover:text-foreground">{t.nav.blog}</Link></li>
             </ul>

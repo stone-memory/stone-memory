@@ -1,5 +1,6 @@
 "use client"
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react"
+import { useRouter } from "next/navigation"
 import { dictionaries, Locale, Dictionary } from "./dictionaries"
 import { Currency, localeCurrency, fxFromUAH } from "@/lib/types"
 
@@ -16,6 +17,17 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 const LS_LOCALE = "sm-locale"
 const DEFAULT_LOCALE: Locale = "uk"
+
+/** Той самий ключ у cookie — його читають серверні компоненти (lib/i18n/server.ts). */
+function readCookieLocale(): string | null {
+  if (typeof document === "undefined") return null
+  const m = document.cookie.match(new RegExp(`(?:^|; )${LS_LOCALE}=([^;]*)`))
+  return m ? decodeURIComponent(m[1]) : null
+}
+function writeCookieLocale(l: Locale) {
+  if (typeof document === "undefined") return
+  document.cookie = `${LS_LOCALE}=${l}; path=/; max-age=31536000; SameSite=Lax`
+}
 
 function localeFromNavigator(): Locale | null {
   if (typeof navigator === "undefined") return null
@@ -46,18 +58,40 @@ function localeFromNavigator(): Locale | null {
  * either: reading headers() in the root layout would opt every page out of
  * static generation. Revisit with i18n Phase 3, which routes by path anyway.
  */
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE)
+export function LanguageProvider({
+  children,
+  initialLocale,
+}: {
+  children: ReactNode
+  /**
+   * Мова, яку сервер прочитав із cookie. Вкладений провайдер розділу з
+   * серверним рендером за мовою передає її, щоб клієнтські компоненти
+   * гідратувались одразу тією ж мовою, що й HTML.
+   */
+  initialLocale?: Locale
+}) {
+  const router = useRouter()
+  const [locale, setLocaleState] = useState<Locale>(initialLocale ?? DEFAULT_LOCALE)
   const [liveRates, setLiveRates] = useState<Record<string, number>>({})
+
+  // Сервер перерендерив розділ з іншим cookie (перемикач у сусідньому
+  // провайдері або router.refresh): підхоплюємо нову мову.
+  useEffect(() => {
+    if (initialLocale) setLocaleState(initialLocale)
+  }, [initialLocale])
 
   useEffect(() => {
     const saved = typeof localStorage !== "undefined" ? (localStorage.getItem(LS_LOCALE) as Locale | null) : null
-    if (saved && saved in dictionaries) {
-      if (saved !== DEFAULT_LOCALE) setLocaleState(saved)
-      return
+    const detected = saved && saved in dictionaries ? saved : localeFromNavigator()
+    if (!detected) return
+    if (detected !== (initialLocale ?? DEFAULT_LOCALE)) setLocaleState(detected)
+    // Cookie ще не було (перший візит або старий localStorage): записуємо й
+    // просимо сервер перерендерити, щоб серверні сторінки теж стали цією мовою.
+    if (readCookieLocale() !== detected) {
+      writeCookieLocale(detected)
+      if (detected !== DEFAULT_LOCALE) router.refresh()
     }
-    const nav = localeFromNavigator()
-    if (nav && nav !== DEFAULT_LOCALE) setLocaleState(nav)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -70,7 +104,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLocale = (l: Locale) => {
     setLocaleState(l)
     localStorage.setItem(LS_LOCALE, l)
+    writeCookieLocale(l)
     if (typeof document !== "undefined") document.documentElement.lang = l
+    // Серверні компоненти, що читають cookie (розділ архітектурного каменю),
+    // перерендеряться новою мовою без перезавантаження сторінки.
+    router.refresh()
   }
 
   const currency = localeCurrency[locale]

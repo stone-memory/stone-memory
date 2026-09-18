@@ -1,11 +1,8 @@
 import Link from "next/link"
-import { Phone } from "lucide-react"
 import { Header } from "@/components/header"
-import { ProfilePhone } from "@/components/profile-phone"
 import { Footer } from "@/components/footer"
 import { SelectionSidebar } from "@/components/selection-sidebar"
 import { Breadcrumbs, type Crumb } from "@/components/breadcrumbs"
-import { ConsultButton } from "@/components/consult-button"
 import { cn } from "@/lib/utils"
 
 /**
@@ -185,36 +182,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
   )
 }
 
-export function CtaBand({
-  title = "Порахуємо вартість за фото ділянки",
-  text = "Надішліть фото місця і побажання — протягом робочого дня повернемось з ескізом і ціною. Це безкоштовно й ні до чого не зобов'язує.",
-  cta = "Надіслати фото ділянки",
-}: {
-  title?: string
-  text?: string
-  /** Текст кнопки; стає заголовком модалки заявки. */
-  cta?: string
-}) {
-  return (
-    <section className="mx-auto max-w-7xl px-6 pt-14 pb-20 md:pt-20 md:pb-28">
-      <div className="rounded-3xl bg-foreground px-6 py-10 text-background md:px-12 md:py-14">
-        <div className="grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight-custom md:text-4xl text-balance">{title}</h2>
-            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-background/75 md:text-base">{text}</p>
-          </div>
-          <div className="flex flex-col items-start gap-3 md:items-end">
-            <ConsultButton className="bg-background text-foreground" topic={title}>{cta}</ConsultButton>
-            <ProfilePhone className="inline-flex items-center gap-2 text-sm font-medium text-background/85 hover:text-background">
-              <Phone className="h-4 w-4" strokeWidth={2} />
-            </ProfilePhone>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
+export { CtaBand } from "@/components/cta-band"
 export function LinkPills({ items }: { items: { href: string; label: string; count?: number }[] }) {
   return (
     <div className="flex flex-wrap gap-2.5">

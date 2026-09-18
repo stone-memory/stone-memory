@@ -1,0 +1,173 @@
+{
+  "ukladannya-granitnoyi-brukivky": {
+    "title": "Verlegen von Granitpflaster: Technik und Unterbau",
+    "h1": "Wie Granitpflaster verlegt wird — Schritte und Unterbau",
+    "description": "Verlegen von Granitpflaster: Unterbauschichten für Weg und Einfahrt, Gefälle, Randsteine, Verlegemuster, Fugenfüllung und Pflege nach dem Verlegen.",
+    "dek": "Unterbau, Gefälle, Fugen und Arbeitsablauf für einen stabilen Belag.",
+    "intro": "Granitpflaster hält ewig, der Unterbau darunter aber nicht, wenn er falsch gemacht ist. Eingesunkene Spurrinnen in der Einfahrt und „Wellen“ im Weg sind immer ein Fehler in Schichten, Verdichtung oder Wasser, nie im Stein. Wir beschreiben die Technik, nach der wir arbeiten, und erklären, wie sich der Unterbau für Fußgänger von dem für Autos unterscheidet.",
+    "sections": [
+      { "heading": "Wie verlegt man Pflaster richtig?", "body": "Die Reihenfolge ist für alle Flächen gleich: Markierung und Planung der Gefälle, Aushub bis zur Tiefe aller Schichten, Geotextil, Schotter mit lagenweiser Verdichtung, Randsteine auf Beton, Ausgleichsschicht, Verlegen des Steins, Abrütteln, Verfugen.\n\nDas Gefälle des Belags vom Haus weg beträgt mindestens 1,5–2 %, also 2 cm pro Meter. Das Wasser muss zum Rasen, zur Entwässerungsrinne oder zum Einlauf laufen, nicht zur Wand. Diese Regel ist wichtiger als die Dicke des Steins." },
+      { "heading": "Welchen Unterbau vorbereiten?", "body": "Fußweg: Aushub 25–30 cm, Geotextil, Schotter 20–40 mm in 15 cm Schicht mit der Rüttelplatte verdichtet, Ausgleichsschicht aus Granitsplitt oder Sand-Zement-Gemisch 3–5 cm, Pflaster 50–60 mm.\n\nEinfahrt und Stellplatz: Aushub 40–45 cm, Geotextil, Schotter 40–70 mm in 15 cm Schicht, Schotter 20–40 mm in 10 cm Schicht, jede Schicht einzeln verdichtet, Ausgleichsschicht 3–4 cm, Pflaster 80–100 mm. Auf schwachen Böden kommt eine 10-cm-Sandschicht unter den Schotter oder eine bewehrte Betonplatte.\n\nRandsteine werden vor dem Verlegen des Steins auf ein Betonbett gesetzt: Sie halten den Belag vor dem Auseinanderdriften. Ohne Randsteine oder mit Randsteinen „auf Sand“ sinken die Ränder in der ersten Saison ab." },
+      { "heading": "Welche Verlegearten und Muster gibt es?", "body": "In Reihen: die einfachste und schnellste, geeignet für Wege. Um einen halben Stein versetzt: fester, weil die Fugen nicht durchlaufen, Standard für Einfahrten. In Bögen und Fächern: die Klassik europäischer Plätze aus gespaltenem 100 × 100-mm-Pflaster, braucht Erfahrung und mehr Stein, trägt Lasten aber hervorragend.\n\nFür kontrastreiche Muster kombiniert man den grauen Grey Ukraine mit dem roten Maple Red oder schwarzem Gabbro: Einfassung, Streifen, Schachbrettmodul. Gesägt-gespaltenes Pflaster mit ebener Oberseite ist bequemer für Absätze und Fahrrad, vollständig gespaltenes ist strukturierter und funktioniert an Gefällen besser." },
+      { "heading": "Wie pflegt man nach dem Verlegen?", "body": "In den ersten zwei Wochen werden die Fugen nachgefüllt: Splitt oder Sand setzen sich nach Regen und müssen auf Steinniveau gebracht werden. Danach einmal im Jahr fegen, bei Bedarf Fugen nachfüllen und mit Wasser abspülen. Polymerfugensand hält besser als gewöhnlicher und lässt kein Gras wachsen, ist aber teurer.\n\nIm Winter Schnee mit Kunststoff- oder Gummischaufel räumen, Salz schadet Granit nicht. Moos auf der schattigen Nordseite wird alle paar Jahre mit dem Hochdruckreiniger abgewaschen. Ist ein Stein abgesackt oder beschädigt, wird er herausgenommen, der Unterbau aufgefüllt und der Stein wieder gesetzt: Das ist der Hauptvorteil von Pflaster gegenüber Asphalt und Beton." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Sand", "Ausgleichsschicht 3–5 cm", "Nur auf verdichtetem Schotter"],
+        ["Schotter", "Tragschicht 15–25 cm", "Lagenweise Verdichtung mit der Rüttelplatte"],
+        ["Beton", "Randsteine, schwache Böden, Rinnen", "Entwässerung und Dehnungsfugen"],
+        ["Geotextil", "Zwischen Boden und Schotter", "Verhindert das Vermischen der Schichten"]
+      ]
+    },
+    "faq": [
+      { "question": "Welche Pflasterdicke für Autos?", "answer": "80–100 mm für Pkw und 100 mm für Lkw und Sattelzüge. Fußwege — 50–60 mm." },
+      { "question": "Braucht es Beton?", "answer": "Unter dem Pflaster selbst meist nicht: Verdichteter Schotter und Splitt funktionieren besser, weil sie Wasser durchlassen. Beton braucht es unter Randsteinen, Rinnen und auf schwachen oder aufgeschütteten Böden." },
+      { "question": "Wie füllt man die Fugen?", "answer": "Mit Granitsplitt oder feinem Sand, der in die Fugen gekehrt und in mehreren Durchgängen eingeschlämmt wird. Polymersand hält länger und wächst nicht zu." },
+      { "question": "Wie lange hält es?", "answer": "Der Stein — unbegrenzt. Der Unterbau bei richtiger Technik — 30 Jahre und mehr ohne Neuverlegung." }
+    ]
+  },
+  "kamin-dlya-kaminu-granit-marmur": {
+    "title": "Stein für den Kamin: Granit, Marmor oder Travertin",
+    "h1": "Welchen Stein für die Kaminverkleidung wählen",
+    "description": "Stein für den Kamin: Granit, Marmor, Travertin oder Labradorit. Hitzebeständigkeit, technische Abstände zum Feuerraum, Kleber, Pflege und Optik des Portals.",
+    "dek": "Gestein und Verkleidungsdetail für verschiedene Kamintypen.",
+    "intro": "Das Kaminportal ist das auffälligste Steinstück im Wohnzimmer und arbeitet unter den härtesten Bedingungen: Erwärmung, Ruß, schroffe Temperaturwechsel. Naturstein ist dafür geschaffen, aber Gestein, Detail und Kleber müssen zum Kamintyp passen. Wir erklären den Unterschied zwischen Holz-, Gas- und Elektrokamin und was wir für jeden empfehlen.",
+    "sections": [
+      { "heading": "Welcher Stein eignet sich für den Kamin?", "body": "Für einen Holzkamin mit offenem oder geschlossenem Feuerraum: Granit oder Gabbro für das Portal und besonders für das Podest vor dem Feuerraum, wo Funken und Glut fallen. Für Gas: jeder Stein, auch Marmor, denn die Erwärmung ist moderat. Für Elektro: keine Einschränkungen, das ist ein Möbel.\n\nLabradorit Volga Blue ist eine der effektvollsten Varianten für das Portal: Das blaue Aufblitzen der Kristalle lebt im Feuerschein auf. Travertin wählt man für warme mediterrane Interieurs, seine Poren brauchen aber Schutz vor Ruß." },
+      { "heading": "Warum ist Granit für intensive Nutzung besser?", "body": "Granit verändert bei Erwärmung auf 200–250 °C die Farbe nicht, nimmt nach der Imprägnierung keinen Ruß auf, hält den Stoß von Holzscheiten aus und lässt sich leicht waschen. Auf dem Podest vor dem Feuerraum kann man ihn mit einer harten Bürste von Glut reinigen. Die polierte Oberfläche spiegelt das Feuer und bringt Licht in den Raum.\n\nDie Wärmedehnung von Granit ist gering, aber das Portal wird nicht bündig an den Feuerraum geklebt: Zwischen Metall und Stein bleibt ein Spalt von 5–10 mm mit hitzebeständiger Dichtmasse oder Mineralwolle, und die Platten werden auf hitzebeständigen Steinkleber gesetzt." },
+      { "heading": "Wann Marmor wählen?", "body": "Marmor ist die Klassik der Kaminportale von Versailles bis zu den Lemberger Stadthäusern. Wählen Sie ihn für Gas- und Elektrokamine oder für Holzkamine mit geschlossenem Feuerraum, wo das Portal keinen Kontakt zur Flamme hat und einen technischen Abstand einhält.\n\nAuf Marmor sind Ruß und Fingerabdrücke sichtbar, und saure Reiniger für die Kaminscheibe ätzen die Oberfläche. Deshalb wird ein Marmorportal nur mit neutralen Mitteln gepflegt und einmal im Jahr imprägniert. Bianco Carrara und Nero Marquina sind die häufigste Wahl; Crema Marfil ergibt ein warmes, ruhiges Portal für ein helles Wohnzimmer." },
+      { "heading": "Wie steht es um Hitzebeständigkeit und Pflege?", "body": "Naturstein hält die Erwärmung aus, die ein Portal erreicht, aber keine plötzliche lokale Erhitzung: Ein heißer Gusseisentopf auf dem Marmorpodest kann eine Spur oder einen Riss hinterlassen. Deshalb fertigen wir das Podest vor einem Holzfeuerraum aus Granit oder Gabbro.\n\nPflege: Ruß wird mit Wasser und neutralem Mittel abgewaschen, starke Verschmutzung mit einer Natronkompresse. Granit wird alle zwei bis drei Jahre imprägniert, Marmor und Travertin jährlich. Einmal pro Saison den Spalt zwischen Feuerraum und Stein prüfen: Die Dichtmasse muss elastisch und rissfrei sein." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Granit / Gabbro", "Holzkamine, Podest", "Hitzebeständig, mit Bürste waschbar"],
+        ["Labradorit", "Akzentportal", "Kristallglanz im Feuerschein"],
+        ["Marmor", "Gas- und geschlossene Feuerräume, Klassik", "Empfindlich gegen Säuren und Ruß"],
+        ["Travertin", "Warme Interieurs", "Poren jährlich imprägnieren"]
+      ]
+    },
+    "faq": [
+      { "question": "Hält Marmor die Hitze aus?", "answer": "Moderate Erwärmung des Portals — ja. Direkter Kontakt mit Flamme, Funken oder heißem Metall — nein, für diese Zonen nehmen wir Granit." },
+      { "question": "Was für den Holzkamin?", "answer": "Granit oder Gabbro für Portal und Podest, hitzebeständiger Kleber, 5–10 mm Abstand zum Feuerraum mit elastischer Dichtmasse." },
+      { "question": "Was für die Klassik?", "answer": "Marmor Bianco Carrara oder Nero Marquina mit profilierter Kante, manchmal mit geschnitzten Elementen. Für einen Gas- oder geschlossenen Feuerraum ist das eine sichere Wahl." },
+      { "question": "Wie reinigt man das Portal?", "answer": "Mit neutralem Steinreiniger und weichem Tuch. Ruß mit einer Natronkompresse. Keine Säuren, besonders auf Marmor, und keine Kaminscheibenreiniger auf dem Stein." }
+    ]
+  },
+  "landshaftnyy-kamin-dvir": {
+    "title": "Landschaftsstein für den Hof: Arten und Anwendung",
+    "h1": "Landschaftsstein — wie man ihn für Hof und Garten wählt",
+    "description": "Landschaftsstein für den Hof: Platten für Wege, Stützmauern, Randsteine, Beete. Frostbeständigkeit, rutschhemmende Oberfläche, Kombination mit Pflaster und Fassade.",
+    "dek": "Stein für Wege, Beete, Stützmauern und Dekorzonen.",
+    "intro": "Im Garten arbeitet Stein anders als im Haus: Hier gibt es kein heißes Geschirr, dafür Frost, Wasser, Wurzeln und den Rasenmäher. Landschaftsstein wählt man nicht nach der Schönheit auf der Platte, sondern nach der Funktion: worauf man geht, was er hält, was er betont. Wir erklären, welche Granitprodukte wir für Höfe fertigen und wie sie sich mit Pflaster und Fassade verbinden.",
+    "sections": [
+      { "heading": "Welchen Landschaftsstein wählen?", "body": "Granit deckt alle Aufgaben des Hofs ab: Platten für Wege und Terrassen, Randsteine, Stufen, Stützmauern, Verkleidung von Beeten und Teichen. Er ist frostbeständig, fürchtet weder Wasser noch Salz, und eine geflammte Oberfläche ist nicht rutschig. Sandstein und Kalkstein sind weicher und poröser, in unserem Klima blättern sie nach einigen Wintern ab.\n\nFür Dekorzonen eignet sich gespaltener Stein aus Produktionsresten: Bruchstein für Trockenmauern, Rollstein für Beete. Das ist ein günstiger Weg zu natürlicher Textur, und wir bieten ihn zusammen mit den Hauptprodukten an." },
+      { "heading": "Welche Arten werden im Hof verwendet?", "body": "Platten für Wege und Terrassen: 30–40 mm zum Verlegen auf Schotter und Sand, 20 mm auf Betonunterbau, Formate von 300 × 300 bis 600 × 900 mm, geflammt oder gesägt. Stufen und Gartentreppen: Massivblöcke oder Belagstufen 30–40 mm auf Beton.\n\nStützmauern: Granitblöcke 200–400 mm oder Verkleidungsplatten auf Betonkern. Randsteine: gesägt oder gespalten, 80–150 mm hoch, halten Wege und Rasen. Verkleidungen: Beete, Schalen, Teiche, Außenküchen, Bänke und Grillplatten aus geflammtem Granit." },
+      { "heading": "Wie kombiniert man Stein mit Pflaster und Fassade?", "body": "Eine Regel: nicht mehr als zwei Gesteine im Hof. Zum Beispiel Grey Ukraine in Pflaster und Terrassenplatten plus Kometa Black in Randsteinen, Stufen und Akzentstreifen. Sind Fassade oder Sockel aus Stein, setzt die Landschaft deren Gestein fort.\n\nOberflächen nach Funktion abstimmen: poliert nur an Vertikalen und Akzenten, geflammt überall, wo man geht. Modulmaße sollte man als Vielfaches des Pflasters (100 mm) abstimmen, damit Plattenweg und Pflastereinfahrt ohne Zuschnitt aneinanderstoßen." },
+      { "heading": "Wie pflegt man Landschaftsstein?", "body": "Zweimal im Jahr mit dem Hochdruckreiniger abspülen, besonders schattige Bereiche, wo Moos wächst. Eine Imprägnierung braucht Granit im Freien nicht, Sandstein und Kalkstein eine Hydrophobierung alle paar Jahre.\n\nIm Winter Kunststoffschaufel und beliebiges Streumittel, Granit verträgt sie. Einmal im Jahr die Fugen zwischen Platten und Randsteinen prüfen und bei Bedarf nachfüllen. Pflanzen mit aggressiven Wurzeln (Weide, Pappel, Bambus) nicht näher als 2–3 m an Wegen setzen: Wurzeln heben Platten unabhängig vom Gestein an." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Platten", "Wege, Terrassen, Grillzone", "Geflammte rutschhemmende Oberfläche"],
+        ["Gespaltener Stein", "Beete, Trockenmauern, Akzente", "Stabiler Unterbau, Drainage"],
+        ["Blöcke", "Stützmauern, Gartentreppen", "Statische Berechnung ab 1 m"],
+        ["Randsteine", "Grenzen von Wegen und Rasen", "Auf Betonbett"]
+      ]
+    },
+    "faq": [
+      { "question": "Welcher Stein ist frostbeständig?", "answer": "Granit, Gabbro und Labradorit: Wasseraufnahme unter 0,2 %, über 300 Frostzyklen ohne Veränderung. Sandstein und Kalkstein blättern in unserem Klima ab." },
+      { "question": "Ist er nach Regen rutschig?", "answer": "Poliert — ja, deshalb verlegen wir ihn nicht im Freien. Geflammter, gestockter und gesägter Granit sind nass rutschhemmend." },
+      { "question": "Wie verlegen?", "answer": "Platten 30–40 mm auf verdichteten Schotter und Splitt wie Pflaster, 20 mm auf Beton und Kleber. Randsteine und Stufen auf ein Betonbett." },
+      { "question": "Wie reinigen?", "answer": "Mit dem Hochdruckreiniger zweimal im Jahr. Moos wird abgewaschen, Salz schadet Granit nicht, Imprägnierung ist nicht nötig." }
+    ]
+  },
+  "skilky-koshtue-stilnytsia-z-kamenyu": {
+    "title": "Was kostet eine Steinarbeitsplatte: Wovon der Preis abhängt",
+    "h1": "Wovon die Kosten einer Steinarbeitsplatte abhängen",
+    "description": "Kosten einer Steinarbeitsplatte: Material, Fläche und Zuschnitt, Dicke, Kante, Ausschnitte, Verstärkung, Lieferung und Montage. Wie man eine genaue Kalkulation erhält.",
+    "dek": "Die Faktoren des Kostenvoranschlags ohne irreführende Einheitspreise.",
+    "intro": "„Was kostet eine Steinarbeitsplatte pro Meter?“ ist die häufigste Frage, und es gibt darauf keine ehrliche kurze Antwort. Zwei Platten gleicher Länge aus demselben Stein können sich durch Zuschnitt, Ausschnitte und Kante im Preis um das Doppelte unterscheiden. Wir erklären, woraus sich der Kostenvoranschlag zusammensetzt, in welcher Reihenfolge die Faktoren die Summe beeinflussen und wie man innerhalb eines Tages eine genaue Zahl bekommt.",
+    "sections": [
+      { "heading": "Was kostet eine Steinarbeitsplatte?", "body": "Der Kostenvoranschlag besteht aus vier Teilen: Material (Platte oder Teil davon), Bearbeitung (Zuschnitt, Kante, Ausschnitte, Polieren der Kanten), Zusatzelemente (Spritzschutz, Verstärkung, verleimte Kante) und Logistik mit Montage.\n\nDas Material macht meist 40 bis 60 % der Summe aus, die Bearbeitung 25–40 %, der Rest entfällt auf Lieferung und Montage. Deshalb führt die Frage „pro Meter“ in die Irre: Ein Preis pro laufenden Meter Stein lässt die Hälfte der Arbeiten außer Acht. Einen Richtwert für konkrete Maße gibt der Rechner auf der Website, er rechnet genau nach dieser Logik." },
+      { "heading": "Welche Faktoren beeinflussen den Preis?", "body": "Material: Gestein, Marke, Seltenheit der Farbe. Fläche und Zuschnitt: Wir bezahlen die ganze Platte, deshalb ist wichtig, wie viele Platten nötig sind und wie die Teile darauf liegen; eine Arbeitsplatte von 3,1 m kann zwei Platten statt einer erfordern.\n\nDicke: 30 mm sind teurer als 20 mm, im Material wie in der Bearbeitung. Kante: Gerade Kante ist Basis, Fase und Rundung etwas teurer, Ogee, Wasserfall und verleimte Kante 40–60 mm deutlich teurer. Ausschnitte: Jeder Ausschnitt für Spüle, Kochfeld, Armatur oder Steckdose bedeutet Mehrarbeit, und eine Unterbauspüle erfordert das Polieren des Innenumfangs.\n\nMontage: Stockwerk, Aufzug, Länge der Teile, Stöße vor Ort, Verstärkung von Überständen. Eine Arbeitsplatte in den fünften Stock ohne Aufzug kostet mehr als dieselbe im Erdgeschoss." },
+      { "heading": "Wie beeinflusst das Material die Kosten?", "body": "Grob teilen sich die Katalogmaterialien in drei Stufen. Basis: ukrainische Granite Grey Ukraine, Maple Red, Rosso Santiago und Feinsteinzeug in Standarddekoren. Mittel: Gabbro, Labradorit, Markenquarz Vicostone und Caesarstone aus den Basiskollektionen. Premium: Marmor, Quarzit Taj Mahal, Quarz in Calacatta-Optik, Dekton und Neolith.\n\nInnerhalb einer Stufe ist der Preisunterschied gering, zwischen den Stufen spürbar. Noch eine Nuance: Helle gleichmäßige Materialien sind in der Regel teurer als dunkle mit Zeichnung, weil sie schwerer fehlerfrei herzustellen sind. Die „ab“-Preise jeder Kollektion stehen auf ihrer Katalogseite." },
+      { "heading": "Wie bekommt man schnell eine genaue Kalkulation?", "body": "Schritt eins: Der Rechner auf der Website mit Maßen, Produkttyp und Material gibt in einer Minute einen Richtwert. Schritt zwei: Senden Sie uns den Küchenplan oder ein Foto mit Maßen, und wir berechnen Zuschnitt und vollständigen Kostenvoranschlag innerhalb eines Tages. Schritt drei: Das Aufmaß vor Ort nach Aufstellung der Möbel legt die Endsumme fest, die sich dann nicht mehr ändert.\n\nUm nicht zu viel zu zahlen, überlegen Sie vor dem Aufmaß drei Dinge: ob eine verleimte Kante nötig ist, ob die Fuge an eine unauffällige Stelle verlegt werden kann und ob ein Steinspritzschutz über die ganze Länge oder nur hinter dem Kochfeld gebraucht wird." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Material", "40–60 % des Kostenvoranschlags", "Gesteinsstufe und Anzahl der Platten"],
+        ["Zuschnitt und Dicke", "Hoher Einfluss", "Länge über 3 m = zweite Platte"],
+        ["Kante und Ausschnitte", "Mittel oder hoch", "Verleimte Kante und Unterbauspüle teurer"],
+        ["Lieferung und Montage", "10–20 %", "Stockwerk, Aufzug, Stöße vor Ort"]
+      ]
+    },
+    "faq": [
+      { "question": "Was ist teurer — Granit oder Quarz?", "answer": "Ukrainische Granite sind meist günstiger als Markenquarz. Importierter Granit in seltenen Farben und Quarz aus Premiumkollektionen kosten etwa gleich viel." },
+      { "question": "Ist die Montage enthalten?", "answer": "Im Kostenvoranschlag ist die Montage eine eigene Position, ebenso die Lieferung. So sehen Sie, wofür Sie zahlen, und können auf Wunsch nur die Fertigung bestellen." },
+      { "question": "Wie rechne ich selbst?", "answer": "Der Rechner auf der Website rechnet nach Maßen, Produkttyp, Material, Kante und Anzahl der Ausschnitte. Das ist ein Richtwert mit etwa ±15 % Genauigkeit, den Rest präzisiert der Zuschnitt." },
+      { "question": "Was beeinflusst am meisten?", "answer": "Material und Anzahl der Platten. Dann Kante und Ausschnitte. 30 mm Dicke statt 20 mm bringen 20–40 % dazu." }
+    ]
+  },
+  "shcho-take-slyab": {
+    "title": "Was eine Rohplatte ist und wo sie verwendet wird",
+    "h1": "Rohplatte — was das ist, Maße und Anwendung",
+    "description": "Eine Rohplatte (Slab) ist eine große Platte aus Natur- oder Kunststein. Plattenmaße von Granit, Marmor, Quarz und Feinsteinzeug, Dicke, Auswahl und was ein Reststück ist.",
+    "dek": "Wie man die ganze Platte, Charge, Ton und Nutzfläche liest.",
+    "intro": "Eine Rohplatte (englisch slab) ist eine große Steinplatte, die aus dem Block gesägt und einseitig poliert wurde. Aus Rohplatten werden Arbeitsplatten, Fensterbänke, Treppen und Verkleidungen geschnitten, und genau die Platte, nicht ein Muster von 10 × 10 cm, sollte man vor der Bestellung ansehen. Wir erklären, welche Platten es gibt, welche Maße sie haben und wie daraus Ihre Arbeitsplatte entsteht.",
+    "sections": [
+      { "heading": "Was ist eine Rohplatte?", "body": "Im Steinbruch wird der Stein in Blöcken von 10–30 Tonnen gewonnen. Der Block wird auf Seil- oder Scheibensägen in Platten von 20 oder 30 mm Dicke gesägt, dann wird die Sichtseite geschliffen und poliert. Die fertige Platte ist die Rohplatte: Bei Naturstein bestimmt der Block das Maß, bei Quarz und Feinsteinzeug das Werksformat.\n\nJede Platte hat eine Nummer, eine Charge und tatsächliche Maße, Natursteine zudem eine individuelle Zeichnung. Deshalb zeigen wir im Katalog nicht „grauen Granit“, sondern konkrete Platten mit Foto, Maßen und Verfügbarkeit." },
+      { "heading": "Welche Platten aus Granit, Marmor und Quarzit gibt es?", "body": "Granit: die größte Gruppe, ukrainisch und importiert, Dicke 20 und 30 mm, Oberfläche poliert, matt, geflammt oder Leather. Marmor: Import aus Italien, Spanien, Türkei, Dicke 20 und 30 mm, wegen der Sprödigkeit oft mit Armierungsgewebe auf der Rückseite. Quarzit: Brasilien und Indien, Dicke 20 und 30 mm, die härtesten und teuersten unter den Natursteinen.\n\nQuarz (Komposit): Werksplatten in Standardformat, Dicke 20 und 30 mm, gleichmäßige Farbe. Feinsteinzeug: 6, 12 und 20 mm, Format bis 3200 × 1600 mm, je nach Kollektion nur mit Dekor auf der Oberfläche oder durchgefärbt." },
+      { "heading": "Welche Standardmaße hat eine Rohplatte?", "body": "Granit und Marmor: von 2400 × 1200 bis 3200 × 1900 mm, meist etwa 2800 × 1600 mm. Das Maß hängt von Block und Gestein ab: Ukrainische Granite meist 2400–3000 × 1200–1500 mm. Quarz: Standard 3050 × 1400 mm, Jumbo-Format 3200 × 1600 mm in Premiumkollektionen.\n\nFeinsteinzeug: Laminam 3240 × 1620 mm, Neolith 3200 × 1600 mm, Dekton 3200 × 1440 mm. Die Nutzfläche ist immer kleiner als das Außenmaß: Die Plattenränder haben einen Rand von 20–50 mm mit Sägefehlern, und Naturstein kann Risse oder Einschlüsse haben, die wir beim Zuschnitt umgehen." },
+      { "heading": "Wo werden Rohplatten verwendet?", "body": "Arbeitsplatten und Inseln: aus Granit, Quarz, Quarzit und Feinsteinzeug. Fensterbänke und Treppen: aus Granit, Marmor. Verkleidung von Wänden, Kaminen und Fassaden: aus jedem Stein in großformatigen Platten, wenn eine „fugenlose“ Zeichnung oder Bookmatch, die spiegelnde Kombination zweier benachbarter Platten, gewünscht ist.\n\nPlattenreste nach dem Zuschnitt sind eine eigene Kategorie: Stücke von 0,5–1,5 m, aus denen Fensterbänke, Tischchen, Regale und kleine Arbeitsplatten zu niedrigerem Preis entstehen. Bei uns sind sie auf der Seite der Reststücke mit Maßen und Fotos verfügbar." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Granitplatte", "Arbeitsplatten, Treppen, Verkleidung", "2400–3200 × 1200–1900 mm, 20/30 mm"],
+        ["Marmorplatte", "Bäder, Fensterbänke, Portale", "Oft mit Gewebe auf der Rückseite"],
+        ["Quarzitplatte", "Arbeitsplatten und Inseln", "Am härtesten, bis 3 × 1,8 m"],
+        ["Quarzplatte", "Arbeitsplatten in gleichmäßiger Farbe", "3050 × 1400 oder 3200 × 1600 mm"],
+        ["Feinsteinzeug", "Arbeitsplatten, Fassaden, Spritzschutz", "3200 × 1600 mm, 6–20 mm"]
+      ]
+    },
+    "faq": [
+      { "question": "Worin unterscheidet sich eine Rohplatte von einer Fliese?", "answer": "In der Größe und in dem, was daraus gemacht wird. Eine Fliese ist ein fertiges Modul bis 1200 mm zum Verlegen auf Kleber. Eine Rohplatte ist ein Rohling bis 3,2 m, aus dem das Stück auf Ihr Maß geschnitten wird." },
+      { "question": "Welche Maße hat eine Rohplatte?", "answer": "Naturstein von 2,4 × 1,2 bis 3,2 × 1,9 m, Quarz 3,05 × 1,4 oder 3,2 × 1,6 m, Feinsteinzeug 3,2 × 1,6 m. Die genauen Maße sind im Katalog für jede Platte angegeben." },
+      { "question": "Was kostet sie?", "answer": "Eine Rohplatte wird pro Quadratmeter mit einem Faktor für die ganze Platte verkauft. Der Preis hängt von Gestein, Dicke und Charge ab; im Katalog steht der Preis konkreter vorrätiger Platten." },
+      { "question": "Wie wählt man eine Rohplatte?", "answer": "Die ganze Platte bei Tageslicht ansehen, nicht ein Muster: Zeichnung, Risse, Einschlüsse prüfen, die Aufteilung der Teile auf der Platte abstimmen. Wir senden Foto und Video der Platte und halten sie bis zum Zuschnitt für Sie fest." }
+    ]
+  },
+  "yak-vybraty-kamin-dlya-kukhni": {
+    "title": "Wie man Stein für die Küche wählt: der komplette Ratgeber 2026",
+    "h1": "Wie man Stein für die Küchenarbeitsplatte wählt — der komplette Ratgeber",
+    "description": "Wie man Stein für die Küche wählt: Granit, Quarz, Quarzit, Feinsteinzeug oder Marmor. Vergleich nach Festigkeit, Hitze, Pflege, Zeichnung und Budget, Dicke und Kante.",
+    "dek": "Der Hauptratgeber nach Festigkeit, Hitze, Pflege und Charakter der Zeichnung.",
+    "intro": "Die Wahl des Steins für die Küche beginnt nicht mit dem Namen des Materials, sondern mit drei Fragen: Wie kochen Sie, wie viel Aufmerksamkeit wollen Sie der Pflege widmen, und welchen Charakter soll die Küche haben? Beantworten Sie sie, und Sie erhalten fast automatisch eines von fünf Materialien. In diesem Ratgeber haben wir alles gesammelt, was wir Kunden in der Fertigung erklären, mit Links zu den ausführlichen Artikeln.",
+    "sections": [
+      { "heading": "Welchen Stein für die Küche wählen?", "body": "Sie kochen viel, stellen Heißes irgendwohin, lieben natürliche Zeichnung: Granit. Sie wollen eine helle gleichmäßige Fläche und minimale Pflege, Heißes auf den Untersetzer: Quarz. Sie wollen einen hellen Naturstein mit Adern, der Zitrone nicht fürchtet: Quarzit. Sie brauchen eine dünne moderne Platte, auf die man Heißes stellen kann: Feinsteinzeug. Sie sind für schönen Marmor zur Patina bereit: Marmor, aber im Wissen um die Folgen.\n\nDas ist ein vereinfachtes Schema, aber es funktioniert in den meisten Fällen. Weiter die Nuancen." },
+      { "heading": "Granit, Quarz, Quarzit, Feinsteinzeug oder Marmor — was ist der Unterschied?", "body": "Granit: natürliches Gestein, Härte 6–7, verträgt Hitze, braucht alle 1–3 Jahre Imprägnierung, jede Platte einzigartig, ukrainische Gesteine preisgünstig.\n\nQuarz: 90 % Quarz mit Harz, ohne Poren, wiederholbare Farbe, empfindlich gegen Temperaturen über 150 °C und UV, nicht für außen.\n\nQuarzit: natürlich, Härte 7, säurebeständig, braucht Imprägnierung, helle warme Töne, der teuerste unter den Natursteinen.\n\nFeinsteinzeug: gesinterte 12-mm-Platte, fürchtet nichts außer einem Schlag auf die Kante, am leichtesten, braucht vollflächige Auflage und Fase an der Kante.\n\nMarmor: Kalzit, Härte 3–4, wird von Säuren geätzt, die schönste Zeichnung, für eine Küche mit sorgsamem Besitzer oder für eine Insel, an der nicht gekocht wird." },
+      { "heading": "Was ist bei Festigkeit, Pflege und Budget zu beachten?", "body": "Stoß- und Kratzfestigkeit: Quarzit und Granit, dann Quarz und Feinsteinzeug (spröde Kanten), dann Marmor. Fleckenbeständigkeit ohne Imprägnierung: Quarz und Feinsteinzeug, dann Quarzit und Granit mit Imprägnierung, dann Marmor.\n\nPflege: Quarz und Feinsteinzeug nichts außer Waschen; Granit und Quarzit Wassertest und Imprägnierung; Marmor jährliche Imprägnierung und immer neutrale Chemie. Budget aufsteigend: ukrainische Granite und Basis-Feinsteinzeug, dann Quarz und Gabbro, dann Marmor, Quarzit und Premiumkollektionen von Quarz und Feinsteinzeug." },
+      { "heading": "Welche Dicke und Bearbeitung sind nötig?", "body": "Dicke: 20 mm für die Standardküche bei allen Materialien, 30 mm für lange Konsolen oder massiven Stil, 12 mm für Feinsteinzeug mit verleimter Kante. Kante: gerade oder Fase als Basis, Rundung R3 für Familien mit Kindern, verleimte 40 mm für die Optik einer dicken Platte.\n\nOberfläche: Poliert zeigt die Zeichnung und lässt sich leichter waschen, matt (honed) verbirgt Fingerabdrücke und Ätzungen auf Marmor, Leather auf dunklem Granit bringt Haptik und verbirgt Kratzer. In einer Küche mit Südfenster blendet dunkler polierter Stein — bedenken Sie das." },
+      { "heading": "Wie bestellt und kalkuliert man?", "body": "Ermitteln Sie einen Richtwert im Rechner, wählen Sie zwei bis drei Kollektionen im Katalog und schreiben Sie uns mit dem Küchenplan. Wir senden Fotos der vorrätigen Platten, einen Kostenvoranschlag mit Zuschnitt und einen Aufmaßtermin. Nach dem Aufmaß geben Sie die Aufteilung der Teile auf der konkreten Platte frei, und in ein bis zwei Wochen steht die Arbeitsplatte in der Küche.\n\nWenn Sie zwischen zwei Materialien schwanken, kommen Sie in die Fertigung nach Kostopil oder bestellen Sie Muster: Daran können Sie den Haustest mit Zitrone, heißer Tasse und Messer machen, nach dem die Wahl offensichtlich wird." }
+    ],
+    "table": {
+      "headers": ["Material", "Stärke", "Zu beachten"],
+      "rows": [
+        ["Granit", "Hitze, Stöße, einzigartige Zeichnung", "Imprägnierung alle 1–3 Jahre"],
+        ["Quarz", "Porenfrei, wiederholbare Farbe", "Untersetzer für Heißes, nicht für außen"],
+        ["Quarzit", "Härte und heller natürlicher Ton", "Plattenfreigabe, höherer Preis"],
+        ["Feinsteinzeug", "Dünn, hitzefest, UV-beständig", "Spröde Kanten, vollflächige Auflage"],
+        ["Marmor", "Die schönste Zeichnung", "Säuren, Patina, jährliche Pflege"]
+      ]
+    },
+    "faq": [
+      { "question": "Was ist am praktischsten?", "answer": "Quarz für eine helle Küche, Granit für jede andere. Beide verzeihen den täglichen Gebrauch, der Unterschied liegt nur in heißem Geschirr und Imprägnierung." },
+      { "question": "Was für eine Familie mit Kindern?", "answer": "Quarz oder Granit mit abgerundeter Kante R3. Feinsteinzeug verträgt Stöße von Spielzeug auf die Kante schlechter, Marmor braucht Aufmerksamkeit, die in einer Familie mit Kindern meist fehlt." },
+      { "question": "Was braucht eine Imprägnierung?", "answer": "Granit, Quarzit und Marmor. Quarz und Feinsteinzeug haben keine Poren und werden nicht imprägniert." },
+      { "question": "Womit beginnt man die Wahl?", "answer": "Mit dem Szenario: wie Sie kochen und wie viel Pflege Sie geben wollen. Dann mit Farbe und Zeichnung im Katalog, dann mit dem Rechner und Mustern." }
+    ]
+  }
+}

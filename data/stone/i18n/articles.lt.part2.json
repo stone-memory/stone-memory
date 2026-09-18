@@ -1,0 +1,174 @@
+{
+  "yak-doglyadaty-za-granitnoyu-stilnytseyu": {
+    "title": "Kaip prižiūrėti granito stalviršį: taisyklės ir klaidos",
+    "h1": "Granito stalviršio priežiūra — taisyklės žingsnis po žingsnio",
+    "description": "Granito stalviršio priežiūra: kasdienis valymas, saugios priemonės, impregnavimas, aliejaus ir vyno dėmių šalinimas, tipinės klaidos.",
+    "dek": "Kasdienis algoritmas be rūgščių, abrazyvų ir atsitiktinės chemijos.",
+    "intro": "Granito stalviršiui nereikia specialios priežiūros, bet reikia teisingos. Dauguma problemų, su kuriomis į mus kreipiasi, — tai vienos iš trijų priežasčių pasekmės: agresyvios chemijos, pamiršto impregnavimo arba bandymo nutrinti dėmę abrazyvu. Štai trumpas reglamentas, kurį atiduodame klientams kartu su stalviršiu.",
+    "sections": [
+      { "heading": "Kaip kasdien valyti granitą?", "body": "Šiltas vanduo, minkšta šluostė ar kempinė, keli lašai neutralios plovimo priemonės. Nušluostėte, nuplovėte švariu vandeniu, nušluostėte sausai, kad ant tamsaus akmens neliktų dryžių. Tai visa kasdienė rutina.\n\nIšsipylusius skysčius nuvalykite iš karto, ypač aliejų, vyną, kavą ir burokėlius. Impregnuotas granitas jų per minutę neįgers, bet per naktį po aliejaus balute gali likti šešėlis. Nepalikite ant paviršiaus drėgnų maišelių ir surūdijusių skardinių: rūdys skverbiasi į poras." },
+      { "heading": "Kokios priemonės galimos, o kokios draudžiamos?", "body": "Galima: priemonės su užrašu „natūraliam akmeniui“ arba „pH neutrali“, paprasta indų plovimo priemonė nedideliu kiekiu, izopropilo alkoholis riebalų pašalinimui prieš impregnavimą.\n\nNegalima: actas, citrinos rūgštis, kalkių nuosėdų valikliai, chloras ir orkaičių valikliai, abrazyviniai milteliai, melamininės kempinės, metaliniai gremžtukai. Rūgštys ir šarmai ardo impregnavimą ir laikui bėgant matina poliravimą, abrazyvai palieka įbrėžimų, matomų prieš šviesą." },
+      { "heading": "Ar reikia impregnuoti ir kaip dažnai?", "body": "Taip. Impregnantas užpildo mikroporas ir neleidžia skysčiams prasiskverbti į vidų. Mes jį užtepame po montavimo, toliau savininkas atnaujina pats.\n\nPeriodiškumą nustato vandens testas, o ne kalendorius. Užpilkite šaukštą vandens darbo zonoje prie plautuvės ir palaukite 15 minučių. Jei akmuo po vandeniu patamsėjo, laikas atnaujinti impregnavimą. Poliruotam granitui tai paprastai kartą per vienerius–trejus metus, matiniam — dažniau.\n\nProcedūra: nuvalyti ir išdžiovinti paviršių, užtepti impregnantą kempine plonu sluoksniu, palaikyti pagal instrukciją (paprastai 10–20 minučių), nušluostyti likučius sausai. Perteklius, išdžiūvęs ant paviršiaus, palieka dėmes, todėl šluostyti reikia kruopščiai." },
+      { "heading": "Ką daryti su aliejaus ar vyno dėme?", "body": "Šviežia dėmė: nusausinti popieriniu rankšluosčiu netrinant ir nuplauti neutralia priemone. Dauguma atvejų to pakanka.\n\nSena riebalų dėmė: padaryti pastą iš sodos ir vandens grietinės konsistencijos, užtepti ant dėmės 5 mm sluoksniu, uždengti plėvele ir palikti 12–24 valandoms. Pasta ištraukia aliejų iš porų. Nuimti, nuplauti, esant reikalui pakartoti.\n\nOrganinė dėmė (vynas, kava, sultys): ta pati pasta, bet su 3 % vandenilio peroksidu vietoj vandens. Ant tamsaus granito pirmiausia patikrinkite nematomoje vietoje. Rūdis ir nežinomas dėmes geriau parodyti mums: bendro plano nuotraukos ir stambaus plano pakanka patarimui." },
+      { "heading": "Ko niekada negalima daryti?", "body": "Nepjaustyti ant akmens be lentelės: granitas nenukentės, o peiliai atšips per savaitę. Nestoti ant stalviršio ir nesėsti ant iškyšos: plokštė apskaičiuota paskirstytai apkrovai, o ne taškinei 80 kg ant krašto.\n\nNestatyti karštos keptuvės ant siūlės tarp plokščių ir išpjovos vietoje prie kaitlentės: vietinis klijų siūlės perkaitimas gali ją susilpninti. Pats granitas karščio nebijo. Nenaudoti vaškų ir buitinės chemijos „poliravimo priemonių“: jos sudaro lipnią plėvelę, kuri kaupia nešvarumus ir neturi nieko bendra su akmens poliravimu." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Kasdienis valymas", "Galima", "Minkšta šluostė, neutrali priemonė, nušluostyti sausai"],
+        ["Rūgštys ir abrazyvai", "Negalima", "Matina poliravimą, ardo impregnavimą"],
+        ["Karštis", "Galima", "Vengti tik siūlių ir išpjovų kraštų"],
+        ["Impregnavimas", "Kartą per 1–3 metus", "Periodiškumą nustato vandens testas"],
+        ["Dėmės", "Sodos pasta", "Netrinti abrazyvu"]
+      ]
+    },
+    "faq": [
+      { "question": "Ar galima pjaustyti ant granito?", "answer": "Akmuo nuo peilio nenukentės, bet peilis greitai atšips. Naudokite lentelę, taip patogiau abiem." },
+      { "question": "Ar galima statyti karštus indus?", "answer": "Taip, granitas atlaiko indus nuo viryklės ir iš orkaitės. Vienintelė vieta, kur geriau padėti padėklą, — klijų siūlė tarp plokščių." },
+      { "question": "Kuo pašalinti riebalus?", "answer": "Šviežius — indų plovikliu. Senus — sodos ir vandens pasta parai po plėvele. Šarminių virtuvės riebalų šalinimo priemonių naudoti neverta." },
+      { "question": "Kaip sugrąžinti blizgesį?", "answer": "Jei paviršius tapo blausus dėl priemonių su vašku ar rūgštimi, pirmiausia nuplaukite jį neutralia priemone ir alkoholiu. Jei poliravimas tikrai pažeistas, jį vietoje atkuria meistras mašinėle su deimantinėmis pastomis." }
+    ]
+  },
+  "dogljad-za-marmurom-vanna": {
+    "title": "Marmuro priežiūra: kaip valyti ir šalinti dėmes",
+    "h1": "Kaip prižiūrėti marmurą ir šalinti dėmes",
+    "description": "Marmuro priežiūra: saugios priemonės, kas ardo akmenį, kaip pašalinti organines, riebalų ir rūdžių dėmes, kaip dažnai impregnuoti.",
+    "dek": "Saugi kalcitinio paviršiaus priežiūra be rūgščių.",
+    "intro": "Marmuras sudarytas iš kalcito, o kalcitas tirpsta rūgštyse. Tai vienintelis dalykas, kurį reikia atsiminti, ir iš to kyla visa priežiūra: jokių rūgštinių priemonių, greitas nušluostymas, reguliarus impregnavimas. Kita nesudėtingesnė nei bet kurio kito paviršiaus priežiūra.",
+    "sections": [
+      { "heading": "Kaip saugiai valyti marmurą?", "body": "Kasdien: šiltas vanduo ir minkšta šluostė. Kartą per savaitę: neutrali akmens priemonė, atskiesta pagal instrukciją, paskui švarus vanduo ir sausa šluostė. Ant poliruoto marmuro svarbu nušluostyti sausai, kitaip išdžiūvus lieka lašų pėdsakai, ypač ant tamsių rūšių.\n\nVoniai laikykite atskirą akmens priemonės buteliuką ir nenaudokite ant stalviršio to, kuo plaunate unitazą ar maišytuvą. Dauguma santechnikos priemonių turi rūgšties prieš kalkių nuosėdas." },
+      { "heading": "Kokios priemonės ardo marmurą?", "body": "Rūgštys: actas, citrina, nuovirų ir nuosėdų valikliai, kai kurios stiklo ir plytelių priemonės. Jos ne teršia, o ėsdina: per kelias minutes ant poliruoto paviršiaus atsiranda matinė lašo formos dėmė.\n\nŠarmai ir chloras: balikliai ir orkaičių valikliai ardo impregnavimą ir blukina spalvotą marmurą. Abrazyvai: milteliai, melamininės kempinės, kieti šepečiai braižo kalcitą, kuris minkštesnis už smėlį.\n\nKosmetika: kūno aliejai, plaukų dažai, kai kurie alkoholiniai kvepalai su dažikliais. Statykite buteliukus ant padėklo ir nušluostykite lašus iš karto." },
+      { "heading": "Kaip pašalinti organines, riebalų ir rūdžių dėmes?", "body": "Pirmiausia nustatykite tipą. Matinė dėmė be spalvos — tai ėsdinimas rūgštimi, jos neplaunama, o poliruojama. Spalvota dėmė porose — tai nešvarumas, kuris ištraukiamas kompresu.\n\nOrganinės (kava, arbata, vynas, kosmetika): pasta iš balto popierinio rankšluosčio ar krakmolo, sudrėkinta 3 % vandenilio peroksidu, po plėvele 12–24 valandoms. Riebalų (aliejus, kremas): sodos ir vandens pasta, tas pats laikas. Rūdys: tik specialios pastos marmurui be rūgšties; buitinės rūdžių šalinimo priemonės turi rūgšties ir sugadins akmenį.\n\nPo kompreso paviršius nuplaunamas, išdžiovinamas ir esant reikalui kartojama. Impregnavimą po dėmės pašalinimo atnaujinti būtina." },
+      { "heading": "Kaip dažnai impregnuoti marmurą?", "body": "Vonioje kartą per metus stalviršį ir grindis, kartą per dvejus metus sienas. Ant virtuvės palangės ar stalo — kartą per metus. Testas tas pats, kaip granitui: vandens lašas, 10 minučių, tamsi dėmė reiškia, kad laikas.\n\nSvarbu suprasti, kad impregnavimas saugo nuo dėmių, bet ne nuo rūgščių. Matinė (honed) apdaila padeda ir nuo ėsdinimo: ant jos rūgšties pėdsakai beveik nematomi, ir aktyviai vonioje rekomenduojame būtent ją." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Organinė dėmė", "Kompresas su peroksidu", "Pirmiausia testas nematomoje vietoje"],
+        ["Riebalų", "Sodos pasta", "Netrinti, duoti kompresui laiko"],
+        ["Rūdys", "Pasta marmurui be rūgšties", "Buitinės rūdžių priemonės draudžiamos"],
+        ["Rūgštinis ėsdinimas", "Meistro poliravimas", "Nenusiplauna, tai paviršiaus pokytis"]
+      ]
+    },
+    "faq": [
+      { "question": "Ar galima actą arba citriną?", "answer": "Ne. Abu išėsdina kalcitą per minutes. Nuosėdas nuo marmuro šalina neutraliomis akmens priemonėmis arba švelnia sodos pasta." },
+      { "question": "Kuo pašalinti kavą ar vyną?", "answer": "Šviežią — vandeniu ir šluoste. Tai, kas spėjo įsigerti, — kompresu su 3 % vandenilio peroksidu 12–24 valandoms po plėvele." },
+      { "question": "Kaip sugrąžinti blizgesį?", "answer": "Buitinės „poliravimo priemonės“ nepadės. Nuo rūgščių apblausiusį paviršių atkuria meistras: šlifavimas, poliravimas ir naujas impregnavimas vietoje per kelias valandas." },
+      { "question": "Ar reikia kasmetinio apdorojimo?", "answer": "Taip, impregnavimas kartą per metus stalviršiams ir grindims drėgnose zonose. Tai 20 minučių darbo kempine ir pigiausias būdas prailginti marmuro gyvenimą." }
+    ]
+  },
+  "pidvikonnya-z-kamenyu-marmur-granit": {
+    "title": "Palangė iš akmens: marmuras ar granitas?",
+    "h1": "Akmens palangė — marmuras ar granitas?",
+    "description": "Palangė iš akmens: marmuras ar granitas, storis, iškyša, montavimas ir priežiūra. Ką rinktis saulėtai pusei, vazonams ir drėgmei.",
+    "dek": "Uolienos pasirinkimas saulei, drėgmei, augalams ir kasdieniam naudojimui.",
+    "intro": "Palangė — paprasčiausias būdas pridėti į namus natūralaus akmens: viena plokštė, viena montavimo diena ir dešimtmečiai be keitimo. Klausimas tik uolienoje. Granitas atlaiko vazonus, vandenį ir saulę be priminimų apie priežiūrą; marmuras atrodo švelnesnis ir šiltesnis, bet prašo dėmesio. Paaiškiname, kaip renkamės mes.",
+    "sections": [
+      { "heading": "Ką rinktis palangei?", "body": "Virtuvei, vaikų kambariui ir palangėms su augalais rinkitės granitą: Grey Ukraine, Kometa Black arba kvarcą, jei reikia šviesios vienodos spalvos. Miegamajam, svetainei ir voniai, kur palangė dirba kaip lentyna, o ne darbo paviršius, tinka marmuras Crema Marfil arba Bianco Carrara.\n\nJei langai į pietus ir ant palangės stovės tamsūs daiktai, atsižvelkite į įkaitimą: tamsus granitas saulėje tampa karštas, šviesus marmuras ir kvarcas lieka vėsūs. Kvarco tačiau nestatykite tiesioginėje saulėje visą dieną: derva per metus gali pakeisti atspalvį." },
+      { "heading": "Kuo granitas geresnis už marmurą palangei?", "body": "Granitas nebijo vandens iš po vazonų, rūgšties iš trąšų, puodelių pėdsakų ir katės nagų. Impregnavimas atnaujinamas kartą per kelis metus, o ne kasmet. Jis kietesnis, todėl kraštas nenuskyla nuo smūgio lango rėmu ar šluoste valant.\n\nMarmuras laimi kitur: jis malonesnis liesti, suteikia šviesų šiltą toną, kurio granitas neturi, ir atrodo tinkamas klasikiniuose interjeruose. Jei vazonai stovi ant padėklų, o palangė neužliejama, marmuras tarnauja ne mažiau." },
+      { "heading": "Kokie akmens privalumai prieš plastiką ir medieną?", "body": "Akmuo negelsta, nesideformuoja nuo radiatoriaus apačioje ir saulės viršuje, neįgeria kvapų ir nesibraižo taip, kaip PVC. Jis sunkesnis, ir tame jo privalumas: plokštė guli ant skiedinio ir „nežaidžia“, o gili 400–600 mm palangė atlaiko žmogų, atsisėdusį ant jos su knyga.\n\nMediena graži, bet reikia lako ir bijo vandens po vazonais. Akmuo statomas vieną kartą ir paprastai visam lango tarnavimo laikui, o keičiant langą plokštė perstatoma." },
+      { "heading": "Kaip vyksta gamyba ir montavimas?", "body": "Matavimas po lango įstatymo ir angokraščių tinkavimo: fiksuojame ilgį, gylį, iškyšą, kraštų formą ir tai, ar plokštė įeina į angokraščius. Standartinė iškyša 30–50 mm nuo sienos, storis 20 mm, gilioms palangėms virš 500 mm arba ilgesnėms nei 2 m imame 30 mm.\n\nMontavimas: plokštė dedama ant cementinio skiedinio arba montavimo putų ant išlyginto pagrindo su nedideliu nuolydžiu į kambarį, ne daugiau 1–2 mm, kad vanduo nuo lango nesikauptų prie rėmo. Tarp plokštės ir rėmo paliekamas 3–5 mm tarpas hermetikui, po plokšte dedamos pakladės, kad nepažeisti radiatoriaus ventiliacijos. Darbai užima dieną, naudotis galima kitą dieną." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Tvirtumas", "Granitas 6–7 pagal Mosą", "Marmuras 3–4, minkštesnis"],
+        ["Drėgmė ir trąšos", "Granitas praktiškesnis", "Marmurui reikia impregnavimo ir padėklų"],
+        ["Saulė", "Tamsus granitas įkaista", "Kvarcas ne tiesioginei saulei"],
+        ["Išvaizda", "Kontrastinga arba neutrali", "Marmuras šiltas ir plastiškas"],
+        ["Storis", "20 mm standartas", "30 mm ilgesnėms nei 2 m"]
+      ]
+    },
+    "faq": [
+      { "question": "Kas ilgaamžiškesnis?", "answer": "Granitas: jis kietesnis ir nereaguoja į rūgštis. Marmuras tarnauja taip pat ilgai, jei jį impregnuoja ir neužlieja." },
+      { "question": "Ar bijo saulės ar drėgmės?", "answer": "Granitas ir marmuras saulės nebijo. Kvarcas tiesioginiuose spinduliuose visą dieną per metus gali pakeisti atspalvį. Drėgmės nebijo nė vienas akmuo, kenkia tik nešvarumai porose." },
+      { "question": "Koks storis?", "answer": "Standartas 20 mm. Ilgoms palangėms virš 2 m, gilioms virš 500 mm arba su didele iškyša imame 30 mm." },
+      { "question": "Ar galima nestandartinė forma?", "answer": "Taip: suapvalinti kampai, išpjovos angokraščiams, erkerio palangė iš kelių plokščių, palangė-stalviršis, pereinanti į virtuvės darbo zoną." }
+    ]
+  },
+  "shody-z-granitu-cina-vygotovlennya": {
+    "title": "Laiptai iš granito: gamyba, apdirbimas, kaina",
+    "h1": "Granito laiptai — kaip renkami ir gaminami",
+    "description": "Granito laiptai: uždedami ir vientisi, apdaila laukui ir interjerui, neslidumas, pakopų matmenys ir iš ko susideda kaina.",
+    "dek": "Konstrukcija, apdaila ir saugus mazgas interjerui ir laukui.",
+    "intro": "Granito laiptai — ilgaamžiškiausia namo dalis: prieangiai iš ukrainietiško granito stovi po 50 metų be remonto. Bet būtent laiptuose klaidos kainuoja brangiausiai, nes slidi pakopa ar nenuvestas vanduo jaučiami kasdien. Pasakojame, kaip projektuojame laiptus namams, laiptinėms ir parduotuvėms.",
+    "sections": [
+      { "heading": "Kokie būna granito laiptai?", "body": "Pagal konstrukciją: uždedami (pakopos ir pakopų sienelės iš 20–30 mm plokščių ant betoninio pagrindo) ir vientisi (masyvūs 100–150 mm blokai, kurie patys yra pakopos). Uždedami naudojami 90 % atvejų: ir namuose, ir lauke.\n\nPagal vietą: interjeriniai (poliruota arba matinė apdaila, medinės ar akmeninės pakopų sienelės, grindjuostė palei sieną) ir išoriniai (deginta apdaila, nuolydis vandeniui, lašų kraštas po pakopa, šalčiui atsparūs klijai)." },
+      { "heading": "Uždedami ar vientisi — koks skirtumas?", "body": "Uždedami laiptai lengvesni, pigesni ir leidžia bet kokią apdailą. 30 mm pakopa su lašų kraštu ir 20 mm pakopos sienelė dedamos ant betoninio maršo akmens klijais. Iš jų daromi ir tiesūs, ir sukti, ir spiraliniai maršai.\n\nVientisi blokai tinka kraštovaizdžiui ir masyviems įėjimams: atraminiai laiptai sode, prieangis „akmens iš karjero“ stiliumi. Jiems nereikia betoninio pagrindo klasikine prasme, bet reikia sunkios technikos montavimui ir jie kainuoja gerokai brangiau dėl medžiagos kiekio." },
+      { "heading": "Kokio apdirbimo reikia laukui?", "body": "Išoriniams laiptams poliravimas pavojingas: lyjant ir šąlant jis virsta čiuožykla. Naudojame terminį apdirbimą (paviršius apdeginamas, kristalai skeldėja ir suteikia šiurkščią faktūrą) arba kalstymą (mechaninį taškavimą). Abi apdailos neslidžios net drėgnos.\n\nKompromisinis variantas interjerui, kur norisi blizgesio: poliruota pakopa su degintomis ar smėliasraučiu apdirbtomis 30–40 mm pločio juostomis prie krašto. Jos veikia kaip neslidi juosta ir negadina išvaizdos. Laukui taip pat svarbus pakopos 1–2 % nuolydis nuo namo ir lašų kraštas apačioje, kad vanduo netekėtų ant pakopos sienelės ir neužšaltų siūlėje." },
+      { "heading": "Nuo ko priklauso kaina?", "body": "Medžiaga: ukrainietiškas granitas Grey Ukraine prieinamesnis už gabrą ir labradoritą, importas kainuoja dar brangiau. Storis: 30 mm pakopa prieš 20 mm, masyvūs blokai atskirai.\n\nGeometrija: tiesios standartinio 300–330 mm pločio pakopos pigesnės už suktas ir lenktas, kiekviena išpjova turėklui ar nestandartinis kampas prideda darbo. Apdaila: poliravimas bazinis, terminis apdirbimas ir kalstymas brangesni. Plius pristatymas ir montavimas, kuris laiptuose užima daugiau laiko nei stalviršyje, nes kiekviena detalė pritaikoma vietoje.\n\nOrientyrą jūsų maršui galite gauti skaičiuoklėje, tikslią sąmatą — po betoninio pagrindo išmatavimo." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Poliravimas", "Interjeras, vertikalės, detalės", "Slidus drėgnas, pridėkite juostų"],
+        ["Šlifavimas (matinis)", "Interjeras, ramus paviršius", "Mažiau slidus, lengviau prižiūrėti"],
+        ["Terminis apdirbimas", "Laukas, prieangiai, terasos", "Neslidi šiurkšti faktūra"],
+        ["Kalstymas", "Laukas, visuomeniniai įėjimai", "Šiurkščiausia faktūra, nuovažos"]
+      ]
+    },
+    "faq": [
+      { "question": "Ar granito laiptai slidūs?", "answer": "Poliruoti — taip, ypač drėgni. Deginti ir kalstyti — ne, jie neslidūs net lyjant ir šąlant. Interjerui galima derinti blizgesį su neslidžiomis juostomis." },
+      { "question": "Koks maksimalus pakopos ilgis?", "answer": "Iš 30 mm plokštės gaminame vientisas pakopas iki 3 m, ribojimas — plokštės dydis. Ilgesnės pakopos sudedamos iš dviejų plokščių su siūle centre arba virš atramos." },
+      { "question": "Ką rinktis prieangiui?", "answer": "Degintą Grey Ukraine arba Kometa Black 30 mm storio su lašų kraštu. Tai dažniausias ir patikimiausias sprendimas Ukrainos klimatui." },
+      { "question": "Kiek kainuoja?", "answer": "Priklauso nuo uolienos, storio, pakopų skaičiaus ir formos, apdailos ir montavimo. Įveskite matmenis į skaičiuoklę orientyrui, tikslią sumą pasakysime po išmatavimo." }
+    ]
+  },
+  "fasad-z-kamenyu-yakyy-kamin": {
+    "title": "Fasadas iš akmens: kokį akmenį rinktis apdailai",
+    "h1": "Fasado apdaila akmeniu — kokį akmenį rinktis",
+    "description": "Fasadas iš akmens: granitas, travertinas, kvarcitas ar keraminis granitas. Plokščių storis, vėdinamas fasadas ir mechaninis tvirtinimas, siūlės, priežiūra.",
+    "dek": "Medžiaga, posistemė, siūlės ir vanduo ilgaamžiame fasade.",
+    "intro": "Akmens fasadas — tai ne „plytelės, priklijuotos prie sienos“, o inžinerinė sistema: pokonstrukcija, inkarai, plokštės, siūlės ir vandens nuvedimas. Medžiaga jame svarbi, bet ne vienintelė. Paaiškiname, kokį akmenį rekomenduojame Ukrainos žiemai, kaip jis tvirtinamas ir kodėl granitas beveik visada laimi.",
+    "sections": [
+      { "heading": "Koks akmuo geriausias fasadui?", "body": "Privačiam namui ir komerciniam pastatui mūsų klimate tai granitas: jis atsparus šalčiui (atlaiko daugiau nei 300 užšalimo ciklų), neįgeria vandens ir neblunka. Travertinas ir smiltainis gražūs, bet porėti ir reikalauja apsaugos bei reguliarios priežiūros. Marmuras fasade greitai praranda poliravimą nuo rūgštaus miesto lietaus.\n\nAlternatyva akmeniui — didelio formato keraminis granitas Laminam arba Neolith: plonas, lengvas, UV stabilus, akmens ar betono dekoruose. Jis gerai dirba vėdinamuose fasaduose, kur svarbus svoris." },
+      { "heading": "Kodėl granitas — praktiškas pasirinkimas?", "body": "Granitui fasade nereikia impregnavimo: vanduo nuo jo nuteka, o nešvarumus nuplauna lietus. Degintas paviršius paslepia smulkius partijų skirtumus ir neblizga. Ukrainietiškas granitas prieinamas didelėmis partijomis iš vieno bloko, tad spalva visame fasade vienoda.\n\nDar vienas privalumas — remontuojamumas: pažeistą plokštę su mechaniniu tvirtinimu pakeičia per valandą nedemontuojant kaimyninių. Cokoliui granitas išvis be alternatyvų: druska, purslai, kiemsargio kastuvas ir smūgiai nepalieka ant jo pėdsakų." },
+      { "heading": "Kaip tvirtinamos fasado plokštės?", "body": "Šlapias būdas (klijais prie sienos) leistinas cokoliams ir nedideliems plotams iki 3 m aukščio su 20 mm plokštėmis. Aukščiau fasadas daromas vėdinamas: prie sienos tvirtinamos konsolės ir kreipiančiosios, jose — klemeriai arba kaiščiai, laikantys 30 mm plokštes įpjovose kraštuose.\n\nTarp plokščių paliekama 4–6 mm siūlė temperatūriniams judesiams, už plokščių — 30–50 mm vėdinimo tarpas ir šiltinimas. Taip siena nesudrėksta, kondensatas išvedamas, o akmuo neskyla nuo šalčio. Posistemę apskaičiuoja konstruktorius, mes gaminame plokštes su įpjovomis konkrečiam tvirtinimui." },
+      { "heading": "Ar akmens fasadui reikia priežiūros?", "body": "Granitas: plovimas vandeniu su slėgiu kartą per kelis metus, siūlių ir tvirtinimų patikra. Impregnavimo nereikia. Travertinas ir klintis: hidrofobizatorius kartą per 3–5 metus, kitaip poros kaupia nešvarumus ir samanas šiaurinėje pusėje.\n\nCokolį iš bet kokio akmens verta kartą per metus nuplauti nuo druskos po žiemos. Keraminiam granitui nereikia nieko, išskyrus plovimą. Jei fasadas padarytas teisingai, priežiūra susiveda į nuskalavimą, o pati konstrukcija tarnauja ilgiau nei pastatas." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Granitas", "Atsparus šalčiui, neįgeria vandens", "Mechaninis tvirtinimas nuo 3 m"],
+        ["Travertinas", "Šilta porėta faktūra", "Hidrofobizatorius, apsauga nuo nešvarumų"],
+        ["Kvarcitas", "Išraiškingas raštas", "Tikrinti partiją, kaina aukštesnė"],
+        ["Keraminis granitas", "Lengvas, UV stabilus", "Vėdinamas fasadas, plonos plokštės 6–12 mm"]
+      ]
+    },
+    "faq": [
+      { "question": "Koks akmuo atšiauriam klimatui?", "answer": "Granitas su deginta apdaila vėdinamame fasade. Jis nebijo šalčio, vandens ir druskos ir nereikalauja impregnavimo." },
+      { "question": "Koks plokščių storis?", "answer": "20 mm klijavimui ant cokolio, 30 mm vėdinamam fasadui ant klemerių. Keraminis granitas 6–12 mm ant savos posistemės." },
+      { "question": "Ar granitas blunka?", "answer": "Ne. Granito mineralai stabilūs ultravioletui, spalva po 30 metų ta pati. Pasikeisti gali tik poliravimas, todėl fasadui imama matinė arba deginta apdaila." },
+      { "question": "Kaip prižiūrėti?", "answer": "Plovimas vandeniu su slėgiu kartą per kelis metus ir siūlių apžiūra. Porėtiems akmenims papildomai hidrofobizatorius kartą per 3–5 metus." }
+    ]
+  },
+  "granitna-chy-vibropresovana-brukivka": {
+    "title": "Granito ar vibropresuotas grindinys: kas geriau",
+    "h1": "Granito ar vibropresuotas grindinys — ką rinktis",
+    "description": "Granito ar vibropresuotas grindinys: tvirtumas, ilgaamžiškumas, išvaizda, remontas ir kaina per gyvavimo ciklą. Ką rinktis kiemui, takams ir įvažiavimui.",
+    "dek": "Dangos medžiaga kiemui, takams ir automobilio įvažiavimui.",
+    "intro": "Betoninis vibropresuotas grindinys pigesnis pradžioje, granito — pigesnis po 20 metų. Tai pagrindinė tezė, o likusi straipsnio dalis paaiškina, kodėl taip yra ir kokiais atvejais betonas vis tiek pateisinamas. Gaminame granito grindinį iš ukrainietiško akmens ir abi medžiagas objektuose matome kasdien.",
+    "sections": [
+      { "heading": "Ką rinktis kiemui?", "body": "Įvažiavimui, privažiavimo takui ir stovėjimo vietai rinkitės granitą: skaldytas arba pjautas-skaldytas 100 × 100 × 50–100 mm grindinys atlaiko automobilio svorį ir žiemą su druska be pokyčių. Sodo takams, kur vaikšto tik žmonės, tinka abi medžiagos, ir čia sprendžia biudžetas ir išvaizda.\n\nJei kiemas didelis, paplitęs kompromisas: granitas įvažiavime, įėjime ir palei fasadą, betonas ūkinėje zonoje. Taip labiausiai matomos vietos gauna medžiagą visam namo gyvavimo laikui." },
+      { "heading": "Kuo granito grindinys tvirtesnis?", "body": "Granitas — monolitinis natūralus akmuo, kurio gniuždymo stipris 180–220 MPa. Betoninis grindinys turi 40–60 MPa stiprį ir sudarytas iš cemento akmens su užpildu. Po ratais ir šaltyje betonas laikui bėgant trupa kraštuose ir praranda viršutinį sluoksnį su pigmentu, granitas nesikeičia.\n\nGranito vandens įgertis mažesnė nei 0,2 %, todėl vanduo neprasiskverbia į akmenį ir neplėšo jo užšaldamas. Betono — 4–6 %. Po 10–15 žiemų skirtumas matomas plika akimi: granito grindinys atrodo kaip tik paklotas, betoninį reikia keisti." },
+      { "heading": "Kada vibropresuotas grindinys pateisinamas?", "body": "Kai biudžetas ribotas, o sklypas didelis ir be sunkiojo transporto. Kai reikia tikslios kartojamos geometrijos ir spalvos geometriniam raštui. Kai danga laikina arba po kelių metų planuojamas kiemo perplanavimas.\n\nKokybiškas didelio gamintojo betonas 60–80 mm storio su teisingu pagrindu tarnauja 10–15 metų ir atrodo tvarkingai. Problemos prasideda nuo pigaus abejotinų gamyklų grindinio: jis praranda spalvą per du sezonus ir lupasi." },
+      { "heading": "Kas dėl kainos už kvadratinį metrą?", "body": "Medžiaga: granito grindinys kelis kartus brangesnis už betoninį. Klojimas: maždaug vienodas abiem, nes pagrindas ir darbas tie patys. Gyvavimo ciklas: granitas klojamas vieną kartą, betonas perklojamas kartą per 10–15 metų kartu su darbu ir seno išvežimu.\n\nYra ir netiesioginė ekonomija: granito grindinį po demontavimo (pavyzdžiui, remontuojant komunikacijas) kloja atgal, betoninį paprastai išmeta. Orientyrą jūsų plotui galima paskaičiuoti grindinio skaičiuoklėje." }
+    ],
+    "table": {
+      "headers": ["Kriterijus", "Variantas", "Į ką atsižvelgti"],
+      "rows": [
+        ["Tvirtumas", "Granitas 180–220 MPa", "Betonas 40–60 MPa"],
+        ["Vandens įgertis", "Granitas iki 0,2 %", "Betonas 4–6 %, lupasi šaltyje"],
+        ["Išvaizda po 15 metų", "Granitas be pokyčių", "Betonas blunka, trupa"],
+        ["Remontas", "Granitas perklojamas pakartotinai", "Betonas keičiamas nauju"],
+        ["Pradinė kaina", "Granitas brangesnis", "Betonas pigesnis"]
+      ]
+    },
+    "faq": [
+      { "question": "Kas ilgaamžiškesnis?", "answer": "Granitas: tarnavimo laikas matuojamas dešimtmečiais be išvaizdos pokyčių. Betoninis grindinys mūsų klimate skirtas 10–15 metų." },
+      { "question": "Kas pigiau?", "answer": "Pradžioje — betonas. Per gyvavimo ciklą su perklojimu — granitas, nes jį kloja vieną kartą." },
+      { "question": "Kas automobilio įvažiavimui?", "answer": "Granito grindinys 80–100 mm ant skaldos pagrindo. Betonas atlaiko lengvuosius automobilius, bet kraštai greitai trupa nuo manevrų." },
+      { "question": "Kas pėsčiųjų takams?", "answer": "Abi medžiagos. Granitas 50–60 mm arba betonas 60 mm ant smėlio ir skaldos pagrindo; pasirinkimas pagal išvaizdą ir biudžetą." }
+    ]
+  }
+}

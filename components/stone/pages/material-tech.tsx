@@ -10,10 +10,12 @@ import {
 import { SectionHeading } from '@/components/stone/site/shell'
 import { Cta } from '@/components/stone/site/sections'
 import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
+import { getStoneT } from '@/lib/i18n/stone/server'
 
 /** Технічні сторінки матеріалів: товщини, профілі країв, фініші, залишки слябів. */
 
-export function ThicknessPage() {
+export async function ThicknessPage() {
+  const { t } = await getStoneT()
   return (
     <main id="main-content">
       <Breadcrumbs items={[{ name: 'Матеріали', href: '/arkhitekturnyi-kamin/materialy' }, { name: 'Товщини' }]} />
@@ -30,9 +32,9 @@ export function ThicknessPage() {
               key={size}
               className="grid gap-3 border-b p-6 last:border-0 md:grid-cols-[.4fr_1fr_1fr]"
             >
-              <h2 className="text-2xl font-semibold">{size}</h2>
-              <p>{use}</p>
-              <p className="text-sm text-muted-foreground">{note}</p>
+              <h2 className="text-2xl font-semibold">{size.replace('мм', t('мм'))}</h2>
+              <p>{t(use)}</p>
+              <p className="text-sm text-muted-foreground">{t(note)}</p>
             </div>
           ))}
         </div>
@@ -45,7 +47,8 @@ export function ThicknessPage() {
   )
 }
 
-export function EdgePage() {
+export async function EdgePage() {
+  const { t } = await getStoneT()
   return (
     <main id="main-content">
       <Breadcrumbs
@@ -81,10 +84,10 @@ export function EdgePage() {
             href="/arkhitekturnyi-kamin/kalkulyator"
             className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
           >
-            Оцінити вартість
+            {t('Оцінити вартість')}
           </Link>
           <Link href="/arkhitekturnyi-kamin/kontakty" className="rounded-full border px-5 py-3 text-sm">
-            Погодити профіль
+            {t('Погодити профіль')}
           </Link>
         </div>
       </section>

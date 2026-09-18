@@ -1,0 +1,174 @@
+{
+  "yak-doglyadaty-za-granitnoyu-stilnytseyu": {
+    "title": "Pflege der Granitarbeitsplatte: Regeln und Fehler",
+    "h1": "Pflege der Granitarbeitsplatte — Regeln Schritt für Schritt",
+    "description": "Pflege der Granitarbeitsplatte: tägliche Reinigung, sichere Mittel, Imprägnierung, Entfernen von Öl- und Weinflecken, typische Fehler.",
+    "dek": "Die tägliche Routine ohne Säuren, Scheuermittel und zufällige Chemie.",
+    "intro": "Eine Granitarbeitsplatte braucht keine besondere Pflege, aber die richtige. Die meisten Probleme, mit denen man zu uns kommt, sind die Folge von einem von drei Dingen: aggressive Chemie, vergessene Imprägnierung oder der Versuch, einen Fleck mit Scheuermittel wegzureiben. Hier die kurze Anleitung, die wir Kunden mit der Platte übergeben.",
+    "sections": [
+      { "heading": "Wie reinigt man Granit täglich?", "body": "Warmes Wasser, weiches Tuch oder Schwamm, ein paar Tropfen neutrales Reinigungsmittel. Abwischen, mit klarem Wasser nachspülen, trocken reiben, damit auf dunklem Stein keine Schlieren bleiben. Das ist die ganze tägliche Routine.\n\nVerschüttetes sofort aufnehmen, besonders Öl, Wein, Kaffee und Rote Bete. Imprägnierter Granit saugt sie nicht in einer Minute auf, aber über Nacht kann unter einer Öllache ein Schatten bleiben. Keine nassen Tüten und rostigen Dosen auf der Fläche lassen: Rost dringt in die Poren." },
+      { "heading": "Welche Mittel sind erlaubt und welche verboten?", "body": "Erlaubt: Mittel mit der Aufschrift „für Naturstein“ oder „pH-neutral“, gewöhnliches Spülmittel in kleiner Menge, Isopropylalkohol zum Entfetten vor der Imprägnierung.\n\nVerboten: Essig, Zitronensäure, Kalkentferner, Chlor und Backofenreiniger, Scheuerpulver, Melaminschwämme, Metallschaber. Säuren und Laugen zerstören die Imprägnierung und mattieren mit der Zeit die Politur, Scheuermittel hinterlassen Kratzer, die im Gegenlicht sichtbar sind." },
+      { "heading": "Ist eine Imprägnierung nötig und wie oft?", "body": "Ja. Die Imprägnierung füllt die Mikroporen und lässt Flüssigkeiten nicht eindringen. Wir tragen sie nach der Montage auf, danach erneuert der Besitzer sie selbst.\n\nDie Häufigkeit bestimmt der Wassertest, nicht der Kalender. Gießen Sie einen Esslöffel Wasser auf die Arbeitszone bei der Spüle und warten Sie 15 Minuten. Ist der Stein unter dem Wasser dunkler geworden, ist es Zeit, die Imprägnierung zu erneuern. Bei poliertem Granit ist das meist alle ein bis drei Jahre, bei mattem öfter.\n\nVorgehen: Oberfläche reinigen und trocknen, Imprägnierung mit dem Schwamm dünn auftragen, nach Anleitung einwirken lassen (meist 10–20 Minuten), Reste trocken abwischen. Überschuss, der auf der Oberfläche trocknet, gibt Flecken, deshalb gründlich abwischen." },
+      { "heading": "Was tun bei einem Öl- oder Weinfleck?", "body": "Frischer Fleck: mit Küchenpapier abtupfen, nicht reiben, und mit neutralem Mittel abwaschen. In den meisten Fällen reicht das.\n\nAlter Fettfleck: eine Paste aus Natron und Wasser in Sahnekonsistenz anrühren, 5 mm dick auf den Fleck auftragen, mit Folie abdecken und 12–24 Stunden lassen. Die Paste zieht das Öl aus den Poren. Abnehmen, abwaschen, bei Bedarf wiederholen.\n\nOrganischer Fleck (Wein, Kaffee, Saft): dieselbe Paste, aber mit 3 % Wasserstoffperoxid statt Wasser. Auf dunklem Granit zuerst an einer unauffälligen Stelle testen. Rost und unbekannte Flecken zeigen Sie besser uns: Ein Gesamtfoto und eine Nahaufnahme reichen für einen Rat." },
+      { "heading": "Was darf man niemals tun?", "body": "Nicht ohne Brett auf dem Stein schneiden: Dem Granit passiert nichts, aber die Messer sind in einer Woche stumpf. Nicht auf die Platte steigen und nicht auf den Überstand setzen: Die Platte ist für verteilte Last ausgelegt, nicht für punktuelle 80 kg an der Kante.\n\nKeine heiße Pfanne auf die Fuge zwischen den Platten oder auf den Ausschnitt am Kochfeld stellen: Lokale Überhitzung der Klebefuge kann sie schwächen. Der Granit selbst fürchtet keine Hitze. Keine Wachse und „Polituren“ aus dem Haushaltsregal verwenden: Sie hinterlassen einen klebrigen Film, der Schmutz sammelt und mit Steinpolitur nichts zu tun hat." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Tägliche Reinigung", "Erlaubt", "Weiches Tuch, neutrales Mittel, trocken wischen"],
+        ["Säuren und Scheuermittel", "Verboten", "Mattieren die Politur, zerstören die Imprägnierung"],
+        ["Heißes", "Erlaubt", "Nur Fugen und Ausschnittkanten meiden"],
+        ["Imprägnierung", "Alle 1–3 Jahre", "Häufigkeit bestimmt der Wassertest"],
+        ["Flecken", "Natronpaste", "Nicht mit Scheuermittel reiben"]
+      ]
+    },
+    "faq": [
+      { "question": "Kann man auf Granit schneiden?", "answer": "Der Stein leidet nicht unter dem Messer, aber das Messer wird schnell stumpf. Benutzen Sie ein Brett, das ist für beide angenehmer." },
+      { "question": "Kann man Heißes abstellen?", "answer": "Ja, Granit verträgt Geschirr vom Herd und aus dem Ofen. Der einzige Ort, an dem man besser einen Untersetzer nimmt, ist die Klebefuge zwischen den Platten." },
+      { "question": "Wie entfernt man Fett?", "answer": "Frisch — mit Spülmittel. Alt — mit einer Paste aus Natron und Wasser einen Tag unter Folie. Alkalische Küchenentfetter sollte man nicht verwenden." },
+      { "question": "Wie bekommt man den Glanz zurück?", "answer": "Ist die Oberfläche durch wachs- oder säurehaltige Mittel matt geworden, waschen Sie sie zuerst mit neutralem Mittel und Alkohol. Ist die Politur wirklich beschädigt, stellt sie ein Fachmann vor Ort mit Maschine und Diamantpasten wieder her." }
+    ]
+  },
+  "dogljad-za-marmurom-vanna": {
+    "title": "Marmorpflege: reinigen und Flecken entfernen",
+    "h1": "Wie man Marmor pflegt und Flecken entfernt",
+    "description": "Marmorpflege: sichere Mittel, was den Stein zerstört, wie man organische, Fett- und Rostflecken entfernt, wie oft imprägnieren.",
+    "dek": "Sichere Pflege einer Kalzitoberfläche ohne Säuren.",
+    "intro": "Marmor besteht aus Kalzit, und Kalzit löst sich in Säuren. Das ist das Einzige, was man sich merken muss, und daraus folgt die ganze Pflege: keine säurehaltigen Mittel, schnelles Abwischen, regelmäßige Imprägnierung. Der Rest ist nicht schwieriger als die Pflege jeder anderen Oberfläche.",
+    "sections": [
+      { "heading": "Wie reinigt man Marmor sicher?", "body": "Täglich: warmes Wasser und weiches Tuch. Einmal pro Woche: neutraler Steinreiniger nach Anleitung verdünnt, dann klares Wasser und ein trockenes Tuch. Auf poliertem Marmor ist trockenes Nachwischen wichtig, sonst bleiben nach dem Trocknen Tropfenspuren, besonders auf dunklen Sorten.\n\nHalten Sie fürs Bad eine eigene Flasche Steinreiniger bereit und verwenden Sie auf der Platte nicht, womit Sie WC oder Armatur putzen. Die meisten Sanitärreiniger enthalten Säure gegen Kalk." },
+      { "heading": "Welche Mittel zerstören Marmor?", "body": "Säuren: Essig, Zitrone, Entkalker und Kalkentferner, manche Glas- und Fliesenreiniger. Sie verschmutzen nicht, sie ätzen: In wenigen Minuten erscheint auf der polierten Fläche ein matter tropfenförmiger Fleck.\n\nLaugen und Chlor: Bleichmittel und Backofenreiniger zerfressen die Imprägnierung und entfärben farbigen Marmor. Scheuermittel: Pulver, Melaminschwämme, harte Bürsten zerkratzen den Kalzit, der weicher als Sand ist.\n\nKosmetik: Körperöle, Haarfarbe, manche alkoholhaltigen Parfüms mit Farbstoffen. Stellen Sie Flakons auf ein Tablett und wischen Sie Tropfen sofort ab." },
+      { "heading": "Wie entfernt man organische, Fett- und Rostflecken?", "body": "Bestimmen Sie zuerst den Typ. Ein matter Fleck ohne Farbe ist eine Säureätzung, die wird nicht gewaschen, sondern poliert. Ein farbiger Fleck in den Poren ist Schmutz, der mit einer Kompresse herausgezogen wird.\n\nOrganisch (Kaffee, Tee, Wein, Kosmetik): eine Paste aus weißem Küchenpapier oder Stärke, mit 3 % Wasserstoffperoxid befeuchtet, 12–24 Stunden unter Folie. Fett (Öl, Creme): Paste aus Natron und Wasser, gleiche Dauer. Rost: nur spezielle säurefreie Marmorpasten; Haushaltsrostentferner enthalten Säure und ruinieren den Stein.\n\nNach der Kompresse wird die Fläche abgewaschen, getrocknet und bei Bedarf wiederholt. Die Imprägnierung nach dem Entfernen des Flecks unbedingt erneuern." },
+      { "heading": "Wie oft Marmor imprägnieren?", "body": "Im Bad einmal im Jahr für Platte und Boden, alle zwei Jahre für Wände. Auf der Fensterbank oder dem Tisch in der Küche einmal im Jahr. Der Test ist derselbe wie bei Granit: ein Wassertropfen, 10 Minuten, ein dunkler Fleck bedeutet, es ist Zeit.\n\nWichtig zu verstehen: Die Imprägnierung schützt vor Flecken, aber nicht vor Säuren. Eine matte (honed) Oberfläche hilft zusätzlich gegen Ätzungen: Säurespuren sind darauf kaum sichtbar, und für ein viel genutztes Bad empfehlen wir genau sie." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Organischer Fleck", "Kompresse mit Peroxid", "Zuerst an unauffälliger Stelle testen"],
+        ["Fett", "Natronpaste", "Nicht reiben, der Kompresse Zeit geben"],
+        ["Rost", "Säurefreie Marmorpaste", "Haushaltsrostentferner verboten"],
+        ["Säureätzung", "Politur durch den Fachmann", "Lässt sich nicht abwaschen, ist eine Oberflächenveränderung"]
+      ]
+    },
+    "faq": [
+      { "question": "Darf man Essig oder Zitrone verwenden?", "answer": "Nein. Beide ätzen Kalzit in Minuten. Ablagerungen auf Marmor entfernt man mit neutralen Steinreinigern oder einer milden Natronpaste." },
+      { "question": "Wie entfernt man Kaffee oder Wein?", "answer": "Frisch — mit Wasser und Tuch. Was bereits eingezogen ist — mit einer Kompresse aus 3 % Wasserstoffperoxid für 12–24 Stunden unter Folie." },
+      { "question": "Wie bekommt man den Glanz zurück?", "answer": "Haushalts-„Polituren“ helfen nicht. Eine durch Säuren matt gewordene Fläche stellt ein Fachmann wieder her: Schleifen, Polieren und neue Imprägnierung vor Ort in wenigen Stunden." },
+      { "question": "Ist eine jährliche Behandlung nötig?", "answer": "Ja, Imprägnierung einmal im Jahr für Platten und Böden in Nassbereichen. Das sind 20 Minuten Arbeit mit dem Schwamm und der günstigste Weg, das Leben des Marmors zu verlängern." }
+    ]
+  },
+  "pidvikonnya-z-kamenyu-marmur-granit": {
+    "title": "Fensterbank aus Stein: Marmor oder Granit?",
+    "h1": "Fensterbank aus Stein — Marmor oder Granit?",
+    "description": "Fensterbank aus Stein: Marmor oder Granit, Dicke, Überstand, Montage und Pflege. Was für die Südseite, Blumentöpfe und Feuchtigkeit wählen.",
+    "dek": "Die Wahl des Gesteins für Sonne, Feuchtigkeit, Pflanzen und den täglichen Gebrauch.",
+    "intro": "Eine Fensterbank ist der einfachste Weg, Naturstein ins Haus zu holen: eine Platte, ein Montagetag und Jahrzehnte ohne Austausch. Die Frage ist nur das Gestein. Granit verträgt Blumentöpfe, Wasser und Sonne, ohne an Pflege zu erinnern; Marmor wirkt weicher und wärmer, verlangt aber Aufmerksamkeit. Wir erklären, wie wir wählen.",
+    "sections": [
+      { "heading": "Was für die Fensterbank wählen?", "body": "Für Küche, Kinderzimmer und Fensterbänke mit Pflanzen wählen Sie Granit: Grey Ukraine, Kometa Black oder Quarz, wenn eine helle gleichmäßige Farbe gewünscht ist. Für Schlafzimmer, Wohnzimmer und Bad, wo die Fensterbank als Ablage und nicht als Arbeitsfläche dient, passt Marmor Crema Marfil oder Bianco Carrara.\n\nGehen die Fenster nach Süden und stehen dunkle Gegenstände auf der Bank, bedenken Sie die Erwärmung: Dunkler Granit wird in der Sonne heiß, heller Marmor und Quarz bleiben kühl. Quarz aber nicht den ganzen Tag in direkte Sonne stellen: Das Harz kann über die Jahre den Farbton verändern." },
+      { "heading": "Warum ist Granit für die Fensterbank besser als Marmor?", "body": "Granit fürchtet weder Wasser unter Blumentöpfen, Säure aus Dünger, Tassenränder noch Katzenkrallen. Die Imprägnierung wird alle paar Jahre erneuert, nicht jährlich. Er ist härter, deshalb platzt die Kante nicht ab, wenn der Fensterrahmen oder der Wischmopp beim Putzen anstößt.\n\nMarmor gewinnt anderswo: Er fühlt sich angenehmer an, gibt einen hellen warmen Ton, den Granit nicht hat, und wirkt in klassischen Interieurs stimmig. Stehen die Töpfe auf Untersetzern und wird die Fensterbank nicht überschwemmt, hält Marmor nicht weniger lang." },
+      { "heading": "Welche Vorteile hat Stein gegenüber Kunststoff und Holz?", "body": "Stein vergilbt nicht, verzieht sich nicht durch den Heizkörper unten und die Sonne oben, nimmt keine Gerüche auf und zerkratzt nicht so wie PVC. Er ist schwerer, und das ist sein Vorteil: Die Platte liegt auf Mörtel und „spielt“ nicht, und eine tiefe Fensterbank von 400–600 mm trägt einen Menschen, der sich mit einem Buch daraufsetzt.\n\nHolz ist schön, braucht aber Lack und fürchtet Wasser unter Blumentöpfen. Stein wird einmal gesetzt und meist für die ganze Lebensdauer des Fensters, und beim Fenstertausch wird die Platte umgesetzt." },
+      { "heading": "Wie laufen Fertigung und Montage ab?", "body": "Aufmaß nach Einbau des Fensters und Verputzen der Laibungen: Wir erfassen Länge, Tiefe, Überstand, Kantenform und ob die Platte in die Laibungen greift. Standardüberstand 30–50 mm von der Wand, Dicke 20 mm, für tiefe Fensterbänke über 500 mm oder Längen über 2 m nehmen wir 30 mm.\n\nMontage: Die Platte wird auf Zementmörtel oder Montageschaum auf ausgeglichenem Untergrund mit leichtem Gefälle zum Raum gesetzt, höchstens 1–2 mm, damit sich Wasser vom Fenster nicht am Rahmen sammelt. Zwischen Platte und Rahmen bleibt eine Fuge von 3–5 mm für Dichtmasse, unter der Platte kommen Unterlagen, um die Lüftung des Heizkörpers nicht zu stören. Die Arbeit dauert einen Tag, nutzbar ist die Bank am nächsten Tag." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Festigkeit", "Granit 6–7 nach Mohs", "Marmor 3–4, weicher"],
+        ["Feuchtigkeit und Dünger", "Granit praktischer", "Marmor braucht Imprägnierung und Untersetzer"],
+        ["Sonne", "Dunkler Granit erwärmt sich", "Quarz nicht in direkte Sonne"],
+        ["Optik", "Kontrastreich oder neutral", "Marmor warm und fließend"],
+        ["Dicke", "20 mm Standard", "30 mm bei Länge über 2 m"]
+      ]
+    },
+    "faq": [
+      { "question": "Was ist langlebiger?", "answer": "Granit: Er ist härter und reagiert nicht auf Säuren. Marmor hält genauso lang, wenn er imprägniert und nicht überschwemmt wird." },
+      { "question": "Fürchtet er Sonne oder Feuchtigkeit?", "answer": "Granit und Marmor fürchten die Sonne nicht. Quarz kann in direkter Sonne über den ganzen Tag im Lauf der Jahre den Farbton ändern. Feuchtigkeit fürchtet keiner der Steine, nur Schmutz in den Poren schadet." },
+      { "question": "Welche Dicke?", "answer": "Standard 20 mm. Für lange Fensterbänke über 2 m, tiefe über 500 mm oder mit großem Überstand nehmen wir 30 mm." },
+      { "question": "Ist eine Sonderform möglich?", "answer": "Ja: abgerundete Ecken, Ausschnitte für Laibungen, eine Erkerfensterbank aus mehreren Platten, eine Fensterbank-Arbeitsplatte, die in die Küchenarbeitszone übergeht." }
+    ]
+  },
+  "shody-z-granitu-cina-vygotovlennya": {
+    "title": "Treppen aus Granit: Fertigung, Bearbeitung, Kosten",
+    "h1": "Granittreppen — wie sie gewählt und gefertigt werden",
+    "description": "Granittreppen: Belag- und Massivstufen, Oberfläche für außen und innen, Rutschhemmung, Stufenmaße und woraus sich die Kosten zusammensetzen.",
+    "dek": "Konstruktion, Oberfläche und sicheres Detail für innen und außen.",
+    "intro": "Granittreppen sind der langlebigste Teil eines Hauses: Vorbauten aus ukrainischem Granit stehen 50 Jahre ohne Reparatur. Doch gerade auf Treppen kosten Fehler am meisten, weil eine rutschige Stufe oder nicht abgeleitetes Wasser täglich spürbar sind. Wir erklären, wie wir Treppen für Häuser, Hausflure und Geschäfte planen.",
+    "sections": [
+      { "heading": "Welche Granittreppen gibt es?", "body": "Nach Konstruktion: Belagstufen (Trittstufen und Setzstufen aus 20–30-mm-Platten auf Betonunterbau) und Massivstufen (massive Blöcke von 100–150 mm, die selbst die Stufen sind). Belagstufen werden in 90 % der Fälle verwendet, in Häusern wie im Freien.\n\nNach Ort: innen (polierte oder matte Oberfläche, Setzstufen aus Holz oder Stein, Sockelleiste entlang der Wand) und außen (geflammte Oberfläche, Gefälle für Wasser, Tropfkante unter der Trittstufe, frostbeständiger Kleber)." },
+      { "heading": "Belag- oder Massivstufen — was ist der Unterschied?", "body": "Belagstufen sind leichter, günstiger und erlauben jede Oberfläche. Eine Trittstufe von 30 mm mit Tropfkante und eine Setzstufe von 20 mm werden auf den Betonlauf mit Steinkleber gesetzt. Daraus entstehen gerade, gewendelte und Spindeltreppen.\n\nMassivblöcke passen zu Landschaft und massiven Eingängen: Stützstufen im Garten, ein Vorbau im Stil „Stein aus dem Steinbruch“. Sie brauchen keinen Betonunterbau im klassischen Sinn, aber schweres Gerät für die Montage und kosten wegen der Materialmenge deutlich mehr." },
+      { "heading": "Welche Bearbeitung braucht es für außen?", "body": "Für Außentreppen ist Politur gefährlich: Bei Regen und Frost wird sie zur Eisbahn. Wir verwenden Flammen (die Oberfläche wird abgebrannt, die Kristalle platzen und ergeben eine rauhe Textur) oder Stocken (mechanisches Aufrauen). Beide Oberflächen sind auch nass rutschhemmend.\n\nEin Kompromiss für innen, wo man Glanz möchte: eine polierte Trittstufe mit geflammten oder sandgestrahlten Streifen von 30–40 mm Breite an der Kante. Sie wirken wie ein Antirutschband, ohne die Optik zu stören. Für außen sind zudem ein Gefälle der Trittstufe von 1–2 % vom Haus weg und eine Tropfkante unten wichtig, damit Wasser nicht auf die Setzstufe läuft und in der Fuge gefriert." },
+      { "heading": "Wovon hängen die Kosten ab?", "body": "Material: Ukrainischer Granit Grey Ukraine ist günstiger als Gabbro und Labradorit, Import kostet noch mehr. Dicke: Trittstufe 30 mm gegenüber 20 mm, Massivblöcke gesondert.\n\nGeometrie: Gerade Stufen in Standardbreite 300–330 mm sind günstiger als gewendelte und gebogene, jeder Ausschnitt für ein Geländer oder ein Sonderwinkel bedeutet Mehrarbeit. Oberfläche: Politur ist Basis, Flammen und Stocken sind teurer. Dazu Lieferung und Montage, die bei Treppen länger dauert als bei einer Arbeitsplatte, weil jedes Teil vor Ort angepasst wird.\n\nEinen Richtwert für Ihren Treppenlauf gibt der Rechner, den genauen Kostenvoranschlag nach dem Aufmaß des Betonunterbaus." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Politur", "Innen, Vertikalen, Details", "Nass rutschig, Streifen ergänzen"],
+        ["Schleifen (matt)", "Innen, ruhige Oberfläche", "Weniger rutschig, leichter zu pflegen"],
+        ["Flammen", "Außen, Vorbauten, Terrassen", "Rutschhemmende rauhe Textur"],
+        ["Stocken", "Außen, öffentliche Eingänge", "Gröbste Textur, Rampen"]
+      ]
+    },
+    "faq": [
+      { "question": "Sind Granittreppen rutschig?", "answer": "Polierte — ja, besonders nass. Geflammte und gestockte — nein, sie sind auch bei Regen und Frost rutschhemmend. Für innen lässt sich Glanz mit rutschhemmenden Streifen kombinieren." },
+      { "question": "Wie lang kann eine Stufe maximal sein?", "answer": "Aus einer 30-mm-Platte fertigen wir durchgehende Trittstufen bis 3 m, die Grenze ist das Plattenmaß. Längere Stufen werden aus zwei Platten mit Fuge in der Mitte oder über einem Auflager zusammengesetzt." },
+      { "question": "Was für den Vorbau wählen?", "answer": "Geflammter Grey Ukraine oder Kometa Black in 30 mm Dicke mit Tropfkante. Das ist die verbreitetste und zuverlässigste Lösung für das ukrainische Klima." },
+      { "question": "Was kostet es?", "answer": "Das hängt von Gestein, Dicke, Anzahl und Form der Stufen, Oberfläche und Montage ab. Geben Sie die Maße in den Rechner ein für einen Richtwert, die genaue Summe nennen wir nach dem Aufmaß." }
+    ]
+  },
+  "fasad-z-kamenyu-yakyy-kamin": {
+    "title": "Fassade aus Stein: welcher Stein für die Verkleidung",
+    "h1": "Fassadenverkleidung mit Stein — welchen Stein wählen",
+    "description": "Fassade aus Stein: Granit, Travertin, Quarzit oder Feinsteinzeug. Plattendicke, hinterlüftete Fassade und mechanische Befestigung, Fugen, Pflege.",
+    "dek": "Material, Unterkonstruktion, Fugen und Wasser in einer langlebigen Fassade.",
+    "intro": "Eine Steinfassade ist nicht „an die Wand geklebte Fliese“, sondern ein Ingenieursystem: Unterkonstruktion, Anker, Platten, Fugen und Wasserableitung. Das Material ist darin wichtig, aber nicht das Einzige. Wir erklären, welchen Stein wir für den ukrainischen Winter empfehlen, wie er befestigt wird und warum Granit fast immer gewinnt.",
+    "sections": [
+      { "heading": "Welcher Stein ist der beste für die Fassade?", "body": "Für ein Privathaus und ein Geschäftsgebäude in unserem Klima ist es Granit: Er ist frostbeständig (hält über 300 Frostzyklen aus), nimmt kein Wasser auf und verblasst nicht. Travertin und Sandstein sind schön, aber porös und brauchen Schutz und regelmäßige Pflege. Marmor an der Fassade verliert durch sauren Stadtregen schnell die Politur.\n\nDie Alternative zu Stein ist großformatiges Feinsteinzeug von Laminam oder Neolith: dünn, leicht, UV-stabil, in Stein- oder Betondekoren. Es funktioniert gut an hinterlüfteten Fassaden, wo das Gewicht zählt." },
+      { "heading": "Warum ist Granit die praktische Wahl?", "body": "Granit braucht an der Fassade keine Imprägnierung: Wasser läuft ab, und Schmutz wird vom Regen abgewaschen. Eine geflammte Oberfläche verbirgt kleine Chargenunterschiede und blendet nicht. Ukrainischer Granit ist in großen Chargen aus einem Block verfügbar, sodass die Farbe an der ganzen Fassade gleichmäßig ist.\n\nEin weiterer Vorteil ist die Reparierbarkeit: Eine beschädigte Platte an mechanischer Befestigung wird in einer Stunde getauscht, ohne die Nachbarplatten abzunehmen. Für den Sockel ist Granit überhaupt ohne Alternative: Salz, Spritzwasser, die Schaufel des Hausmeisters und Stöße hinterlassen keine Spur." },
+      { "heading": "Wie werden Fassadenplatten befestigt?", "body": "Die Nassmethode (Kleber an der Wand) ist zulässig für Sockel und kleine Flächen bis 3 m Höhe mit 20-mm-Platten. Darüber wird die Fassade hinterlüftet ausgeführt: An der Wand werden Konsolen und Profile befestigt, darin Klammern oder Stifte, die 30-mm-Platten in Schlitzen an den Kanten halten.\n\nZwischen den Platten bleibt eine Fuge von 4–6 mm für Temperaturbewegungen, hinter den Platten ein Lüftungsspalt von 30–50 mm und Dämmung. So wird die Wand nicht nass, Kondensat wird abgeführt, und der Stein reißt nicht durch Frost. Die Berechnung der Unterkonstruktion macht der Statiker, wir fertigen die Platten mit Schlitzen für die konkrete Befestigung." },
+      { "heading": "Braucht eine Steinfassade Pflege?", "body": "Granit: Reinigung mit dem Hochdruckreiniger alle paar Jahre, Kontrolle der Fugen und Befestigungen. Imprägnierung nicht nötig. Travertin und Kalkstein: Hydrophobierung alle 3–5 Jahre, sonst sammeln die Poren Schmutz und Moos auf der Nordseite.\n\nEinen Sockel aus jedem Stein sollte man nach dem Winter einmal im Jahr von Salz abwaschen. Feinsteinzeug braucht nichts außer Waschen. Ist die Fassade richtig ausgeführt, beschränkt sich die Pflege auf Abspülen, und die Konstruktion selbst hält länger als das Gebäude." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Granit", "Frostbeständig, nimmt kein Wasser auf", "Mechanische Befestigung ab 3 m"],
+        ["Travertin", "Warme poröse Textur", "Hydrophobierung, Schutz vor Schmutz"],
+        ["Quarzit", "Ausdrucksstarke Zeichnung", "Charge prüfen, höherer Preis"],
+        ["Feinsteinzeug", "Leicht, UV-stabil", "Hinterlüftete Fassade, dünne Platten 6–12 mm"]
+      ]
+    },
+    "faq": [
+      { "question": "Welcher Stein für ein rauhes Klima?", "answer": "Granit mit geflammter Oberfläche an einer hinterlüfteten Fassade. Er fürchtet weder Frost, Wasser noch Salz und braucht keine Imprägnierung." },
+      { "question": "Welche Plattendicke?", "answer": "20 mm für die Klebebefestigung am Sockel, 30 mm für die hinterlüftete Fassade mit Klammern. Feinsteinzeug 6–12 mm auf eigener Unterkonstruktion." },
+      { "question": "Verblasst Granit?", "answer": "Nein. Die Mineralien des Granits sind UV-stabil, die Farbe ist nach 30 Jahren dieselbe. Ändern kann sich nur die Politur, deshalb nimmt man für die Fassade eine matte oder geflammte Oberfläche." },
+      { "question": "Wie pflegen?", "answer": "Reinigung mit dem Hochdruckreiniger alle paar Jahre und Kontrolle der Fugen. Bei porösen Steinen zusätzlich Hydrophobierung alle 3–5 Jahre." }
+    ]
+  },
+  "granitna-chy-vibropresovana-brukivka": {
+    "title": "Granit- oder Betonpflaster: Was ist besser",
+    "h1": "Granit- oder Betonpflaster — was wählen",
+    "description": "Granit- oder vibrationsgepresstes Betonpflaster: Festigkeit, Haltbarkeit, Optik, Reparatur und Lebenszykluskosten. Was für Hof, Wege und Einfahrt wählen.",
+    "dek": "Das Belagsmaterial für Hof, Wege und die Autoeinfahrt.",
+    "intro": "Vibrationsgepresstes Betonpflaster ist am Anfang günstiger, Granitpflaster nach 20 Jahren. Das ist die Hauptthese, und der Rest des Artikels erklärt, warum das so ist und in welchen Fällen Beton trotzdem gerechtfertigt ist. Wir fertigen Granitpflaster aus ukrainischem Stein und sehen beide Materialien täglich auf den Baustellen.",
+    "sections": [
+      { "heading": "Was für den Hof wählen?", "body": "Für Einfahrt, Zufahrt und Stellplatz wählen Sie Granit: gespaltenes oder gesägt-gespaltenes Pflaster 100 × 100 × 50–100 mm hält das Gewicht eines Autos und einen Winter mit Salz unverändert aus. Für Gartenwege, auf denen nur Menschen gehen, eignen sich beide Materialien, hier entscheiden Budget und Optik.\n\nIst der Hof groß, ist ein verbreiteter Kompromiss: Granit an Einfahrt, Eingang und entlang der Fassade, Beton im Wirtschaftsbereich. So erhalten die sichtbarsten Flächen ein Material für die ganze Lebensdauer des Hauses." },
+      { "heading": "Warum ist Granitpflaster fester?", "body": "Granit ist ein monolithischer Naturstein mit einer Druckfestigkeit von 180–220 MPa. Betonpflaster hat eine Festigkeit von 40–60 MPa und besteht aus Zementstein mit Zuschlag. Unter Rädern und im Frost bröselt Beton mit der Zeit an den Kanten und verliert die pigmentierte Deckschicht, Granit verändert sich nicht.\n\nDie Wasseraufnahme von Granit liegt unter 0,2 %, deshalb dringt Wasser nicht in den Stein ein und sprengt ihn beim Gefrieren nicht. Bei Beton beträgt sie 4–6 %. Nach 10–15 Wintern ist der Unterschied mit bloßem Auge sichtbar: Granitpflaster sieht aus wie frisch verlegt, Betonpflaster muss ersetzt werden." },
+      { "heading": "Wann ist Betonpflaster gerechtfertigt?", "body": "Wenn das Budget begrenzt und das Grundstück groß ist und kein Schwerverkehr fährt. Wenn eine exakte, wiederholbare Geometrie und Farbe für ein geometrisches Muster gebraucht werden. Wenn der Belag vorübergehend ist oder der Hof in einigen Jahren umgestaltet werden soll.\n\nGuter Beton eines großen Herstellers mit 60–80 mm Dicke und richtigem Unterbau hält 10–15 Jahre und sieht ordentlich aus. Die Probleme beginnen bei billigem Pflaster zweifelhafter Werke: Es verliert in zwei Saisons die Farbe und blättert ab." },
+      { "heading": "Was ist mit den Kosten pro Quadratmeter?", "body": "Material: Granitpflaster ist mehrfach teurer als Beton. Verlegung: etwa gleich für beide, denn Unterbau und Arbeit sind dieselben. Lebenszyklus: Granit wird einmal verlegt, Beton alle 10–15 Jahre neu, samt Arbeit und Abtransport des alten.\n\nEs gibt auch eine indirekte Ersparnis: Granitpflaster wird nach dem Aufnehmen (etwa bei Leitungsreparaturen) wieder verlegt, Betonpflaster meist entsorgt. Einen Richtwert für Ihre Fläche liefert der Pflasterrechner." }
+    ],
+    "table": {
+      "headers": ["Kriterium", "Variante", "Zu beachten"],
+      "rows": [
+        ["Festigkeit", "Granit 180–220 MPa", "Beton 40–60 MPa"],
+        ["Wasseraufnahme", "Granit bis 0,2 %", "Beton 4–6 %, blättert im Frost"],
+        ["Optik nach 15 Jahren", "Granit unverändert", "Beton verblasst, bröselt"],
+        ["Reparatur", "Granit wird neu verlegt", "Beton wird durch neuen ersetzt"],
+        ["Startpreis", "Granit teurer", "Beton günstiger"]
+      ]
+    },
+    "faq": [
+      { "question": "Was ist langlebiger?", "answer": "Granit: Die Lebensdauer misst sich in Jahrzehnten ohne Veränderung der Optik. Betonpflaster ist in unserem Klima auf 10–15 Jahre ausgelegt." },
+      { "question": "Was ist günstiger?", "answer": "Am Anfang — Beton. Über den Lebenszyklus mit Neuverlegung — Granit, weil er einmal verlegt wird." },
+      { "question": "Was für die Autoeinfahrt?", "answer": "Granitpflaster 80–100 mm auf Schotterunterbau. Beton hält Pkw aus, aber die Kanten bröseln schnell durch Manöver." },
+      { "question": "Was für Fußwege?", "answer": "Beide Materialien. Granit 50–60 mm oder Beton 60 mm auf Sand-Schotter-Unterbau; die Wahl nach Optik und Budget." }
+    ]
+  }
+}

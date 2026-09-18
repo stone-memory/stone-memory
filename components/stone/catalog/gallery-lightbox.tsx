@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ChevronLeft, ChevronRight, X, Maximize2 } from 'lucide-react'
+import { useStoneT } from '@/lib/i18n/stone/client'
 
 export type GalleryItem = { src: string; alt: string }
 
@@ -12,6 +13,7 @@ export type GalleryItem = { src: string; alt: string }
  * застосування) відкриваються в лайтбоксі; стрілки й клавіші ←/→ гортають.
  */
 export function GalleryLightbox({ items }: { items: GalleryItem[] }) {
+  const { t } = useStoneT()
   const [index, setIndex] = useState<number | null>(null)
   const open = index !== null
   const count = items.length
@@ -39,7 +41,7 @@ export function GalleryLightbox({ items }: { items: GalleryItem[] }) {
             key={item.src}
             type="button"
             onClick={() => setIndex(i)}
-            aria-label={`Відкрити на весь екран: ${item.alt}`}
+            aria-label={`${t('Відкрити на весь екран:')} ${item.alt}`}
             className={`group relative overflow-hidden rounded-xl text-left ${i === 0 ? 'aspect-square sm:col-span-2' : 'aspect-[4/3]'}`}
           >
             <Image
@@ -61,8 +63,8 @@ export function GalleryLightbox({ items }: { items: GalleryItem[] }) {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-[95] bg-black/92 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" />
           <Dialog.Content className="fixed inset-0 z-[95] flex flex-col outline-none">
-            <Dialog.Title className="sr-only">{index !== null ? items[index].alt : 'Фото'}</Dialog.Title>
-            <Dialog.Description className="sr-only">Перегляд фото на весь екран. Стрілки гортають, Esc закриває.</Dialog.Description>
+            <Dialog.Title className="sr-only">{index !== null ? items[index].alt : t('Фото')}</Dialog.Title>
+            <Dialog.Description className="sr-only">{t('Перегляд фото на весь екран. Стрілки гортають, Esc закриває.')}</Dialog.Description>
 
             <div className="flex items-center justify-between px-4 py-3 text-white/80 md:px-6">
               <p className="truncate text-sm">{index !== null ? items[index].alt : ''}</p>
@@ -72,7 +74,7 @@ export function GalleryLightbox({ items }: { items: GalleryItem[] }) {
                 </span>
                 <Dialog.Close
                   className="flex h-10 w-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-                  aria-label="Закрити"
+                  aria-label={t('Закрити')}
                 >
                   <X className="h-5 w-5" strokeWidth={2} />
                 </Dialog.Close>
@@ -96,7 +98,7 @@ export function GalleryLightbox({ items }: { items: GalleryItem[] }) {
                   <button
                     type="button"
                     onClick={() => step(-1)}
-                    aria-label="Попереднє фото"
+                    aria-label={t('Попереднє фото')}
                     className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60 md:left-6"
                   >
                     <ChevronLeft className="h-6 w-6" strokeWidth={2} />
@@ -104,7 +106,7 @@ export function GalleryLightbox({ items }: { items: GalleryItem[] }) {
                   <button
                     type="button"
                     onClick={() => step(1)}
-                    aria-label="Наступне фото"
+                    aria-label={t('Наступне фото')}
                     className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60 md:right-6"
                   >
                     <ChevronRight className="h-6 w-6" strokeWidth={2} />

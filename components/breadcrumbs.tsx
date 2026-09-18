@@ -16,7 +16,8 @@ const HOME_LABEL: Record<Locale, string> = {
 }
 
 export type Crumb = {
-  name: string
+  /** Рядок або мапа за мовою — серверні сторінки передають мапу, бо мову знає лише клієнт. */
+  name: string | (Partial<Record<Locale, string>> & { uk: string })
   /** Omit on the final crumb — the current page is not a link. */
   href?: string
 }
@@ -32,7 +33,8 @@ export type Crumb = {
  */
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   const { locale } = useTranslation()
-  const trail: Crumb[] = [{ name: HOME_LABEL[locale], href: "/" }, ...items]
+  const resolve = (name: Crumb["name"]) => (typeof name === "string" ? name : name[locale] ?? name.uk)
+  const trail = [{ name: HOME_LABEL[locale], href: "/" as string | undefined }, ...items.map((c) => ({ name: resolve(c.name), href: c.href }))]
 
   return (
     <nav aria-label="Breadcrumb" className="text-sm">

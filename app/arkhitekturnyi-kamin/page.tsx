@@ -5,8 +5,11 @@ import { SectionHeading } from '@/components/stone/site/shell'
 import { Cta, WorkSteps } from '@/components/stone/site/sections'
 import { categories, materials } from '@/lib/stone/content'
 import { familyHrefForMaterial, families } from '@/data/stone/families'
-import { getCollections, getProjects } from '@/lib/stone/cms'
+import { getCollections } from '@/lib/stone/cms'
+import { getLocalizedProjects } from '@/lib/stone/i18n-content'
 import { pageMetadata } from '@/lib/stone/seo'
+import { getStoneT } from '@/lib/i18n/stone/server'
+import { collectionName } from '@/lib/i18n/stone'
 
 // Без власних метаданих сторінка успадковує canonical кореневого layout, тобто
 // головну сайту, і Bing/Google вважають її дублем головної та не індексують.
@@ -28,7 +31,7 @@ const UKRAINIAN_FAMILIES: { slug: keyof typeof families; note: string }[] = [
 ]
 
 export default async function Home() {
-  const [projects, collections] = await Promise.all([getProjects(), getCollections()])
+  const [projects, collections, { t, locale }] = await Promise.all([getLocalizedProjects(), getCollections(), getStoneT()])
   const isUkrainian = (origin: string) => /Украї/.test(origin)
   const ukrainian = collections.filter((c) => isUkrainian(c.origin))
   const imported = collections.filter(
@@ -42,38 +45,37 @@ export default async function Home() {
   return (
     <main id="main-content">
       <section className="page-shell flex min-h-[58vh] flex-col items-center justify-center py-10 text-center md:min-h-[72vh] md:py-20">
-        <p className="eyebrow">Камінь. У своїй найточнішій формі.</p>
+        <p className="eyebrow">{t('Камінь. У своїй найточнішій формі.')}</p>
         <h1 className="display mt-7 max-w-full text-balance md:!text-7xl">
-          Кам’яні стільниці, підвіконня та сходи на замовлення
+          {t('Кам’яні стільниці, підвіконня та сходи на замовлення')}
         </h1>
         <p className="mt-7 max-w-3xl text-pretty text-lg leading-8 text-muted-foreground">
-          Проєктуємо, ріжемо під розмір і монтуємо натуральний камінь для кухонь, ванних, сходів і
-          дворів — доставка і монтаж по всій Україні.
+          {t('Проєктуємо, ріжемо під розмір і монтуємо натуральний камінь для кухонь, ванних, сходів і дворів — доставка і монтаж по всій Україні.')}
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3">
           <Link
             href="/arkhitekturnyi-kamin/kontakty#forma"
             className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
           >
-            Замовити безкоштовний замір
+            {t('Замовити безкоштовний замір')}
           </Link>
           <Link
             href="/arkhitekturnyi-kamin/kalkulyator"
             className="inline-flex items-center gap-1 rounded-full bg-secondary px-6 py-3 text-sm font-semibold"
           >
-            Порахувати вартість <ChevronRight />
+            {t('Порахувати вартість')} <ChevronRight />
           </Link>
         </div>
         <p className="mt-5 max-w-3xl text-pretty text-sm text-muted-foreground">
-          Власне виробництво в Костополі • {ukrainian.length} українських родовищ + {imported.length}{' '}
-          імпортних порід під замовлення • монтаж під ключ
+          {t('Власне виробництво в Костополі')} • {ukrainian.length} {t('українських родовищ')} + {imported.length}{' '}
+          {t('імпортних порід під замовлення')} • {t('монтаж під ключ')}
         </p>
       </section>
       <section className="page-shell">
         <div className="media aspect-[16/9] md:aspect-[2/1]">
           <Image
             src="/stone-hero.webp"
-            alt="Кухонний острів із природного кварциту"
+            alt={t('Кухонний острів із природного кварциту')}
             fill
             sizes="(max-width: 1280px) 100vw, 1200px"
             priority
@@ -98,8 +100,8 @@ export default async function Home() {
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div>
-                <h3 className="text-xl font-semibold tracking-[-.035em]">{c.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{c.blurb}</p>
+                <h3 className="text-xl font-semibold tracking-[-.035em]">{t(c.name)}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{t(c.blurb)}</p>
                 <ArrowRight className="mt-5 text-accent" />
               </div>
             </Link>
@@ -110,7 +112,7 @@ export default async function Home() {
         <SectionHeading
           eyebrow="Український камінь"
           title="Спершу те, що є в Україні."
-          copy={`${ukrainian.length} родовищ із власних кар'єрів країни: ріжемо з блоку в Костополі, без очікування імпортного сляба. Імпортний мармур, кварцит і онікс — під замовлення через українські склади.`}
+          copy={`${ukrainian.length} ${t("родовищ із власних кар'єрів країни: ріжемо з блоку в Костополі, без очікування імпортного сляба. Імпортний мармур, кварцит і онікс — під замовлення через українські склади.")}`}
         />
         <div className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {ukrainianFamilies.map((f) => (
@@ -120,11 +122,11 @@ export default async function Home() {
               className="surface group flex min-h-44 flex-col justify-between p-6 transition-transform hover:-translate-y-1"
             >
               <span className="text-xs text-muted-foreground">
-                {f.count} {f.count === 1 ? 'родовище' : f.count < 5 ? 'родовища' : 'родовищ'}
+                {f.count} {t(f.count === 1 ? 'родовище' : f.count < 5 ? 'родовища' : 'родовищ')}
               </span>
               <div>
-                <h3 className="text-xl font-semibold tracking-[-.035em]">{f.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{f.note}</p>
+                <h3 className="text-xl font-semibold tracking-[-.035em]">{t(f.name)}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{t(f.note)}</p>
                 <ArrowRight className="mt-5 text-accent" />
               </div>
             </Link>
@@ -137,17 +139,17 @@ export default async function Home() {
             <div className="media aspect-[4/5]">
               <Image
                 src="/stone-slabs.webp"
-                alt="Сляби природного каменю у консультаційній зоні"
+                alt={t('Сляби природного каменю у консультаційній зоні')}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
             <div className="md:pl-10">
-              <p className="eyebrow">Матеріали</p>
-              <h2 className="title mt-5 text-balance">Рисунок, який не повторюється.</h2>
+              <p className="eyebrow">{t('Матеріали')}</p>
+              <h2 className="title mt-5 text-balance">{t('Рисунок, який не повторюється.')}</h2>
               <p className="mt-6 max-w-md leading-7 text-muted-foreground">
-                Підбирайте матеріал за властивістю, тоном і характером простору.
+                {t('Підбирайте матеріал за властивістю, тоном і характером простору.')}
               </p>
               <div className="mt-10 flex flex-col">
                 {materials.map((m) => (
@@ -156,8 +158,8 @@ export default async function Home() {
                     href={familyHrefForMaterial(m.slug)}
                     className="flex flex-col gap-1 border-t py-4 font-semibold sm:flex-row sm:items-center sm:justify-between"
                   >
-                    <span>{m.name}</span>
-                    <span className="text-sm font-normal text-muted-foreground">{m.note}</span>
+                    <span>{t(m.name)}</span>
+                    <span className="text-sm font-normal text-muted-foreground">{t(m.note)}</span>
                   </Link>
                 ))}
               </div>
@@ -175,8 +177,8 @@ export default async function Home() {
           ].map((x) => (
             <div key={x[0]} className="border-t pt-6">
               <p className="text-xs font-bold text-accent">{x[0]}</p>
-              <h3 className="mt-8 text-2xl font-semibold tracking-[-.04em]">{x[1]}</h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">{x[2]}</p>
+              <h3 className="mt-8 text-2xl font-semibold tracking-[-.04em]">{t(x[1])}</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{t(x[2])}</p>
             </div>
           ))}
         </div>
@@ -194,9 +196,9 @@ export default async function Home() {
               </div>
               <div className="flex items-start justify-between gap-4 py-5">
                 <div>
-                  <h3 className="text-lg font-semibold">{p.name}</h3>
+                  <h3 className="text-lg font-semibold">{t(p.name)}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {p.type} · {p.material}
+                    {t(p.type)} · {collectionName(locale, p.material)}
                   </p>
                 </div>
                 <ArrowRight className="text-muted-foreground" />
@@ -206,7 +208,7 @@ export default async function Home() {
         </div>
         <div className="mt-8 text-right">
           <Link href="/arkhitekturnyi-kamin/proekty" className="text-sm text-muted-foreground hover:text-foreground">
-            Усі пропозиції →
+            {t('Усі пропозиції →')}
           </Link>
         </div>
       </section>

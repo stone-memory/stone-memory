@@ -1,13 +1,13 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
-import { InfoPage, Section, Prose, Facts, Faq, CtaBand, LinkPills } from "@/components/info-page"
-import { StoneCard } from "@/components/stone-card"
+import { CityContent } from "@/components/info/city-content"
 import { fetchBusinessProfile, fetchStones } from "@/lib/data-source"
 import { phoneE164, telHref } from "@/lib/business-profile"
 import { MEMORIAL_FACETS, facetItems } from "@/lib/catalog-taxonomy"
 import { productType } from "@/lib/product-copy"
-import { CITIES, DELIVERY, LEAD_TIMES, PAYMENT, WARRANTY_YEARS, cityBySlug, type City } from "@/lib/site-facts"
+import { CITIES, LEAD_TIMES, WARRANTY_YEARS, cityBySlug } from "@/lib/site-facts"
+import { FACTS } from "@/lib/i18n/copy/facts"
+import { CITY_COPY } from "@/lib/i18n/copy/pages/city"
 import { SITE_URL, absoluteUrl } from "@/lib/site-config"
 import type { StoneItem } from "@/lib/types"
 
@@ -37,39 +37,15 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   }
 }
 
-function fmt(n: number) {
-  return `${n.toLocaleString("uk-UA")}\u00A0₴`
-}
-
 function minPrice(items: StoneItem[]) {
   const p = items.map((s) => s.priceFrom).filter((x): x is number => typeof x === "number" && x > 0)
   return p.length ? Math.min(...p) : null
 }
 
-function cityFaq(city: City) {
-  const travel = city.freeTravel
-    ? `Виїзд на замір і монтаж ${city.inCity} безкоштовний — ${city.region} входить у нашу зону обслуговування без доплат.`
-    : `Доставка ${city.inCity} рахується за пробігом: ${city.distanceKm} км від Костополя, ${DELIVERY.perKm} в один бік. Точну суму називаємо разом із ціною виробу.`
-  return [
-    {
-      q: `Скільки коштує доставка й монтаж ${city.inCity}?`,
-      a: `${travel} Сам монтаж і армований фундамент уже входять у ціну кожної моделі на сайті.`,
-    },
-    {
-      q: `Чи треба їхати до вас у Костопіль?`,
-      a: `Ні. Ескіз, ціну, пробний відбиток портрета й готовий виріб погоджуємо по фото й відео, замір робимо ми самі ${city.inCity}. Приїхати варто лише якщо хочете побачити камінь наживо — ${city.distanceKm ? `це ${city.distanceKm} км, ${city.travel}` : "цех у місті"}.`,
-    },
-    {
-      q: `Скільки триває замовлення ${city.inCity}?`,
-      a: `Одинарний пам'ятник — ${LEAD_TIMES.single} від підписання ескізу, комплекс — ${LEAD_TIMES.complex}. Монтаж ${city.inCity} — один день для одиночного, 1–3 дні для комплексу. ${LEAD_TIMES.seasonNote}`,
-    },
-    {
-      q: "Як оплатити?",
-      a: `${PAYMENT.steps.map((s) => `${s.share} — ${s.when}`).join("; ")}. ${PAYMENT.methods}`,
-    },
-  ]
-}
-
+/**
+ * Сервер збирає числа й вибірку моделей, клієнтський CityContent рендерить
+ * тексти за мовою (lib/i18n/copy/pages/city.ts). JSON-LD — українською.
+ */
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const profile = await fetchBusinessProfile()
   const { city: slug } = await params
@@ -96,8 +72,8 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
     if (picks.length === 6) break
   }
 
-  const faq = cityFaq(city)
-  const others = CITIES.filter((c) => c.slug !== city.slug)
+  const facets = MEMORIAL_FACETS.map((f) => ({ slug: f.slug, h1: f.h1, count: facetItems(stones, f).length })).filter((f) => f.count > 0)
+  const uk = CITY_COPY.uk(FACTS.uk, { ...FACTS.uk.cities[city.slug], slug: city.slug, distanceKm: city.distanceKm, freeTravel: city.freeTravel })
 
   const schema = [
     {
@@ -115,7 +91,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+      mainEntity: uk.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
     },
     {
       "@context": "https://schema.org",
@@ -132,89 +108,17 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       {schema.map((s, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />
       ))}
-      <InfoPage
-        crumbs={[{ name: `Пам'ятники ${city.inCity}` }]}
-        title={`Пам'ятники ${city.inCity}`}
-        lead={`Виготовляємо в Костополі, встановлюємо ${city.inCity}. ${
-          city.freeTravel ? "Замір, доставка й монтаж — безкоштовно." : `Доставка ${city.distanceKm} км, ${city.travel}.`
-        } Ціна від виробника, без салонної націнки.`}
-      >
-        <Section>
-          <Facts
-            items={[
-              { value: minPrice(single) ? `від ${fmt(minPrice(single)!)}` : "—", label: "одинарний пам'ятник з монтажем" },
-              { value: minPrice(complex) ? `від ${fmt(minPrice(complex)!)}` : "—", label: "меморіальний комплекс" },
-              { value: city.distanceKm ? `${city.distanceKm} км` : "цех тут", label: city.distanceKm ? `від цеху, ${city.travel}` : city.name },
-              { value: city.freeTravel ? "0 ₴" : DELIVERY.perKm, label: city.freeTravel ? "виїзд і монтаж" : "доставка, за пробігом" },
-            ]}
-          />
-        </Section>
-
-        <Section eyebrow={city.region} title={`Як ми працюємо ${city.inCity}`}>
-          <Prose
-            // Костопіль — це і є цех, тож «той самий процес, що й у Костополі»
-            // та «так само, як біля цеху» тут не мають сенсу.
-            text={
-              city.slug === "kostopil"
-                ? `${city.note}\n\nВи надсилаєте фото ділянки або заходите в цех, ми за день повертаємо ескіз і ціну, виїжджаємо на замір, робимо шурф під фундамент і погоджуємо все з адміністрацією кладовища. Виготовлення — ${LEAD_TIMES.single} для одинарного і ${LEAD_TIMES.complex} для комплексу, монтаж бригадою за 1–3 дні. Гарантія ${WARRANTY_YEARS} років на камінь, фундамент і монтаж: приїжджаємо й виправляємо безкоштовно.`
-                : `${city.note}\n\nПроцес той самий, що й для клієнтів у Костополі: ви надсилаєте фото ділянки, ми за день повертаємо ескіз і ціну, виїжджаємо на замір ${city.inCity}, робимо шурф під фундамент і погоджуємо все з адміністрацією кладовища. Виготовлення — ${LEAD_TIMES.single} для одинарного і ${LEAD_TIMES.complex} для комплексу, монтаж бригадою за 1–3 дні. Гарантія ${WARRANTY_YEARS} років на камінь, фундамент і монтаж діє ${city.inCity} так само, як і біля цеху: приїжджаємо й виправляємо безкоштовно.`
-            }
-          />
-          <div className="mt-6 flex flex-wrap gap-2.5">
-            <Link href="/yak-zamovyty" className="rounded-full border border-foreground/15 px-4 py-2 text-sm transition-colors hover:border-foreground/40">Як замовити</Link>
-            <Link href="/dostavka-i-oplata" className="rounded-full border border-foreground/15 px-4 py-2 text-sm transition-colors hover:border-foreground/40">Доставка й оплата</Link>
-            <Link href="/tsiny" className="rounded-full border border-foreground/15 px-4 py-2 text-sm transition-colors hover:border-foreground/40">Ціни</Link>
-          </div>
-        </Section>
-
-        {picks.length > 0 && (
-          <Section eyebrow="З каталогу" title="Що замовляють">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {picks.map((s, i) => (
-                <StoneCard key={s.id} item={s} priority={i < 3} />
-              ))}
-            </div>
-            <div className="mt-6">
-              <LinkPills
-                items={MEMORIAL_FACETS.map((f) => ({
-                  href: `/memorial/pamyatnyky/${f.slug}`,
-                  label: f.h1,
-                  count: facetItems(stones, f).length,
-                })).filter((f) => f.count > 0)}
-              />
-            </div>
-          </Section>
-        )}
-
-        {military.length > 0 && (
-          <Section eyebrow="Захисникам" title={`Військові пам'ятники ${city.inCity}`}>
-            <Prose
-              text={`Для родин загиблих військових ми готуємо повний пакет документів для компенсації від держави та фондів: договір, рахунок, акт, фотофіксацію. Портрет у формі, шеврон підрозділу, герб і нагороди гравіюємо за наданими зображеннями. У каталозі ${military.length} ${military.length < 5 ? "моделі" : "моделей"}${
-                minPrice(military) ? `, від ${fmt(minPrice(military)!)}` : ""
-              }; будь-яку доопрацьовуємо під конкретну людину.`}
-            />
-            <div className="mt-4">
-              <Link href="/memorial/pamyatnyky/viyskovi" className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background">
-                Військові пам'ятники
-              </Link>
-            </div>
-          </Section>
-        )}
-
-        <Section eyebrow="Питання" title={`Про замовлення ${city.inCity} запитують`}>
-          <Faq items={faq} />
-        </Section>
-
-        <Section eyebrow="Інші міста" title="Куди ще виїжджаємо">
-          <LinkPills items={others.map((c) => ({ href: `/pamyatnyky/${c.slug}`, label: c.name }))} />
-          <p className="mt-4 text-sm text-muted-foreground">
-            Немає вашого міста? Працюємо по всій Україні — подзвоніть{" "}
-            <a href={telHref(profile)} className="underline underline-offset-4 hover:text-foreground">{profile.phone}</a>, скажемо вартість доставки за хвилину.
-          </p>
-        </Section>
-
-        <CtaBand title={`Порахуємо пам'ятник ${city.inCity} за фото ділянки`} />
-      </InfoPage>
+      <CityContent
+        slug={city.slug}
+        picks={picks}
+        singleMin={minPrice(single)}
+        complexMin={minPrice(complex)}
+        militaryCount={military.length}
+        militaryMin={minPrice(military)}
+        facets={facets}
+        phone={profile.phone}
+        telHref={telHref(profile)}
+      />
     </>
   )
 }

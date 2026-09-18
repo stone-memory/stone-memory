@@ -2,6 +2,8 @@ import Link from "next/link"
 import { ChevronDown } from "lucide-react"
 import { stoneCode, stoneDisplayName, stonePath } from "@/lib/catalog-taxonomy"
 import { defaultStone } from "@/lib/stone-guide"
+import { Localized } from "@/components/localized"
+import { CATALOG_COPY } from "@/lib/i18n/copy/catalog"
 import type { StoneItem } from "@/lib/types"
 
 /**
@@ -42,6 +44,14 @@ function shortName(name: string): string {
  * it costs no images and no JavaScript, and it gives every product a permanent
  * path from the catalogue.
  */
+const INDEX_HEADING = {
+  uk: CATALOG_COPY.uk.index,
+  pl: CATALOG_COPY.pl.index,
+  en: CATALOG_COPY.en.index,
+  de: CATALOG_COPY.de.index,
+  lt: CATALOG_COPY.lt.index,
+}
+
 export function CatalogIndex({ stones }: { stones: StoneItem[] }) {
   // Тільки пам'ятники: лінійка «дім» ще не має маршруту, і її позиції не
   // повинні звідси лінкуватись — це єдине місце, що дає товару шлях для
@@ -77,7 +87,7 @@ export function CatalogIndex({ stones }: { stones: StoneItem[] }) {
         <details className="group">
           <summary className="flex cursor-pointer list-none items-center gap-2 text-xl font-semibold tracking-tight-custom md:text-2xl">
             <h2 id="catalog-index-heading" className="inline">
-              Усі моделі
+              <Localized text={INDEX_HEADING} />
             </h2>
             <span className="text-sm font-normal tabular-nums text-muted-foreground">
               {monuments.length}

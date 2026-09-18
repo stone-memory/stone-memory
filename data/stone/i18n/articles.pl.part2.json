@@ -1,0 +1,174 @@
+{
+  "yak-doglyadaty-za-granitnoyu-stilnytseyu": {
+    "title": "Jak dbać o blat granitowy: zasady i błędy",
+    "h1": "Pielęgnacja blatu granitowego — zasady krok po kroku",
+    "description": "Pielęgnacja blatu granitowego: codzienne czyszczenie, bezpieczne środki, impregnacja, usuwanie plam z oleju i wina, typowe błędy.",
+    "dek": "Codzienny algorytm bez kwasów, środków ściernych i przypadkowej chemii.",
+    "intro": "Blat granitowy nie wymaga specjalnej pielęgnacji, ale wymaga właściwej. Większość problemów, z którymi do nas trafiają klienci, to skutek jednego z trzech: agresywnej chemii, zapomnianej impregnacji lub próby wytarcia plamy środkiem ściernym. Oto krótki regulamin, który przekazujemy klientom razem z blatem.",
+    "sections": [
+      { "heading": "Jak codziennie czyścić granit?", "body": "Ciepła woda, miękka ściereczka lub gąbka, kilka kropli neutralnego płynu. Przetrzeć, spłukać czystą wodą, wytrzeć do sucha, aby na ciemnym kamieniu nie zostawały smugi. To cała codzienna rutyna.\n\nRozlane płyny sprzątaj od razu, zwłaszcza olej, wino, kawę i buraki. Granit z impregnacją nie wciągnie ich w minutę, ale po nocy pod kałużą oleju może zostać cień. Nie zostawiaj na powierzchni mokrych torebek i zardzewiałych puszek: rdza wnika w pory." },
+      { "heading": "Jakie środki można, a jakie są zabronione?", "body": "Można: środki z napisem „do kamienia naturalnego” lub „pH-neutralny”, zwykły płyn do naczyń w małej ilości, alkohol izopropylowy do odtłuszczenia przed impregnacją.\n\nNie można: ocet, kwas cytrynowy, środki na osad wapienny, chlor i preparaty do piekarników, proszki ścierne, gąbki melaminowe, metalowe skrobaki. Kwasy i zasady niszczą impregnację i z czasem matowią połysk, środki ścierne zostawiają rysy widoczne pod światło." },
+      { "heading": "Czy potrzebna jest impregnacja i jak często?", "body": "Tak. Impregnat wypełnia mikropory i nie pozwala płynom wnikać do wnętrza. Nakładamy go po montażu, dalej właściciel odnawia go samodzielnie.\n\nCzęstotliwość wyznacza test wodny, a nie kalendarz. Wylej łyżkę wody na strefę roboczą przy zlewie i odczekaj 15 minut. Jeśli kamień pod wodą pociemniał, czas odnowić impregnację. Dla polerowanego granitu to zwykle raz na jeden–trzy lata, dla matowego częściej.\n\nProcedura: oczyścić i wysuszyć powierzchnię, nanieść impregnat gąbką cienką warstwą, odczekać według instrukcji (zwykle 10–20 minut), wytrzeć resztki do sucha. Nadmiar, który wyschnie na powierzchni, daje plamy, dlatego wycierać trzeba starannie." },
+      { "heading": "Co zrobić z plamą z oleju lub wina?", "body": "Świeża plama: osuszyć ręcznikiem papierowym bez rozcierania i umyć środkiem neutralnym. W większości przypadków to wystarczy.\n\nStara plama tłusta: zrobić pastę z sody oczyszczonej i wody o konsystencji śmietany, nałożyć na plamę warstwą 5 mm, przykryć folią i zostawić na 12–24 godziny. Pasta wyciąga olej z porów. Zdjąć, spłukać, w razie potrzeby powtórzyć.\n\nPlama organiczna (wino, kawa, sok): ta sama pasta, ale z 3 % nadtlenkiem wodoru zamiast wody. Na ciemnym granicie najpierw sprawdź w niewidocznym miejscu. Rdzę i nieznane plamy lepiej pokazać nam: zdjęcie ogólne i zbliżenie wystarczą do porady." },
+      { "heading": "Czego nigdy nie robić?", "body": "Nie kroić na kamieniu bez deski: granit nie ucierpi, ale noże stępią się w tydzień. Nie stawać na blacie i nie siadać na nawisie: płyta jest obliczona na obciążenie rozłożone, a nie punktowe 80 kg na krawędzi.\n\nNie stawiać gorącej patelni na spoinie między płytami ani w miejscu wycięcia przy płycie grzewczej: miejscowe przegrzanie spoiny klejowej może ją osłabić. Sam granit gorącego się nie boi. Nie używać wosków i „politur” z chemii gospodarczej: dają lepką powłokę, która zbiera brud i nie ma nic wspólnego z polerowaniem kamienia." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Codzienne czyszczenie", "Można", "Miękka ściereczka, środek neutralny, wytrzeć do sucha"],
+        ["Kwasy i środki ścierne", "Nie można", "Matowią połysk, niszczą impregnację"],
+        ["Gorące", "Można", "Unikać tylko spoin i krawędzi wycięć"],
+        ["Impregnacja", "Raz na 1–3 lata", "Częstotliwość wyznacza test wodny"],
+        ["Plamy", "Pasta z sody", "Nie trzeć środkiem ściernym"]
+      ]
+    },
+    "faq": [
+      { "question": "Czy można kroić na granicie?", "answer": "Kamień od noża nie ucierpi, ale nóż szybko się stępi. Używaj deski, to wygodniejsze dla obu." },
+      { "question": "Czy można stawiać gorące?", "answer": "Tak, granit wytrzymuje naczynia z kuchenki i piekarnika. Jedyne miejsce, gdzie lepiej podłożyć podkładkę, to spoina klejowa między płytami." },
+      { "question": "Czym usunąć tłuszcz?", "answer": "Świeży — płynem do naczyń. Stary — pastą z sody i wody na dobę pod folią. Odtłuszczaczy kuchennych z zasadą lepiej nie używać." },
+      { "question": "Jak przywrócić połysk?", "answer": "Jeśli powierzchnia zmatowiała od środków z woskiem lub kwasem, najpierw umyj ją środkiem neutralnym i alkoholem. Jeśli połysk jest naprawdę uszkodzony, odnawia go fachowiec na miejscu maszyną z pastami diamentowymi." }
+    ]
+  },
+  "dogljad-za-marmurom-vanna": {
+    "title": "Pielęgnacja marmuru: jak czyścić i usuwać plamy",
+    "h1": "Jak dbać o marmur i usuwać plamy",
+    "description": "Pielęgnacja marmuru: bezpieczne środki, co niszczy kamień, jak usunąć plamy organiczne, tłuste i rdzawe, jak często impregnować.",
+    "dek": "Bezpieczna pielęgnacja powierzchni kalcytowej bez kwasów.",
+    "intro": "Marmur składa się z kalcytu, a kalcyt rozpuszcza się w kwasach. To jedyne, co trzeba zapamiętać, i z tego wynika cała pielęgnacja: żadnych środków kwasowych, szybkie wycieranie, regularna impregnacja. Reszta nie jest trudniejsza niż pielęgnacja każdej innej powierzchni.",
+    "sections": [
+      { "heading": "Jak bezpiecznie czyścić marmur?", "body": "Codziennie: ciepła woda i miękka ściereczka. Raz w tygodniu: neutralny środek do kamienia rozcieńczony według instrukcji, potem czysta woda i sucha ściereczka. Na polerowanym marmurze ważne jest wycieranie do sucha, inaczej po wyschnięciu zostają ślady kropli, zwłaszcza na ciemnych odmianach.\n\nDo łazienki trzymaj osobną butelkę środka do kamienia i nie używaj na blacie tego, czym myjesz sedes czy baterię. Większość środków do sanitariatów zawiera kwas przeciw osadowi wapiennemu." },
+      { "heading": "Jakie środki niszczą marmur?", "body": "Kwasy: ocet, cytryna, środki na kamień i osad, część środków do szyb i płytek. One nie brudzą, lecz wytrawiają: w kilka minut na polerowanej powierzchni pojawia się matowa plama w kształcie kropli.\n\nZasady i chlor: wybielacze i preparaty do piekarników niszczą impregnację i odbarwiają kolorowy marmur. Środki ścierne: proszki, gąbki melaminowe, twarde szczotki rysują kalcyt, który jest miększy od piasku.\n\nKosmetyki: olejki do ciała, farba do włosów, niektóre perfumy na alkoholu z barwnikami. Stawiaj flakony na podstawce i wycieraj krople od razu." },
+      { "heading": "Jak usunąć plamy organiczne, tłuste i rdzawe?", "body": "Najpierw określ typ. Matowa plama bez koloru to wytrawienie kwasem, jej się nie myje, lecz poleruje. Kolorowa plama w porach to zabrudzenie, które wyciąga się kompresem.\n\nOrganiczne (kawa, herbata, wino, kosmetyki): pasta z białego ręcznika papierowego lub skrobi zwilżona 3 % nadtlenkiem wodoru, pod folią na 12–24 godziny. Tłuste (olej, krem): pasta z sody i wody, ten sam czas. Rdza: tylko specjalne pasty do marmuru bez kwasu; domowe odrdzewiacze zawierają kwas i zniszczą kamień.\n\nPo kompresie powierzchnię spłukuje się, suszy i w razie potrzeby powtarza zabieg. Impregnację po usunięciu plamy koniecznie odnów." },
+      { "heading": "Jak często impregnować marmur?", "body": "W łazience raz w roku blat i podłogę, raz na dwa lata ściany. Na parapecie lub stole w kuchni — raz w roku. Test ten sam jak dla granitu: kropla wody, 10 minut, ciemna plama oznacza, że już czas.\n\nWażne, by rozumieć, że impregnacja chroni przed plamami, ale nie przed kwasami. Wykończenie matowe (honed) pomaga też przeciw wytrawianiu: ślady kwasu są na nim prawie niewidoczne i do intensywnie używanej łazienki polecamy właśnie je." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Plama organiczna", "Kompres z nadtlenkiem", "Najpierw test w niewidocznym miejscu"],
+        ["Tłusta", "Pasta z sody", "Nie rozcierać, dać kompresowi czas"],
+        ["Rdza", "Pasta do marmuru bez kwasu", "Domowe odrdzewiacze zabronione"],
+        ["Wytrawienie kwasem", "Polerowanie przez fachowca", "Nie zmywa się, to zmiana powierzchni"]
+      ]
+    },
+    "faq": [
+      { "question": "Czy można ocet lub cytrynę?", "answer": "Nie. Oba wytrawiają kalcyt w kilka minut. Osad na marmurze usuwa się neutralnymi środkami do kamienia lub delikatną pastą z sody." },
+      { "question": "Czym usunąć kawę lub wino?", "answer": "Świeże — wodą i ściereczką. To, co zdążyło wsiąknąć, kompresem z 3 % nadtlenkiem wodoru na 12–24 godziny pod folią." },
+      { "question": "Jak przywrócić połysk?", "answer": "Domowe „politury” nie pomogą. Powierzchnię zmatowiałą od kwasów odnawia fachowiec: szlifowanie, polerowanie i nowa impregnacja na miejscu w kilka godzin." },
+      { "question": "Czy potrzebna jest coroczna obróbka?", "answer": "Tak, impregnacja raz w roku dla blatów i podłóg w strefach mokrych. To 20 minut pracy gąbką i najtańszy sposób przedłużenia życia marmuru." }
+    ]
+  },
+  "pidvikonnya-z-kamenyu-marmur-granit": {
+    "title": "Parapet z kamienia: marmur czy granit?",
+    "h1": "Kamienny parapet — marmur czy granit?",
+    "description": "Parapet z kamienia: marmur czy granit, grubość, nawis, montaż i pielęgnacja. Co wybrać na stronę południową, do kwiatów i wilgoci.",
+    "dek": "Wybór skały pod słońce, wilgoć, rośliny i codzienne użytkowanie.",
+    "intro": "Parapet to najprostszy sposób, by dodać do domu kamień naturalny: jedna płyta, jeden dzień montażu i dekady bez wymiany. Pytanie tylko o skałę. Granit wytrzymuje kwiaty, wodę i słońce bez przypominania o pielęgnacji; marmur wygląda miękcej i cieplej, ale wymaga uwagi. Wyjaśniamy, jak wybieramy my.",
+    "sections": [
+      { "heading": "Co wybrać na parapet?", "body": "Do kuchni, pokoju dziecięcego i parapetów z roślinami wybieraj granit: Grey Ukraine, Kometa Black lub kwarc, jeśli potrzebny jest jasny jednolity kolor. Do sypialni, salonu i łazienki, gdzie parapet pracuje jak półka, a nie powierzchnia robocza, pasuje marmur Crema Marfil lub Bianco Carrara.\n\nJeśli okna wychodzą na południe i na parapecie będą stać ciemne przedmioty, uwzględnij nagrzewanie: ciemny granit w słońcu staje się gorący, jasny marmur i kwarc pozostają chłodne. Kwarcu przy tym nie stawiaj w pełnym słońcu przez cały dzień: żywica z latami może zmienić odcień." },
+      { "heading": "Czym granit jest lepszy od marmuru na parapet?", "body": "Granit nie boi się wody spod doniczek, kwasu z nawozów, śladów po kubkach i kocich pazurów. Impregnację odnawia się raz na kilka lat, a nie co roku. Jest twardszy, więc krawędź nie odpryskuje od uderzenia ramą okna lub mopem podczas sprzątania.\n\nMarmur wygrywa w czym innym: jest przyjemniejszy w dotyku, daje jasny ciepły ton, którego granit nie ma, i wygląda na miejscu w klasycznych wnętrzach. Jeśli doniczki stoją na podstawkach, a parapetu się nie zalewa, marmur służy nie krócej." },
+      { "heading": "Jakie są zalety kamienia nad plastikiem i drewnem?", "body": "Kamień nie żółknie, nie odkształca się od grzejnika pod spodem i słońca z góry, nie chłonie zapachów i nie rysuje się tak, jak PVC. Jest cięższy i to jego zaleta: płyta leży na zaprawie i nie „gra”, a głęboki parapet 400–600 mm wytrzymuje człowieka, który usiadł na nim z książką.\n\nDrewno jest piękne, ale wymaga lakieru i boi się wody pod doniczkami. Kamień montuje się raz i zwykle na cały okres życia okna, a przy wymianie okna płytę przekłada się." },
+      { "heading": "Jak wygląda wykonanie i montaż?", "body": "Pomiar po montażu okna i wykończeniu ościeży: ustalamy długość, głębokość, nawis, kształt krawędzi i to, czy płyta wchodzi w ościeża. Standardowy nawis 30–50 mm od ściany, grubość 20 mm, dla głębokich parapetów powyżej 500 mm lub długości powyżej 2 m bierzemy 30 mm.\n\nMontaż: płytę układa się na zaprawie cementowej lub piance montażowej na wyrównanym podłożu z niewielkim spadkiem do pokoju, nie więcej niż 1–2 mm, aby woda z okna nie zbierała się przy ramie. Między płytą i ramą zostawia się szczelinę 3–5 mm pod uszczelniacz, pod płytą stawia się podkładki, aby nie zaburzać wentylacji grzejnika. Prace zajmują dzień, korzystać można następnego dnia." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Wytrzymałość", "Granit 6–7 w skali Mohsa", "Marmur 3–4, miększy"],
+        ["Wilgoć i nawozy", "Granit praktyczniejszy", "Marmur wymaga impregnacji i podstawek"],
+        ["Słońce", "Ciemny granit się nagrzewa", "Kwarc nie do pełnego słońca"],
+        ["Wygląd", "Kontrastowy lub neutralny", "Marmur ciepły i plastyczny"],
+        ["Grubość", "20 mm standard", "30 mm dla długości powyżej 2 m"]
+      ]
+    },
+    "faq": [
+      { "question": "Co jest trwalsze?", "answer": "Granit: jest twardszy i nie reaguje na kwasy. Marmur służy równie długo, jeśli się go impregnuje i nie zalewa." },
+      { "question": "Czy boi się słońca lub wilgoci?", "answer": "Granit i marmur nie boją się słońca. Kwarc w pełnym słońcu przez cały dzień może z latami zmienić odcień. Wilgoci nie boi się żaden z kamieni, szkodzą tylko zabrudzenia w porach." },
+      { "question": "Jaka grubość?", "answer": "Standard 20 mm. Dla długich parapetów powyżej 2 m, głębokich powyżej 500 mm lub z dużym nawisem bierzemy 30 mm." },
+      { "question": "Czy można niestandardowy kształt?", "answer": "Tak: zaokrąglone narożniki, wycięcia pod ościeża, parapet wykuszowy z kilku płyt, parapet-blat przechodzący w strefę roboczą kuchni." }
+    ]
+  },
+  "shody-z-granitu-cina-vygotovlennya": {
+    "title": "Schody z granitu: wykonanie, obróbka, koszt",
+    "h1": "Schody granitowe — jak się je dobiera i wykonuje",
+    "description": "Schody granitowe: nakładane i monolityczne, wykończenie na zewnątrz i do wnętrz, antypoślizg, wymiary stopni i z czego składa się koszt.",
+    "dek": "Konstrukcja, wykończenie i bezpieczny detal dla wnętrz i na zewnątrz.",
+    "intro": "Schody granitowe to najtrwalsza część domu: ganki z ukraińskiego granitu stoją po 50 lat bez remontu. Ale właśnie na schodach błędy kosztują najwięcej, bo śliski stopień lub nieodprowadzona woda odczuwa się codziennie. Opowiadamy, jak projektujemy schody do domów, klatek schodowych i sklepów.",
+    "sections": [
+      { "heading": "Jakie bywają schody granitowe?", "body": "Według konstrukcji: nakładane (stopnice i podstopnice z płyt 20–30 mm na podłożu betonowym) i monolityczne (masywne bloki 100–150 mm, które same są stopniami). Nakładane stosuje się w 90 % przypadków: i w domach, i na zewnątrz.\n\nWedług miejsca: wewnętrzne (wykończenie polerowane lub matowe, drewniane lub kamienne podstopnice, cokół wzdłuż ściany) i zewnętrzne (wykończenie płomieniowane, spadek do odprowadzenia wody, kapinos pod stopnicą, klej mrozoodporny)." },
+      { "heading": "Nakładane czy monolityczne — jaka różnica?", "body": "Schody nakładane są lżejsze, tańsze i pozwalają na każde wykończenie. Stopnica 30 mm z kapinosem i podstopnica 20 mm układane są na biegu betonowym na klej do kamienia. Robi się z nich biegi proste, zabiegowe i kręte.\n\nBloki monolityczne pasują do krajobrazu i masywnych wejść: schody oporowe w ogrodzie, ganek w stylu „kamień z kamieniołomu”. Nie potrzebują podłoża betonowego w klasycznym sensie, ale wymagają ciężkiego sprzętu do montażu i kosztują znacznie więcej przez ilość materiału." },
+      { "heading": "Jaka obróbka jest potrzebna na zewnątrz?", "body": "Dla schodów zewnętrznych polerowanie jest niebezpieczne: w deszczu i mrozie zamienia się w lodowisko. Stosujemy płomieniowanie (powierzchnię opala się, kryształy pękają i dają szorstką fakturę) lub groszkowanie (mechaniczne punktowanie). Oba wykończenia są antypoślizgowe nawet na mokro.\n\nKompromis dla wnętrz, gdzie chce się połysku: polerowana stopnica z płomieniowanymi lub piaskowanymi pasami o szerokości 30–40 mm przy krawędzi. Działają jak taśma antypoślizgowa i nie psują wyglądu. Na zewnątrz ważny jest też spadek stopnicy 1–2 % od budynku i kapinos od spodu, aby woda nie spływała na podstopnicę i nie zamarzała w spoinie." },
+      { "heading": "Od czego zależy koszt?", "body": "Materiał: ukraiński granit Grey Ukraine jest tańszy od gabro i labradorytu, import kosztuje jeszcze więcej. Grubość: stopnica 30 mm wobec 20 mm, masywne bloki osobno.\n\nGeometria: proste stopnie standardowej szerokości 300–330 mm są tańsze od zabiegowych i łukowych, każde wycięcie pod poręcz lub niestandardowy kąt dodaje pracy. Wykończenie: polerowanie jest bazowe, płomieniowanie i groszkowanie droższe. Plus dostawa i montaż, który na schodach zajmuje więcej czasu niż na blacie, bo każdy detal dopasowuje się na miejscu.\n\nOrientacyjną cenę Twojego biegu można uzyskać w kalkulatorze, dokładny kosztorys po pomiarze podłoża betonowego." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Polerowanie", "Wnętrza, pionowe, detale", "Śliskie na mokro, dodaj pasy"],
+        ["Szlifowanie (matowe)", "Wnętrza, spokojna powierzchnia", "Mniej śliskie, łatwsze w pielęgnacji"],
+        ["Płomieniowanie", "Zewnątrz, ganki, tarasy", "Antypoślizgowa szorstka faktura"],
+        ["Groszkowanie", "Zewnątrz, wejścia publiczne", "Najgrubsza faktura, rampy"]
+      ]
+    },
+    "faq": [
+      { "question": "Czy schody granitowe są śliskie?", "answer": "Polerowane — tak, zwłaszcza mokre. Płomieniowane i groszkowane — nie, są antypoślizgowe nawet w deszczu i mrozie. Do wnętrz można połączyć połysk z pasami antypoślizgowymi." },
+      { "question": "Jaka jest maksymalna długość stopnia?", "answer": "Z płyty 30 mm robimy jednolite stopnice do 3 m, ograniczeniem jest wymiar sląba. Dłuższe stopnie składa się z dwóch płyt ze spoiną na środku lub nad podporą." },
+      { "question": "Co wybrać na ganek?", "answer": "Płomieniowany Grey Ukraine lub Kometa Black o grubości 30 mm z kapinosem. To najpowszechniejsze i najbardziej niezawodne rozwiązanie dla ukraińskiego klimatu." },
+      { "question": "Ile to kosztuje?", "answer": "Zależy od skały, grubości, liczby i kształtu stopni, wykończenia i montażu. Wprowadź wymiary do kalkulatora dla orientacji, dokładną kwotę podamy po pomiarze." }
+    ]
+  },
+  "fasad-z-kamenyu-yakyy-kamin": {
+    "title": "Elewacja z kamienia: który kamień wybrać na okładzinę",
+    "h1": "Okładzina elewacji kamieniem — który kamień wybrać",
+    "description": "Elewacja z kamienia: granit, trawertyn, kwarcyt czy gres. Grubość płyt, elewacja wentylowana i mocowanie mechaniczne, spoiny, pielęgnacja.",
+    "dek": "Materiał, podkonstrukcja, spoiny i woda w trwałej elewacji.",
+    "intro": "Kamienna elewacja to nie „płytki przyklejone do ściany”, lecz system inżynieryjny: podkonstrukcja, kotwy, płyty, spoiny i odprowadzenie wody. Materiał jest w niej ważny, ale nie jedyny. Wyjaśniamy, który kamień polecamy na ukraińską zimę, jak się mocuje i dlaczego granit prawie zawsze wygrywa.",
+    "sections": [
+      { "heading": "Który kamień jest najlepszy na elewację?", "body": "Dla domu prywatnego i budynku komercyjnego w naszym klimacie to granit: jest mrozoodporny (wytrzymuje ponad 300 cykli zamrażania), nie chłonie wody i nie blaknie. Trawertyn i piaskowiec są piękne, ale porowate i wymagają ochrony i regularnej pielęgnacji. Marmur na elewacji szybko traci połysk od miejskich kwaśnych deszczy.\n\nAlternatywą dla kamienia jest wielkoformatowy gres Laminam lub Neolith: cienki, lekki, stabilny na UV, w dekorach pod kamień lub beton. Dobrze pracuje na elewacjach wentylowanych, gdzie liczy się waga." },
+      { "heading": "Dlaczego granit to praktyczny wybór?", "body": "Granit nie wymaga impregnacji na elewacji: woda z niego spływa, a brud zmywa deszcz. Powierzchnia płomieniowana ukrywa drobne różnice partii i nie daje odblasków. Ukraiński granit jest dostępny w dużych partiach z jednego bloku, więc kolor na całej elewacji jest jednolity.\n\nKolejna zaleta to naprawialność: uszkodzoną płytę na mocowaniu mechanicznym wymienia się w godzinę bez demontażu sąsiednich. Na cokół granit jest w ogóle bez alternatywy: sól, bryzgi, łopata dozorcy i uderzenia nie zostawiają na nim śladu." },
+      { "heading": "Jak mocuje się płyty elewacyjne?", "body": "Sposób mokry (na klej do ściany) dopuszczalny jest dla cokołów i niewielkich fragmentów o wysokości do 3 m z płytami 20 mm. Wyżej elewację robi się wentylowaną: do ściany mocuje się wsporniki i prowadnice, w nich — klamry lub trzpienie, które trzymają płyty 30 mm w nacięciach na krawędziach.\n\nMiędzy płytami zostawia się spoinę 4–6 mm na ruchy termiczne, za płytami — szczelinę wentylacyjną 30–50 mm i izolację. Tak ściana nie zawilgaca się, kondensat jest odprowadzany, a kamień nie pęka od mrozu. Obliczenia podkonstrukcji wykonuje konstruktor, my wykonujemy płyty z nacięciami pod konkretne mocowanie." },
+      { "heading": "Czy kamienna elewacja wymaga pielęgnacji?", "body": "Granit: mycie wodą pod ciśnieniem raz na kilka lat, kontrola spoin i mocowań. Impregnacja nie jest potrzebna. Trawertyn i wapień: hydrofobizacja raz na 3–5 lat, inaczej pory zbierają brud i mech od północnej strony.\n\nCokół z każdego kamienia warto raz w roku umyć z soli po zimie. Gres nie wymaga niczego poza myciem. Jeśli elewacja jest wykonana prawidłowo, pielęgnacja sprowadza się do spłukiwania, a sama konstrukcja służy dłużej niż budynek." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Granit", "Mrozoodporny, nie chłonie wody", "Mocowanie mechaniczne od 3 m"],
+        ["Trawertyn", "Ciepła porowata faktura", "Hydrofobizacja, ochrona przed brudem"],
+        ["Kwarcyt", "Wyrazisty rysunek", "Sprawdzać partię, wyższa cena"],
+        ["Gres", "Lekki, stabilny na UV", "Elewacja wentylowana, cienkie płyty 6–12 mm"]
+      ]
+    },
+    "faq": [
+      { "question": "Który kamień do surowego klimatu?", "answer": "Granit z wykończeniem płomieniowanym na elewacji wentylowanej. Nie boi się mrozu, wody i soli i nie wymaga impregnacji." },
+      { "question": "Jaka grubość płyt?", "answer": "20 mm do mocowania na klej na cokole, 30 mm do elewacji wentylowanej na klamrach. Gres 6–12 mm na własnej podkonstrukcji." },
+      { "question": "Czy granit blaknie?", "answer": "Nie. Minerały granitu są stabilne wobec ultrafioletu, kolor po 30 latach jest ten sam. Zmienić się może tylko połysk, dlatego na elewację bierze się wykończenie matowe lub płomieniowane." },
+      { "question": "Jak pielęgnować?", "answer": "Mycie wodą pod ciśnieniem raz na kilka lat i przegląd spoin. Dla kamieni porowatych dodatkowo hydrofobizacja raz na 3–5 lat." }
+    ]
+  },
+  "granitna-chy-vibropresovana-brukivka": {
+    "title": "Kostka granitowa czy wibroprasowana: co lepsze",
+    "h1": "Kostka granitowa czy wibroprasowana — co wybrać",
+    "description": "Kostka granitowa czy wibroprasowana: wytrzymałość, trwałość, wygląd, naprawa i koszt w cyklu życia. Co wybrać na podwórze, ścieżki i podjazd.",
+    "dek": "Materiał nawierzchni na podwórze, ścieżki i podjazd samochodowy.",
+    "intro": "Betonowa kostka wibroprasowana jest tańsza na starcie, granitowa tańsza po 20 latach. To główna teza, a reszta artykułu wyjaśnia, dlaczego tak jest i w jakich przypadkach beton jest jednak uzasadniony. Produkujemy kostkę granitową z ukraińskiego kamienia i oba materiały widzimy na obiektach codziennie.",
+    "sections": [
+      { "heading": "Co wybrać na podwórze?", "body": "Na podjazd, drogę dojazdową i miejsce parkingowe wybieraj granit: kostka łupana lub cięto-łupana 100 × 100 × 50–100 mm wytrzymuje ciężar auta i zimę z solą bez zmian. Na ścieżki ogrodowe, gdzie chodzą tylko ludzie, nadają się oba materiały i tu decyduje budżet i wygląd.\n\nJeśli podwórze jest duże, częstym kompromisem jest: granit na podjeździe, wejściu i wzdłuż elewacji, beton w strefie gospodarczej. Tak najbardziej widoczne fragmenty dostają materiał na cały okres życia domu." },
+      { "heading": "Czym kostka granitowa jest mocniejsza?", "body": "Granit to monolityczny kamień naturalny o wytrzymałości na ściskanie 180–220 MPa. Kostka betonowa ma wytrzymałość 40–60 MPa i składa się ze spoiwa cementowego z wypełniaczem. Pod kołami i w mrozie beton z czasem kruszy się na krawędziach i traci wierzchnią warstwę z pigmentem, granit się nie zmienia.\n\nNasiąkliwość granitu jest poniżej 0,2 %, dlatego woda nie wnika w kamień i nie rozrywa go przy zamarzaniu. W betonie wynosi 4–6 %. Po 10–15 zimach różnica jest widoczna gołym okiem: kostka granitowa wygląda jak dopiero ułożona, betonowa wymaga wymiany." },
+      { "heading": "Kiedy kostka wibroprasowana jest uzasadniona?", "body": "Gdy budżet jest ograniczony, a działka duża i bez ciężkiego transportu. Gdy potrzebna jest dokładna, powtarzalna geometria i kolor do geometrycznego wzoru. Gdy nawierzchnia jest tymczasowa lub za kilka lat planowana jest przebudowa podwórza.\n\nDobry beton od dużego producenta o grubości 60–80 mm i na właściwym podłożu służy 10–15 lat i wygląda schludnie. Problemy zaczynają się od taniej kostki z wątpliwych zakładów: traci kolor w dwa sezony i się łuszczy." },
+      { "heading": "Co z kosztem za metr kwadratowy?", "body": "Materiał: kostka granitowa jest kilkakrotnie droższa od betonowej. Układanie: mniej więcej takie samo dla obu, bo podłoże i praca są te same. Cykl życia: granit układa się raz, beton przekłada się raz na 10–15 lat razem z pracą i wywozem starego.\n\nJest też oszczędność pośrednia: kostkę granitową po demontażu (np. przy remoncie instalacji) układa się z powrotem, betonową zwykle się wyrzuca. Orientację dla Twojej powierzchni można policzyć w kalkulatorze kostki." }
+    ],
+    "table": {
+      "headers": ["Kryterium", "Wariant", "Co uwzględnić"],
+      "rows": [
+        ["Wytrzymałość", "Granit 180–220 MPa", "Beton 40–60 MPa"],
+        ["Nasiąkliwość", "Granit do 0,2 %", "Beton 4–6 %, łuszczy się w mrozie"],
+        ["Wygląd po 15 latach", "Granit bez zmian", "Beton blaknie, kruszy się"],
+        ["Naprawa", "Granit przekłada się ponownie", "Beton wymienia się na nowy"],
+        ["Cena startowa", "Granit droższy", "Beton tańszy"]
+      ]
+    },
+    "faq": [
+      { "question": "Co jest trwalsze?", "answer": "Granit: okres służby liczy się w dekadach bez zmiany wyglądu. Kostka betonowa jest obliczona na 10–15 lat w naszym klimacie." },
+      { "question": "Co jest tańsze?", "answer": "Na starcie — beton. W cyklu życia z przekładaniem — granit, bo układa się go raz." },
+      { "question": "Co na podjazd auta?", "answer": "Kostka granitowa 80–100 mm na podłożu z tłucznia. Beton wytrzymuje auta osobowe, ale krawędzie szybko kruszą się od manewrów." },
+      { "question": "Co na ścieżki piesze?", "answer": "Oba materiały. Granit 50–60 mm lub beton 60 mm na podłożu piaskowo-tłuczniowym; wybór według wyglądu i budżetu." }
+    ]
+  }
+}
