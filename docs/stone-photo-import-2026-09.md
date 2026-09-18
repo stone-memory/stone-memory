@@ -1,78 +1,51 @@
-# Завдання для агента: фото 24 нових колекцій каменю
+# Завдання для агента: 60 фото каменю для каталогу
 
-Стан на 18.09.2026, партія 1 прийнята: 4 камені з повним комплектом
-(vratza-r1, vratza-r3, travertino-medium, travertino-alabastrino) і картки ще
-20 каменів. Лишається **60 файлів**, перелік у розділі «Партія 2» нижче.
-Далі повний бриф, за яким робились обидві партії.
+Ти генеруєш фотореалістичні зображення натурального і штучного каменю для
+сайту-каталогу. Працюєш із текою `generacziya-foto-kamenyu`. У ній уже є
+`public/materials/` (картки каменів) і `public/collections/` (сцени). Наявні
+файли не чіпати, крім двох, названих у кроці 1. Створити рівно **60 файлів**
+з іменами з розділу «Список файлів». Нічого поза списком не генерувати.
 
-## Партія 2: що ще треба
+## Три типи файлів
 
-Ти працюєш із текою `generacziya-foto-kamenyu`. Наявні файли в
-`public/materials/` і `public/collections/` не чіпати, крім двох заглушок.
-
-1. Дві картки прийшли заглушками по 11 КБ, перегенерувати поверх:
-   `public/materials/neolith-classtone-whitesands.png` і
-   `public/materials/vratza-r1.png` (для R1 текстуру взяти з
-   `collections/vratza-r1-macro.png`).
-2. `public/collections/travertino-safari-brown-application.png`: сцена з таблиці.
-3. Для кожного з 19 каменів нижче три файли в `public/collections/`:
-   `<slug>-macro.png`, `<slug>-slab.png`, `<slug>-application.png`, з текстурою
-   вже прийнятої картки `public/materials/<slug>.png`:
-   le-blanc, kalahari-blue, macaubas-fantasy, white-pearl, negresco,
-   london-grey, calacatta-oriental, volakas, honey-onyx, bianco-a-onyx,
-   caesarstone-4011-cloudburst-concrete, caesarstone-5143-white-attica,
-   caesarstone-5100-vanilla-noir, caesarstone-5810-black-tempal,
-   neolith-fusion-beton, neolith-mont-blanc, neolith-steel-sofia-cuprum,
-   neolith-classtone-whitesands, laminam-calce-nero.
-
-Разом: 2 + 1 + 19 × 3 = 60 файлів, з них 2 заміни; нових 58.
-
-## Повний бриф
-
-Для кожного з 24 каменів у таблиці нижче 4 зображення, разом 96 файлів.
-Нічого поза переліком не генерувати.
-
-## Імена файлів (для кожного `slug`)
-
-| Файл | Що на зображенні |
-|---|---|
-| `public/materials/<slug>.png` | картка: полірована поверхня каменю, заповнює весь кадр, без країв плити, рівне м'яке світло |
-| `public/collections/<slug>-macro.png` | макро: зерно чи жили зблизька, 10–15 см поверхні в кадрі, різкість по всьому кадру |
-| `public/collections/<slug>-slab.png` | сляб: ціла прямокутна плита на металевій А-подібній стійці в світлому шоурумі, стійка позаду або під плитою, не перед нею, світло-сіра стіна, бетонна підлога |
-| `public/collections/<slug>-application.png` | застосування: саме цей камінь у готовому виробі, сюжет із таблиці, камінь займає більшу частину кадру |
+| Тип | Ім'я | Що на зображенні |
+|---|---|---|
+| Картка | `public/materials/<slug>.png` | полірована поверхня каменю, заповнює весь кадр, без країв плити, без фону, рівне м'яке світло |
+| Макро | `public/collections/<slug>-macro.png` | зерно чи жили зблизька, 10–15 см поверхні в кадрі, різкість по всьому кадру, без країв плити |
+| Сляб | `public/collections/<slug>-slab.png` | ціла прямокутна полірована плита стоїть на металевій А-подібній стійці в світлому шоурумі; стійка позаду або під плитою, не перед нею; світло-сіра стіна, бетонна підлога; видно весь малюнок плити |
+| Застосування | `public/collections/<slug>-application.png` | саме цей камінь у готовому виробі, сюжет із таблиці; камінь займає більшу частину кадру |
 
 ## Вимоги до кожного зображення
 
-- Фотореалістична фотографія. Не рендер-мультик, не ілюстрація.
+- Фотореалістична фотографія. Не рендер-мультик, не ілюстрація, не колаж із двох кадрів.
 - Кадр 3:2 і від 2400×1600, якщо генератор уміє; інакше квадрат від 1024×1024.
-- Без тексту, етикеток, підписів, водяних знаків, рамок, логотипів, людей, рук.
-- Файл має містити реальне зображення понад 200 КБ. Заглушка, сірий квадрат
-  чи порожній файл не приймаються.
-- Один камінь = одна текстура на всіх чотирьох файлах. Спершу згенеруй картку
-  `materials/<slug>.png`, потім три сцени з тією самою текстурою.
-- Для штучного каменю (Caesarstone, Neolith, Laminam) плита на слябі
+- У кадрі немає тексту, етикеток, підписів, водяних знаків, рамок, логотипів, людей, рук.
+- Файл має містити реальне зображення й важити понад 200 КБ. Заглушка «немає
+  зображення», сірий квадрат, іконка чи порожній файл не приймаються.
+- Один камінь = одна текстура на всіх його файлах. Перед генерацією сцени
+  відкрий картку `public/materials/<slug>.png` цього каменю і повтори її колір,
+  зерно й малюнок. Опис у таблиці допоміжний, картка головна.
+- Штучний камінь (Caesarstone, Neolith, Laminam): плита на слябі
   великоформатна, 3200×1600 мм, рівномірний малюнок без природних дефектів.
 
 ## Шаблони промптів
 
-Англійською, під генератор. `TEXTURE` і `SCENE` підставляй із таблиці.
-Спільний хвіст для всіх: `photorealistic, natural daylight, sharp focus,
-no text, no watermark, no people`.
+Англійською. `TEXTURE` і `SCENE` підставляй із таблиці каменів. Спільний
+хвіст для всіх: `photorealistic, natural daylight, sharp focus, no text, no
+watermark, no people`.
 
-- Картка: `Top-down photograph of a polished TEXTURE surface filling the entire frame edge to edge, no slab edges, no background, even soft light, ...`
-- Макро: `Extreme close-up macro photograph of polished TEXTURE, 10–15 cm of stone filling the frame, crystals and veins in sharp detail, no edges, no background, ...`
-- Сляб: `Product photograph of a whole rectangular polished slab of TEXTURE standing upright on a steel A-frame slab rack in a bright stone showroom, the rack stands behind and under the slab and does not cover the stone, neutral light-grey wall, polished concrete floor, full slab pattern visible, ...`
-- Застосування: `SCENE made of TEXTURE, the stone occupies most of the frame, ...`
+- Картка: `Top-down photograph of a polished TEXTURE surface filling the entire frame edge to edge, no slab edges, no background, even soft light, …`
+- Макро: `Extreme close-up macro photograph of polished TEXTURE, 10–15 cm of stone filling the frame, crystals and veins in sharp detail, no edges, no background, …`
+- Сляб: `Product photograph of a whole rectangular polished slab of TEXTURE standing upright on a steel A-frame slab rack in a bright stone showroom, the rack stands behind and under the slab and does not cover the stone, neutral light-grey wall, polished concrete floor, full slab pattern visible, …`
+- Застосування: `SCENE made of TEXTURE, the stone occupies most of the frame, …`
 
-## 24 камені
+## Камені
 
 | slug | Камінь | TEXTURE | SCENE |
 |---|---|---|---|
-| vratza-r1 | Вапняк Vratza R1 | light beige Bulgarian limestone, fine even grain, matte honed surface | exterior facade of a modern house clad in large honed limestone panels |
-| vratza-r3 | Вапняк Vratza R3 | beige Bulgarian shelly limestone with visible fossil shells and small pores, honed | garden terrace floor and low wall of shelly limestone slabs |
-| travertino-medium | Травертин Medium | medium beige travertine with small filled pores and soft horizontal banding, honed | bathroom with travertine wall cladding and floor, walk-in shower |
-| travertino-alabastrino | Травертин Alabastrino | very light cream travertine with fine even layering and almost no large pores, polished | living room floor of large cream travertine tiles with a light sofa |
-| travertino-safari-brown | Травертин Safari Brown | brown travertine with warm walnut-to-sand stripes and open pores, honed | fireplace wall clad in brown travertine in a warm living room |
+| vratza-r1 | Вапняк Vratza R1 | light beige Bulgarian limestone, fine even grain, matte honed surface | (тільки картка; сцени вже є) |
+| neolith-classtone-whitesands | Neolith ClasStone WhiteSands | light sand-coloured sintered stone with fine natural grain, matte | outdoor kitchen countertop on a terrace in light sand stone |
+| travertino-safari-brown | Травертин Safari Brown | brown travertine with warm walnut-to-sand stripes and open pores, honed | fireplace wall clad in brown travertine in a warm living room (тільки застосування) |
 | le-blanc | Кварцит Le Blanc | pure white Brazilian quartzite with faint soft grey clouds, polished | white kitchen island countertop with waterfall edge |
 | kalahari-blue | Кварцит Kalahari Blue | grey-blue Brazilian quartzite with soft waves and light veins, polished | kitchen countertop and backsplash in one grey-blue stone |
 | macaubas-fantasy | Кварцит Macaubas Fantasy | grey and white quartzite with bold wavy parallel bands, polished | bathroom vanity top and feature wall with book-matched wavy stone |
@@ -90,25 +63,52 @@ no text, no watermark, no people`.
 | neolith-fusion-beton | Neolith Fusion Beton | grey sintered stone with a raw concrete texture, matte | kitchen countertop and cabinet fronts in concrete-look sintered stone |
 | neolith-mont-blanc | Neolith Mont Blanc | white sintered stone with soft grey marble-like veins, silk finish | kitchen island with a large seamless white marble-look slab |
 | neolith-steel-sofia-cuprum | Neolith Steel Sofia Cuprum | sintered stone with oxidized copper and rust metal texture, matte | bar counter front clad in oxidized copper-look panels in a loft |
-| neolith-classtone-whitesands | Neolith ClasStone WhiteSands | light sand-coloured sintered stone with fine natural grain, matte | outdoor kitchen countertop on a terrace in light sand stone |
 | laminam-calce-nero | Laminam Calce Nero | black matte large-format porcelain with a lime plaster texture | kitchen countertop and tall cabinet fronts in matte black porcelain |
+
+## Список файлів
+
+**Крок 1. Дві картки перезаписати поверх наявних** (там зараз заглушки по 11 КБ):
+
+1. `public/materials/vratza-r1.png` — текстуру взяти з `public/collections/vratza-r1-macro.png`.
+2. `public/materials/neolith-classtone-whitesands.png`.
+
+**Крок 2. Одна сцена:**
+
+3. `public/collections/travertino-safari-brown-application.png` — текстуру взяти з `public/materials/travertino-safari-brown.png`.
+
+**Крок 3. По три сцени для 19 каменів** (макро, сляб, застосування; текстура з
+`public/materials/<slug>.png`, вона вже є для кожного):
+
+`neolith-classtone-whitesands`, `le-blanc`, `kalahari-blue`, `macaubas-fantasy`,
+`white-pearl`, `negresco`, `london-grey`, `calacatta-oriental`, `volakas`,
+`honey-onyx`, `bianco-a-onyx`, `caesarstone-4011-cloudburst-concrete`,
+`caesarstone-5143-white-attica`, `caesarstone-5100-vanilla-noir`,
+`caesarstone-5810-black-tempal`, `neolith-fusion-beton`, `neolith-mont-blanc`,
+`neolith-steel-sofia-cuprum`, `laminam-calce-nero`.
+
+Для `neolith-classtone-whitesands` спершу зроби картку з кроку 1, потім сцени з неї.
+
+Разом: 2 + 1 + 19 × 3 = 60 файлів.
 
 ## Перевірка перед здачею
 
-1. 24 файли в `public/materials/` і 72 у `public/collections/`, імена точно як у таблиці.
+1. У `public/collections/` з'явилось 58 нових файлів, у `public/materials/` 2 перезаписані. Імена точно як у списку, розширення `.png`.
 2. Кожен файл понад 200 КБ, на ньому видно камінь, а не заглушку.
-3. У жодному кадрі немає тексту, людей, водяних знаків.
-4. На слябах стійка не перекриває камінь, плита прямокутна.
-5. Колір і рисунок трьох сцен кожного каменю збігаються з його карткою.
+3. У жодному кадрі немає тексту, людей, рук, водяних знаків.
+4. На слябах плита прямокутна, стійка не перекриває камінь.
+5. Колір і малюнок макро, сляба й застосування збігаються з карткою того самого каменю.
+6. Інші файли в теці не змінені.
 
-## Що далі на боці сайту
+---
 
-Партія 1 (18.09.2026): 37 файлів імпортовано, 4 камені перенесені в основний
-сід, відкриваються після деплою `scripts/apply-market-check.ts --unhide`.
-Для наступних партій той самий порядок:
+## Для команди сайту (агенту не потрібно)
 
-1. `node scripts/import-stone-photos.mjs <тека агента>` (обрізає до 3:2, 1200×800 WebP; заглушки до 50 КБ пропускає).
-2. Перенести рядки з `importedPending`, `quartzPending`, `porcelainPending`
-   в основні списки `data/stone/seed/collections.ts`.
+Звірка з ринком: docs/stone-market-check-2026-09.md. Партія 1 (18.09.2026):
+37 файлів імпортовано, vratza-r1, vratza-r3, travertino-medium,
+travertino-alabastrino перенесені в основний сід і відкриваються після деплою.
+Коли прийде партія 2:
+
+1. `node scripts/import-stone-photos.mjs <тека агента>` (3:2, 1200×800 WebP; заглушки до 50 КБ пропускає; картка vratza-r1 уже є як похідна від макро, нова її перезапише).
+2. Перенести рядки з `importedPending`, `quartzPending`, `porcelainPending` в основні списки `data/stone/seed/collections.ts`.
 3. `npm run build`, `npm run stone-audit`, деплой.
 4. Після деплою: `npx tsx --env-file=.env.local scripts/apply-market-check.ts --unhide`.
