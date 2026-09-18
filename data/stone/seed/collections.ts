@@ -872,10 +872,9 @@ const makePorcelain = (value: string) => {
  * Українські родовища, які конкуренти реально продають, а на сайті ще не було
  * (звірка з ринком, вересень 2026), плюс дві породи, яких нема в жодного
  * конкурента (14; усі з фото перенесені в `ukrainian`). Нові камені без фото
- * заводити сюди прихованими: фото за правилами
- * docs/stone-photo-brief.md ще не згенеровані (бриф —
- * docs/stone-photo-ukrainian-2026-09.md). Після появи файлів рядок переносять
- * в `ukrainian` і знімають «Приховано» в адмінці.
+ * заводити сюди прихованими (правила фото — docs/stone-photo-brief.md, шаблон
+ * брифу — docs/stone-photo-import-2026-09.md). Після появи файлів рядок
+ * переносять в `ukrainian` і відкривають scripts/apply-market-check.ts --unhide.
  */
 const ukrainianPending: [string, string, string, string, string, string[]][] = [
   // Порожньо: усі 14 колекцій вересня 2026 отримали фото й перенесені в `ukrainian`.
