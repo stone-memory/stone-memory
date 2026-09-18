@@ -63,7 +63,7 @@ Empira White). Klinker Stone і Roof-Stone продають турецький �
 | Neolith | Fusion Beton, Mont Blanc, Steel Sofia Cuprum, ClasStone WhiteSands | Viyar, в наявності |
 | Laminam Nero Marquina | Calce Nero | Viyar, в наявності |
 
-Після фото каталог матиме 120 колекцій: 96 видимих зараз плюс 24.
+Фото прийняті 18.09.2026, у сіді 120 колекцій; 24 нові відкриваються в базі після деплою (`scripts/apply-market-check.ts --unhide`).
 
 ## Що зроблено в коді
 

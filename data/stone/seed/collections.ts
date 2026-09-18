@@ -619,6 +619,17 @@ const imported: [string, string, string, string, string, string[]][] = [
   ['vratza-r3', 'Вапняк Vratza R3', 'Вапняк', 'Болгарія', 'бежевий із мушлями', ['фасади', 'тераси', 'облицювання']],
   ['travertino-medium', 'Травертин Medium', 'Травертин', 'Туреччина', 'бежевий середнього тону', ['фасади', 'підлога', 'ванна']],
   ['travertino-alabastrino', 'Травертин Alabastrino', 'Травертин', 'Італія', 'світлий кремовий', ['облицювання', 'підлога', 'ванна']],
+  ['travertino-safari-brown', 'Травертин Safari Brown', 'Травертин', 'Туреччина', 'коричневий', ['фасади', 'каміни', 'підлога']],
+  ['le-blanc', 'Кварцит Le Blanc', 'Кварцит', 'Бразилія', 'білий', ['стільниці', 'острови', 'ванна']],
+  ['kalahari-blue', 'Кварцит Kalahari Blue', 'Кварцит', 'Бразилія', 'сіро-блакитний', ['стільниці', 'стіни']],
+  ['macaubas-fantasy', 'Кварцит Macaubas Fantasy', 'Кварцит', 'Бразилія', 'сіро-білий у хвилястих смугах', ['стільниці', 'панно']],
+  ['white-pearl', 'Кварцит White Pearl', 'Кварцит', 'Бразилія', 'перлинно-білий', ['стільниці', 'ванна']],
+  ['negresco', 'Кварцит Negresco', 'Кварцит', 'Бразилія', 'чорний', ['стільниці', 'каміни']],
+  ['london-grey', 'Кварцит London Grey', 'Кварцит', 'Бразилія', 'сірий', ['стільниці', 'підлога']],
+  ['calacatta-oriental', 'Мармур Calacatta Oriental', 'Мармур', 'Імпорт', 'білий із сірими жилами', ['ванна', 'стільниці', 'облицювання']],
+  ['volakas', 'Мармур Volakas', 'Мармур', 'Греція', 'білий із сірими смугами', ['ванна', 'підлога', 'підвіконня']],
+  ['honey-onyx', 'Онікс Honey', 'Онікс', 'Імпорт', 'медово-жовтий', ['панно', 'стійки', 'підсвітка']],
+  ['bianco-a-onyx', 'Онікс Bianco A', 'Онікс', 'Імпорт', 'білий напівпрозорий', ['панно', 'ванна', 'підсвітка']],
 ]
 /**
  * Імпорт, якого у вересні 2026 не знайшлося в жодного українського продавця слябів
@@ -789,20 +800,14 @@ const importedUnavailable: [string, string, string, string, string, string[]][] 
 ]
 /** Заміни з наявністю на ринку України, приховані до появи фото (docs/stone-photo-import-2026-09.md). */
 const importedPending: [string, string, string, string, string, string[]][] = [
-  ['travertino-safari-brown', 'Травертин Safari Brown', 'Травертин', 'Туреччина', 'коричневий', ['фасади', 'каміни', 'підлога']],
-  ['le-blanc', 'Кварцит Le Blanc', 'Кварцит', 'Бразилія', 'білий', ['стільниці', 'острови', 'ванна']],
-  ['kalahari-blue', 'Кварцит Kalahari Blue', 'Кварцит', 'Бразилія', 'сіро-блакитний', ['стільниці', 'стіни']],
-  ['macaubas-fantasy', 'Кварцит Macaubas Fantasy', 'Кварцит', 'Бразилія', 'сіро-білий у хвилястих смугах', ['стільниці', 'панно']],
-  ['white-pearl', 'Кварцит White Pearl', 'Кварцит', 'Бразилія', 'перлинно-білий', ['стільниці', 'ванна']],
-  ['negresco', 'Кварцит Negresco', 'Кварцит', 'Бразилія', 'чорний', ['стільниці', 'каміни']],
-  ['london-grey', 'Кварцит London Grey', 'Кварцит', 'Бразилія', 'сірий', ['стільниці', 'підлога']],
-  ['calacatta-oriental', 'Мармур Calacatta Oriental', 'Мармур', 'Імпорт', 'білий із сірими жилами', ['ванна', 'стільниці', 'облицювання']],
-  ['volakas', 'Мармур Volakas', 'Мармур', 'Греція', 'білий із сірими смугами', ['ванна', 'підлога', 'підвіконня']],
-  ['honey-onyx', 'Онікс Honey', 'Онікс', 'Імпорт', 'медово-жовтий', ['панно', 'стійки', 'підсвітка']],
-  ['bianco-a-onyx', 'Онікс Bianco A', 'Онікс', 'Імпорт', 'білий напівпрозорий', ['панно', 'ванна', 'підсвітка']],
+  // Порожньо: 15 замін вересня 2026 отримали фото й перенесені в `imported`.
 ]
 const quartz = [
   'Caesarstone|5151 Empira White|білий із прожилками',
+  'Caesarstone|4011 Cloudburst Concrete|сірий бетон',
+  'Caesarstone|5143 White Attica|білий із сірими жилами',
+  'Caesarstone|5100 Vanilla Noir|білий із чорними жилами',
+  'Caesarstone|5810 Black Tempal|чорний зі світлими жилами',
   'Vicostone|BQ8270 Calacatta|білий Calacatta',
   'Vicostone|BQ8220 Carrara|білий із сірим',
   'Vicostone|BQ8740 Nero Marquina|чорний із білим',
@@ -819,16 +824,18 @@ const quartzUnavailable = [
   'Caesarstone|Calacatta Nuvo|білий Calacatta',
 ]
 /** Заміни зі статусом «в наявності» або «під замовлення» у Viyar; приховані до появи фото. */
-const quartzPending = [
-  'Caesarstone|4011 Cloudburst Concrete|сірий бетон',
-  'Caesarstone|5143 White Attica|білий із сірими жилами',
-  'Caesarstone|5100 Vanilla Noir|білий із чорними жилами',
-  'Caesarstone|5810 Black Tempal|чорний зі світлими жилами',
+const quartzPending: string[] = [
+  // Порожньо: 4 декори Caesarstone вересня 2026 отримали фото й перенесені в `quartz`.
 ]
 const porcelain = [
   'Laminam|Calacatta|білий мармуроподібний',
   'Laminam|Pietra Grey|темно-сірий',
   'Laminam|Travertino|бежевий',
+  'Laminam|Calce Nero|чорний матовий',
+  'Neolith|Fusion Beton|сірий бетон',
+  'Neolith|Mont Blanc|білий мармуроподібний',
+  'Neolith|Steel Sofia Cuprum|мідно-іржавий метал',
+  'Neolith|ClasStone WhiteSands|світлий пісочний',
   'Dekton|Kreta|цементно-сірий',
   'Dekton|Laurent|чорний із золотим',
   'Dekton|Rem|білий із прожилками',
@@ -840,12 +847,8 @@ const porcelainUnavailable = [
   'Neolith|Iron Corten|іржаво-коричневий',
   'Neolith|Estatuario|білий із сірими прожилками',
 ]
-const porcelainPending = [
-  'Neolith|Fusion Beton|сірий бетон',
-  'Neolith|Mont Blanc|білий мармуроподібний',
-  'Neolith|Steel Sofia Cuprum|мідно-іржавий метал',
-  'Neolith|ClasStone WhiteSands|світлий пісочний',
-  'Laminam|Calce Nero|чорний матовий',
+const porcelainPending: string[] = [
+  // Порожньо: 5 декорів Neolith і Laminam вересня 2026 отримали фото й перенесені в `porcelain`.
 ]
 const makeQuartz = (value: string) => {
   const [brand, decor, tone] = value.split('|'),

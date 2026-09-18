@@ -29,6 +29,7 @@ const DERIVED = {
   'collections/rakhni-polivsky-macro': ['materials/rakhni-polivsky', [0.4, 0.25, 0.1, 0.42]],
   // Партія «заміни» 09.2026: картка Vratza R1 прийшла заглушкою, макро рівне — беремо його цілком
   'materials/vratza-r1': ['collections/vratza-r1-macro', [0, 0, 0, 0]],
+  'materials/neolith-classtone-whitesands': ['collections/neolith-classtone-whitesands-macro', [0, 0, 0, 0]],
 }
 
 async function convert(from, to, inset = [0, 0, 0, 0]) {
