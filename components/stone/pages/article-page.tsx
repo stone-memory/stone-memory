@@ -154,15 +154,16 @@ export async function ArticlePage({ article: a }: { article: Article }) {
         <section className="mt-12 rounded-xl bg-card p-6">
           <h2 className="text-2xl font-semibold">Пов’язані матеріали</h2>
           <div className="mt-4 flex flex-wrap gap-3">
-            {a.materials.map((s) => (
-              <Link
-                className="rounded-full border px-4 py-2 text-sm"
-                href={`/arkhitekturnyi-kamin/materialy/${s}`}
-                key={s}
-              >
-                {collections.find((c) => c.slug === s)?.name || s}
-              </Link>
-            ))}
+            {a.materials.map((s) => {
+              const c = collections.find((x) => x.slug === s)
+              // Прихована в базі колекція: назви й посилання немає, щоб не вести на 404
+              if (!c) return null
+              return (
+                <Link className="rounded-full border px-4 py-2 text-sm" href={`/arkhitekturnyi-kamin/materialy/${s}`} key={s}>
+                  {c.name}
+                </Link>
+              )
+            })}
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
             {a.categories.map((s) => (

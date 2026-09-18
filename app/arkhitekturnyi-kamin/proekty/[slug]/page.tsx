@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/stone/seo'
-import { getProject, getProjects } from '@/lib/stone/cms'
+import { getCollection, getProject, getProjects } from '@/lib/stone/cms'
 import { ProjectDetail } from '@/components/stone/pages/project-detail'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -19,5 +19,6 @@ export default async function Page({ params }: Props) {
   const { slug } = await params
   const p = await getProject(slug)
   if (!p) notFound()
-  return <ProjectDetail project={p} />
+  const material = await getCollection(p.materialSlug)
+  return <ProjectDetail project={p} materialAvailable={Boolean(material)} />
 }

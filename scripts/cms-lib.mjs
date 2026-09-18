@@ -56,7 +56,7 @@ export function prepareSeed() {
 
 /** Увесь контент із data/seed у тому вигляді, в якому він іде в базу. */
 export async function loadSeedContent(load) {
-  const [{ collections }, { projects }, { articles }, { slabs }, { remnants }, { settings }] =
+  const [{ collections, pendingCollections, unavailableCollections }, { projects }, { articles }, { slabs }, { remnants }, { settings }] =
     await Promise.all([
       load('data/stone/seed/collections.js'),
       load('data/stone/seed/projects.js'),
@@ -65,7 +65,9 @@ export async function loadSeedContent(load) {
       load('data/stone/seed/remnants.js'),
       load('data/stone/seed/settings.js'),
     ])
-  return { collections, projects, articles, slabs, remnants, settings }
+  // Приховані колекції: є в базі, але не на сайті; посилання на них сторінки не рендерять
+  const hiddenCollectionSlugs = new Set([...pendingCollections, ...unavailableCollections].map((c) => c.slug))
+  return { collections, projects, articles, slabs, remnants, settings, hiddenCollectionSlugs }
 }
 
 /** Той самий контент, але з бази — так, як його бачить сайт. */
@@ -86,6 +88,14 @@ export async function loadDbContent() {
     (await rest(`${t}?select=data,hidden&order=position.asc`))
       .filter((r) => !r.hidden)
       .map((r) => r.data)
+  // Приховані рядки анонімний ключ не бачить (RLS); список їхніх слагів беремо сервісним ключем, якщо він є
+  const admin = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const materialRows = admin
+    ? await (await fetch(`${url}/rest/v1/stilnytsi_materials?select=slug,hidden&hidden=eq.true`, {
+        headers: { apikey: admin, Authorization: `Bearer ${admin}` },
+      })).json()
+    : []
+  const hiddenCollectionSlugs = new Set(materialRows.map((r) => r.slug))
   const [collections, projects, articles, slabs, remnants, settingsRows] = await Promise.all([
     list('stilnytsi_materials'),
     list('stilnytsi_projects'),
@@ -95,5 +105,5 @@ export async function loadDbContent() {
     rest('stilnytsi_settings?select=key,data'),
   ])
   const settings = Object.fromEntries(settingsRows.map((r) => [r.key, r.data]))
-  return { collections, projects, articles, slabs, remnants, settings }
+  return { collections, projects, articles, slabs, remnants, settings, hiddenCollectionSlugs }
 }

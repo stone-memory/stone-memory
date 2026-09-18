@@ -415,28 +415,12 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['стільниці', 'острови', 'ванна'],
   ],
   [
-    'calacatta-oro',
-    'Мармур Calacatta Oro',
-    'Мармур',
-    'Італія',
-    'білий із золотистими жилами',
-    ['стільниці', 'ванна', 'каміни'],
-  ],
-  [
     'statuario',
     'Мармур Statuario',
     'Мармур',
     'Італія',
     'чисто білий із сірими жилами',
     ['стільниці', 'ванна', 'каміни'],
-  ],
-  [
-    'marmara-white',
-    'Мармур Marmara White',
-    'Мармур',
-    'Туреччина',
-    'білий зі смугами',
-    ['ванна', 'підлога', 'підвіконня'],
   ],
   [
     'arabescato',
@@ -479,14 +463,6 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['стільниці', 'острови', 'ванна'],
   ],
   [
-    'mont-blanc',
-    'Кварцит Mont Blanc',
-    'Кварцит',
-    'Бразилія',
-    'білий із золотистим',
-    ['стільниці', 'острови'],
-  ],
-  [
     'sea-pearl',
     'Кварцит Sea Pearl',
     'Кварцит',
@@ -503,36 +479,12 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['стільниці', 'острови', 'панно'],
   ],
   [
-    'blue-roma',
-    'Кварцит Blue Roma',
-    'Кварцит',
-    'Бразилія',
-    'сіро-блакитний',
-    ['стільниці', 'острови'],
-  ],
-  [
-    'fusion-blue',
-    'Кварцит Fusion Blue',
-    'Кварцит',
-    'Бразилія',
-    'строкатий синьо-зелений',
-    ['острови', 'панно', 'барні стійки'],
-  ],
-  [
     'patagonia',
     'Кварцит Patagonia',
     'Кварцит',
     'Бразилія',
     'бежево-білий із кристалами',
     ['острови', 'панно', 'барні стійки'],
-  ],
-  [
-    'cristal-tempest',
-    'Кварцит Cristal Tempest',
-    'Кварцит',
-    'Бразилія',
-    'білий кришталевий',
-    ['стільниці', 'острови'],
   ],
   [
     'michelangelo',
@@ -551,28 +503,12 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['стільниці', 'острови', 'ванна'],
   ],
   [
-    'titanium',
-    'Кварцит Titanium',
-    'Кварцит',
-    'Бразилія',
-    'чорний із золотистими хвилями',
-    ['острови', 'барні стійки', 'каміни'],
-  ],
-  [
     'elegant-brown',
     'Кварцит Elegant Brown',
     'Кварцит',
     'Бразилія',
     'коричневий шаруватий',
     ['стільниці', 'каміни'],
-  ],
-  [
-    'black-java',
-    'Кварцит Black Java',
-    'Кварцит',
-    'Бразилія',
-    'чорний',
-    ['стільниці', 'сходи', 'фасади'],
   ],
   [
     'onice-bianco',
@@ -623,14 +559,6 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['панно', 'барні стійки', 'підсвітка'],
   ],
   [
-    'tiger-onyx',
-    'Онікс Tiger',
-    'Онікс',
-    'Туреччина',
-    'коричнево-жовтий',
-    ['панно', 'барні стійки'],
-  ],
-  [
     'ivory-onyx',
     'Онікс Ivory',
     'Онікс',
@@ -647,28 +575,12 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['панно', 'ванна'],
   ],
   [
-    'himalayan-onyx',
-    'Онікс Himalayan',
-    'Онікс',
-    'Пакистан',
-    'білий із бежевим',
-    ['панно', 'ванна', 'підсвітка'],
-  ],
-  [
     'travertino-classico',
     'Травертин Classico',
     'Травертин',
     'Італія',
     'бежевий',
     ['фасади', 'підлога', 'каміни'],
-  ],
-  [
-    'travertino-light-dorato',
-    'Травертин Light Dorato',
-    'Травертин',
-    'Італія',
-    'світлий золотистий',
-    ['фасади', 'підлога', 'ванна'],
   ],
   [
     'travertino-silver',
@@ -701,6 +613,101 @@ const imported: [string, string, string, string, string, string[]][] = [
     'Туреччина',
     'темно-сірий',
     ['фасади', 'каміни', 'підлога'],
+  ],
+]
+/**
+ * Імпорт, якого у вересні 2026 не знайшлося в жодного українського продавця слябів
+ * (Goodstone, Viyar, Antik, Amonitt, Metalstone; звірка в docs/stone-market-check-2026-09.md).
+ * У базі лишаються прихованими (scripts/apply-market-check.ts), у сід-fallback і в --unhide не потрапляють.
+ */
+const importedUnavailable: [string, string, string, string, string, string[]][] = [
+  [
+    'calacatta-oro',
+    'Мармур Calacatta Oro',
+    'Мармур',
+    'Італія',
+    'білий із золотистими жилами',
+    ['стільниці', 'ванна', 'каміни'],
+  ],
+  [
+    'marmara-white',
+    'Мармур Marmara White',
+    'Мармур',
+    'Туреччина',
+    'білий зі смугами',
+    ['ванна', 'підлога', 'підвіконня'],
+  ],
+  [
+    'mont-blanc',
+    'Кварцит Mont Blanc',
+    'Кварцит',
+    'Бразилія',
+    'білий із золотистим',
+    ['стільниці', 'острови'],
+  ],
+  [
+    'blue-roma',
+    'Кварцит Blue Roma',
+    'Кварцит',
+    'Бразилія',
+    'сіро-блакитний',
+    ['стільниці', 'острови'],
+  ],
+  [
+    'fusion-blue',
+    'Кварцит Fusion Blue',
+    'Кварцит',
+    'Бразилія',
+    'строкатий синьо-зелений',
+    ['острови', 'панно', 'барні стійки'],
+  ],
+  [
+    'cristal-tempest',
+    'Кварцит Cristal Tempest',
+    'Кварцит',
+    'Бразилія',
+    'білий кришталевий',
+    ['стільниці', 'острови'],
+  ],
+  [
+    'titanium',
+    'Кварцит Titanium',
+    'Кварцит',
+    'Бразилія',
+    'чорний із золотистими хвилями',
+    ['острови', 'барні стійки', 'каміни'],
+  ],
+  [
+    'black-java',
+    'Кварцит Black Java',
+    'Кварцит',
+    'Бразилія',
+    'чорний',
+    ['стільниці', 'сходи', 'фасади'],
+  ],
+  [
+    'tiger-onyx',
+    'Онікс Tiger',
+    'Онікс',
+    'Туреччина',
+    'коричнево-жовтий',
+    ['панно', 'барні стійки'],
+  ],
+  [
+    'himalayan-onyx',
+    'Онікс Himalayan',
+    'Онікс',
+    'Пакистан',
+    'білий із бежевим',
+    ['панно', 'ванна', 'підсвітка'],
+  ],
+  [
+    'travertino-light-dorato',
+    'Травертин Light Dorato',
+    'Травертин',
+    'Італія',
+    'світлий золотистий',
+    ['фасади', 'підлога', 'ванна'],
   ],
   [
     'travertino-scabas',
@@ -775,11 +782,26 @@ const imported: [string, string, string, string, string, string[]][] = [
     ['фасади', 'підлога', 'тераси'],
   ],
 ]
+/** Заміни з наявністю на ринку України, приховані до появи фото (docs/stone-photo-import-2026-09.md). */
+const importedPending: [string, string, string, string, string, string[]][] = [
+  ['vratza-r1', 'Вапняк Vratza R1', 'Вапняк', 'Болгарія', 'світло-бежевий', ['фасади', 'підлога', 'облицювання']],
+  ['vratza-r3', 'Вапняк Vratza R3', 'Вапняк', 'Болгарія', 'бежевий із мушлями', ['фасади', 'тераси', 'облицювання']],
+  ['travertino-medium', 'Травертин Medium', 'Травертин', 'Туреччина', 'бежевий середнього тону', ['фасади', 'підлога', 'ванна']],
+  ['travertino-alabastrino', 'Травертин Alabastrino', 'Травертин', 'Італія', 'світлий кремовий', ['облицювання', 'підлога', 'ванна']],
+  ['travertino-safari-brown', 'Травертин Safari Brown', 'Травертин', 'Туреччина', 'коричневий', ['фасади', 'каміни', 'підлога']],
+  ['le-blanc', 'Кварцит Le Blanc', 'Кварцит', 'Бразилія', 'білий', ['стільниці', 'острови', 'ванна']],
+  ['kalahari-blue', 'Кварцит Kalahari Blue', 'Кварцит', 'Бразилія', 'сіро-блакитний', ['стільниці', 'стіни']],
+  ['macaubas-fantasy', 'Кварцит Macaubas Fantasy', 'Кварцит', 'Бразилія', 'сіро-білий у хвилястих смугах', ['стільниці', 'панно']],
+  ['white-pearl', 'Кварцит White Pearl', 'Кварцит', 'Бразилія', 'перлинно-білий', ['стільниці', 'ванна']],
+  ['negresco', 'Кварцит Negresco', 'Кварцит', 'Бразилія', 'чорний', ['стільниці', 'каміни']],
+  ['london-grey', 'Кварцит London Grey', 'Кварцит', 'Бразилія', 'сірий', ['стільниці', 'підлога']],
+  ['calacatta-oriental', 'Мармур Calacatta Oriental', 'Мармур', 'Імпорт', 'білий із сірими жилами', ['ванна', 'стільниці', 'облицювання']],
+  ['volakas', 'Мармур Volakas', 'Мармур', 'Греція', 'білий із сірими смугами', ['ванна', 'підлога', 'підвіконня']],
+  ['honey-onyx', 'Онікс Honey', 'Онікс', 'Імпорт', 'медово-жовтий', ['панно', 'стійки', 'підсвітка']],
+  ['bianco-a-onyx', 'Онікс Bianco A', 'Онікс', 'Імпорт', 'білий напівпрозорий', ['панно', 'ванна', 'підсвітка']],
+]
 const quartz = [
-  'Caesarstone|4001 Fresh Concrete|сірий бетон',
-  'Caesarstone|5171 Arabetto|білий мармуроподібний',
   'Caesarstone|5151 Empira White|білий із прожилками',
-  'Caesarstone|Calacatta Nuvo|білий Calacatta',
   'Vicostone|BQ8270 Calacatta|білий Calacatta',
   'Vicostone|BQ8220 Carrara|білий із сірим',
   'Vicostone|BQ8740 Nero Marquina|чорний із білим',
@@ -789,19 +811,59 @@ const quartz = [
   'Silestone|Blanco Zeus|чистий білий',
   'Silestone|Eternal Marquina|чорний',
 ]
+/** Декори, яких немає в українського дилера з публічним списком (Viyar); у базі приховані. */
+const quartzUnavailable = [
+  'Caesarstone|4001 Fresh Concrete|сірий бетон',
+  'Caesarstone|5171 Arabetto|білий мармуроподібний',
+  'Caesarstone|Calacatta Nuvo|білий Calacatta',
+]
+/** Заміни зі статусом «в наявності» або «під замовлення» у Viyar; приховані до появи фото. */
+const quartzPending = [
+  'Caesarstone|4011 Cloudburst Concrete|сірий бетон',
+  'Caesarstone|5143 White Attica|білий із сірими жилами',
+  'Caesarstone|5100 Vanilla Noir|білий із чорними жилами',
+  'Caesarstone|5810 Black Tempal|чорний зі світлими жилами',
+]
 const porcelain = [
   'Laminam|Calacatta|білий мармуроподібний',
-  'Laminam|Nero Marquina|чорний із білими прожилками',
   'Laminam|Pietra Grey|темно-сірий',
   'Laminam|Travertino|бежевий',
-  'Neolith|Arctic White|білий',
-  'Neolith|Calacatta|білий мармуроподібний',
-  'Neolith|Iron Corten|іржаво-коричневий',
-  'Neolith|Estatuario|білий із сірими прожилками',
   'Dekton|Kreta|цементно-сірий',
   'Dekton|Laurent|чорний із золотим',
   'Dekton|Rem|білий із прожилками',
 ]
+const porcelainUnavailable = [
+  'Laminam|Nero Marquina|чорний із білими прожилками',
+  'Neolith|Arctic White|білий',
+  'Neolith|Calacatta|білий мармуроподібний',
+  'Neolith|Iron Corten|іржаво-коричневий',
+  'Neolith|Estatuario|білий із сірими прожилками',
+]
+const porcelainPending = [
+  'Neolith|Fusion Beton|сірий бетон',
+  'Neolith|Mont Blanc|білий мармуроподібний',
+  'Neolith|Steel Sofia Cuprum|мідно-іржавий метал',
+  'Neolith|ClasStone WhiteSands|світлий пісочний',
+  'Laminam|Calce Nero|чорний матовий',
+]
+const makeQuartz = (value: string) => {
+  const [brand, decor, tone] = value.split('|'),
+    slug = slugify(`${brand}-${decor}`)
+  return make(slug, `${brand} ${decor}`, 'Кварц', brand, tone, ['стільниці', 'острови', 'підвіконня'], { brand })
+}
+const makePorcelain = (value: string) => {
+  const [brand, decor, tone] = value.split('|'),
+    slug = slugify(`${brand}-${decor}`)
+  return make(
+    slug,
+    `${brand} ${decor}`,
+    'Керамограніт',
+    brand === 'Laminam' ? 'Італія' : 'Іспанія',
+    tone,
+    ['стільниці', 'фасади', 'облицювання'],
+    { brand, formats: ['1620×3240'] }
+  )
+}
 /**
  * Українські родовища, які конкуренти реально продають, а на сайті ще не було
  * (звірка з ринком, вересень 2026), плюс дві породи, яких нема в жодного
@@ -816,39 +878,25 @@ const ukrainianPending: [string, string, string, string, string, string[]][] = [
 ]
 
 /** Приховані колекції без фото: у базу йдуть з hidden = true, на сайт і в сід-fallback не потрапляють. */
-export const pendingCollections: Collection[] = ukrainianPending.map((x) =>
-  make(x[0], x[1], x[2], x[3], x[4], x[5])
-)
+export const pendingCollections: Collection[] = [
+  ...ukrainianPending.map((x) => make(x[0], x[1], x[2], x[3], x[4], x[5])),
+  ...importedPending.map((x) => make(x[0], x[1], x[2], x[3], x[4], x[5])),
+  ...quartzPending.map(makeQuartz),
+  ...porcelainPending.map(makePorcelain),
+]
+
+/** Колекції, яких немає на ринку України: у базі hidden = true, з сіду й --unhide вилучені. Фото в public/ лишаються. */
+export const unavailableCollections: Collection[] = [
+  ...importedUnavailable.map((x) => make(x[0], x[1], x[2], x[3], x[4], x[5])),
+  ...quartzUnavailable.map(makeQuartz),
+  ...porcelainUnavailable.map(makePorcelain),
+]
 
 export const collections: Collection[] = [
   ...ukrainian.map((x) =>
     make(x[0], x[1], x[2], x[3], x[4], x[5], x[0] === 'carpazi' ? { exteriorOnly: true } : {})
   ),
   ...imported.map((x) => make(x[0], x[1], x[2], x[3], x[4], x[5])),
-  ...quartz.map((value) => {
-    const [brand, decor, tone] = value.split('|'),
-      slug = slugify(`${brand}-${decor}`)
-    return make(
-      slug,
-      `${brand} ${decor}`,
-      'Кварц',
-      brand,
-      tone,
-      ['стільниці', 'острови', 'підвіконня'],
-      { brand }
-    )
-  }),
-  ...porcelain.map((value) => {
-    const [brand, decor, tone] = value.split('|'),
-      slug = slugify(`${brand}-${decor}`)
-    return make(
-      slug,
-      `${brand} ${decor}`,
-      'Керамограніт',
-      brand === 'Laminam' ? 'Італія' : 'Іспанія',
-      tone,
-      ['стільниці', 'фасади', 'облицювання'],
-      { brand, formats: ['1620×3240'] }
-    )
-  }),
+  ...quartz.map(makeQuartz),
+  ...porcelain.map(makePorcelain),
 ]
