@@ -1,12 +1,12 @@
-# Завдання для агента: 60 фото каменю для каталогу
+# Завдання для агента: 80 фото каменю для каталогу
 
 Ти генеруєш фотореалістичні зображення натурального і штучного каменю для
-сайту-каталогу. Працюєш із текою `generacziya-foto-kamenyu`. У ній уже є
-`public/materials/` (картки каменів) і `public/collections/` (сцени). Наявні
-файли не чіпати, крім двох, названих у кроці 1. Створити рівно **60 файлів**
-з іменами з розділу «Список файлів». Нічого поза списком не генерувати.
+сайту-каталогу. Працюєш із порожньою текою: створи в ній `public/materials/`
+і `public/collections/`. Для кожного з 20 каменів у таблиці нижче зроби
+4 файли, разом рівно **80 файлів** з іменами з розділу «Список файлів».
+Нічого поза списком не генерувати.
 
-## Три типи файлів
+## Чотири типи файлів
 
 | Тип | Ім'я | Що на зображенні |
 |---|---|---|
@@ -22,9 +22,10 @@
 - У кадрі немає тексту, етикеток, підписів, водяних знаків, рамок, логотипів, людей, рук.
 - Файл має містити реальне зображення й важити понад 200 КБ. Заглушка «немає
   зображення», сірий квадрат, іконка чи порожній файл не приймаються.
-- Один камінь = одна текстура на всіх його файлах. Перед генерацією сцени
-  відкрий картку `public/materials/<slug>.png` цього каменю і повтори її колір,
-  зерно й малюнок. Опис у таблиці допоміжний, картка головна.
+- Один камінь = одна текстура на всіх чотирьох його файлах. Порядок: спершу
+  згенеруй картку `public/materials/<slug>.png` за описом TEXTURE, потім три
+  сцени, у яких повторюєш колір, зерно й малюнок саме цієї картки, а не
+  вигадуєш новий варіант каменю.
 - Штучний камінь (Caesarstone, Neolith, Laminam): плита на слябі
   великоформатна, 3200×1600 мм, рівномірний малюнок без природних дефектів.
 
@@ -43,9 +44,8 @@ watermark, no people`.
 
 | slug | Камінь | TEXTURE | SCENE |
 |---|---|---|---|
-| vratza-r1 | Вапняк Vratza R1 | light beige Bulgarian limestone, fine even grain, matte honed surface | (тільки картка; сцени вже є) |
 | neolith-classtone-whitesands | Neolith ClasStone WhiteSands | light sand-coloured sintered stone with fine natural grain, matte | outdoor kitchen countertop on a terrace in light sand stone |
-| travertino-safari-brown | Травертин Safari Brown | brown travertine with warm walnut-to-sand stripes and open pores, honed | fireplace wall clad in brown travertine in a warm living room (тільки застосування) |
+| travertino-safari-brown | Травертин Safari Brown | brown travertine with warm walnut-to-sand stripes and open pores, honed | fireplace wall clad in brown travertine in a warm living room |
 | le-blanc | Кварцит Le Blanc | pure white Brazilian quartzite with faint soft grey clouds, polished | white kitchen island countertop with waterfall edge |
 | kalahari-blue | Кварцит Kalahari Blue | grey-blue Brazilian quartzite with soft waves and light veins, polished | kitchen countertop and backsplash in one grey-blue stone |
 | macaubas-fantasy | Кварцит Macaubas Fantasy | grey and white quartzite with bold wavy parallel bands, polished | bathroom vanity top and feature wall with book-matched wavy stone |
@@ -67,37 +67,30 @@ watermark, no people`.
 
 ## Список файлів
 
-**Крок 1. Дві картки перезаписати поверх наявних** (там зараз заглушки по 11 КБ):
+Для кожного `slug` із таблиці (20 каменів):
 
-1. `public/materials/vratza-r1.png` — текстуру взяти з `public/collections/vratza-r1-macro.png`.
-2. `public/materials/neolith-classtone-whitesands.png`.
+- `public/materials/<slug>.png`
+- `public/collections/<slug>-macro.png`
+- `public/collections/<slug>-slab.png`
+- `public/collections/<slug>-application.png`
 
-**Крок 2. Одна сцена:**
+Слаги: `neolith-classtone-whitesands`, `travertino-safari-brown`, `le-blanc`,
+`kalahari-blue`, `macaubas-fantasy`, `white-pearl`, `negresco`, `london-grey`,
+`calacatta-oriental`, `volakas`, `honey-onyx`, `bianco-a-onyx`,
+`caesarstone-4011-cloudburst-concrete`, `caesarstone-5143-white-attica`,
+`caesarstone-5100-vanilla-noir`, `caesarstone-5810-black-tempal`,
+`neolith-fusion-beton`, `neolith-mont-blanc`, `neolith-steel-sofia-cuprum`,
+`laminam-calce-nero`.
 
-3. `public/collections/travertino-safari-brown-application.png` — текстуру взяти з `public/materials/travertino-safari-brown.png`.
-
-**Крок 3. По три сцени для 19 каменів** (макро, сляб, застосування; текстура з
-`public/materials/<slug>.png`, вона вже є для кожного):
-
-`neolith-classtone-whitesands`, `le-blanc`, `kalahari-blue`, `macaubas-fantasy`,
-`white-pearl`, `negresco`, `london-grey`, `calacatta-oriental`, `volakas`,
-`honey-onyx`, `bianco-a-onyx`, `caesarstone-4011-cloudburst-concrete`,
-`caesarstone-5143-white-attica`, `caesarstone-5100-vanilla-noir`,
-`caesarstone-5810-black-tempal`, `neolith-fusion-beton`, `neolith-mont-blanc`,
-`neolith-steel-sofia-cuprum`, `laminam-calce-nero`.
-
-Для `neolith-classtone-whitesands` спершу зроби картку з кроку 1, потім сцени з неї.
-
-Разом: 2 + 1 + 19 × 3 = 60 файлів.
+Разом: 20 × 4 = 80 файлів.
 
 ## Перевірка перед здачею
 
-1. У `public/collections/` з'явилось 58 нових файлів, у `public/materials/` 2 перезаписані. Імена точно як у списку, розширення `.png`.
+1. У `public/materials/` 20 файлів, у `public/collections/` 60. Імена точно як у списку, розширення `.png`.
 2. Кожен файл понад 200 КБ, на ньому видно камінь, а не заглушку.
 3. У жодному кадрі немає тексту, людей, рук, водяних знаків.
 4. На слябах плита прямокутна, стійка не перекриває камінь.
 5. Колір і малюнок макро, сляба й застосування збігаються з карткою того самого каменю.
-6. Інші файли в теці не змінені.
 
 ---
 
@@ -106,9 +99,11 @@ watermark, no people`.
 Звірка з ринком: docs/stone-market-check-2026-09.md. Партія 1 (18.09.2026):
 37 файлів імпортовано, vratza-r1, vratza-r3, travertino-medium,
 travertino-alabastrino перенесені в основний сід і відкриваються після деплою.
-Коли прийде партія 2:
+Партію 2 робить агент без доступу до партії 1, тому він генерує 20 каменів
+цілком; його картки перезапишуть уже імпортовані картки цих 20 каменів
+(так картка й сцени будуть з однієї генерації). Коли прийде партія 2:
 
-1. `node scripts/import-stone-photos.mjs <тека агента>` (3:2, 1200×800 WebP; заглушки до 50 КБ пропускає; картка vratza-r1 уже є як похідна від макро, нова її перезапише).
+1. `node scripts/import-stone-photos.mjs <тека агента>` (3:2, 1200×800 WebP; заглушки до 50 КБ пропускає).
 2. Перенести рядки з `importedPending`, `quartzPending`, `porcelainPending` в основні списки `data/stone/seed/collections.ts`.
 3. `npm run build`, `npm run stone-audit`, деплой.
 4. Після деплою: `npx tsx --env-file=.env.local scripts/apply-market-check.ts --unhide`.
