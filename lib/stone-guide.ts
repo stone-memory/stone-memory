@@ -672,7 +672,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     coef: 1.4,
     swatch: calacattaOroImg,
     exampleCode: "091",
-    interiorSlug: "calacatta-oro",
+    // interiorSlug: "calacatta-oro" прибрано: колекція в архітектурному розділі прихована (немає слябів на ринку України, вересень 2026)
   },
   {
     key: "Statuario",
@@ -698,7 +698,7 @@ export const STONE_GUIDE: StoneGuideEntry[] = [
     coef: 1.3,
     swatch: marmaraWhiteImg,
     exampleCode: "091",
-    interiorSlug: "marmara-white",
+    // interiorSlug: "marmara-white" прибрано: колекція в архітектурному розділі прихована (немає слябів на ринку України, вересень 2026)
   },
 ]
 

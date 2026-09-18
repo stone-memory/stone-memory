@@ -5,7 +5,8 @@ import type { Project } from '@/lib/stone/cms-types'
 import { Cta } from '@/components/stone/site/sections'
 import { Breadcrumbs, JsonLd } from '@/components/stone/pages/primitives'
 
-export function ProjectDetail({ project: x }: { project: Project }) {
+/** materialAvailable = false, коли колекція проєкту прихована в базі: кнопка на матеріал не рендериться, щоб не вести на 404. */
+export function ProjectDetail({ project: x, materialAvailable = true }: { project: Project; materialAvailable?: boolean }) {
   return (
     <main id="main-content">
       <Breadcrumbs items={[{ name: 'Проєктні пропозиції', href: '/arkhitekturnyi-kamin/proekty' }, { name: x.name }]} />
@@ -54,12 +55,14 @@ export function ProjectDetail({ project: x }: { project: Project }) {
             ))}
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={`/arkhitekturnyi-kamin/materialy/${x.materialSlug}`}
-              className="rounded-full border px-5 py-3 text-sm font-semibold"
-            >
-              Дивитися матеріал
-            </Link>
+            {materialAvailable && (
+              <Link
+                href={`/arkhitekturnyi-kamin/materialy/${x.materialSlug}`}
+                className="rounded-full border px-5 py-3 text-sm font-semibold"
+              >
+                Дивитися матеріал
+              </Link>
+            )}
             <Link
               href={`/arkhitekturnyi-kamin/kontakty?proposal=${x.slug}`}
               className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"

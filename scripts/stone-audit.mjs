@@ -31,7 +31,14 @@ const content = fromDb ?? (await loadSeedContent(load))
 console.log(
   fromDb ? 'Джерело даних: Supabase (stilnytsi_*)' : 'Джерело даних: data/seed (без SUPABASE_URL)'
 )
-const { collections, projects, articles, slabs, remnants, settings } = content
+const { collections, projects, articles, slabs, remnants, settings, hiddenCollectionSlugs } = content
+// Посилання на приховану колекцію: сторінка проєкту й стаття його не рендерять, тож це примітка, а не проблема
+const notes = []
+const refCollection = (slug, where) => {
+  if (collectionSlugs.has(slug)) return
+  if (hiddenCollectionSlugs?.has(slug)) notes.push(`${where} → колекція «${slug}» прихована, посилання не показується`)
+  else flag(`${where} → нема колекції «${slug}»`)
+}
 const { categories, materials } = await load('data/stone/materials.js')
 const { families } = await load('data/stone/families.js')
 const { buildPaths } = await load('lib/stone/paths.js')
@@ -76,8 +83,7 @@ for (const c of collections) {
   if (!price || /undefined|NaN/.test(price)) flag(`[ціна ${c.slug}] formatPrice → «${price}»`)
 }
 for (const p of projects) {
-  if (!collectionSlugs.has(p.materialSlug))
-    flag(`[проєкт ${p.slug}] materialSlug «${p.materialSlug}» → нема такої колекції`)
+  refCollection(p.materialSlug, `[проєкт ${p.slug}] materialSlug`)
   image(p.image, `проєкт ${p.slug}.image`)
   for (const g of p.gallery ?? []) image(g, `проєкт ${p.slug}.gallery`)
 }
@@ -87,7 +93,7 @@ for (const a of articles) {
   for (const r of a.related ?? [])
     if (!known.has(stoneHref(r))) flag(`[стаття ${a.slug}] related → нема сторінки «${r}»`)
   for (const m of a.materials ?? [])
-    if (!collectionSlugs.has(m)) flag(`[стаття ${a.slug}] materials → нема колекції «${m}»`)
+    refCollection(m, `[стаття ${a.slug}] materials`)
   for (const k of a.categories ?? [])
     if (!categorySlugs.has(k)) flag(`[стаття ${a.slug}] categories → нема категорії «${k}»`)
 }
@@ -162,6 +168,10 @@ for (const [a, from] of badAssets)
 console.log(
   `Сторінок розділу: ${[...pages].filter(inSection).length} · колекцій ${collections.length} · проєктів ${projects.length} · статей ${articles.length}`
 )
+if (notes.length) {
+  console.log(`\nПРИМІТОК: ${notes.length}`)
+  for (const n of notes) console.log(' · ' + n)
+}
 if (problems.length) {
   console.log(`\nПРОБЛЕМ: ${problems.length}`)
   for (const p of problems) console.log(' - ' + p)

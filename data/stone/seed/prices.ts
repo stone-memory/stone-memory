@@ -17,6 +17,15 @@ export const knownPrices: Record<string, Price> = {
   avant: { value: 8121, unit: 'м²', currency: 'грн' },
   neolith: { value: 15790, unit: 'м²', currency: 'грн' },
   dekton: { value: 10011, unit: 'м²', currency: 'грн' },
+  // Роздрібні ціни Goodstone за м² сляба, вересень 2026
+  'vratza-r1': { value: 95, unit: 'м²', currency: '€' },
+  'vratza-r3': { value: 52, unit: 'м²', currency: '€' },
+  'travertino-medium': { value: 95, unit: 'м²', currency: '€' },
+  'travertino-alabastrino': { value: 270, unit: 'м²', currency: '€' },
+  'travertino-safari-brown': { value: 160, unit: 'м²', currency: '€' },
+  volakas: { value: 140, unit: 'м²', currency: '€' },
+  'honey-onyx': { value: 700, unit: 'м²', currency: '€' },
+  'bianco-a-onyx': { value: 685, unit: 'м²', currency: '€' },
 }
 
 /** Ставки калькулятора (адмінка → Стільниці → Калькулятор). */
