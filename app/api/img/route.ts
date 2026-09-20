@@ -11,7 +11,9 @@ export const runtime = "nodejs"
  *
  * Замінює оптимізатор Vercel (/_next/image), ліміт якого на Hobby вичерпався.
  * Відповідь кешується на CDN і в браузері, тож функція працює раз на фото й
- * ширину; ?v=<хеш> в адресі оригіналу дозволяє кешувати назавжди.
+ * ширину; ?v=<хеш> в адресі оригіналу дозволяє кешувати назавжди. CDN Vercel
+ * кешує відповіді функцій лише за s-maxage — самого max-age йому замало, і
+ * без нього sharp запускався б для кожного нового відвідувача.
  */
 const WIDTHS = new Set(widths as number[])
 const MAX_SOURCE = 25 * 1024 * 1024
@@ -76,7 +78,7 @@ export async function GET(req: Request) {
     headers: {
       "Content-Type": "image/webp",
       "Cache-Control": versioned
-        ? "public, max-age=31536000, immutable"
+        ? "public, max-age=31536000, s-maxage=31536000, immutable"
         : "public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800",
     },
   })
