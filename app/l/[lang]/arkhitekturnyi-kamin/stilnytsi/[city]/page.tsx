@@ -1,0 +1,25 @@
+import { withLocale } from '@/lib/i18n/with-locale'
+import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/lib/stone/seo'
+import { getSetting } from '@/lib/stone/cms'
+import { GeoPage } from '@/components/stone/pages/geo-page'
+
+type Props = { params: Promise<{ city: string }> }
+
+export const dynamicParams = true
+export async function generateStaticParams() {
+  return Object.keys(await getSetting('geo')).map((city) => ({ city }))
+}
+export async function generateMetadata({ params }: Props) {
+  const { city } = await params
+  const d = (await getSetting('geo'))[city]
+  if (!d) return {}
+  return pageMetadata(`/arkhitekturnyi-kamin/stilnytsi/${city}`, { title: `Кам’яні стільниці у ${d.locative}` })
+}
+async function Page({ params }: Props) {
+  const { city } = await params
+  const d = (await getSetting('geo'))[city]
+  if (!d) notFound()
+  return <GeoPage city={city} data={d} />
+}
+export default withLocale(Page)

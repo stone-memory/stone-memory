@@ -1,17 +1,29 @@
 import "server-only"
-import { cookies } from "next/headers"
-import { defaultLocale, isLocale, LOCALE_COOKIE, type Locale } from "@/lib/i18n/config"
+import { cache } from "react"
+import { defaultLocale, isLocale, type Locale } from "@/lib/i18n/config"
 
 /**
- * Мова відвідувача для серверних компонентів.
+ * Мова відвідувача для серверних компонентів розділу архітектурного каменю.
  *
- * Перемикач мови (LanguageProvider) пише вибір у cookie `sm-locale` разом із
- * localStorage. Сторінки, що читають цей cookie, стають динамічними (SSR на
- * кожен запит), зате віддають одразу перекладений HTML — без «стрибка» з
- * української після гідратації. Використовується в розділі архітектурного
- * каменю, де весь контент рендериться на сервері з бази.
+ * Розділ лежить у app/l/[lang]/…, а rewrite у next.config.mjs підставляє
+ * [lang] із cookie `sm-locale` ще на CDN — адреса для відвідувача лишається
+ * /arkhitekturnyi-kamin/…. Так сторінки статичні для кожної мови й віддаються
+ * з кешу. До 20.09.2026 мову читали через cookies(): це робило весь розділ
+ * динамічним (SSR на кожен перехід, без prefetch), і навігація в ньому
+ * відчутно гальмувала.
+ *
+ * Сховище живе в межах одного рендера (React cache). Мову виставляють layout
+ * розділу і withLocale() на кожній сторінці: під час клієнтського переходу
+ * Next рендерить лише сторінку, без layout.
  */
+const requestStore = cache(() => ({ locale: defaultLocale as Locale }))
+
+export function setRequestLocale(lang: string): Locale {
+  const locale = isLocale(lang) ? lang : defaultLocale
+  requestStore().locale = locale
+  return locale
+}
+
 export async function getServerLocale(): Promise<Locale> {
-  const value = (await cookies()).get(LOCALE_COOKIE)?.value
-  return value && isLocale(value) ? value : defaultLocale
+  return requestStore().locale
 }

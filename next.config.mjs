@@ -116,6 +116,23 @@ const nextConfig = {
     }
     return routes
   },
+  // Розділ архітектурного каменю лежить у app/l/[lang]/…, а відвідувач бачить
+  // /arkhitekturnyi-kamin/…: мову з cookie `sm-locale` підставляємо тут, на
+  // рівні маршрутизації CDN, тому сторінки статичні й кешуються для кожної
+  // мови окремо. Читання cookie в самому рендері (як було до 20.09.2026)
+  // робило весь розділ динамічним, і переходи в ньому тривали 1–2 с.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/arkhitekturnyi-kamin/:path*",
+          has: [{ type: "cookie", key: "sm-locale", value: "(?<lang>pl|en|de|lt)" }],
+          destination: "/l/:lang/arkhitekturnyi-kamin/:path*",
+        },
+        { source: "/arkhitekturnyi-kamin/:path*", destination: "/l/uk/arkhitekturnyi-kamin/:path*" },
+      ],
+    }
+  },
   // Legacy English paths → localized Ukrainian slugs (uk is the priority
   // market, served at root with no locale prefix). 308 permanent so
   // search engines transfer ranking signal. Query strings are forwarded
