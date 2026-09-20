@@ -19,6 +19,11 @@ const WIDTHS = new Set(widths as number[])
 const MAX_SOURCE = 25 * 1024 * 1024
 const QUALITY = 72
 
+// Статичні імпорти фото. Локально Next кладе їх у /_next/static/media/, а на
+// Vercel — у /_next/static/immutable/media/: без другого варіанту зразки каменю
+// (lib/stone-guide.ts) на живому сайті відповідали 400.
+const STATIC_MEDIA = /^\/_next\/static\/(immutable\/)?media\//
+
 // Ті самі хости, що в images.remotePatterns (next.config.mjs).
 function isAllowedRemote(u: URL): boolean {
   if (u.protocol !== "https:") return false
@@ -44,7 +49,7 @@ export async function GET(req: Request) {
   if (!WIDTHS.has(w)) return bad(400, "bad width")
 
   let target: URL
-  if (src.startsWith("/_next/static/media/") && !src.includes("..")) {
+  if (STATIC_MEDIA.test(src) && !src.includes("..")) {
     target = new URL(src, req.url)
   } else {
     try {
@@ -73,7 +78,7 @@ export async function GET(req: Request) {
     return bad(415, "cannot decode")
   }
 
-  const versioned = target.searchParams.has("v") || src.startsWith("/_next/static/media/")
+  const versioned = target.searchParams.has("v") || STATIC_MEDIA.test(src)
   return new Response(new Uint8Array(out), {
     headers: {
       "Content-Type": "image/webp",
