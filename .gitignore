@@ -50,3 +50,6 @@ public/test-fav
 
 # Оригінали фото каталогу до перестискання
 backup-stone-images/
+
+# зменшені копії фото, генерує scripts/image-variants.mjs перед build
+/public/_img/

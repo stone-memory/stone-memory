@@ -43,6 +43,17 @@ const nextConfig = {
   },
   // Let Next.js optimise remote images — huge LCP + bandwidth win
   images: {
+    // Без оптимізатора Vercel (/_next/image): на Hobby це 5 тис. трансформацій
+    // на місяць, 20.09.2026 ліміт вичерпався і фото відповідали 402. Локальні
+    // фото ріже під час збірки scripts/image-variants.mjs (статика з CDN),
+    // Supabase і зовнішні хости — app/api/img. Адреси будує loader. Ширини
+    // нижче мусять збігатися з lib/image-widths.json: інших копій не існує.
+    // formats, qualities, localPatterns і remotePatterns нижче стосуються лише
+    // вбудованого оптимізатора й лишені на випадок повернення до нього.
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [96, 256, 384],
     // Лише webp: кожен формат — окрема трансформація в лічильнику Vercel
     // (5 тис. на місяць на Hobby), а avif до того ж повільніший у кодуванні.
     formats: ["image/webp"],
@@ -104,6 +115,23 @@ const nextConfig = {
       )
     }
     return routes
+  },
+  // Розділ архітектурного каменю лежить у app/l/[lang]/…, а відвідувач бачить
+  // /arkhitekturnyi-kamin/…: мову з cookie `sm-locale` підставляємо тут, на
+  // рівні маршрутизації CDN, тому сторінки статичні й кешуються для кожної
+  // мови окремо. Читання cookie в самому рендері (як було до 20.09.2026)
+  // робило весь розділ динамічним, і переходи в ньому тривали 1–2 с.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/arkhitekturnyi-kamin/:path*",
+          has: [{ type: "cookie", key: "sm-locale", value: "(?<lang>pl|en|de|lt)" }],
+          destination: "/l/:lang/arkhitekturnyi-kamin/:path*",
+        },
+        { source: "/arkhitekturnyi-kamin/:path*", destination: "/l/uk/arkhitekturnyi-kamin/:path*" },
+      ],
+    }
   },
   // Legacy English paths → localized Ukrainian slugs (uk is the priority
   // market, served at root with no locale prefix). 308 permanent so

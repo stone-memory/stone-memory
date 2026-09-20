@@ -76,7 +76,7 @@ export function revalidateStone(): void {
     // спершу віддає старий кеш і оновлює у фоні, тож адмін бачив старе після
     // збереження. Це маршрут-обробник, updateTag тут недоступний.
     revalidateTag(CMS_TAG, { expire: 0 })
-    revalidatePath("/arkhitekturnyi-kamin", "layout")
+    revalidatePath("/l/[lang]/arkhitekturnyi-kamin", "layout")
     // Головна показує бібліотеку колекцій (getCollections), тег для неї замало.
     revalidatePath("/", "page")
     revalidatePath("/sitemap.xml")

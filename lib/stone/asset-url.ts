@@ -23,6 +23,16 @@ export function versioned(path: string): string {
   return v ? `${path}?v=${v}` : path
 }
 
+/**
+ * Чи є таке фото в public/ (materials, collections, blog, stone). Замість
+ * existsSync: звернення до диска за динамічним шляхом змушує Next пакувати всю
+ * теку public/ у серверну функцію сторінки, а разом із копіями з public/_img
+ * це понад ліміт Vercel у 250 МБ.
+ */
+export function hasAsset(path: string): boolean {
+  return path.split("?")[0] in versions
+}
+
 export function versionedAll(paths: string[]): string[] {
   return paths.map(versioned)
 }

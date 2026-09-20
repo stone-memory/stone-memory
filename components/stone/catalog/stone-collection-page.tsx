@@ -1,7 +1,5 @@
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
 import { SITE_URL } from '@/lib/site-config'
-import { versioned } from '@/lib/stone/asset-url'
+import { hasAsset, versioned } from '@/lib/stone/asset-url'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
@@ -127,15 +125,14 @@ export async function StoneCollectionPage({ collection: c }: { collection: Colle
   const price = stonePrice(locale, c.price)
   // Показуємо лише ті знімки, які реально є: для частини каменів сцени сляба
   // й застосування ще не згенеровані, і три однакові текстури виглядали гірше,
-  // ніж одна. Файли перевіряються на сервері, у public/.
-  // Версія ?v= додається вже після перевірки, бо existsSync шукає файл за
-  // чистим шляхом.
+  // ніж одна. Наявність файлу перевіряється за маніфестом фото
+  // (lib/stone/asset-manifest.json), який збирається з public/ перед build.
   const gallery = [
       `/collections/${c.slug}-macro.webp`,
       `/collections/${c.slug}-slab.webp`,
       `/collections/${c.slug}-application.webp`,
     ]
-      .filter((src, i) => i === 0 || existsSync(join(process.cwd(), 'public', src)))
+      .filter((src, i) => i === 0 || hasAsset(src))
       .map(versioned),
     // Характеристики з картки матеріалу в адмінці (c.specs); якщо в базі їх ще
     // немає — з довідкового сіду. Порожній рядок не показуємо, а не пишемо
