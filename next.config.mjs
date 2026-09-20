@@ -43,6 +43,17 @@ const nextConfig = {
   },
   // Let Next.js optimise remote images — huge LCP + bandwidth win
   images: {
+    // Без оптимізатора Vercel (/_next/image): на Hobby це 5 тис. трансформацій
+    // на місяць, 20.09.2026 ліміт вичерпався і фото відповідали 402. Локальні
+    // фото ріже під час збірки scripts/image-variants.mjs (статика з CDN),
+    // Supabase і зовнішні хости — app/api/img. Адреси будує loader. Ширини
+    // нижче мусять збігатися з lib/image-widths.json: інших копій не існує.
+    // formats, qualities, localPatterns і remotePatterns нижче стосуються лише
+    // вбудованого оптимізатора й лишені на випадок повернення до нього.
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [96, 256, 384],
     // Лише webp: кожен формат — окрема трансформація в лічильнику Vercel
     // (5 тис. на місяць на Hobby), а avif до того ж повільніший у кодуванні.
     formats: ["image/webp"],

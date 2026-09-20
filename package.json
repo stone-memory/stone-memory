@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "node scripts/asset-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/asset-manifest.mjs",
+    "prebuild": "node scripts/asset-manifest.mjs && node scripts/image-variants.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
